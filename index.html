@@ -11,13 +11,19 @@
     .site-header { border-top: 4px solid #c8102e; padding-top: 24px; margin-bottom: 40px; }
     .site-header h1 { font-size: 2.4em; color: #1a1a1a; letter-spacing: -0.02em; }
     .site-header p { font-family: 'Arial', sans-serif; font-size: 0.9em; color: #777; margin-top: 6px; font-style: italic; }
-    h2 { font-size: 1.2em; font-family: 'Arial', sans-serif; text-transform: uppercase; letter-spacing: 0.08em; color: #888; margin-bottom: 16px; }
+    h2 { font-size: 1.1em; font-family: 'Arial', sans-serif; text-transform: uppercase; letter-spacing: 0.08em; color: #888; margin-bottom: 16px; }
     .article-list { list-style: none; }
-    .article-list li { border-bottom: 1px solid #ddd; padding: 20px 0; }
-    .article-list li:last-child { border-bottom: none; }
-    .article-list a { font-size: 1.25em; color: #c8102e; text-decoration: none; font-weight: bold; }
-    .article-list a:hover { text-decoration: underline; }
-    .article-meta { font-family: 'Arial', sans-serif; font-size: 0.82em; color: #999; margin-top: 4px; }
+    .article-card { border-bottom: 1px solid #ddd; padding: 20px 0; }
+    .article-card:last-child { border-bottom: none; }
+    .article-card h3 { font-size: 1.2em; color: #1a1a1a; margin-bottom: 6px; }
+    .article-card .parts { display: flex; gap: 12px; margin-top: 8px; }
+    .article-card .parts a {
+      font-family: 'Arial', sans-serif; font-size: 0.85em;
+      background: #c8102e; color: #fff; text-decoration: none;
+      padding: 4px 14px; border-radius: 3px;
+    }
+    .article-card .parts a:hover { background: #a00d25; }
+    .article-meta { font-family: 'Arial', sans-serif; font-size: 0.82em; color: #999; }
   </style>
 </head>
 <body>
@@ -29,14 +35,34 @@
 
     <h2>2026 Season Previews</h2>
     <ul class="article-list">
-      <li>
-        <a href="season_preview_2026_lva.html">2026 TSDL Season Preview: Las Vegas Athletics</a>
+
+      <li class="article-card">
+        <h3>2026 TSDL Season Preview: Arizona Diamondbacks</h3>
+        <div class="article-meta">February 23, 2026</div>
+        <div class="parts">
+          <a href="season_preview_2026_ari_part1.html">Part 1</a>
+          <a href="season_preview_2026_ari_part2.html">Part 2</a>
+        </div>
+      </li>
+
+      <li class="article-card">
+        <h3>2026 TSDL Season Preview: Las Vegas Athletics</h3>
         <div class="article-meta">February 21, 2026</div>
+        <div class="parts">
+          <a href="season_preview_2026_lva_part1.html">Part 1</a>
+          <a href="season_preview_2026_lva_part2.html">Part 2</a>
+        </div>
       </li>
-      <li>
-        <a href="season_preview_2026_phi.html">2026 TSDL Season Preview: Philadelphia Phillies</a>
+
+      <li class="article-card">
+        <h3>2026 TSDL Season Preview: Philadelphia Phillies</h3>
         <div class="article-meta">February 20, 2026</div>
+        <div class="parts">
+          <a href="season_preview_2026_phi_part1.html">Part 1</a>
+          <a href="season_preview_2026_phi_part2.html">Part 2</a>
+        </div>
       </li>
+
     </ul>
   </div>
 </body>
