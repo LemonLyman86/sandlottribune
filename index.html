@@ -7,7 +7,7 @@
   <meta name="description" content="The official publication of The Sandlot Dynasty League — season previews, power rankings, trade analysis, and more.">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Marcellus&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Marcellus&family=Oswald:wght@400;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="assets/css/main.css">
 </head>
 <body>
@@ -37,6 +37,92 @@
 
   <!-- ===== MAIN CONTENT ===== -->
   <main class="page-wrapper">
+
+    <!-- ===== SEASON COUNTDOWN SCOREBOARDS ===== -->
+    <section class="countdown-section" aria-label="Season Countdown">
+      <h2 class="section-label">Upcoming Events</h2>
+      <div class="scoreboard-row">
+
+        <!-- Board 1: Legal Roster Deadline -->
+        <div class="scoreboard-board">
+          <div class="board-header">Legal Roster Deadline</div>
+          <div class="board-subtitle">March 15, 2026 &bull; 10:00 AM EST</div>
+          <div class="board-clock">
+            <div class="clock-segment">
+              <div class="clock-tiles">
+                <div class="flip-tile" id="r-d0"><div class="tile-inner"><span>0</span></div></div>
+                <div class="flip-tile" id="r-d1"><div class="tile-inner"><span>0</span></div></div>
+              </div>
+              <div class="clock-seg-label">Days</div>
+            </div>
+            <div class="clock-colon">:</div>
+            <div class="clock-segment">
+              <div class="clock-tiles">
+                <div class="flip-tile" id="r-h0"><div class="tile-inner"><span>0</span></div></div>
+                <div class="flip-tile" id="r-h1"><div class="tile-inner"><span>0</span></div></div>
+              </div>
+              <div class="clock-seg-label">Hrs</div>
+            </div>
+            <div class="clock-colon">:</div>
+            <div class="clock-segment">
+              <div class="clock-tiles">
+                <div class="flip-tile" id="r-m0"><div class="tile-inner"><span>0</span></div></div>
+                <div class="flip-tile" id="r-m1"><div class="tile-inner"><span>0</span></div></div>
+              </div>
+              <div class="clock-seg-label">Min</div>
+            </div>
+            <div class="clock-colon">:</div>
+            <div class="clock-segment">
+              <div class="clock-tiles">
+                <div class="flip-tile" id="r-s0"><div class="tile-inner"><span>0</span></div></div>
+                <div class="flip-tile" id="r-s1"><div class="tile-inner"><span>0</span></div></div>
+              </div>
+              <div class="clock-seg-label">Sec</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Board 2: FA Auction -->
+        <div class="scoreboard-board">
+          <div class="board-header">Free Agent Auction</div>
+          <div class="board-subtitle">March 22, 2026 &bull; 12:00 PM EST</div>
+          <div class="board-clock">
+            <div class="clock-segment">
+              <div class="clock-tiles">
+                <div class="flip-tile" id="a-d0"><div class="tile-inner"><span>0</span></div></div>
+                <div class="flip-tile" id="a-d1"><div class="tile-inner"><span>0</span></div></div>
+              </div>
+              <div class="clock-seg-label">Days</div>
+            </div>
+            <div class="clock-colon">:</div>
+            <div class="clock-segment">
+              <div class="clock-tiles">
+                <div class="flip-tile" id="a-h0"><div class="tile-inner"><span>0</span></div></div>
+                <div class="flip-tile" id="a-h1"><div class="tile-inner"><span>0</span></div></div>
+              </div>
+              <div class="clock-seg-label">Hrs</div>
+            </div>
+            <div class="clock-colon">:</div>
+            <div class="clock-segment">
+              <div class="clock-tiles">
+                <div class="flip-tile" id="a-m0"><div class="tile-inner"><span>0</span></div></div>
+                <div class="flip-tile" id="a-m1"><div class="tile-inner"><span>0</span></div></div>
+              </div>
+              <div class="clock-seg-label">Min</div>
+            </div>
+            <div class="clock-colon">:</div>
+            <div class="clock-segment">
+              <div class="clock-tiles">
+                <div class="flip-tile" id="a-s0"><div class="tile-inner"><span>0</span></div></div>
+                <div class="flip-tile" id="a-s1"><div class="tile-inner"><span>0</span></div></div>
+              </div>
+              <div class="clock-seg-label">Sec</div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section>
 
     <!-- Latest News -->
     <section aria-label="Latest News">
@@ -125,6 +211,63 @@
   <footer class="site-footer">
     <p>&copy; 2026 The Sandlot Tribune &nbsp;&middot;&nbsp; The Sandlot Dynasty League</p>
   </footer>
+
+  <script>
+    // Target dates — Eastern Standard Time (UTC-5)
+    var ROSTER_DEADLINE = new Date('2026-03-15T10:00:00-05:00');
+    var FA_AUCTION      = new Date('2026-03-22T12:00:00-05:00');
+
+    function timeLeft(target) {
+      var diff = target - Date.now();
+      if (diff <= 0) return null;
+      return {
+        d: Math.floor(diff / 86400000),
+        h: Math.floor((diff % 86400000) / 3600000),
+        m: Math.floor((diff % 3600000) / 60000),
+        s: Math.floor((diff % 60000) / 1000)
+      };
+    }
+
+    function pad2(n) { return String(n).padStart(2, '0'); }
+
+    function setTile(id, ch) {
+      var el = document.getElementById(id);
+      if (!el) return;
+      var span = el.querySelector('span');
+      if (span.textContent === ch) return;
+      // Restart animation cleanly
+      el.classList.remove('flipping');
+      void el.offsetWidth;
+      el.classList.add('flipping');
+      // Swap digit at the flat midpoint of the animation
+      setTimeout(function() { span.textContent = ch; }, 110);
+    }
+
+    function updateBoard(prefix, target) {
+      var t = timeLeft(target);
+      if (!t) {
+        // Event has passed — freeze at zeros
+        ['d0','d1','h0','h1','m0','m1','s0','s1'].forEach(function(id) {
+          var el = document.getElementById(prefix + '-' + id);
+          if (el) el.querySelector('span').textContent = '0';
+        });
+        return;
+      }
+      var d = pad2(t.d), h = pad2(t.h), m = pad2(t.m), s = pad2(t.s);
+      setTile(prefix+'-d0', d[0]); setTile(prefix+'-d1', d[1]);
+      setTile(prefix+'-h0', h[0]); setTile(prefix+'-h1', h[1]);
+      setTile(prefix+'-m0', m[0]); setTile(prefix+'-m1', m[1]);
+      setTile(prefix+'-s0', s[0]); setTile(prefix+'-s1', s[1]);
+    }
+
+    function tick() {
+      updateBoard('r', ROSTER_DEADLINE);
+      updateBoard('a', FA_AUCTION);
+    }
+
+    tick();
+    setInterval(tick, 1000);
+  </script>
 
 </body>
 </html>

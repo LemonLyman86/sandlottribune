@@ -425,6 +425,153 @@ img { max-width: 100%; display: block; }
   object-position: center 30%;
 }
 
+/* ============================================================
+   Season Countdown Scoreboards
+   ============================================================ */
+
+.countdown-section {
+  margin-bottom: 56px;
+}
+
+.scoreboard-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+}
+
+/* The board panel — dark painted-steel scoreboard look */
+.scoreboard-board {
+  background: #1B2D18;
+  border: 2px solid #253E20;
+  border-bottom-color: #141F12;
+  border-radius: 5px;
+  padding: 20px 24px 18px;
+  text-align: center;
+  box-shadow:
+    0 6px 20px rgba(0, 0, 0, 0.30),
+    inset 0 1px 0 rgba(255, 255, 255, 0.04),
+    inset 0 -2px 6px rgba(0, 0, 0, 0.25);
+}
+
+.board-header {
+  font-family: 'Oswald', 'Impact', sans-serif;
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: #C2D8A6;
+  margin-bottom: 3px;
+}
+
+.board-subtitle {
+  font-family: 'Marcellus', serif;
+  font-size: 0.72rem;
+  letter-spacing: 0.07em;
+  color: #5E7E4E;
+  margin-bottom: 16px;
+}
+
+/* Clock row: segments + colons */
+.board-clock {
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  gap: 4px;
+}
+
+.clock-segment {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 5px;
+}
+
+.clock-tiles {
+  display: flex;
+  gap: 2px;
+}
+
+.clock-seg-label {
+  font-family: 'Oswald', sans-serif;
+  font-size: 0.52rem;
+  font-weight: 400;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: #4A6A3C;
+}
+
+/* Colon separator */
+.clock-colon {
+  font-family: 'Oswald', sans-serif;
+  font-size: 34px;
+  font-weight: 700;
+  color: #3A5530;
+  line-height: 1;
+  /* Align colon vertically with the tiles, offset for the label below */
+  margin-bottom: 18px;
+  align-self: flex-end;
+  padding: 0 1px;
+}
+
+/* Individual flip tiles */
+.flip-tile {
+  width: 40px;
+  height: 58px;
+  background: #0D1709;
+  border-radius: 3px;
+  overflow: hidden;
+  position: relative;
+  box-shadow:
+    0 3px 7px rgba(0, 0, 0, 0.65),
+    inset 0 1px 0 rgba(255, 255, 255, 0.03),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.6);
+  transform-origin: center;
+}
+
+/* The horizontal hinge line dividing each tile */
+.flip-tile::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: calc(50% - 1px);
+  height: 2px;
+  background: #1B2D18;
+  z-index: 2;
+  box-shadow: 0 0 3px rgba(0, 0, 0, 0.9);
+}
+
+.tile-inner {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+}
+
+.tile-inner span {
+  font-family: 'Oswald', 'Impact', sans-serif;
+  font-size: 40px;
+  font-weight: 700;
+  color: #EDE5C5;
+  line-height: 1;
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.9);
+  display: block;
+  user-select: none;
+}
+
+/* Flip animation — tile folds flat (scaleY→0), digit swaps at midpoint, unfolds */
+@keyframes tile-flip {
+  0%   { transform: scaleY(1);    }
+  38%  { transform: scaleY(0.04); }
+  62%  { transform: scaleY(0.04); }
+  100% { transform: scaleY(1);    }
+}
+
+.flip-tile.flipping {
+  animation: tile-flip 0.26s ease-in-out;
+}
+
 /* --- Footer --- */
 .site-footer {
   background: var(--surface);
@@ -454,6 +601,12 @@ img { max-width: 100%; display: block; }
   .explore-grid {
     grid-template-columns: repeat(2, 1fr);
   }
+  .scoreboard-row {
+    grid-template-columns: 1fr;
+    max-width: 480px;
+    margin-left: auto;
+    margin-right: auto;
+  }
 }
 
 @media (max-width: 640px) {
@@ -465,4 +618,9 @@ img { max-width: 100%; display: block; }
   .article-list-card { grid-template-columns: 1fr; }
   .article-list-card .card-image { height: 180px; }
   .page-wrapper { padding: 0 16px 48px; }
+  /* Scale down scoreboard tiles on small screens */
+  .flip-tile { width: 34px; height: 50px; }
+  .tile-inner span { font-size: 33px; }
+  .clock-colon { font-size: 28px; }
+  .scoreboard-board { padding: 16px 14px 14px; }
 }
