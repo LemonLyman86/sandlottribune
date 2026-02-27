@@ -185,7 +185,7 @@ img { max-width: 100%; display: block; }
 
 .card-image {
   width: 100%;
-  aspect-ratio: 16/10;
+  aspect-ratio: 16/11;
   object-fit: cover;
   object-position: center 30%;
   background: var(--border);
