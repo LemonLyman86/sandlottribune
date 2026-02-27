@@ -1,0 +1,217 @@
+THE SANDLOT TRIBUNE — HOW TO UPDATE THE SITE
+=============================================
+Last updated: 2026-02-26
+
+This guide explains how to publish new articles, update each section,
+and maintain The Sandlot Tribune on GitHub Pages. No coding knowledge
+required — just copy, paste, and push.
+
+---
+
+FOLDER STRUCTURE OVERVIEW
+--------------------------
+
+sandlottribune/
+├── index.html                  ← Home page (latest articles + explore grid)
+├── season-previews/
+│   ├── index.html              ← Season previews hub (lists all previews)
+│   ├── season_preview_2026_ari.html
+│   └── charts/                 ← Charts referenced by article files
+├── between-the-chalk/
+│   └── index.html              ← Under construction (future: analysis articles)
+├── season-deadlines/
+│   └── index.html              ← Under construction (future: calendar/schedule)
+├── league-records/
+│   └── index.html              ← Under construction (future: historical data)
+├── about/
+│   └── index.html              ← Under construction (future: about the league)
+├── assets/
+│   ├── css/main.css            ← Shared stylesheet (don't edit unless redesigning)
+│   └── images/
+│       ├── logo.png            ← The Sandlot Tribune logo
+│       └── ari-preview.png     ← Article thumbnail images (one per team)
+└── HOWTO-UPDATE-ARTICLES.txt   ← This file
+
+
+---
+
+PUBLISHING A NEW SEASON PREVIEW ARTICLE
+-----------------------------------------
+
+Step 1 — Generate the article using TSDL2026 pipeline
+  Run notebook 44 in TSDL2026/notebooks/04_article_generation/
+  Output: TSDL2026/articles/YYYY-MM-DD/season_preview_2026_[TEAM].html
+          TSDL2026/articles/YYYY-MM-DD/charts/*.png
+
+Step 2 — Copy the article file to sandlottribune
+  Copy:  TSDL2026/articles/YYYY-MM-DD/season_preview_2026_[TEAM].html
+  To:    sandlottribune/season-previews/season_preview_2026_[TEAM].html
+
+  Copy the charts folder contents:
+  From:  TSDL2026/articles/YYYY-MM-DD/charts/*.png
+  To:    sandlottribune/season-previews/charts/*.png
+  NOTE: The article HTML references charts as "charts/filename.png" — keep
+        them in the season-previews/charts/ folder so links work correctly.
+
+Step 3 — Prepare a thumbnail image
+  Crop the team's preview image (removing watermark) and save as:
+    sandlottribune/assets/images/[team]-preview.png
+  Team codes: ari, atl, bos, chc, cin, col, hou, las, mia, mil,
+              nyy, phi, san, sea, stl, tex, tor, wsh
+  Example: Arizona = ari-preview.png
+
+Step 4 — Update season-previews/index.html
+  Open: sandlottribune/season-previews/index.html
+  Find the comment that says "More previews will be added here"
+  Paste this template ABOVE that comment block (newest article at top):
+
+  ---- COPY FROM HERE ----
+        <li>
+          <article class="article-list-card">
+            <img class="card-image" src="../assets/images/[TEAM]-preview.png" alt="[Team Name] 2026 Season Preview">
+            <div class="card-body">
+              <span class="card-badge">Season Preview</span>
+              <h2 class="card-title">2026 TSDL Season Preview: [Team Name]</h2>
+              <p class="card-meta">By [Author Name] &nbsp;&middot;&nbsp; [Month Day, Year]</p>
+              <p class="card-excerpt">[1-2 sentence teaser about the team and article.]</p>
+              <a class="card-link" href="season_preview_2026_[TEAM].html">Read Article &rarr;</a>
+            </div>
+          </article>
+        </li>
+  ---- COPY TO HERE ----
+
+  Replace [TEAM], [Team Name], [Author Name], [Month Day, Year], and the teaser.
+
+Step 5 — Update the home page (index.html) "Latest News" section
+  Open: sandlottribune/index.html
+  The "Latest News" section shows the 3-4 most recent articles.
+  The home page currently has 1 real article card + 2 placeholder cards.
+
+  ADDING A SECOND REAL ARTICLE:
+  - Find the two placeholder <div class="article-card article-card--placeholder">
+  - Replace the FIRST placeholder with a real article card (template below)
+  - Keep the second placeholder until you have a 3rd article
+
+  ADDING A 3RD OR 4TH ARTICLE:
+  - Replace the remaining placeholder with a real article card
+  - Once all 3 slots have real articles, add a 4th using the same template
+
+  WHEN YOU HAVE MORE THAN 4 ARTICLES:
+  - Remove the oldest article card from index.html (it stays in season-previews/)
+  - The home page only shows the 4 most recent across all sections
+
+  HOME PAGE ARTICLE CARD TEMPLATE (for a season preview):
+  ---- COPY FROM HERE ----
+        <!-- [Team Name] Season Preview -->
+        <article class="article-card">
+          <img class="card-image" src="assets/images/[TEAM]-preview.png" alt="[Team Name] 2026 Season Preview">
+          <div class="card-body">
+            <span class="card-badge">Season Preview</span>
+            <h3 class="card-title">2026 TSDL Season Preview: [Team Name]</h3>
+            <p class="card-meta">By [Author Name] &nbsp;&middot;&nbsp; [Month Day, Year]</p>
+            <p class="card-excerpt">[1-2 sentence teaser.]</p>
+            <a class="card-link" href="season-previews/season_preview_2026_[TEAM].html">Read Article &rarr;</a>
+          </div>
+        </article>
+  ---- COPY TO HERE ----
+
+  NOTE: The original featured ARI article uses class="article-card article-card--featured"
+  with a 2-column layout. Future non-featured cards use just class="article-card".
+  You can keep ARI as the featured card or swap it for the newest article
+  by changing its class back to "article-card" and making the new one "featured".
+
+Step 6 — Push to GitHub
+  In Git Bash or your terminal:
+    cd C:/Users/RTSch/sandlottribune
+    git add .
+    git commit -m "Add 2026 season preview: [Team Name]"
+    git push origin main
+  The site updates automatically within 1-2 minutes.
+
+
+---
+
+PUBLISHING POWER RANKINGS / MATCHUP ARTICLES / TRADE ANALYSIS
+---------------------------------------------------------------
+
+These sections are currently "Coming Soon" under Between The Chalk.
+When ready to activate:
+
+Step 1 — Create the article folder and hub
+  mkdir sandlottribune/power-rankings/
+  Create sandlottribune/power-rankings/index.html (copy season-previews/index.html as a template, update section name and article list)
+
+Step 2 — Update the "Explore" grid on index.html
+  Find the "Power Rankings" explore card with class="explore-card" (cursor:default)
+  Replace the entire <div> block with:
+    <a class="explore-card" href="power-rankings/index.html">
+      <span class="explore-card-title">Power Rankings</span>
+    </a>
+
+Step 3 — Update between-the-chalk/index.html
+  Replace the under-construction content with real article cards
+  (same pattern as season-previews/index.html)
+
+
+---
+
+ARTICLE FILENAME CONVENTION
+-----------------------------
+
+Season Previews:  season_preview_[YEAR]_[teamcode].html
+Power Rankings:   power_rankings_week[NN]_[YEAR].html
+Matchup Preview:  matchup_preview_week[NN]_[YEAR].html
+Trade Analysis:   trade_analysis_[YEAR]_[descriptor].html
+
+Team codes (lowercase):
+  ari, atl, bos, chc, cin, col, hou, las, mia, mil,
+  nyy, phi, san, sea, stl, tex, tor, wsh
+
+
+---
+
+ARTICLE THUMBNAIL IMAGE CONVENTION
+-------------------------------------
+
+File location: sandlottribune/assets/images/
+File naming:   [teamcode]-preview.png  (e.g., ari-preview.png)
+Source images: TSDL2026/Current Project Documents/canva & wix images/Main Page/
+  - Crop bottom watermark using Pillow (crop to ~390px height from 600px original)
+  - Save as PNG
+
+
+---
+
+ADDING A NEW TOP-LEVEL SECTION (when a Coming Soon page goes live)
+---------------------------------------------------------------------
+
+1. Replace the under-construction content in that section's index.html
+   with real content (article list or formatted page)
+2. In index.html (home), make sure the nav link is correct (it already is)
+3. Optionally add the section to the "Explore" grid on the home page
+4. Push to GitHub
+
+
+---
+
+PUSHING CHANGES TO GITHUB PAGES
+----------------------------------
+
+  cd C:/Users/RTSch/sandlottribune
+  git status              ← see what changed
+  git add .               ← stage all changes
+  git commit -m "Brief description of what you changed"
+  git push origin main
+
+The site at your GitHub Pages URL updates within 1-2 minutes of pushing.
+
+
+---
+
+NEED HELP?
+-----------
+For questions about the data pipeline (generating articles), see:
+  TSDL2026/CLAUDE.md  —  full project guide
+
+For questions about the website structure, see:
+  sandlottribune/SITE-PLAN.md  —  design and architecture reference
