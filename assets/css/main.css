@@ -587,6 +587,590 @@ img { max-width: 100%; display: block; }
   color: var(--text-secondary);
 }
 
+/* ============================================================
+   Article Engagement — read count, star ratings, comments
+   ============================================================ */
+
+/* ── Byline engagement line (view count + rating summary) ── */
+.engagement-byline {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 14px;
+  margin-top: 6px;
+  margin-bottom: 10px;
+}
+
+#engagement-view-count {
+  font-family: 'Marcellus', serif;
+  font-size: 0.78rem;
+  color: var(--text-secondary);
+  letter-spacing: 0.04em;
+}
+
+#engagement-rating {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-family: 'Marcellus', serif;
+  font-size: 0.78rem;
+  color: var(--text-secondary);
+  min-height: 1.2em;
+}
+
+.stars-row {
+  display: inline-flex;
+  gap: 1px;
+  line-height: 1;
+}
+
+.star-pip {
+  font-size: 0.95rem;
+  color: var(--border);
+}
+
+.star-pip.filled {
+  color: #C47B22;
+}
+
+.rating-avg {
+  font-size: 0.82rem;
+  font-weight: normal;
+  color: var(--text-primary);
+  letter-spacing: 0.02em;
+}
+
+.rating-count {
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+}
+
+.rating-summary-empty {
+  font-size: 0.75rem;
+  color: var(--border);
+  font-style: italic;
+}
+
+/* ── Card-level rating (on preview cards) ── */
+.card-rating-row {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-family: 'Marcellus', serif;
+  min-height: 1.1em;
+  margin-bottom: 4px;
+}
+
+.card-rating-row .star-pip  { font-size: 0.82rem; }
+.card-rating-row .rating-avg   { font-size: 0.76rem; }
+.card-rating-row .rating-count { font-size: 0.72rem; }
+
+/* ── Rating widget (interactive, bottom of article) ── */
+.article-engagement-section {
+  border-top: 1px solid #ddd;
+  margin-top: 56px;
+  padding-top: 40px;
+}
+
+.article-engagement-section h3 {
+  font-family: 'Georgia', serif;
+  font-size: 1.1em;
+  color: #1C2841;
+  margin-bottom: 16px;
+  border-bottom: 2px solid #A71930;
+  padding-bottom: 6px;
+  display: inline-block;
+}
+
+.rating-prompt {
+  font-family: 'Georgia', serif;
+  font-size: 0.92em;
+  color: #555;
+  margin-bottom: 12px;
+}
+
+.rating-widget {
+  display: flex;
+  gap: 4px;
+  margin-bottom: 8px;
+}
+
+.star-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 2.2rem;
+  color: #ccc;
+  padding: 0 2px;
+  line-height: 1;
+  transition: color 0.1s, transform 0.1s;
+}
+
+.star-btn:hover,
+.star-btn.active {
+  color: #C47B22;
+}
+
+.star-btn:hover {
+  transform: scale(1.15);
+}
+
+.star-btn:disabled {
+  cursor: default;
+}
+
+.rating-feedback {
+  font-family: 'Georgia', serif;
+  font-size: 0.82em;
+  color: #888;
+  margin-top: 4px;
+  min-height: 1.2em;
+}
+
+.rating-already-voted {
+  font-family: 'Georgia', serif;
+  font-size: 0.9em;
+  color: #555;
+  font-style: italic;
+  padding: 10px 0;
+}
+
+/* ── Comments section ── */
+.comment-item {
+  border-bottom: 1px solid #eee;
+  padding: 14px 0;
+}
+
+.comment-item:last-child { border-bottom: none; }
+
+.comment-header {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  margin-bottom: 4px;
+}
+
+.comment-name {
+  font-family: 'Georgia', serif;
+  font-weight: bold;
+  font-size: 0.9em;
+  color: #1C2841;
+}
+
+.comment-date {
+  font-family: 'Arial', sans-serif;
+  font-size: 0.75em;
+  color: #aaa;
+}
+
+.comment-body {
+  font-family: 'Georgia', serif;
+  font-size: 0.9em;
+  color: #333;
+  line-height: 1.6;
+  margin: 0;
+}
+
+.comments-empty {
+  font-family: 'Georgia', serif;
+  font-size: 0.88em;
+  color: #aaa;
+  font-style: italic;
+  padding: 8px 0;
+}
+
+/* ── Comment form ── */
+.comment-form-heading {
+  font-family: 'Georgia', serif;
+  font-size: 0.95em;
+  color: #1C2841;
+  margin: 24px 0 12px;
+  font-weight: bold;
+}
+
+.comment-form-fields {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+
+.comment-form input[type="text"],
+.comment-form textarea {
+  width: 100%;
+  max-width: 560px;
+  font-family: 'Georgia', serif;
+  font-size: 0.88em;
+  padding: 10px 14px;
+  border: 1px solid #ddd;
+  border-radius: 3px;
+  background: #fafafa;
+  color: #1a1a1a;
+  resize: vertical;
+}
+
+.comment-form input[type="text"]:focus,
+.comment-form textarea:focus {
+  outline: 2px solid #A71930;
+  outline-offset: 1px;
+  background: #fff;
+}
+
+.comment-submit {
+  font-family: 'Georgia', serif;
+  font-size: 0.85em;
+  letter-spacing: 0.04em;
+  background: #A71930;
+  color: #fff;
+  border: none;
+  border-radius: 3px;
+  padding: 10px 22px;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.comment-submit:hover { background: #8a1526; }
+.comment-submit:disabled { background: #ccc; cursor: default; }
+
+.comment-error {
+  font-family: 'Georgia', serif;
+  font-size: 0.82em;
+  color: #A71930;
+  margin-top: 8px;
+  min-height: 1.2em;
+}
+
+/* ============================================================
+   Season Previews — Sort / Filter Bar
+   ============================================================ */
+
+.filter-bar {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 16px 20px;
+  margin-bottom: 28px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.filter-row {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.filter-label {
+  font-family: 'Marcellus', serif;
+  font-size: 0.72rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--text-secondary);
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.sort-btn {
+  font-family: 'Marcellus', serif;
+  font-size: 0.78rem;
+  letter-spacing: 0.06em;
+  background: none;
+  border: 1px solid var(--border);
+  border-radius: 3px;
+  padding: 5px 14px;
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s, border-color 0.15s;
+}
+
+.sort-btn.active,
+.sort-btn:hover {
+  background: var(--accent-red);
+  border-color: var(--accent-red);
+  color: var(--white);
+}
+
+.team-filter-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.team-tag {
+  font-family: 'Marcellus', serif;
+  font-size: 0.7rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  background: none;
+  border: 1px solid var(--border);
+  border-radius: 2px;
+  padding: 3px 10px;
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: background 0.12s, color 0.12s, border-color 0.12s;
+}
+
+.team-tag.active {
+  background: var(--accent-blue);
+  border-color: var(--accent-blue);
+  color: var(--white);
+}
+
+.team-tag.disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+
+.filter-active-note {
+  font-family: 'Marcellus', serif;
+  font-size: 0.72rem;
+  color: var(--text-secondary);
+  font-style: italic;
+}
+
+/* ============================================================
+   New Countdown Panel (replaces scoreboard boards)
+   ============================================================ */
+
+.events-panel {
+  display: grid;
+  grid-template-columns: 3fr 2fr;
+  gap: 0;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  overflow: hidden;
+  margin-bottom: 56px;
+}
+
+/* Left pane — live countdown */
+.active-event-pane {
+  padding: 32px 36px 28px;
+  border-right: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 6px;
+}
+
+.active-event-eyebrow {
+  font-family: 'Marcellus', serif;
+  font-size: 0.68rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--accent-red);
+  margin-bottom: 2px;
+}
+
+.active-event-name {
+  font-family: 'Marcellus', serif;
+  font-size: 1.35rem;
+  color: var(--text-primary);
+  line-height: 1.2;
+  margin-bottom: 4px;
+}
+
+.active-event-date {
+  font-family: 'Marcellus', serif;
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+  letter-spacing: 0.05em;
+  margin-bottom: 18px;
+}
+
+/* Clock tiles — refined cream version */
+.event-clock {
+  display: flex;
+  align-items: flex-start;
+  gap: 6px;
+}
+
+.event-segment {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+}
+
+.event-tiles {
+  display: flex;
+  gap: 2px;
+}
+
+.event-seg-label {
+  font-family: 'Marcellus', serif;
+  font-size: 0.58rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--text-secondary);
+}
+
+.event-colon {
+  font-family: 'Oswald', 'Impact', sans-serif;
+  font-size: 30px;
+  font-weight: 700;
+  color: var(--border);
+  line-height: 1;
+  margin-bottom: 20px;
+  align-self: flex-end;
+  padding: 0 1px;
+}
+
+/* Refined flip tile — cream palette */
+.event-tile {
+  width: 44px;
+  height: 62px;
+  background: var(--text-primary);
+  border-radius: 4px;
+  overflow: hidden;
+  position: relative;
+  box-shadow: 0 2px 8px rgba(54, 48, 42, 0.22);
+  transform-origin: center;
+}
+
+.event-tile::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: calc(50% - 1px);
+  height: 1px;
+  background: rgba(0,0,0,0.35);
+  z-index: 2;
+}
+
+.event-tile-inner {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+}
+
+.event-tile-inner span {
+  font-family: 'Oswald', 'Impact', sans-serif;
+  font-size: 38px;
+  font-weight: 700;
+  color: var(--cream-light);
+  line-height: 1;
+  user-select: none;
+}
+
+.event-tile.flipping {
+  animation: tile-flip 0.26s ease-in-out;
+}
+
+/* Right pane — upcoming list */
+.upcoming-events-pane {
+  padding: 32px 28px 28px;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.upcoming-pane-label {
+  font-family: 'Marcellus', serif;
+  font-size: 0.68rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--text-secondary);
+  margin-bottom: 18px;
+}
+
+.upcoming-event-row {
+  display: grid;
+  grid-template-columns: 54px 1fr auto;
+  align-items: baseline;
+  gap: 8px;
+  padding: 12px 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.upcoming-event-row:last-child {
+  border-bottom: none;
+}
+
+.upcoming-date {
+  font-family: 'Marcellus', serif;
+  font-size: 0.78rem;
+  color: var(--accent-red);
+  white-space: nowrap;
+  letter-spacing: 0.04em;
+}
+
+.upcoming-name {
+  font-family: 'Marcellus', serif;
+  font-size: 0.82rem;
+  color: var(--text-primary);
+  line-height: 1.3;
+}
+
+.upcoming-days {
+  font-family: 'Oswald', sans-serif;
+  font-size: 0.88rem;
+  font-weight: 700;
+  color: var(--text-secondary);
+  white-space: nowrap;
+  letter-spacing: 0.04em;
+}
+
+/* ── Between The Chalk hub ── */
+.btc-section {
+  margin-bottom: 52px;
+}
+
+.btc-section-header {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  border-bottom: 1px solid var(--border);
+  padding-bottom: 10px;
+  margin-bottom: 24px;
+}
+
+.btc-section-header .section-label {
+  border-bottom: none;
+  padding-bottom: 0;
+  margin-bottom: 0;
+}
+
+.btc-browse-link {
+  font-family: 'Marcellus', serif;
+  font-size: 0.75rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--accent-blue);
+}
+.btc-browse-link:hover { color: var(--accent-red); text-decoration: none; }
+
+.btc-coming-soon {
+  background: var(--cream-light);
+  border: 1px dashed var(--border);
+  border-radius: 4px;
+  padding: 28px 24px;
+  text-align: center;
+}
+
+.btc-coming-soon p {
+  font-family: 'Marcellus', serif;
+  font-size: 0.88rem;
+  color: var(--border);
+  font-style: italic;
+  margin: 0;
+}
+
+/* ── Hero editorial enhancements ── */
+.hero-subtagline {
+  font-family: 'Marcellus', serif;
+  font-size: 0.92rem;
+  color: var(--text-secondary);
+  font-style: italic;
+  letter-spacing: 0.04em;
+  margin-top: 6px;
+}
+
 /* --- Responsive --- */
 @media (max-width: 900px) {
   .articles-grid {
@@ -601,11 +1185,22 @@ img { max-width: 100%; display: block; }
   .explore-grid {
     grid-template-columns: repeat(2, 1fr);
   }
-  .scoreboard-row {
+  /* New events panel: stack vertically on tablet */
+  .events-panel {
     grid-template-columns: 1fr;
-    max-width: 480px;
-    margin-left: auto;
-    margin-right: auto;
+  }
+  .active-event-pane {
+    border-right: none;
+    border-bottom: 1px solid var(--border);
+    align-items: center;
+    text-align: center;
+    padding: 28px 24px 24px;
+  }
+  .event-clock {
+    justify-content: center;
+  }
+  .upcoming-events-pane {
+    padding: 24px;
   }
 }
 
@@ -618,9 +1213,13 @@ img { max-width: 100%; display: block; }
   .article-list-card { grid-template-columns: 1fr; }
   .article-list-card .card-image { height: 180px; }
   .page-wrapper { padding: 0 16px 48px; }
-  /* Scale down scoreboard tiles on small screens */
-  .flip-tile { width: 34px; height: 50px; }
-  .tile-inner span { font-size: 33px; }
-  .clock-colon { font-size: 28px; }
-  .scoreboard-board { padding: 16px 14px 14px; }
+  /* Scale down event tiles on small screens */
+  .event-tile { width: 36px; height: 52px; }
+  .event-tile-inner span { font-size: 34px; }
+  .event-colon { font-size: 26px; }
+  .active-event-pane { padding: 20px 16px 18px; }
+  .active-event-name { font-size: 1.1rem; }
+  .filter-bar { padding: 14px 16px; }
+  .team-filter-tags { gap: 5px; }
+  .team-tag { font-size: 0.65rem; padding: 2px 8px; }
 }

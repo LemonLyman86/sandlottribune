@@ -31,15 +31,52 @@
   <!-- ===== MAIN CONTENT ===== -->
   <main class="page-wrapper" style="padding-top: 40px;">
 
-    <h1 class="section-label" style="font-size:1rem; margin-bottom:32px;">
+    <h1 class="section-label" style="font-size:1rem; margin-bottom:24px;">
       Season Previews &mdash; 2026
     </h1>
 
+    <!-- ── Sort / Filter Bar ── -->
+    <div class="filter-bar" id="filter-bar">
+
+      <div class="filter-row">
+        <span class="filter-label">Sort:</span>
+        <button class="sort-btn active" data-sort="newest" aria-pressed="true">Most Recent</button>
+        <button class="sort-btn" data-sort="oldest" aria-pressed="false">Oldest First</button>
+      </div>
+
+      <div class="filter-row" style="flex-wrap: wrap; align-items: flex-start; gap: 10px;">
+        <span class="filter-label" style="padding-top:4px;">Filter by team:</span>
+        <div class="team-filter-tags" id="team-tags" aria-label="Filter by team (select up to 4)">
+          <button class="team-tag" data-team="ari">ARI</button>
+          <button class="team-tag" data-team="atl">ATL</button>
+          <button class="team-tag" data-team="bos">BOS</button>
+          <button class="team-tag" data-team="chc">CHC</button>
+          <button class="team-tag" data-team="cin">CIN</button>
+          <button class="team-tag" data-team="col">COL</button>
+          <button class="team-tag" data-team="hou">HOU</button>
+          <button class="team-tag" data-team="las">LAS</button>
+          <button class="team-tag" data-team="mia">MIA</button>
+          <button class="team-tag" data-team="mil">MIL</button>
+          <button class="team-tag" data-team="nyy">NYY</button>
+          <button class="team-tag" data-team="phi">PHI</button>
+          <button class="team-tag" data-team="san">SAN</button>
+          <button class="team-tag" data-team="sea">SEA</button>
+          <button class="team-tag" data-team="stl">STL</button>
+          <button class="team-tag" data-team="tex">TEX</button>
+          <button class="team-tag" data-team="tor">TOR</button>
+          <button class="team-tag" data-team="wsh">WSH</button>
+        </div>
+        <span class="filter-active-note" id="filter-note" style="display:none;"></span>
+      </div>
+
+    </div>
+
+    <!-- ── Article List ── -->
     <section class="article-list-section">
-      <ul class="article-list">
+      <ul class="article-list" id="article-list">
 
         <!-- LVA Season Preview -->
-        <li>
+        <li data-team="las" data-date="2026-02-27">
           <article class="article-list-card">
             <img
               class="card-image"
@@ -49,6 +86,7 @@
               <span class="card-badge">Season Preview</span>
               <h2 class="card-title">2026 TSDL Season Preview: Las Vegas Athletics</h2>
               <p class="card-meta">By Keith Law &nbsp;&middot;&nbsp; February 27, 2026</p>
+              <div class="card-rating-row" id="card-rating-season_preview_2026_lva"></div>
               <p class="card-excerpt">
                 The defending 2024 champions went 15-4 again in 2025 and show no signs of slowing down — Mike DiMauro's Las Vegas Athletics enter 2026 with the deepest roster in the league and a farm system loaded enough to scare the competition for years to come.
               </p>
@@ -57,28 +95,8 @@
           </article>
         </li>
 
-        <!-- ARI Season Preview -->
-        <li>
-          <article class="article-list-card">
-            <img
-              class="card-image"
-              src="../assets/images/ari-preview.png"
-              alt="Arizona Diamondbacks 2026 Season Preview">
-            <div class="card-body">
-              <span class="card-badge">Season Preview</span>
-              <h2 class="card-title">2026 TSDL Season Preview: Arizona Diamondbacks</h2>
-              <p class="card-meta">By Jeff Passan &nbsp;&middot;&nbsp; February 26, 2026</p>
-              <p class="card-excerpt">
-                The defending champions return a star-studded core led by Paul Skenes and Bryan Woo.
-                A deep farm, smart auction strategy, and championship pedigree make Arizona one to watch in 2026.
-              </p>
-              <a class="card-link" href="season_preview_2026_ari.html">Read Article &rarr;</a>
-            </div>
-          </article>
-        </li>
-       
-<!-- STL Season Preview -->
-        <li>
+        <!-- STL Season Preview -->
+        <li data-team="stl" data-date="2026-02-27">
           <article class="article-list-card">
             <img
               class="card-image"
@@ -88,6 +106,7 @@
               <span class="card-badge">Season Preview</span>
               <h2 class="card-title">2026 TSDL Season Preview: St. Louis Cardinals</h2>
               <p class="card-meta">By Buster Olney &nbsp;&middot;&nbsp; February 27, 2026</p>
+              <div class="card-rating-row" id="card-rating-season_preview_2026_stl"></div>
               <p class="card-excerpt">
                 After falling to Arizona in the 2025 World Series, the Cards are hoping a hot second half of 2025
                 carries over to this season. With limited budget space and several holes to fill, they'll be a team to
@@ -98,23 +117,49 @@
           </article>
         </li>
 
-        <!-- More previews will be added here as they are published -->
-        <!-- TEMPLATE (copy and paste above the closing </ul> tag):
-        <li>
+        <!-- ARI Season Preview -->
+        <li data-team="ari" data-date="2026-02-26">
           <article class="article-list-card">
-            <img class="card-image" src="../assets/images/[team]-preview.png" alt="[Team] 2026 Season Preview">
+            <img
+              class="card-image"
+              src="../assets/images/ari-preview.png"
+              alt="Arizona Diamondbacks 2026 Season Preview">
             <div class="card-body">
               <span class="card-badge">Season Preview</span>
-              <h2 class="card-title">2026 TSDL Season Preview: [Team Name]</h2>
-              <p class="card-meta">By [Author] &nbsp;&middot;&nbsp; [Date]</p>
-              <p class="card-excerpt">[1-2 sentence teaser about the team]</p>
-              <a class="card-link" href="season_preview_2026_[teamcode].html">Read Article &rarr;</a>
+              <h2 class="card-title">2026 TSDL Season Preview: Arizona Diamondbacks</h2>
+              <p class="card-meta">By Jeff Passan &nbsp;&middot;&nbsp; February 26, 2026</p>
+              <div class="card-rating-row" id="card-rating-season_preview_2026_ari"></div>
+              <p class="card-excerpt">
+                The defending champions return a star-studded core led by Paul Skenes and Bryan Woo.
+                A deep farm, smart auction strategy, and championship pedigree make Arizona one to watch in 2026.
+              </p>
+              <a class="card-link" href="season_preview_2026_ari.html">Read Article &rarr;</a>
             </div>
           </article>
         </li>
-        -->
+
+        <!-- ═══ PASTE NEW PREVIEWS ABOVE THIS LINE ═══
+        <li data-team="[TEAM]" data-date="YYYY-MM-DD">
+          <article class="article-list-card">
+            <img class="card-image" src="../assets/images/[TEAM]-preview.png" alt="[Team Name] 2026 Season Preview">
+            <div class="card-body">
+              <span class="card-badge">Season Preview</span>
+              <h2 class="card-title">2026 TSDL Season Preview: [Team Name]</h2>
+              <p class="card-meta">By [Author] &nbsp;&middot;&nbsp; [Month Day, Year]</p>
+              <div class="card-rating-row" id="card-rating-season_preview_2026_[TEAM]"></div>
+              <p class="card-excerpt">[1-2 sentence teaser]</p>
+              <a class="card-link" href="season_preview_2026_[TEAM].html">Read Article &rarr;</a>
+            </div>
+          </article>
+        </li>
+        ═══════════════════════════════════════════ -->
 
       </ul>
+
+      <!-- No-results message (hidden by default) -->
+      <p id="no-results" style="display:none; font-family:'Marcellus',serif; font-size:0.9rem; color:var(--text-secondary); font-style:italic; margin-top:24px;">
+        No previews published yet for that team — check back soon!
+      </p>
     </section>
 
   </main>
@@ -123,6 +168,100 @@
   <footer class="site-footer">
     <p>&copy; 2026 The Sandlot Tribune &nbsp;&middot;&nbsp; The Sandlot Dynasty League</p>
   </footer>
+
+  <!-- Sort / Filter Logic -->
+  <script>
+    (function () {
+      var list      = document.getElementById('article-list');
+      var noResults = document.getElementById('no-results');
+      var filterNote = document.getElementById('filter-note');
+      var MAX_TEAMS = 4;
+      var activeTeams = new Set();
+      var currentSort = 'newest';
+
+      // ── Sort ──────────────────────────────────────────────────────
+      document.querySelectorAll('.sort-btn').forEach(function(btn) {
+        btn.addEventListener('click', function() {
+          document.querySelectorAll('.sort-btn').forEach(function(b) {
+            b.classList.remove('active');
+            b.setAttribute('aria-pressed', 'false');
+          });
+          btn.classList.add('active');
+          btn.setAttribute('aria-pressed', 'true');
+          currentSort = btn.dataset.sort;
+          applySortAndFilter();
+        });
+      });
+
+      // ── Team Filter ───────────────────────────────────────────────
+      document.querySelectorAll('.team-tag').forEach(function(tag) {
+        tag.addEventListener('click', function() {
+          var team = tag.dataset.team;
+          if (activeTeams.has(team)) {
+            activeTeams.delete(team);
+            tag.classList.remove('active');
+          } else if (activeTeams.size < MAX_TEAMS) {
+            activeTeams.add(team);
+            tag.classList.add('active');
+          }
+          // Disable unselected tags when at max
+          document.querySelectorAll('.team-tag').forEach(function(t) {
+            if (!t.classList.contains('active')) {
+              t.classList.toggle('disabled', activeTeams.size >= MAX_TEAMS);
+            }
+          });
+          updateFilterNote();
+          applySortAndFilter();
+        });
+      });
+
+      function updateFilterNote() {
+        if (activeTeams.size === 0) {
+          filterNote.style.display = 'none';
+        } else {
+          filterNote.style.display = 'inline';
+          filterNote.textContent = 'Showing: ' + Array.from(activeTeams).map(function(t) {
+            return t.toUpperCase();
+          }).join(', ');
+        }
+      }
+
+      // ── Apply sort + filter to the list ──────────────────────────
+      function applySortAndFilter() {
+        var items = Array.from(list.querySelectorAll('li[data-team]'));
+
+        // Sort
+        items.sort(function(a, b) {
+          var da = a.dataset.date || '';
+          var db = b.dataset.date || '';
+          return currentSort === 'newest' ? db.localeCompare(da) : da.localeCompare(db);
+        });
+
+        // Re-insert in sorted order
+        items.forEach(function(item) { list.appendChild(item); });
+
+        // Filter
+        var visible = 0;
+        items.forEach(function(item) {
+          var show = activeTeams.size === 0 || activeTeams.has(item.dataset.team);
+          item.style.display = show ? '' : 'none';
+          if (show) visible++;
+        });
+
+        noResults.style.display = visible === 0 ? '' : 'none';
+      }
+    })();
+  </script>
+
+  <!-- Firebase: load card ratings -->
+  <script type="module">
+    import { fetchCardRatings } from '../assets/js/article-engagement.js';
+    fetchCardRatings([
+      'season_preview_2026_lva',
+      'season_preview_2026_stl',
+      'season_preview_2026_ari'
+    ]);
+  </script>
 
 </body>
 </html>

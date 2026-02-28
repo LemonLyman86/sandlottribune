@@ -32,110 +32,84 @@
   <section class="site-hero">
     <h1>The Sandlot Tribune</h1>
     <p class="tagline">The Official Publication of The Sandlot Dynasty League</p>
+    <p class="hero-subtagline">Where Legends Never Die</p>
     <hr class="hero-rule">
   </section>
 
   <!-- ===== MAIN CONTENT ===== -->
   <main class="page-wrapper">
 
-    <!-- ===== SEASON COUNTDOWN SCOREBOARDS ===== -->
+    <!-- ===== UPCOMING EVENTS — NEW PANEL LAYOUT ===== -->
     <section class="countdown-section" aria-label="Season Countdown">
       <h2 class="section-label">Upcoming Events</h2>
-      <div class="scoreboard-row">
 
-        <!-- Board 1: Legal Roster Deadline -->
-        <div class="scoreboard-board">
-          <div class="board-header">Legal Roster Deadline</div>
-          <div class="board-subtitle">March 15, 2026 &bull; 10:00 AM EST</div>
-          <div class="board-clock">
-            <div class="clock-segment">
-              <div class="clock-tiles">
-                <div class="flip-tile" id="r-d0"><div class="tile-inner"><span>0</span></div></div>
-                <div class="flip-tile" id="r-d1"><div class="tile-inner"><span>0</span></div></div>
+      <div class="events-panel">
+
+        <!-- Left — live countdown to next event -->
+        <div class="active-event-pane">
+          <span class="active-event-eyebrow">Counting Down To</span>
+          <div class="active-event-name" id="active-event-name">Loading&hellip;</div>
+          <div class="active-event-date" id="active-event-date"></div>
+
+          <div class="event-clock">
+            <div class="event-segment">
+              <div class="event-tiles">
+                <div class="event-tile" id="e-d0"><div class="event-tile-inner"><span>0</span></div></div>
+                <div class="event-tile" id="e-d1"><div class="event-tile-inner"><span>0</span></div></div>
               </div>
-              <div class="clock-seg-label">Days</div>
+              <div class="event-seg-label">Days</div>
             </div>
-            <div class="clock-colon">:</div>
-            <div class="clock-segment">
-              <div class="clock-tiles">
-                <div class="flip-tile" id="r-h0"><div class="tile-inner"><span>0</span></div></div>
-                <div class="flip-tile" id="r-h1"><div class="tile-inner"><span>0</span></div></div>
+            <div class="event-colon">:</div>
+            <div class="event-segment">
+              <div class="event-tiles">
+                <div class="event-tile" id="e-h0"><div class="event-tile-inner"><span>0</span></div></div>
+                <div class="event-tile" id="e-h1"><div class="event-tile-inner"><span>0</span></div></div>
               </div>
-              <div class="clock-seg-label">Hrs</div>
+              <div class="event-seg-label">Hrs</div>
             </div>
-            <div class="clock-colon">:</div>
-            <div class="clock-segment">
-              <div class="clock-tiles">
-                <div class="flip-tile" id="r-m0"><div class="tile-inner"><span>0</span></div></div>
-                <div class="flip-tile" id="r-m1"><div class="tile-inner"><span>0</span></div></div>
+            <div class="event-colon">:</div>
+            <div class="event-segment">
+              <div class="event-tiles">
+                <div class="event-tile" id="e-m0"><div class="event-tile-inner"><span>0</span></div></div>
+                <div class="event-tile" id="e-m1"><div class="event-tile-inner"><span>0</span></div></div>
               </div>
-              <div class="clock-seg-label">Min</div>
+              <div class="event-seg-label">Min</div>
             </div>
-            <div class="clock-colon">:</div>
-            <div class="clock-segment">
-              <div class="clock-tiles">
-                <div class="flip-tile" id="r-s0"><div class="tile-inner"><span>0</span></div></div>
-                <div class="flip-tile" id="r-s1"><div class="tile-inner"><span>0</span></div></div>
+            <div class="event-colon">:</div>
+            <div class="event-segment">
+              <div class="event-tiles">
+                <div class="event-tile" id="e-s0"><div class="event-tile-inner"><span>0</span></div></div>
+                <div class="event-tile" id="e-s1"><div class="event-tile-inner"><span>0</span></div></div>
               </div>
-              <div class="clock-seg-label">Sec</div>
+              <div class="event-seg-label">Sec</div>
             </div>
           </div>
         </div>
 
-        <!-- Board 2: FA Auction -->
-        <div class="scoreboard-board">
-          <div class="board-header">Free Agent Auction</div>
-          <div class="board-subtitle">March 22, 2026 &bull; 12:00 PM EST</div>
-          <div class="board-clock">
-            <div class="clock-segment">
-              <div class="clock-tiles">
-                <div class="flip-tile" id="a-d0"><div class="tile-inner"><span>0</span></div></div>
-                <div class="flip-tile" id="a-d1"><div class="tile-inner"><span>0</span></div></div>
-              </div>
-              <div class="clock-seg-label">Days</div>
-            </div>
-            <div class="clock-colon">:</div>
-            <div class="clock-segment">
-              <div class="clock-tiles">
-                <div class="flip-tile" id="a-h0"><div class="tile-inner"><span>0</span></div></div>
-                <div class="flip-tile" id="a-h1"><div class="tile-inner"><span>0</span></div></div>
-              </div>
-              <div class="clock-seg-label">Hrs</div>
-            </div>
-            <div class="clock-colon">:</div>
-            <div class="clock-segment">
-              <div class="clock-tiles">
-                <div class="flip-tile" id="a-m0"><div class="tile-inner"><span>0</span></div></div>
-                <div class="flip-tile" id="a-m1"><div class="tile-inner"><span>0</span></div></div>
-              </div>
-              <div class="clock-seg-label">Min</div>
-            </div>
-            <div class="clock-colon">:</div>
-            <div class="clock-segment">
-              <div class="clock-tiles">
-                <div class="flip-tile" id="a-s0"><div class="tile-inner"><span>0</span></div></div>
-                <div class="flip-tile" id="a-s1"><div class="tile-inner"><span>0</span></div></div>
-              </div>
-              <div class="clock-seg-label">Sec</div>
-            </div>
+        <!-- Right — next 2 upcoming events (static, days only) -->
+        <div class="upcoming-events-pane">
+          <div class="upcoming-pane-label">Also Ahead</div>
+          <div id="upcoming-list">
+            <!-- Populated by JS -->
           </div>
         </div>
 
       </div>
     </section>
 
-    <!-- Latest News -->
+    <!-- ===== LATEST NEWS ===== -->
     <section aria-label="Latest News">
       <h2 class="section-label">Latest</h2>
       <div class="articles-grid">
 
-        <!-- Featured Article - LVA Season Preview -->
+        <!-- Featured Article — LVA Season Preview -->
         <article class="article-card article-card--featured">
           <img class="card-image" src="assets/images/lva-preview.png" alt="Las Vegas Athletics 2026 Season Preview">
           <div class="card-body">
             <span class="card-badge">Season Preview</span>
             <h3 class="card-title">2026 TSDL Season Preview: Las Vegas Athletics</h3>
             <p class="card-meta">By Keith Law &nbsp;&middot;&nbsp; February 27, 2026</p>
+            <div class="card-rating-row" id="card-rating-season_preview_2026_lva"></div>
             <p class="card-excerpt">
               The defending 2024 champions went 15-4 again in 2025 and show no signs of slowing down — Mike DiMauro's Las
               Vegas Athletics enter 2026 with one of the deepest rosters in the league and a farm system loaded enough to
@@ -155,6 +129,7 @@
             <span class="card-badge">Season Preview</span>
             <h3 class="card-title">2026 TSDL Season Preview: St. Louis Cardinals</h3>
             <p class="card-meta">By Buster Olney &nbsp;&middot;&nbsp; February 27, 2026</p>
+            <div class="card-rating-row" id="card-rating-season_preview_2026_stl"></div>
             <p class="card-excerpt">
               After falling to Arizona in the 2025 World Series, the Cards are hoping a hot second half of 2025
               carries over to this season. With limited budget space and several holes to fill, they'll be a team to
@@ -174,6 +149,7 @@
             <span class="card-badge">Season Preview</span>
             <h3 class="card-title">2026 TSDL Season Preview: Arizona Diamondbacks</h3>
             <p class="card-meta">By Jeff Passan &nbsp;&middot;&nbsp; February 26, 2026</p>
+            <div class="card-rating-row" id="card-rating-season_preview_2026_ari"></div>
             <p class="card-excerpt">
               The defending champions enter 2026 as one of the most intriguing rosters in the TSDL —
               built around Paul Skenes, Bryan Woo, and a deep farm system. How does the dynasty hold together heading into auction season?
@@ -191,7 +167,7 @@
       </div>
     </section>
 
-    <!-- Explore Sections -->
+    <!-- ===== EXPLORE ===== -->
     <section aria-label="Browse by Section">
       <h2 class="section-label">Explore</h2>
       <div class="explore-grid">
@@ -200,13 +176,12 @@
           <span class="explore-card-title">Season Previews</span>
         </a>
 
-        <div class="explore-card" style="cursor:default;">
-          <span class="explore-card-title">Power Rankings</span>
-          <span class="badge-coming-soon">Coming Soon</span>
-        </div>
+        <a class="explore-card" href="between-the-chalk/index.html">
+          <span class="explore-card-title">Between The Chalk</span>
+        </a>
 
         <div class="explore-card" style="cursor:default;">
-          <span class="explore-card-title">Matchup Previews</span>
+          <span class="explore-card-title">Power Rankings</span>
           <span class="badge-coming-soon">Coming Soon</span>
         </div>
 
@@ -225,61 +200,124 @@
     <p>&copy; 2026 The Sandlot Tribune &nbsp;&middot;&nbsp; The Sandlot Dynasty League</p>
   </footer>
 
+  <!-- ===== COUNTDOWN SCRIPT ===== -->
   <script>
-    // Target dates — Eastern Standard Time (UTC-5)
-    var ROSTER_DEADLINE = new Date('2026-03-15T10:00:00-05:00');
-    var FA_AUCTION      = new Date('2026-03-22T12:00:00-05:00');
+    // ── All season events — Eastern Time ──────────────────────────────────────
+    var EVENTS = [
+      { name: 'Legal Roster Deadline', short: 'Mar 15', date: new Date('2026-03-15T10:00:00-05:00') },
+      { name: 'MiLB Draft',            short: 'Mar 15', date: new Date('2026-03-15T12:00:00-05:00') },
+      { name: 'FA Auction',            short: 'Mar 22', date: new Date('2026-03-22T12:00:00-05:00') },
+      { name: 'FAAB Opens',            short: 'Mar 25', date: new Date('2026-03-25T10:00:00-05:00') },
+      { name: 'Trade Deadline',        short: 'Aug 4',  date: new Date('2026-08-04T22:00:00-05:00') },
+      { name: 'Playoffs Begin',        short: 'Aug 17', date: new Date('2026-08-17T00:00:00-05:00') },
+      { name: 'Season Conclusion',     short: 'Sep 27', date: new Date('2026-09-27T00:00:00-05:00') },
+      { name: 'Roster Deadline',       short: 'Nov 1',  date: new Date('2026-11-01T00:00:00-05:00') },
+      { name: '2027 FanTrax Season',   short: 'Nov 15', date: new Date('2026-11-15T00:00:00-05:00') },
+    ];
 
-    function timeLeft(target) {
-      var diff = target - Date.now();
-      if (diff <= 0) return null;
-      return {
-        d: Math.floor(diff / 86400000),
-        h: Math.floor((diff % 86400000) / 3600000),
-        m: Math.floor((diff % 3600000) / 60000),
-        s: Math.floor((diff % 60000) / 1000)
-      };
-    }
-
+    // ── Helpers ───────────────────────────────────────────────────────────────
     function pad2(n) { return String(n).padStart(2, '0'); }
 
+    function daysUntil(date) {
+      return Math.ceil((date - Date.now()) / 86400000);
+    }
+
+    function formatEventDate(d) {
+      var opts = { month: 'long', day: 'numeric', year: 'numeric',
+                   hour: 'numeric', minute: '2-digit', timeZoneName: 'short',
+                   timeZone: 'America/New_York' };
+      return d.toLocaleString('en-US', opts);
+    }
+
+    // ── Flip tile ─────────────────────────────────────────────────────────────
     function setTile(id, ch) {
       var el = document.getElementById(id);
       if (!el) return;
       var span = el.querySelector('span');
       if (span.textContent === ch) return;
-      // Restart animation cleanly
       el.classList.remove('flipping');
       void el.offsetWidth;
       el.classList.add('flipping');
-      // Swap digit at the flat midpoint of the animation
-      setTimeout(function() { span.textContent = ch; }, 110);
+      setTimeout(function () { span.textContent = ch; }, 110);
     }
 
-    function updateBoard(prefix, target) {
-      var t = timeLeft(target);
-      if (!t) {
-        // Event has passed — freeze at zeros
-        ['d0','d1','h0','h1','m0','m1','s0','s1'].forEach(function(id) {
-          var el = document.getElementById(prefix + '-' + id);
+    // ── Find active + upcoming events ─────────────────────────────────────────
+    function getEventWindow() {
+      var now = Date.now();
+      var future = EVENTS.filter(function(e) { return e.date > now; });
+      if (!future.length) return { active: null, upcoming: [] };
+      return { active: future[0], upcoming: future.slice(1, 3) };
+    }
+
+    // ── Render the upcoming (right-side) list ─────────────────────────────────
+    function renderUpcoming(upcoming) {
+      var ul = document.getElementById('upcoming-list');
+      if (!ul) return;
+      if (!upcoming.length) {
+        ul.innerHTML = '<p style="font-family:\'Marcellus\',serif; font-size:0.82rem; color:var(--text-secondary); font-style:italic;">No more events this season.</p>';
+        return;
+      }
+      ul.innerHTML = upcoming.map(function(e) {
+        var days = daysUntil(e.date);
+        return '<div class="upcoming-event-row">' +
+               '<span class="upcoming-date">' + e.short + '</span>' +
+               '<span class="upcoming-name">' + e.name + '</span>' +
+               '<span class="upcoming-days">' + days + ' day' + (days !== 1 ? 's' : '') + '</span>' +
+               '</div>';
+      }).join('');
+    }
+
+    // ── Main tick ─────────────────────────────────────────────────────────────
+    var _lastActiveIdx = -1;
+
+    function tick() {
+      var win = getEventWindow();
+
+      if (!win.active) {
+        document.getElementById('active-event-name').textContent = 'Season Complete';
+        document.getElementById('active-event-date').textContent = '';
+        ['e-d0','e-d1','e-h0','e-h1','e-m0','e-m1','e-s0','e-s1'].forEach(function(id) {
+          var el = document.getElementById(id);
           if (el) el.querySelector('span').textContent = '0';
         });
         return;
       }
-      var d = pad2(t.d), h = pad2(t.h), m = pad2(t.m), s = pad2(t.s);
-      setTile(prefix+'-d0', d[0]); setTile(prefix+'-d1', d[1]);
-      setTile(prefix+'-h0', h[0]); setTile(prefix+'-h1', h[1]);
-      setTile(prefix+'-m0', m[0]); setTile(prefix+'-m1', m[1]);
-      setTile(prefix+'-s0', s[0]); setTile(prefix+'-s1', s[1]);
-    }
 
-    function tick() {
-      updateBoard('r', ROSTER_DEADLINE);
-      updateBoard('a', FA_AUCTION);
+      // Update header text only when active event changes
+      var activeIdx = EVENTS.indexOf(win.active);
+      if (activeIdx !== _lastActiveIdx) {
+        _lastActiveIdx = activeIdx;
+        document.getElementById('active-event-name').textContent = win.active.name;
+        document.getElementById('active-event-date').textContent = formatEventDate(win.active.date);
+        renderUpcoming(win.upcoming);
+      }
+
+      // Live countdown
+      var diff = win.active.date - Date.now();
+      if (diff <= 0) { tick(); return; } // event just passed — re-evaluate
+      var d = Math.floor(diff / 86400000);
+      var h = Math.floor((diff % 86400000) / 3600000);
+      var m = Math.floor((diff % 3600000)  / 60000);
+      var s = Math.floor((diff % 60000)    / 1000);
+      var ds = pad2(d), hs = pad2(h), ms = pad2(m), ss = pad2(s);
+      setTile('e-d0', ds[0]); setTile('e-d1', ds[1]);
+      setTile('e-h0', hs[0]); setTile('e-h1', hs[1]);
+      setTile('e-m0', ms[0]); setTile('e-m1', ms[1]);
+      setTile('e-s0', ss[0]); setTile('e-s1', ss[1]);
     }
 
     tick();
     setInterval(tick, 1000);
+  </script>
+
+  <!-- Firebase: load card ratings on home page -->
+  <script type="module">
+    import { fetchCardRatings } from './assets/js/article-engagement.js';
+    fetchCardRatings([
+      'season_preview_2026_lva',
+      'season_preview_2026_stl',
+      'season_preview_2026_ari'
+    ]);
   </script>
 
 </body>
