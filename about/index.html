@@ -7,7 +7,7 @@
   <meta name="description" content="ESTN — The Expanded Sandlot Tribune Network. Home of Rumblr and The Babe Ruth Podcast.">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Marcellus&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Marcellus&family=Oswald:wght@400;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="../assets/css/main.css">
 </head>
 <body>
@@ -30,20 +30,36 @@
     </nav>
   </header>
 
-  <!-- ===== ESTN HERO ===== -->
-  <section class="estn-hero">
-    <img class="estn-hero-logo" src="../assets/images/estn-logo-full.png" alt="ESTN — Expanded Sandlot Tribune Network">
-    <span class="estn-hero-eyebrow">Expanded Sandlot Tribune Network</span>
-    <h1 class="estn-hero-title">More Than A League. More Than A Paper.</h1>
-    <p class="estn-hero-tagline">The network behind The Sandlot Tribune</p>
+  <!-- ===== BREAKING TICKER ===== -->
+  <div class="estn-ticker" aria-hidden="true">
+    <span class="estn-ticker-label">ESTN</span>
+    <div class="estn-ticker-track">
+      <span class="estn-ticker-text">COMING SOON: RUMBLR &mdash; THE SANDLOT DYNASTY LEAGUE&rsquo;S SHORT-FORM PLATFORM &nbsp;&bull;&nbsp; THE BABE RUTH PODCAST DROPS IN 2026 &nbsp;&bull;&nbsp; ESTN &mdash; MORE THAN A LEAGUE. MORE THAN A PAPER. &nbsp;&bull;&nbsp; COMING SOON: RUMBLR &mdash; THE SANDLOT DYNASTY LEAGUE&rsquo;S SHORT-FORM PLATFORM &nbsp;&bull;&nbsp; THE BABE RUTH PODCAST DROPS IN 2026 &nbsp;&bull;&nbsp; ESTN &mdash; MORE THAN A LEAGUE. MORE THAN A PAPER. &nbsp;&bull;&nbsp;</span>
+    </div>
+  </div>
+
+  <!-- ===== ESTN HERO v2 ===== -->
+  <section class="estn-hero-v2">
+    <div class="estn-hero-bg"></div>
+    <div class="estn-hero-overlay"></div>
+    <div class="estn-hero-content">
+      <img class="estn-hero-logo" src="../assets/images/estn-logo-full.png" alt="ESTN — Expanded Sandlot Tribune Network">
+      <span class="estn-hero-eyebrow">Expanded Sandlot Tribune Network</span>
+      <h1 class="estn-hero-title">More Than A League.<br>More Than A Paper.</h1>
+      <p class="estn-hero-tagline">The media network behind The Sandlot Tribune</p>
+      <div class="estn-hero-cta-group">
+        <a class="estn-cta-btn estn-cta-btn--primary" href="#shows">Explore Shows</a>
+        <a class="estn-cta-btn estn-cta-btn--secondary" href="#about">About ESTN</a>
+      </div>
+    </div>
   </section>
 
-  <!-- ===== ESTN BODY ===== -->
-  <div class="estn-body">
-    <div class="estn-inner">
+  <!-- ===== ESTN BODY v2 ===== -->
+  <div class="estn-body-v2">
+    <div class="estn-inner-v2">
 
       <!-- About Block -->
-      <div class="estn-about-block">
+      <div class="estn-about-v2" id="about">
         <p>
           The Sandlot Tribune started as a place to tell the story of The Sandlot Dynasty League.
           ESTN is what comes next &mdash; a full media network built around the game we love,
@@ -55,44 +71,49 @@
         </p>
       </div>
 
-      <!-- Our Programming -->
-      <p class="estn-section-label">Our Programming</p>
+      <!-- On ESTN -->
+      <div class="estn-label-v2"><span>On ESTN</span></div>
 
-      <div class="estn-programs-grid">
+      <div class="estn-shows-grid-v2" id="shows">
 
         <!-- Rumblr Card -->
-        <div class="estn-program-card">
-          <img class="estn-program-logo" src="../assets/images/rumblr-logo-full.png" alt="Rumblr">
-          <p class="estn-program-name">Rumblr</p>
-          <p class="estn-program-desc">
-            Your favorite baseball writers. 280 characters at a time.
-            Hot takes, real-time reactions, and all the TSDL chatter you can handle &mdash;
-            live from the writers' room on the platform built for the game.
-          </p>
-          <span class="estn-badge-soon">Coming Soon</span>
+        <div class="estn-show-card-v2">
+          <div class="estn-show-card-header"></div>
+          <div class="estn-show-card-body">
+            <img class="estn-show-logo-v2" src="../assets/images/rumblr-logo-full.png" alt="Rumblr">
+            <p class="estn-show-name-v2">Rumblr</p>
+            <p class="estn-show-desc-v2">
+              Your favorite baseball writers. 280 characters at a time.
+              Hot takes, real-time reactions, and all the TSDL chatter you can handle &mdash;
+              live from the writers&rsquo; room on the platform built for the game.
+            </p>
+            <span class="estn-badge-soon">Coming Soon</span>
+          </div>
         </div>
 
         <!-- Babe Ruth Podcast Card -->
-        <div class="estn-program-card">
-          <img class="estn-program-logo" src="../assets/images/baberuth-podcast-logo-full.png" alt="The Babe Ruth Podcast">
-          <p class="estn-program-name">The Babe Ruth Podcast</p>
-          <p class="estn-program-desc">
-            In-depth analysis, stories, and the occasional hot take.
-            Dynasty talk, trade breakdowns, draft grades, and the kind of conversation
-            you only get when the people covering the league actually follow it.
-          </p>
-          <span class="estn-badge-soon">Coming Soon</span>
+        <div class="estn-show-card-v2">
+          <div class="estn-show-card-header"></div>
+          <div class="estn-show-card-body">
+            <img class="estn-show-logo-v2" src="../assets/images/baberuth-podcast-logo-full.png" alt="The Babe Ruth Podcast">
+            <p class="estn-show-name-v2">The Babe Ruth Podcast</p>
+            <p class="estn-show-desc-v2">
+              In-depth analysis, stories, and the occasional hot take.
+              Dynasty talk, trade breakdowns, draft grades, and the kind of conversation
+              you only get when the people covering the league actually follow it.
+            </p>
+            <span class="estn-badge-soon">Coming Soon</span>
+          </div>
         </div>
 
       </div>
 
       <!-- Rumblr Feed -->
-      <div class="estn-rumblr-section">
-        <p class="estn-section-label">The Rumblr Feed</p>
-
+      <div class="estn-rumblr-v2 estn-rumblr-section">
+        <div class="estn-label-v2"><span>The Rumblr Feed</span></div>
         <div class="estn-rumblr-feed">
           <!-- ━━━ RUMBLR FEED — NB64 INJECTS ABOVE THIS LINE ━━━ -->
-          <p class="estn-no-rumblr">No Rumbl'ings Around TSDL.</p>
+          <p class="estn-no-rumblr">No Rumbl&rsquo;ings Around TSDL.</p>
         </div>
       </div>
 
