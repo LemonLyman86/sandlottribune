@@ -46,8 +46,23 @@
 
       <div class="articles-grid">
 
-        <!-- Featured — LVA Season Preview -->
+        <!-- Featured — ATL Season Preview (most recent) -->
         <article class="article-card article-card--featured">
+          <img class="card-image" src="../assets/images/atl-preview.png" alt="Atlanta Braves 2026 Season Preview">
+          <div class="card-body">
+            <span class="card-badge">Season Preview</span>
+            <h3 class="card-title">2026 TSDL Season Preview: Atlanta Braves</h3>
+            <p class="card-meta">By Tim Kurkjian &nbsp;&middot;&nbsp; February 28, 2026</p>
+            <div class="card-rating-row" id="card-rating-season_preview_2026_atl"></div>
+            <p class="card-excerpt">
+              Justin Winward's Braves went 16-3 in 2025 and claimed the #1 seed — then the playoffs happened. Now, with a loaded keeper core and $135 in auction budget, Atlanta enters 2026 with something to prove.
+            </p>
+            <a class="card-link" href="../season-previews/season_preview_2026_atl.html">Read Article &rarr;</a>
+          </div>
+        </article>
+
+        <!-- LVA Season Preview -->
+        <article class="article-card">
           <img class="card-image" src="../assets/images/lva-preview.png" alt="Las Vegas Athletics 2026 Season Preview">
           <div class="card-body">
             <span class="card-badge">Season Preview</span>
@@ -107,6 +122,17 @@
       <div class="articles-grid" style="grid-template-columns: repeat(2, 1fr);">
 
         <article class="article-card">
+          <img class="card-image" src="../assets/images/atl-preview.png" alt="Atlanta Braves 2026 Season Preview">
+          <div class="card-body">
+            <span class="card-badge">Season Preview</span>
+            <h3 class="card-title">Atlanta Braves</h3>
+            <p class="card-meta">By Tim Kurkjian &nbsp;&middot;&nbsp; February 28, 2026</p>
+            <div class="card-rating-row" id="card-rating-season_preview_2026_atl_2"></div>
+            <a class="card-link" href="../season-previews/season_preview_2026_atl.html">Read Article &rarr;</a>
+          </div>
+        </article>
+
+        <article class="article-card">
           <img class="card-image" src="../assets/images/lva-preview.png" alt="Las Vegas Athletics 2026 Season Preview">
           <div class="card-body">
             <span class="card-badge">Season Preview</span>
@@ -117,20 +143,9 @@
           </div>
         </article>
 
-        <article class="article-card">
-          <img class="card-image" src="../assets/images/stl-preview.png" alt="St. Louis Cardinals 2026 Season Preview">
-          <div class="card-body">
-            <span class="card-badge">Season Preview</span>
-            <h3 class="card-title">St. Louis Cardinals</h3>
-            <p class="card-meta">By Buster Olney &nbsp;&middot;&nbsp; February 27, 2026</p>
-            <div class="card-rating-row" id="card-rating-season_preview_2026_stl_2"></div>
-            <a class="card-link" href="../season-previews/season_preview_2026_stl.html">Read Article &rarr;</a>
-          </div>
-        </article>
-
       </div>
       <p style="text-align:right; font-family:'Marcellus',serif; font-size:0.78rem; margin-top:12px;">
-        <a class="btc-browse-link" href="../season-previews/index.html">View all 3 previews &rarr;</a>
+        <a class="btc-browse-link" href="../season-previews/index.html">View all 4 previews &rarr;</a>
       </p>
     </section>
 
@@ -175,6 +190,7 @@
   <script type="module">
     import { fetchCardRatings } from '../assets/js/article-engagement.js';
     fetchCardRatings([
+      'season_preview_2026_atl',
       'season_preview_2026_lva',
       'season_preview_2026_stl',
       'season_preview_2026_ari'
@@ -198,8 +214,8 @@
         el.innerHTML = `<span class="stars-row">${stars}</span><span class="rating-avg">${avg.toFixed(1)}</span><span class="rating-count">(${count})</span>`;
       });
     }
+    wireRating('season_preview_2026_atl', 'card-rating-season_preview_2026_atl_2');
     wireRating('season_preview_2026_lva', 'card-rating-season_preview_2026_lva_2');
-    wireRating('season_preview_2026_stl', 'card-rating-season_preview_2026_stl_2');
   </script>
 
 </body>
