@@ -91,7 +91,7 @@
       <ul class="article-list" id="article-list">
 
         <!-- LVA Season Preview -->
-        <li data-team="las" data-date="2026-02-27">
+        <li data-team="las" data-date="2026-02-27" data-order="3">
           <article class="article-list-card">
             <img
               class="card-image"
@@ -111,7 +111,7 @@
         </li>
 
         <!-- STL Season Preview -->
-        <li data-team="stl" data-date="2026-02-27">
+        <li data-team="stl" data-date="2026-02-27" data-order="2">
           <article class="article-list-card">
             <img
               class="card-image"
@@ -133,7 +133,7 @@
         </li>
 
         <!-- ARI Season Preview -->
-        <li data-team="ari" data-date="2026-02-26">
+        <li data-team="ari" data-date="2026-02-26" data-order="1">
           <article class="article-list-card">
             <img
               class="card-image"
@@ -154,7 +154,7 @@
         </li>
 
         <!-- ATL Season Preview -->
-        <li data-team="atl" data-date="2026-02-28">
+        <li data-team="atl" data-date="2026-02-28" data-order="4">
           <article class="article-list-card">
             <img
               class="card-image"
@@ -175,7 +175,7 @@
 
         
         <!-- SEA Season Preview -->
-        <li data-team="sea" data-date="2026-02-28">
+        <li data-team="sea" data-date="2026-02-28" data-order="5">
           <article class="article-list-card">
             <img
               class="card-image"
@@ -290,7 +290,12 @@
         items.sort(function(a, b) {
           var da = a.dataset.date || '';
           var db = b.dataset.date || '';
-          return currentSort === 'newest' ? db.localeCompare(da) : da.localeCompare(db);
+          var dateDiff = currentSort === 'newest' ? db.localeCompare(da) : da.localeCompare(db);
+          if (dateDiff !== 0) return dateDiff;
+          // Same date: use data-order (higher = more recently published)
+          var oa = parseInt(a.dataset.order || '0', 10);
+          var ob = parseInt(b.dataset.order || '0', 10);
+          return currentSort === 'newest' ? ob - oa : oa - ob;
         });
 
         // Re-insert in sorted order
