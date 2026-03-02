@@ -46,7 +46,7 @@
         <h2 class="section-label">Latest</h2>
       </div>
 
-                                    <div class="articles-grid">
+      <div class="articles-grid">
         <!-- Featured Article — SEA Season Preview (most recent) -->
         <article class="article-card article-card--featured">
           <img class="card-image" src="../assets/images/sea-preview.png" alt="2026 TSDL Season Preview: Seattle Mariners">
@@ -141,7 +141,7 @@
       <p style="font-family:'Marcellus',serif; font-size:0.88rem; color:var(--text-secondary); margin-bottom:20px; line-height:1.65;">
         In-depth 2026 season breakdowns for every TSDL franchise — roster construction, auction strategy, farm system grades, and season predictions. Use the filter and sort tools on the full page to find any team.
       </p>
-                                    <!-- Mini preview of 2 most recent -->
+      <!-- Mini preview of 2 most recent -->
       <div class="articles-grid" style="grid-template-columns: repeat(2, 1fr);">
         <article class="article-card">
           <img class="card-image" src="../assets/images/sea-preview.png" alt="2026 TSDL Season Preview: Seattle Mariners">
@@ -163,83 +163,6 @@
             <a class="card-link" href="../season-previews/season_preview_2026_atl.html">Read Article &rarr;</a>
           </div>
         </article>
-
-      </div>
-            <a class="card-link" href="../season-previews/season_preview_2026_sea.html">Read Article &rarr;</a>
-          </div>
-        </article>
-        <article class="article-card">
-          <img class="card-image" src="../assets/images/atl-preview.png" alt="2026 TSDL Season Preview: Atlanta Braves">
-          <div class="card-body">
-            <span class="card-badge">Season Preview</span>
-            <h3 class="card-title">Atlanta Braves</h3>
-            <p class="card-meta">By Tim Kurkjian &nbsp;&middot;&nbsp; February 28, 2026</p>
-            <div class="card-rating-row" id="card-rating-season_preview_2026_atl_2"></div>
-            <a class="card-link" href="../season-previews/season_preview_2026_atl.html">Read Article &rarr;</a>
-          </div>
-        </article>
-
-      </div>
-            <a class="card-link" href="../season-previews/season_preview_2026_sea.html">Read Article &rarr;</a>
-          </div>
-        </article>
-        <article class="article-card">
-          <img class="card-image" src="../assets/images/atl-preview.png" alt="2026 TSDL Season Preview: Atlanta Braves">
-          <div class="card-body">
-            <span class="card-badge">Season Preview</span>
-            <h3 class="card-title">Atlanta Braves</h3>
-            <p class="card-meta">By Tim Kurkjian &nbsp;&middot;&nbsp; February 28, 2026</p>
-            <div class="card-rating-row" id="card-rating-season_preview_2026_atl_2"></div>
-            <a class="card-link" href="../season-previews/season_preview_2026_atl.html">Read Article &rarr;</a>
-          </div>
-        </article>
-
-      </div>
-            <a class="card-link" href="../season-previews/season_preview_2026_sea.html">Read Article &rarr;</a>
-          </div>
-        </article>
-        <article class="article-card">
-          <img class="card-image" src="../assets/images/atl-preview.png" alt="2026 TSDL Season Preview: Atlanta Braves">
-          <div class="card-body">
-            <span class="card-badge">Season Preview</span>
-            <h3 class="card-title">Atlanta Braves</h3>
-            <p class="card-meta">By Tim Kurkjian &nbsp;&middot;&nbsp; February 28, 2026</p>
-            <div class="card-rating-row" id="card-rating-season_preview_2026_atl_2"></div>
-            <a class="card-link" href="../season-previews/season_preview_2026_atl.html">Read Article &rarr;</a>
-          </div>
-        </article>
-
-      </div>
-            <a class="card-link" href="../season-previews/season_preview_2026_sea.html">Read Article &rarr;</a>
-          </div>
-        </article>
-        <article class="article-card">
-          <img class="card-image" src="../assets/images/atl-preview.png" alt="2026 TSDL Season Preview: Atlanta Braves">
-          <div class="card-body">
-            <span class="card-badge">Season Preview</span>
-            <h3 class="card-title">Atlanta Braves</h3>
-            <p class="card-meta">By Tim Kurkjian &nbsp;&middot;&nbsp; February 28, 2026</p>
-            <div class="card-rating-row" id="card-rating-season_preview_2026_atl_2"></div>
-            <a class="card-link" href="../season-previews/season_preview_2026_atl.html">Read Article &rarr;</a>
-          </div>
-        </article>
-
-      </div>
-            <a class="card-link" href="../season-previews/season_preview_2026_atl.html">Read Article &rarr;</a>
-          </div>
-        </article>
-
-        <article class="article-card">
-          <img class="card-image" src="../assets/images/lva-preview.png" alt="Las Vegas Athletics 2026 Season Preview">
-          <div class="card-body">
-            <span class="card-badge">Season Preview</span>
-            <h3 class="card-title">Las Vegas Athletics</h3>
-            <p class="card-meta">By Keith Law &nbsp;&middot;&nbsp; February 27, 2026</p>
-            <div class="card-rating-row" id="card-rating-season_preview_2026_lva_2"></div>
-            <a class="card-link" href="../season-previews/season_preview_2026_lva.html">Read Article &rarr;</a>
-          </div>
-        </article>
-
       </div>
       <p style="text-align:right; font-family:'Marcellus',serif; font-size:0.78rem; margin-top:12px;">
         <a class="btc-browse-link" href="../season-previews/index.html">View all 5 previews &rarr;</a>
@@ -297,38 +220,7 @@
     // but need separate DOM elements — wire them up manually
     import { db } from '../assets/js/firebase-config.js';
     import { ref, onValue } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js';
-    function                     wireRating('season_preview_2026_sea', 'card-rating-season_preview_2026_sea_2');
-    wireRating('season_preview_2026_atl', 'card-rating-season_preview_2026_atl_2');
-        wireRating('season_preview_2026_sea', 'card-rating-season_preview_2026_sea_2');
-    wireRating('season_preview_2026_atl', 'card-rating-season_preview_2026_atl_2');
-            wireRating('season_preview_2026_sea', 'card-rating-season_preview_2026_sea_2');
-    wireRating('season_preview_2026_atl', 'card-rating-season_preview_2026_atl_2');
-        wireRating('season_preview_2026_sea', 'card-rating-season_preview_2026_sea_2');
-    wireRating('season_preview_2026_atl', 'card-rating-season_preview_2026_atl_2');
-                wireRating('season_preview_2026_sea', 'card-rating-season_preview_2026_sea_2');
-    wireRating('season_preview_2026_atl', 'card-rating-season_preview_2026_atl_2');
-        wireRating('season_preview_2026_sea', 'card-rating-season_preview_2026_sea_2');
-    wireRating('season_preview_2026_atl', 'card-rating-season_preview_2026_atl_2');
-            wireRating('season_preview_2026_sea', 'card-rating-season_preview_2026_sea_2');
-    wireRating('season_preview_2026_atl', 'card-rating-season_preview_2026_atl_2');
-        wireRating('season_preview_2026_sea', 'card-rating-season_preview_2026_sea_2');
-    wireRating('season_preview_2026_atl', 'card-rating-season_preview_2026_atl_2');
-                    wireRating('season_preview_2026_sea', 'card-rating-season_preview_2026_sea_2');
-    wireRating('season_preview_2026_atl', 'card-rating-season_preview_2026_atl_2');
-        wireRating('season_preview_2026_sea', 'card-rating-season_preview_2026_sea_2');
-    wireRating('season_preview_2026_atl', 'card-rating-season_preview_2026_atl_2');
-            wireRating('season_preview_2026_sea', 'card-rating-season_preview_2026_sea_2');
-    wireRating('season_preview_2026_atl', 'card-rating-season_preview_2026_atl_2');
-        wireRating('season_preview_2026_sea', 'card-rating-season_preview_2026_sea_2');
-    wireRating('season_preview_2026_atl', 'card-rating-season_preview_2026_atl_2');
-                wireRating('season_preview_2026_sea', 'card-rating-season_preview_2026_sea_2');
-    wireRating('season_preview_2026_atl', 'card-rating-season_preview_2026_atl_2');
-        wireRating('season_preview_2026_sea', 'card-rating-season_preview_2026_sea_2');
-    wireRating('season_preview_2026_atl', 'card-rating-season_preview_2026_atl_2');
-            wireRating('season_preview_2026_sea', 'card-rating-season_preview_2026_sea_2');
-    wireRating('season_preview_2026_atl', 'card-rating-season_preview_2026_atl_2');
-        wireRating('season_preview_2026_sea', 'card-rating-season_preview_2026_sea_2');
-    wireRating('season_preview_2026_atl', 'card-rating-season_preview_2026_atl_2');
+    function wireRating(articleId, elId) {
       const el = document.getElementById(elId);
       if (!el) return;
       onValue(ref(db, `articles/${articleId}/ratings`), snap => {
@@ -343,69 +235,7 @@
         el.innerHTML = `<span class="stars-row">${stars}</span><span class="rating-avg">${avg.toFixed(1)}</span><span class="rating-count">(${count})</span>`;
       });
     }
-                        wireRating('season_preview_2026_sea', 'card-rating-season_preview_2026_sea_2');
-    wireRating('season_preview_2026_atl', 'card-rating-season_preview_2026_atl_2');
-        wireRating('season_preview_2026_sea', 'card-rating-season_preview_2026_sea_2');
-    wireRating('season_preview_2026_atl', 'card-rating-season_preview_2026_atl_2');
-            wireRating('season_preview_2026_sea', 'card-rating-season_preview_2026_sea_2');
-    wireRating('season_preview_2026_atl', 'card-rating-season_preview_2026_atl_2');
-        wireRating('season_preview_2026_sea', 'card-rating-season_preview_2026_sea_2');
-    wireRating('season_preview_2026_atl', 'card-rating-season_preview_2026_atl_2');
-                wireRating('season_preview_2026_sea', 'card-rating-season_preview_2026_sea_2');
-    wireRating('season_preview_2026_atl', 'card-rating-season_preview_2026_atl_2');
-        wireRating('season_preview_2026_sea', 'card-rating-season_preview_2026_sea_2');
-    wireRating('season_preview_2026_atl', 'card-rating-season_preview_2026_atl_2');
-            wireRating('season_preview_2026_sea', 'card-rating-season_preview_2026_sea_2');
-    wireRating('season_preview_2026_atl', 'card-rating-season_preview_2026_atl_2');
-        wireRating('season_preview_2026_sea', 'card-rating-season_preview_2026_sea_2');
-    wireRating('season_preview_2026_atl', 'card-rating-season_preview_2026_atl_2');
-                    wireRating('season_preview_2026_sea', 'card-rating-season_preview_2026_sea_2');
-    wireRating('season_preview_2026_atl', 'card-rating-season_preview_2026_atl_2');
-        wireRating('season_preview_2026_sea', 'card-rating-season_preview_2026_sea_2');
-    wireRating('season_preview_2026_atl', 'card-rating-season_preview_2026_atl_2');
-            wireRating('season_preview_2026_sea', 'card-rating-season_preview_2026_sea_2');
-    wireRating('season_preview_2026_atl', 'card-rating-season_preview_2026_atl_2');
-        wireRating('season_preview_2026_sea', 'card-rating-season_preview_2026_sea_2');
-    wireRating('season_preview_2026_atl', 'card-rating-season_preview_2026_atl_2');
-                wireRating('season_preview_2026_sea', 'card-rating-season_preview_2026_sea_2');
-    wireRating('season_preview_2026_atl', 'card-rating-season_preview_2026_atl_2');
-        wireRating('season_preview_2026_sea', 'card-rating-season_preview_2026_sea_2');
-    wireRating('season_preview_2026_atl', 'card-rating-season_preview_2026_atl_2');
-            wireRating('season_preview_2026_sea', 'card-rating-season_preview_2026_sea_2');
-    wireRating('season_preview_2026_atl', 'card-rating-season_preview_2026_atl_2');
-        wireRating('season_preview_2026_sea', 'card-rating-season_preview_2026_sea_2');
-    wireRating('season_preview_2026_atl', 'card-rating-season_preview_2026_atl_2');
-                        wireRating('season_preview_2026_sea', 'card-rating-season_preview_2026_sea_2');
-    wireRating('season_preview_2026_atl', 'card-rating-season_preview_2026_atl_2');
-        wireRating('season_preview_2026_sea', 'card-rating-season_preview_2026_sea_2');
-    wireRating('season_preview_2026_atl', 'card-rating-season_preview_2026_atl_2');
-            wireRating('season_preview_2026_sea', 'card-rating-season_preview_2026_sea_2');
-    wireRating('season_preview_2026_atl', 'card-rating-season_preview_2026_atl_2');
-        wireRating('season_preview_2026_sea', 'card-rating-season_preview_2026_sea_2');
-    wireRating('season_preview_2026_atl', 'card-rating-season_preview_2026_atl_2');
-                wireRating('season_preview_2026_sea', 'card-rating-season_preview_2026_sea_2');
-    wireRating('season_preview_2026_atl', 'card-rating-season_preview_2026_atl_2');
-        wireRating('season_preview_2026_sea', 'card-rating-season_preview_2026_sea_2');
-    wireRating('season_preview_2026_atl', 'card-rating-season_preview_2026_atl_2');
-            wireRating('season_preview_2026_sea', 'card-rating-season_preview_2026_sea_2');
-    wireRating('season_preview_2026_atl', 'card-rating-season_preview_2026_atl_2');
-        wireRating('season_preview_2026_sea', 'card-rating-season_preview_2026_sea_2');
-    wireRating('season_preview_2026_atl', 'card-rating-season_preview_2026_atl_2');
-                    wireRating('season_preview_2026_sea', 'card-rating-season_preview_2026_sea_2');
-    wireRating('season_preview_2026_atl', 'card-rating-season_preview_2026_atl_2');
-        wireRating('season_preview_2026_sea', 'card-rating-season_preview_2026_sea_2');
-    wireRating('season_preview_2026_atl', 'card-rating-season_preview_2026_atl_2');
-            wireRating('season_preview_2026_sea', 'card-rating-season_preview_2026_sea_2');
-    wireRating('season_preview_2026_atl', 'card-rating-season_preview_2026_atl_2');
-        wireRating('season_preview_2026_sea', 'card-rating-season_preview_2026_sea_2');
-    wireRating('season_preview_2026_atl', 'card-rating-season_preview_2026_atl_2');
-                wireRating('season_preview_2026_sea', 'card-rating-season_preview_2026_sea_2');
-    wireRating('season_preview_2026_atl', 'card-rating-season_preview_2026_atl_2');
-        wireRating('season_preview_2026_sea', 'card-rating-season_preview_2026_sea_2');
-    wireRating('season_preview_2026_atl', 'card-rating-season_preview_2026_atl_2');
-            wireRating('season_preview_2026_sea', 'card-rating-season_preview_2026_sea_2');
-    wireRating('season_preview_2026_atl', 'card-rating-season_preview_2026_atl_2');
-        wireRating('season_preview_2026_sea', 'card-rating-season_preview_2026_sea_2');
+    wireRating('season_preview_2026_sea', 'card-rating-season_preview_2026_sea_2');
     wireRating('season_preview_2026_atl', 'card-rating-season_preview_2026_atl_2');
   </script>
 
