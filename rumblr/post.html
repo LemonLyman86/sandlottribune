@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Rumbl'ing — Rumblr</title>
+  <link rel="icon" href="../assets/images/rumblr-logo.png">
+  <link rel="stylesheet" href="../assets/css/rumblr.css">
+</head>
+<body class="rumblr-page">
+
+<header class="rb-header">
+  <a href="/rumblr/" class="rb-header-logo">
+    <img src="../assets/images/rumblr-logo.png" alt="Rumblr">
+  </a>
+  <div class="rb-header-actions">
+    <a href="/rumblr/" class="rb-btn rb-btn-ghost">← Feed</a>
+  </div>
+</header>
+
+<div class="rb-post-page">
+
+  <!-- The main post -->
+  <div id="rb-spinner" class="rb-spinner"></div>
+  <div id="rb-main-post"></div>
+
+  <!-- Reply composer (shown if logged in) -->
+  <div id="rb-reply-compose" style="display:none; padding:16px 20px;
+       border-bottom:1px solid var(--rb-border);">
+    <div style="display:flex;gap:12px;align-items:flex-start;">
+      <div id="rb-reply-avatar" class="rb-compose-avatar" style="background:#555">?</div>
+      <div style="flex:1;">
+        <textarea id="rb-reply-input" class="rb-compose-input"
+          placeholder="Post your reply…" rows="3" maxlength="300"
+          style="border-bottom:1px solid var(--rb-border);padding-bottom:8px;"></textarea>
+        <div class="rb-compose-footer">
+          <span id="rb-reply-counter" class="rb-char-counter">280</span>
+          <button id="rb-reply-submit" class="rb-btn rb-btn-primary" disabled>Reply</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Replies -->
+  <div class="rb-replies-label">Replies</div>
+  <div id="rb-replies-feed"></div>
+
+  <!-- Login prompt if not signed in -->
+  <div id="rb-reply-login-prompt" class="rb-login-prompt" style="display:none;">
+    <p>Sign in to leave a reply.</p>
+    <div style="display:flex;gap:10px;justify-content:center;">
+      <a href="/rumblr/login.html" class="rb-btn rb-btn-primary">Sign In</a>
+      <a href="/rumblr/signup.html" class="rb-btn rb-btn-outline">Join Rumblr</a>
+    </div>
+  </div>
+
+</div><!-- /.rb-post-page -->
+
+<div class="rb-toast-container"></div>
+
+<script type="module">
+  import { firestore, auth } from '../assets/js/firebase-config.js';
+  import {
+    doc, getDoc, collection, addDoc, query,
+    where, orderBy, getDocs, updateDoc, increment, serverTimestamp
+  } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js';
+  import { onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js';
+  import { renderPost, showToast } from '../assets/js/rumblr-app.js';
+  import { initInteractions } from '../assets/js/rumblr-interactions.js';
+
+  const postId = new URLSearchParams(location.search).get('id');
+  const openReply = new URLSearchParams(location.search).get('reply') === '1';
+  let currentUser = null, currentUserDoc = null;
+
+  onAuthStateChanged(auth, async user => {
+    currentUser = user;
+    if (user) {
+      const snap = await getDoc(doc(firestore, 'users', user.uid));
+      currentUserDoc = snap.exists() ? snap.data() : null;
+      document.getElementById('rb-reply-compose').style.display = 'block';
+      document.getElementById('rb-reply-login-prompt').style.display = 'none';
+      if (currentUserDoc) {
+        const av = document.getElementById('rb-reply-avatar');
+        av.style.background = currentUserDoc.team_color || '#555';
+        av.textContent = currentUserDoc.team_abbrev || '?';
+      }
+      if (openReply) document.getElementById('rb-reply-input')?.focus();
+    } else {
+      document.getElementById('rb-reply-compose').style.display = 'none';
+      document.getElementById('rb-reply-login-prompt').style.display = 'block';
+    }
+  });
+
+  async function loadPost() {
+    if (!postId) return;
+    const spinner = document.getElementById('rb-spinner');
+
+    try {
+      const snap = await getDoc(doc(firestore, 'posts', postId));
+      spinner.style.display = 'none';
+      if (!snap.exists()) {
+        document.getElementById('rb-main-post').innerHTML =
+          '<div class="rb-empty"><div class="rb-empty-icon">🕳</div>' +
+          '<div class="rb-empty-msg">Rumbl\'ing not found.</div></div>';
+        return;
+      }
+      const data = snap.data();
+      document.title = `${data.author_name} on Rumblr`;
+
+      const postEl = renderPost(postId, data);
+      // Remove click-to-navigate behaviour on the detail page card
+      postEl.style.cursor = 'default';
+      document.getElementById('rb-main-post').appendChild(postEl);
+      initInteractions(postEl, postId, data, currentUser);
+
+      // Load replies
+      loadReplies();
+    } catch (err) {
+      spinner.style.display = 'none';
+      console.error(err);
+    }
+  }
+
+  async function loadReplies() {
+    const feed = document.getElementById('rb-replies-feed');
+    const q = query(
+      collection(firestore, 'posts'),
+      where('parent_post_id', '==', postId),
+      orderBy('timestamp', 'asc')
+    );
+    const snap = await getDocs(q);
+    if (snap.empty) {
+      feed.innerHTML = '<div class="rb-empty" style="padding:30px 20px;">' +
+        '<div class="rb-empty-sub">No replies yet. Be the first.</div></div>';
+      return;
+    }
+    snap.forEach(d => {
+      const el = renderPost(d.id, d.data(), true);
+      el.style.cursor = 'default';
+      feed.appendChild(el);
+    });
+  }
+
+  // Reply submit
+  const MAX_CHARS = 280;
+  const replyInput  = document.getElementById('rb-reply-input');
+  const replyCounter = document.getElementById('rb-reply-counter');
+  const replyBtn    = document.getElementById('rb-reply-submit');
+
+  replyInput?.addEventListener('input', () => {
+    const rem = MAX_CHARS - replyInput.value.length;
+    replyCounter.textContent = rem;
+    replyCounter.className = 'rb-char-counter' + (rem < 20 ? ' warning' : '') + (rem < 0 ? ' danger' : '');
+    replyBtn.disabled = !replyInput.value.trim() || rem < 0;
+  });
+
+  replyBtn?.addEventListener('click', async () => {
+    if (!currentUser || !currentUserDoc) return;
+    const content = replyInput.value.trim();
+    if (!content) return;
+    const hashtags = [...content.matchAll(/#(\w+)/g)].map(m => '#' + m[1]);
+
+    replyBtn.disabled = true;
+    try {
+      await addDoc(collection(firestore, 'posts'), {
+        content,
+        author_type:         'user',
+        author_name:         currentUserDoc.display_name,
+        author_handle:       currentUserDoc.handle,
+        author_uid:          currentUser.uid,
+        author_team_id:      currentUserDoc.team_id,
+        author_verified:     currentUserDoc.verified || false,
+        author_avatar_color: currentUserDoc.team_color,
+        author_initials:     currentUserDoc.team_abbrev,
+        hashtags,
+        timestamp:           serverTimestamp(),
+        like_count:          0, reply_count: 0, repost_count: 0,
+        parent_post_id:      postId,
+        is_ai_generated:     false,
+      });
+      await updateDoc(doc(firestore, 'posts', postId), { reply_count: increment(1) });
+
+      replyInput.value = '';
+      replyCounter.textContent = MAX_CHARS;
+      showToast('Reply posted!');
+      // Reload replies section
+      document.getElementById('rb-replies-feed').innerHTML = '';
+      loadReplies();
+    } catch (err) {
+      console.error(err);
+      showToast('Could not post reply. Try again.');
+    } finally {
+      replyBtn.disabled = false;
+    }
+  });
+
+  document.addEventListener('DOMContentLoaded', loadPost);
+</script>
+</body>
+</html>

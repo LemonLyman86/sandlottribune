@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Join Rumblr — TSDL</title>
+  <link rel="icon" href="../assets/images/rumblr-logo.png">
+  <link rel="stylesheet" href="../assets/css/rumblr.css">
+</head>
+<body class="rumblr-page rb-auth-page">
+
+<div class="rb-auth-card" style="max-width:560px;">
+
+  <div class="rb-auth-logo">
+    <img src="../assets/images/rumblr-logo.png" alt="Rumblr">
+  </div>
+  <div class="rb-auth-title">Join Rumblr</div>
+  <div class="rb-auth-sub">Create your TSDL team account</div>
+
+  <!-- Step indicator -->
+  <div class="rb-steps">
+    <div class="rb-step-dot active"></div>
+    <div class="rb-step-dot"></div>
+    <div class="rb-step-dot"></div>
+  </div>
+
+  <!-- STEP 1: Choose team -->
+  <div class="rb-signup-step" style="display:block;">
+    <p style="color:var(--rb-muted);font-family:'Oswald',sans-serif;font-size:0.88rem;
+               letter-spacing:0.06em;text-transform:uppercase;margin-bottom:14px;">
+      Step 1 — Select Your Team
+    </p>
+    <div id="rb-team-grid" class="rb-team-grid"></div>
+    <button id="rb-step1-next" class="rb-btn rb-btn-primary" style="width:100%;justify-content:center;" disabled>
+      Continue →
+    </button>
+    <p style="text-align:center;margin-top:16px;font-size:0.85rem;color:var(--rb-subtle);">
+      Already have an account? <a href="/rumblr/login.html">Sign in</a>
+    </p>
+  </div>
+
+  <!-- STEP 2: Account details -->
+  <div class="rb-signup-step" style="display:none;">
+    <p style="color:var(--rb-muted);font-family:'Oswald',sans-serif;font-size:0.88rem;
+               letter-spacing:0.06em;text-transform:uppercase;margin-bottom:14px;">
+      Step 2 — Account Details
+    </p>
+
+    <div class="rb-form-group">
+      <label class="rb-form-label" for="rb-display-name">Display Name</label>
+      <input id="rb-display-name" type="text" placeholder="e.g. PHI Front Office" maxlength="40">
+      <div id="rb-name-error" class="rb-form-error" style="display:none;"></div>
+    </div>
+
+    <div class="rb-form-group">
+      <label class="rb-form-label" for="rb-handle">Handle</label>
+      <input id="rb-handle" type="text" placeholder="@PHIOfficial" maxlength="25">
+      <div id="rb-handle-error" class="rb-form-error" style="display:none;"></div>
+      <div class="rb-form-hint">Must start with @. Keep it recognizable for your team.</div>
+    </div>
+
+    <div class="rb-form-group">
+      <label class="rb-form-label" for="rb-email">Email Address</label>
+      <input id="rb-email" type="email" placeholder="you@example.com">
+      <div id="rb-email-error" class="rb-form-error" style="display:none;"></div>
+    </div>
+
+    <div class="rb-form-group">
+      <label class="rb-form-label" for="rb-password">Password</label>
+      <input id="rb-password" type="password" placeholder="8+ characters">
+      <div id="rb-pass-error" class="rb-form-error" style="display:none;"></div>
+    </div>
+
+    <div class="rb-form-group">
+      <label class="rb-form-label" for="rb-bio">Bio <span style="color:var(--rb-subtle);font-size:0.8em;">(optional)</span></label>
+      <input id="rb-bio" type="text" placeholder="Official TSDL team account · Philly" maxlength="100">
+    </div>
+
+    <div style="display:flex;gap:10px;margin-top:4px;">
+      <button id="rb-step2-back" class="rb-btn rb-btn-outline" style="flex:0 0 auto;">← Back</button>
+      <button id="rb-step2-next" class="rb-btn rb-btn-primary" style="flex:1;justify-content:center;">
+        Review →
+      </button>
+    </div>
+  </div>
+
+  <!-- STEP 3: Review & Submit -->
+  <div class="rb-signup-step" style="display:none;">
+    <p style="color:var(--rb-muted);font-family:'Oswald',sans-serif;font-size:0.88rem;
+               letter-spacing:0.06em;text-transform:uppercase;margin-bottom:14px;">
+      Step 3 — Review & Create
+    </p>
+
+    <!-- Avatar preview -->
+    <div style="display:flex;align-items:center;gap:16px;margin-bottom:20px;
+                padding:16px;background:var(--rb-surface-2);border-radius:8px;border:1px solid var(--rb-border);">
+      <div id="rb-preview-circle" class="rb-post-avatar" style="width:56px;height:56px;font-size:1rem;">?</div>
+      <div>
+        <div style="font-family:'Oswald',sans-serif;font-weight:600;" id="rb-review-name"></div>
+        <div style="font-family:'Oswald',sans-serif;font-size:0.85rem;color:var(--rb-muted);" id="rb-review-handle"></div>
+        <div style="font-family:'Oswald',sans-serif;font-size:0.8rem;color:var(--rb-subtle);margin-top:2px;" id="rb-review-team"></div>
+      </div>
+      <div style="margin-left:auto;">
+        <span class="rb-badge-pending">⏳ Pending</span>
+      </div>
+    </div>
+
+    <p style="font-size:0.85rem;color:var(--rb-muted);margin-bottom:20px;line-height:1.6;">
+      Your account will be <strong style="color:var(--rb-text);">pending verification</strong> until
+      the commissioner confirms you're the official team rep. You can post and interact immediately
+      — the ⚾ verified badge appears after approval.
+    </p>
+
+    <div id="rb-signup-error" class="rb-form-error" style="margin-bottom:12px;"></div>
+
+    <div style="display:flex;gap:10px;">
+      <button id="rb-step3-back" class="rb-btn rb-btn-outline" style="flex:0 0 auto;">← Back</button>
+      <button id="rb-signup-submit" class="rb-btn rb-btn-primary" style="flex:1;justify-content:center;">
+        Create Account
+      </button>
+    </div>
+  </div>
+
+</div><!-- /.rb-auth-card -->
+
+<script type="module">
+  import { initSignup } from '../assets/js/rumblr-auth.js';
+  document.addEventListener('DOMContentLoaded', initSignup);
+</script>
+</body>
+</html>

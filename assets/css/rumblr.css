@@ -1,0 +1,971 @@
+/* ═══════════════════════════════════════════════════════════
+   Rumblr — ESTN Dark Theme
+   Separate from main.css (Tribune cream theme)
+   Fonts: Oswald (headlines/handles) + Marcellus (body/posts)
+   ═══════════════════════════════════════════════════════════ */
+
+@import url('https://fonts.googleapis.com/css2?family=Oswald:wght@400;600;700&family=Marcellus&display=swap');
+
+/* ── CSS Variables ───────────────────────────────────────── */
+:root {
+  --rb-bg:         #0D1117;
+  --rb-surface:    #161B22;
+  --rb-surface-2:  #1C2330;
+  --rb-border:     #2D3748;
+  --rb-red:        #C8102E;
+  --rb-red-dark:   #8B0C1F;
+  --rb-text:       #FFFFFF;
+  --rb-muted:      #A0AEC0;
+  --rb-subtle:     #718096;
+  --rb-gold:       #C47B22;
+  --rb-green:      #38A169;
+  --rb-avatar-r:   24px;   /* avatar border-radius (50% = circle) */
+}
+
+/* ── Reset & Base ────────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html { font-size: 16px; }
+
+body.rumblr-page {
+  background: var(--rb-bg);
+  color: var(--rb-text);
+  font-family: 'Marcellus', 'Palatino Linotype', Georgia, serif;
+  min-height: 100vh;
+  line-height: 1.6;
+}
+
+a { color: var(--rb-red); text-decoration: none; }
+a:hover { color: #E8304A; text-decoration: underline; }
+
+button { cursor: pointer; border: none; background: none; font-family: inherit; }
+
+input, textarea {
+  font-family: 'Marcellus', Georgia, serif;
+  font-size: 1rem;
+  background: var(--rb-surface-2);
+  border: 1px solid var(--rb-border);
+  color: var(--rb-text);
+  border-radius: 6px;
+  padding: 10px 14px;
+  width: 100%;
+  outline: none;
+  transition: border-color 0.15s;
+}
+input:focus, textarea:focus { border-color: var(--rb-red); }
+input::placeholder, textarea::placeholder { color: var(--rb-subtle); }
+
+/* ── Rumblr Header ───────────────────────────────────────── */
+.rb-header {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: var(--rb-bg);
+  border-bottom: 2px solid var(--rb-red);
+  padding: 0 24px;
+  height: 58px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.rb-header-logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  text-decoration: none;
+}
+.rb-header-logo img {
+  height: 34px;
+  width: auto;
+}
+.rb-header-logo-text {
+  font-family: 'Oswald', sans-serif;
+  font-weight: 700;
+  font-size: 1.25rem;
+  color: var(--rb-text);
+  letter-spacing: 0.04em;
+}
+.rb-header-logo-text span {
+  color: var(--rb-red);
+}
+
+.rb-header-eyebrow {
+  font-family: 'Oswald', sans-serif;
+  font-size: 0.72rem;
+  color: var(--rb-muted);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.rb-header-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+/* ── Buttons ─────────────────────────────────────────────── */
+.rb-btn {
+  font-family: 'Oswald', sans-serif;
+  font-weight: 600;
+  font-size: 0.88rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  padding: 7px 18px;
+  border-radius: 4px;
+  transition: background 0.15s, color 0.15s;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.rb-btn-primary {
+  background: var(--rb-red);
+  color: #fff;
+}
+.rb-btn-primary:hover { background: #E8304A; color: #fff; text-decoration: none; }
+
+.rb-btn-outline {
+  background: transparent;
+  color: var(--rb-text);
+  border: 1px solid var(--rb-border);
+}
+.rb-btn-outline:hover { border-color: var(--rb-red); color: var(--rb-red); text-decoration: none; }
+
+.rb-btn-ghost {
+  background: transparent;
+  color: var(--rb-muted);
+  padding: 6px 12px;
+}
+.rb-btn-ghost:hover { color: var(--rb-text); }
+
+.rb-btn:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+/* ── Page Layout (3-column) ──────────────────────────────── */
+.rb-layout {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 240px 1fr 280px;
+  gap: 0;
+  min-height: calc(100vh - 58px);
+}
+
+@media (max-width: 1024px) {
+  .rb-layout { grid-template-columns: 200px 1fr; }
+  .rb-right-sidebar { display: none; }
+}
+@media (max-width: 680px) {
+  .rb-layout { grid-template-columns: 1fr; }
+  .rb-left-sidebar { display: none; }
+}
+
+/* ── Left Sidebar ────────────────────────────────────────── */
+.rb-left-sidebar {
+  border-right: 1px solid var(--rb-border);
+  padding: 20px 0;
+  position: sticky;
+  top: 58px;
+  height: calc(100vh - 58px);
+  overflow-y: auto;
+}
+
+.rb-sidebar-label {
+  font-family: 'Oswald', sans-serif;
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--rb-subtle);
+  padding: 4px 20px 10px;
+}
+
+.rb-sidebar-link {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 9px 20px;
+  font-family: 'Oswald', sans-serif;
+  font-size: 0.92rem;
+  color: var(--rb-muted);
+  cursor: pointer;
+  transition: background 0.12s, color 0.12s;
+  text-decoration: none;
+  border-left: 3px solid transparent;
+}
+.rb-sidebar-link:hover {
+  background: var(--rb-surface);
+  color: var(--rb-text);
+  text-decoration: none;
+}
+.rb-sidebar-link.active {
+  color: var(--rb-text);
+  border-left-color: var(--rb-red);
+  background: var(--rb-surface);
+}
+
+.rb-sidebar-avatar {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Oswald', sans-serif;
+  font-weight: 700;
+  font-size: 0.65rem;
+  color: #fff;
+  flex-shrink: 0;
+}
+
+.rb-sidebar-count {
+  margin-left: auto;
+  font-size: 0.75rem;
+  color: var(--rb-subtle);
+  font-family: 'Oswald', sans-serif;
+}
+
+.rb-sidebar-divider {
+  border: none;
+  border-top: 1px solid var(--rb-border);
+  margin: 12px 0;
+}
+
+/* ── Main Feed Column ────────────────────────────────────── */
+.rb-feed-column {
+  border-right: 1px solid var(--rb-border);
+  min-height: calc(100vh - 58px);
+}
+
+.rb-feed-header {
+  position: sticky;
+  top: 58px;
+  z-index: 50;
+  background: var(--rb-bg);
+  border-bottom: 1px solid var(--rb-border);
+  padding: 14px 20px 0;
+}
+
+.rb-feed-title {
+  font-family: 'Oswald', sans-serif;
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin-bottom: 12px;
+}
+
+.rb-tabs {
+  display: flex;
+  gap: 0;
+}
+
+.rb-tab {
+  font-family: 'Oswald', sans-serif;
+  font-size: 0.88rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--rb-muted);
+  padding: 8px 20px;
+  cursor: pointer;
+  border-bottom: 3px solid transparent;
+  transition: color 0.12s, border-color 0.12s;
+}
+.rb-tab:hover { color: var(--rb-text); }
+.rb-tab.active { color: var(--rb-text); border-bottom-color: var(--rb-red); }
+
+/* ── Compose Bar ─────────────────────────────────────────── */
+.rb-compose {
+  padding: 16px 20px;
+  border-bottom: 1px solid var(--rb-border);
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+}
+
+.rb-compose-avatar {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Oswald', sans-serif;
+  font-weight: 700;
+  font-size: 0.85rem;
+  color: #fff;
+  flex-shrink: 0;
+}
+
+.rb-compose-body { flex: 1; }
+
+.rb-compose-input {
+  background: transparent;
+  border: none;
+  font-family: 'Marcellus', Georgia, serif;
+  font-size: 1.05rem;
+  color: var(--rb-text);
+  resize: none;
+  min-height: 70px;
+  padding: 8px 0;
+  width: 100%;
+}
+.rb-compose-input:focus { outline: none; border: none; }
+.rb-compose-input::placeholder { color: var(--rb-subtle); }
+
+.rb-compose-footer {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 12px;
+  padding-top: 8px;
+  border-top: 1px solid var(--rb-border);
+  margin-top: 4px;
+}
+
+.rb-char-counter {
+  font-family: 'Oswald', sans-serif;
+  font-size: 0.85rem;
+  color: var(--rb-muted);
+}
+.rb-char-counter.warning { color: #E8834A; }
+.rb-char-counter.danger  { color: var(--rb-red); }
+
+/* ── Post Card ───────────────────────────────────────────── */
+.rb-post {
+  padding: 16px 20px;
+  border-bottom: 1px solid var(--rb-border);
+  display: flex;
+  gap: 12px;
+  transition: background 0.1s;
+  cursor: pointer;
+}
+.rb-post:hover { background: var(--rb-surface); }
+
+.rb-post-avatar {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Oswald', sans-serif;
+  font-weight: 700;
+  font-size: 0.85rem;
+  color: #fff;
+  flex-shrink: 0;
+}
+
+.rb-post-body { flex: 1; min-width: 0; }
+
+.rb-post-header {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 4px 8px;
+  margin-bottom: 6px;
+}
+
+.rb-post-name {
+  font-family: 'Oswald', sans-serif;
+  font-weight: 600;
+  font-size: 0.95rem;
+  color: var(--rb-text);
+}
+
+.rb-verified {
+  font-size: 0.85em;
+  color: var(--rb-red);
+  flex-shrink: 0;
+}
+
+.rb-post-handle {
+  font-family: 'Oswald', sans-serif;
+  font-size: 0.82rem;
+  color: var(--rb-muted);
+}
+
+.rb-post-time {
+  font-family: 'Oswald', sans-serif;
+  font-size: 0.82rem;
+  color: var(--rb-subtle);
+  margin-left: auto;
+}
+
+.rb-post-content {
+  font-family: 'Marcellus', Georgia, serif;
+  font-size: 0.97rem;
+  line-height: 1.65;
+  color: var(--rb-text);
+  word-break: break-word;
+}
+
+.rb-hashtag {
+  color: var(--rb-red);
+  cursor: pointer;
+}
+.rb-hashtag:hover { text-decoration: underline; }
+
+/* ── Engagement Row ──────────────────────────────────────── */
+.rb-engagement {
+  display: flex;
+  gap: 28px;
+  margin-top: 12px;
+  padding-top: 10px;
+  border-top: 1px solid var(--rb-border);
+}
+
+.rb-engage-btn {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-family: 'Oswald', sans-serif;
+  font-size: 0.82rem;
+  color: var(--rb-subtle);
+  transition: color 0.12s;
+  padding: 3px 0;
+}
+.rb-engage-btn:hover { color: var(--rb-text); }
+.rb-engage-btn.liked { color: #E83A5A; }
+.rb-engage-btn.reposted { color: var(--rb-green); }
+
+.rb-engage-icon { font-size: 1rem; }
+
+/* ── Repost label ────────────────────────────────────────── */
+.rb-repost-label {
+  font-family: 'Oswald', sans-serif;
+  font-size: 0.78rem;
+  color: var(--rb-subtle);
+  padding: 6px 20px 0 76px;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+/* ── Right Sidebar ───────────────────────────────────────── */
+.rb-right-sidebar {
+  padding: 20px 16px;
+  position: sticky;
+  top: 58px;
+  height: calc(100vh - 58px);
+  overflow-y: auto;
+}
+
+.rb-widget {
+  background: var(--rb-surface);
+  border: 1px solid var(--rb-border);
+  border-radius: 8px;
+  padding: 16px;
+  margin-bottom: 16px;
+}
+
+.rb-widget-title {
+  font-family: 'Oswald', sans-serif;
+  font-size: 0.92rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--rb-muted);
+  margin-bottom: 12px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--rb-border);
+}
+
+.rb-trending-tag {
+  display: inline-block;
+  background: var(--rb-surface-2);
+  border: 1px solid var(--rb-border);
+  color: var(--rb-red);
+  font-family: 'Oswald', sans-serif;
+  font-size: 0.82rem;
+  padding: 4px 10px;
+  border-radius: 20px;
+  margin: 3px;
+  cursor: pointer;
+  transition: background 0.12s, border-color 0.12s;
+}
+.rb-trending-tag:hover { background: var(--rb-border); border-color: var(--rb-red); }
+
+.rb-search-box {
+  width: 100%;
+  background: var(--rb-surface-2);
+  border: 1px solid var(--rb-border);
+  color: var(--rb-text);
+  padding: 8px 12px;
+  border-radius: 20px;
+  font-family: 'Oswald', sans-serif;
+  font-size: 0.88rem;
+  margin-bottom: 12px;
+}
+.rb-search-box:focus { border-color: var(--rb-red); outline: none; }
+
+/* ── Filter Banner ───────────────────────────────────────── */
+.rb-filter-banner {
+  background: var(--rb-surface);
+  border-bottom: 1px solid var(--rb-border);
+  padding: 10px 20px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-family: 'Oswald', sans-serif;
+  font-size: 0.88rem;
+  color: var(--rb-muted);
+}
+.rb-filter-banner strong { color: var(--rb-red); }
+.rb-filter-clear {
+  margin-left: auto;
+  color: var(--rb-subtle);
+  font-size: 0.82rem;
+  cursor: pointer;
+}
+.rb-filter-clear:hover { color: var(--rb-text); }
+
+/* ── Load More ───────────────────────────────────────────── */
+.rb-load-more {
+  text-align: center;
+  padding: 20px;
+}
+
+.rb-load-more-btn {
+  font-family: 'Oswald', sans-serif;
+  font-size: 0.88rem;
+  color: var(--rb-muted);
+  border: 1px solid var(--rb-border);
+  padding: 8px 24px;
+  border-radius: 4px;
+  transition: border-color 0.12s, color 0.12s;
+}
+.rb-load-more-btn:hover { border-color: var(--rb-red); color: var(--rb-red); }
+
+/* ── Empty / Loading States ──────────────────────────────── */
+.rb-empty {
+  text-align: center;
+  padding: 60px 20px;
+  color: var(--rb-subtle);
+}
+.rb-empty-icon { font-size: 2.5rem; margin-bottom: 12px; }
+.rb-empty-msg {
+  font-family: 'Oswald', sans-serif;
+  font-size: 1rem;
+  margin-bottom: 6px;
+}
+.rb-empty-sub { font-size: 0.88rem; }
+
+.rb-spinner {
+  width: 28px;
+  height: 28px;
+  border: 3px solid var(--rb-border);
+  border-top-color: var(--rb-red);
+  border-radius: 50%;
+  animation: rb-spin 0.7s linear infinite;
+  margin: 40px auto;
+}
+@keyframes rb-spin { to { transform: rotate(360deg); } }
+
+/* ── Toast Notifications ─────────────────────────────────── */
+.rb-toast-container {
+  position: fixed;
+  bottom: 24px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 9999;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  pointer-events: none;
+}
+
+.rb-toast {
+  background: var(--rb-surface-2);
+  border: 1px solid var(--rb-border);
+  color: var(--rb-text);
+  font-family: 'Oswald', sans-serif;
+  font-size: 0.88rem;
+  padding: 10px 20px;
+  border-radius: 6px;
+  animation: rb-toast-in 0.2s ease, rb-toast-out 0.3s ease 2.5s forwards;
+  white-space: nowrap;
+}
+@keyframes rb-toast-in  { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
+@keyframes rb-toast-out { to { opacity: 0; transform: translateY(10px); } }
+
+/* ── Modal ───────────────────────────────────────────────── */
+.rb-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.7);
+  z-index: 500;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+.rb-modal-overlay.hidden { display: none; }
+
+.rb-modal {
+  background: var(--rb-surface);
+  border: 1px solid var(--rb-border);
+  border-radius: 10px;
+  width: 100%;
+  max-width: 520px;
+  padding: 28px;
+}
+
+.rb-modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+.rb-modal-title {
+  font-family: 'Oswald', sans-serif;
+  font-size: 1.1rem;
+  font-weight: 600;
+}
+.rb-modal-close {
+  color: var(--rb-subtle);
+  font-size: 1.3rem;
+  line-height: 1;
+  cursor: pointer;
+}
+.rb-modal-close:hover { color: var(--rb-text); }
+
+/* ── Form Styles ─────────────────────────────────────────── */
+.rb-form-group {
+  margin-bottom: 16px;
+}
+.rb-form-label {
+  display: block;
+  font-family: 'Oswald', sans-serif;
+  font-size: 0.82rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--rb-muted);
+  margin-bottom: 6px;
+}
+.rb-form-error {
+  color: var(--rb-red);
+  font-size: 0.82rem;
+  margin-top: 4px;
+  font-family: 'Oswald', sans-serif;
+}
+.rb-form-hint {
+  color: var(--rb-subtle);
+  font-size: 0.82rem;
+  margin-top: 4px;
+  font-family: 'Oswald', sans-serif;
+}
+
+/* ── Sign-up / Auth pages ────────────────────────────────── */
+.rb-auth-page {
+  min-height: 100vh;
+  background: var(--rb-bg);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 20px;
+}
+
+.rb-auth-card {
+  background: var(--rb-surface);
+  border: 1px solid var(--rb-border);
+  border-radius: 10px;
+  padding: 36px;
+  width: 100%;
+  max-width: 480px;
+}
+
+.rb-auth-logo {
+  text-align: center;
+  margin-bottom: 28px;
+}
+.rb-auth-logo img { height: 42px; }
+
+.rb-auth-title {
+  font-family: 'Oswald', sans-serif;
+  font-size: 1.5rem;
+  font-weight: 700;
+  text-align: center;
+  margin-bottom: 6px;
+}
+.rb-auth-sub {
+  text-align: center;
+  color: var(--rb-muted);
+  font-size: 0.9rem;
+  margin-bottom: 28px;
+}
+
+/* ── Step indicator (signup) ─────────────────────────────── */
+.rb-steps {
+  display: flex;
+  justify-content: center;
+  gap: 6px;
+  margin-bottom: 28px;
+}
+.rb-step-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--rb-border);
+  transition: background 0.2s;
+}
+.rb-step-dot.active { background: var(--rb-red); }
+.rb-step-dot.done   { background: var(--rb-green); }
+
+/* ── Team grid (signup) ──────────────────────────────────── */
+.rb-team-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+  gap: 10px;
+  margin-bottom: 24px;
+}
+
+.rb-team-card {
+  border: 2px solid var(--rb-border);
+  border-radius: 8px;
+  padding: 12px 8px;
+  text-align: center;
+  cursor: pointer;
+  transition: border-color 0.15s, background 0.15s;
+}
+.rb-team-card:hover { border-color: var(--rb-muted); background: var(--rb-surface-2); }
+.rb-team-card.selected { border-color: var(--rb-red); background: rgba(200,16,46,0.08); }
+
+.rb-team-circle {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Oswald', sans-serif;
+  font-weight: 700;
+  font-size: 0.78rem;
+  color: #fff;
+  margin: 0 auto 8px;
+}
+
+.rb-team-name {
+  font-family: 'Oswald', sans-serif;
+  font-size: 0.7rem;
+  color: var(--rb-muted);
+  line-height: 1.3;
+}
+
+/* ── Profile page ────────────────────────────────────────── */
+.rb-profile-header {
+  padding: 24px 20px;
+  border-bottom: 1px solid var(--rb-border);
+  display: flex;
+  gap: 16px;
+  align-items: flex-start;
+}
+
+.rb-profile-avatar {
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Oswald', sans-serif;
+  font-weight: 700;
+  font-size: 1.3rem;
+  color: #fff;
+  flex-shrink: 0;
+}
+
+.rb-profile-name {
+  font-family: 'Oswald', sans-serif;
+  font-size: 1.25rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.rb-profile-handle {
+  font-family: 'Oswald', sans-serif;
+  font-size: 0.88rem;
+  color: var(--rb-muted);
+  margin-bottom: 8px;
+}
+
+.rb-profile-bio {
+  font-size: 0.92rem;
+  color: var(--rb-muted);
+  margin-bottom: 8px;
+}
+
+.rb-profile-meta {
+  font-family: 'Oswald', sans-serif;
+  font-size: 0.8rem;
+  color: var(--rb-subtle);
+  display: flex;
+  gap: 12px;
+}
+
+.rb-badge-verified {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-family: 'Oswald', sans-serif;
+  font-size: 0.72rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  background: rgba(200,16,46,0.15);
+  color: var(--rb-red);
+  padding: 2px 8px;
+  border-radius: 20px;
+}
+
+.rb-badge-pending {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-family: 'Oswald', sans-serif;
+  font-size: 0.72rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  background: rgba(160,174,192,0.15);
+  color: var(--rb-muted);
+  padding: 2px 8px;
+  border-radius: 20px;
+}
+
+/* ── Admin page ──────────────────────────────────────────── */
+.rb-admin-layout {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 30px 20px;
+}
+
+.rb-admin-title {
+  font-family: 'Oswald', sans-serif;
+  font-size: 1.6rem;
+  font-weight: 700;
+  margin-bottom: 6px;
+}
+.rb-admin-sub {
+  color: var(--rb-muted);
+  font-size: 0.9rem;
+  margin-bottom: 30px;
+}
+
+.rb-admin-section-title {
+  font-family: 'Oswald', sans-serif;
+  font-size: 0.88rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--rb-red);
+  border-bottom: 1px solid var(--rb-border);
+  padding-bottom: 8px;
+  margin-bottom: 16px;
+}
+
+.rb-admin-user-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 0;
+  border-bottom: 1px solid var(--rb-border);
+}
+
+.rb-admin-user-info { flex: 1; }
+.rb-admin-user-name {
+  font-family: 'Oswald', sans-serif;
+  font-size: 0.92rem;
+  font-weight: 600;
+}
+.rb-admin-user-detail {
+  font-size: 0.82rem;
+  color: var(--rb-muted);
+}
+
+.rb-admin-btn-approve {
+  font-family: 'Oswald', sans-serif;
+  font-size: 0.8rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  background: rgba(56,161,105,0.15);
+  color: var(--rb-green);
+  border: 1px solid var(--rb-green);
+  padding: 5px 14px;
+  border-radius: 4px;
+  transition: background 0.12s;
+}
+.rb-admin-btn-approve:hover { background: rgba(56,161,105,0.3); }
+
+.rb-admin-btn-reject {
+  font-family: 'Oswald', sans-serif;
+  font-size: 0.8rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  background: rgba(200,16,46,0.12);
+  color: var(--rb-red);
+  border: 1px solid var(--rb-red);
+  padding: 5px 14px;
+  border-radius: 4px;
+  transition: background 0.12s;
+}
+.rb-admin-btn-reject:hover { background: rgba(200,16,46,0.25); }
+
+/* ── Single Post Page ────────────────────────────────────── */
+.rb-post-page {
+  max-width: 620px;
+  margin: 0 auto;
+  border-left: 1px solid var(--rb-border);
+  border-right: 1px solid var(--rb-border);
+  min-height: 100vh;
+}
+
+.rb-post-page .rb-post {
+  padding: 24px 20px;
+  border-bottom: 2px solid var(--rb-border);
+}
+
+.rb-post-page .rb-post-content {
+  font-size: 1.15rem;
+}
+
+.rb-replies-label {
+  font-family: 'Oswald', sans-serif;
+  font-size: 0.82rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--rb-subtle);
+  padding: 12px 20px;
+  border-bottom: 1px solid var(--rb-border);
+}
+
+/* ── Login prompt banner ─────────────────────────────────── */
+.rb-login-prompt {
+  background: var(--rb-surface);
+  border: 1px solid var(--rb-border);
+  border-radius: 8px;
+  padding: 20px;
+  text-align: center;
+  margin: 20px;
+}
+.rb-login-prompt p {
+  font-family: 'Oswald', sans-serif;
+  color: var(--rb-muted);
+  margin-bottom: 14px;
+}
+
+/* ── Responsive tweaks ───────────────────────────────────── */
+@media (max-width: 480px) {
+  .rb-header { padding: 0 14px; }
+  .rb-header-eyebrow { display: none; }
+  .rb-post, .rb-compose { padding: 12px 14px; }
+  .rb-auth-card { padding: 24px 18px; }
+  .rb-engagement { gap: 16px; }
+}

@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Profile — Rumblr</title>
+  <link rel="icon" href="../assets/images/rumblr-logo.png">
+  <link rel="stylesheet" href="../assets/css/rumblr.css">
+</head>
+<body class="rumblr-page">
+
+<header class="rb-header">
+  <a href="/rumblr/" class="rb-header-logo">
+    <img src="../assets/images/rumblr-logo.png" alt="Rumblr">
+  </a>
+  <div class="rb-header-actions">
+    <a href="/rumblr/" class="rb-btn rb-btn-ghost">← Feed</a>
+  </div>
+</header>
+
+<div class="rb-post-page">
+
+  <!-- Profile header -->
+  <div id="rb-profile-header" class="rb-profile-header">
+    <div id="rb-profile-avatar" class="rb-profile-avatar" style="background:#555">?</div>
+    <div>
+      <div class="rb-profile-name">
+        <span id="rb-profile-name-text">Loading…</span>
+        <span id="rb-profile-badge"></span>
+      </div>
+      <div id="rb-profile-handle" class="rb-profile-handle"></div>
+      <div id="rb-profile-bio"    class="rb-profile-bio"></div>
+      <div class="rb-profile-meta">
+        <span id="rb-profile-team"></span>
+        <span>·</span>
+        <span id="rb-profile-joined"></span>
+        <span>·</span>
+        <span id="rb-profile-post-count"></span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Posts label -->
+  <div class="rb-replies-label">Rumbl'ings</div>
+
+  <!-- Spinner -->
+  <div id="rb-spinner" class="rb-spinner" style="display:none;"></div>
+
+  <!-- User's posts -->
+  <div id="rb-profile-feed"></div>
+
+  <div class="rb-load-more">
+    <button id="rb-load-more-btn" class="rb-load-more-btn" style="display:none;">
+      Load more
+    </button>
+  </div>
+
+</div>
+
+<script type="module">
+  import { firestore } from '../assets/js/firebase-config.js';
+  import {
+    doc, getDoc, collection, query,
+    where, orderBy, limit, getDocs, startAfter
+  } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js';
+  import { renderPost } from '../assets/js/rumblr-app.js';
+
+  const PAGE_SIZE = 20;
+  const uid = new URLSearchParams(location.search).get('uid');
+  let lastDoc = null;
+
+  async function loadProfile() {
+    if (!uid) { document.getElementById('rb-profile-name-text').textContent = 'User not found'; return; }
+
+    const snap = await getDoc(doc(firestore, 'users', uid));
+    if (!snap.exists()) { document.getElementById('rb-profile-name-text').textContent = 'User not found'; return; }
+
+    const u = snap.data();
+
+    document.title = `${u.display_name} — Rumblr`;
+    const avatar = document.getElementById('rb-profile-avatar');
+    avatar.style.background = u.team_color || '#555';
+    avatar.textContent = u.team_abbrev || '?';
+
+    document.getElementById('rb-profile-name-text').textContent = u.display_name;
+    document.getElementById('rb-profile-handle').textContent = u.handle;
+    document.getElementById('rb-profile-bio').textContent = u.bio || '';
+    document.getElementById('rb-profile-team').textContent = u.team_name || '';
+    document.getElementById('rb-profile-post-count').textContent = `${u.post_count || 0} Rumbl'ings`;
+
+    const badge = document.getElementById('rb-profile-badge');
+    if (u.verified) {
+      badge.innerHTML = '<span class="rb-badge-verified">⚾ Verified</span>';
+    } else {
+      badge.innerHTML = '<span class="rb-badge-pending">⏳ Pending</span>';
+    }
+
+    if (u.joined_at?.toDate) {
+      const d = u.joined_at.toDate();
+      document.getElementById('rb-profile-joined').textContent =
+        'Joined ' + d.toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
+    }
+
+    loadPosts();
+  }
+
+  async function loadPosts(reset = true) {
+    const feed = document.getElementById('rb-profile-feed');
+    const spinner = document.getElementById('rb-spinner');
+    const loadMoreBtn = document.getElementById('rb-load-more-btn');
+
+    spinner.style.display = 'block';
+    if (reset) { feed.innerHTML = ''; lastDoc = null; }
+
+    let q = query(
+      collection(firestore, 'posts'),
+      where('author_uid', '==', uid),
+      orderBy('timestamp', 'desc'),
+      limit(PAGE_SIZE)
+    );
+    if (lastDoc) {
+      q = query(
+        collection(firestore, 'posts'),
+        where('author_uid', '==', uid),
+        orderBy('timestamp', 'desc'),
+        startAfter(lastDoc),
+        limit(PAGE_SIZE)
+      );
+    }
+
+    const snap = await getDocs(q);
+    spinner.style.display = 'none';
+
+    if (snap.empty && reset) {
+      feed.innerHTML = '<div class="rb-empty"><div class="rb-empty-icon">🤫</div>' +
+        '<div class="rb-empty-msg">No Rumbl\'ings yet.</div></div>';
+      return;
+    }
+
+    snap.forEach(d => feed.appendChild(renderPost(d.id, d.data())));
+    lastDoc = snap.docs[snap.docs.length - 1];
+    loadMoreBtn.style.display = snap.docs.length === PAGE_SIZE ? 'block' : 'none';
+  }
+
+  document.getElementById('rb-load-more-btn').addEventListener('click', () => loadPosts(false));
+  document.addEventListener('DOMContentLoaded', loadProfile);
+</script>
+</body>
+</html>

@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sign In — Rumblr</title>
+  <link rel="icon" href="../assets/images/rumblr-logo.png">
+  <link rel="stylesheet" href="../assets/css/rumblr.css">
+</head>
+<body class="rumblr-page rb-auth-page">
+
+<div class="rb-auth-card">
+
+  <div class="rb-auth-logo">
+    <img src="../assets/images/rumblr-logo.png" alt="Rumblr">
+  </div>
+  <div class="rb-auth-title">Sign In</div>
+  <div class="rb-auth-sub">Welcome back to Rumblr</div>
+
+  <form id="rb-login-form">
+    <div class="rb-form-group">
+      <label class="rb-form-label" for="rb-login-email">Email Address</label>
+      <input id="rb-login-email" type="email" placeholder="you@example.com" autocomplete="email">
+    </div>
+
+    <div class="rb-form-group">
+      <label class="rb-form-label" for="rb-login-pass">Password</label>
+      <input id="rb-login-pass" type="password" placeholder="Your password" autocomplete="current-password">
+    </div>
+
+    <div id="rb-login-error" class="rb-form-error" style="margin-bottom:12px;"></div>
+
+    <button type="submit" class="rb-btn rb-btn-primary" style="width:100%;justify-content:center;">
+      Sign In
+    </button>
+  </form>
+
+  <div style="text-align:center;margin-top:16px;font-size:0.85rem;color:var(--rb-subtle);">
+    <a id="rb-forgot-link" href="#" style="color:var(--rb-muted);">Forgot password?</a>
+  </div>
+
+  <hr style="border:none;border-top:1px solid var(--rb-border);margin:20px 0;">
+
+  <p style="text-align:center;font-size:0.88rem;color:var(--rb-muted);">
+    Don't have an account?
+    <a href="/rumblr/signup.html" style="color:var(--rb-red);font-family:'Oswald',sans-serif;">Join Rumblr →</a>
+  </p>
+
+  <p style="text-align:center;margin-top:8px;">
+    <a href="/rumblr/" style="font-size:0.82rem;color:var(--rb-subtle);">← Back to feed</a>
+  </p>
+
+</div>
+
+<div class="rb-toast-container"></div>
+
+<script type="module">
+  import { initLogin } from '../assets/js/rumblr-auth.js';
+  document.addEventListener('DOMContentLoaded', initLogin);
+</script>
+</body>
+</html>

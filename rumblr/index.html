@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Rumblr — The Sandlot Dynasty League</title>
+  <meta name="description" content="Rumblr: TSDL's social media home. Follow the writers, track the buzz, post your takes.">
+  <link rel="icon" href="../assets/images/rumblr-logo.png">
+  <link rel="stylesheet" href="../assets/css/rumblr.css">
+</head>
+<body class="rumblr-page">
+
+<!-- ── Header ──────────────────────────────────────────── -->
+<header class="rb-header">
+  <a href="/rumblr/" class="rb-header-logo">
+    <img src="../assets/images/rumblr-logo.png" alt="Rumblr">
+  </a>
+  <span class="rb-header-eyebrow">ESTN Network &nbsp;|&nbsp; The Sandlot Dynasty League</span>
+  <div class="rb-header-actions">
+    <!-- Shown when logged out -->
+    <a id="rb-signin-btn" href="/rumblr/login.html" class="rb-btn rb-btn-outline">Sign In</a>
+    <a href="/rumblr/signup.html" class="rb-btn rb-btn-primary">Join Rumblr</a>
+    <!-- Shown when logged in -->
+    <div id="rb-user-menu" style="display:none; align-items:center; gap:10px;">
+      <a id="rb-profile-link" href="/rumblr/profile.html" class="rb-header-avatar rb-post-avatar"
+         style="width:34px;height:34px;font-size:0.72rem;text-decoration:none;">?</a>
+      <button id="rb-signout-btn" class="rb-btn rb-btn-ghost" style="display:none;">Sign Out</button>
+    </div>
+  </div>
+</header>
+
+<!-- ── 3-column layout ─────────────────────────────────── -->
+<div class="rb-layout">
+
+  <!-- Left Sidebar: Authors -->
+  <aside class="rb-left-sidebar">
+    <div class="rb-sidebar-label">Writers</div>
+    <div id="rb-author-sidebar"></div>
+
+    <hr class="rb-sidebar-divider">
+    <div class="rb-sidebar-label">Navigation</div>
+    <a href="/about/" class="rb-sidebar-link">
+      <span>🏟</span> ESTN Network
+    </a>
+    <a href="/" class="rb-sidebar-link">
+      <span>📰</span> The Tribune
+    </a>
+  </aside>
+
+  <!-- Main Feed -->
+  <main class="rb-feed-column">
+
+    <!-- Feed header + tabs -->
+    <div class="rb-feed-header">
+      <div class="rb-feed-title">Rumbl'ings</div>
+      <div class="rb-tabs">
+        <div class="rb-tab active" data-tab="all">All</div>
+        <div class="rb-tab" data-tab="writers">Writers</div>
+        <div class="rb-tab" data-tab="teams">Teams</div>
+      </div>
+    </div>
+
+    <!-- Active filter banner -->
+    <div id="rb-filter-banner" class="rb-filter-banner" style="display:none;">
+      <span class="rb-filter-label"></span>
+      <span class="rb-filter-clear" onclick="window.__rumblrClearFilter()">✕ Clear</span>
+    </div>
+
+    <!-- Welcome banner (shown after signup redirect) -->
+    <div id="rb-welcome-banner" style="display:none; padding:14px 20px; background:rgba(56,161,105,0.12);
+         border-bottom:1px solid #38A169; font-family:'Oswald',sans-serif; font-size:0.9rem; color:#68D391;">
+      ⚾ Welcome to Rumblr! Your account is pending verification by the commissioner.
+      You can post and interact while you wait.
+    </div>
+
+    <!-- Compose bar (hidden when logged out) -->
+    <div id="rb-compose-wrap" style="display:none;">
+      <div class="rb-compose">
+        <div id="rb-compose-avatar" class="rb-compose-avatar" style="background:#555">?</div>
+        <div class="rb-compose-body">
+          <textarea id="rb-compose-input" class="rb-compose-input"
+            placeholder="What's happening in the league?" rows="3" maxlength="300"></textarea>
+          <div class="rb-compose-footer">
+            <span id="rb-char-counter" class="rb-char-counter">280</span>
+            <button id="rb-compose-post-btn" class="rb-btn rb-btn-primary" disabled>Post</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Spinner -->
+    <div id="rb-spinner" class="rb-spinner" style="display:none;"></div>
+
+    <!-- Feed -->
+    <div id="rb-feed"></div>
+
+    <!-- Load more -->
+    <div class="rb-load-more">
+      <button id="rb-load-more-btn" class="rb-load-more-btn" style="display:none;">
+        Load more Rumbl'ings
+      </button>
+    </div>
+
+  </main>
+
+  <!-- Right Sidebar: Trending hashtags -->
+  <aside class="rb-right-sidebar">
+    <div class="rb-widget">
+      <div class="rb-widget-title">Search Hashtags</div>
+      <input id="rb-hashtag-search" class="rb-search-box" type="text"
+             placeholder="#TSDL, #TradeAlert …" autocomplete="off">
+      <div class="rb-widget-title" style="margin-top:8px;">Trending</div>
+      <div id="rb-trending-tags">
+        <span class="rb-trending-tag" onclick="window.__rumblrHashtag('TSDL')">#TSDL</span>
+        <span class="rb-trending-tag" onclick="window.__rumblrHashtag('SandlotDynasty')">#SandlotDynasty</span>
+        <span class="rb-trending-tag" onclick="window.__rumblrHashtag('TradeAlert')">#TradeAlert</span>
+        <span class="rb-trending-tag" onclick="window.__rumblrHashtag('Rumblr')">#Rumblr</span>
+        <span class="rb-trending-tag" onclick="window.__rumblrHashtag('PowerRankings')">#PowerRankings</span>
+        <span class="rb-trending-tag" onclick="window.__rumblrHashtag('Waiver')">#Waiver</span>
+      </div>
+    </div>
+
+    <div class="rb-widget">
+      <div class="rb-widget-title">About Rumblr</div>
+      <p style="font-size:0.85rem; color:var(--rb-muted); line-height:1.6;">
+        Rumblr is the official social hub of The Sandlot Dynasty League on the ESTN Network.
+        Writers post scoops, team reps share takes, and the whole league talks baseball.
+      </p>
+    </div>
+
+    <div style="text-align:center; margin-top:8px;">
+      <img src="../assets/images/estn-logo.png" alt="ESTN" style="height:28px; opacity:0.5;">
+    </div>
+  </aside>
+
+</div><!-- /.rb-layout -->
+
+<!-- Login prompt modal -->
+<div id="rb-login-modal" class="rb-modal-overlay hidden">
+  <div class="rb-modal">
+    <div class="rb-modal-header">
+      <span class="rb-modal-title">Sign in to Rumblr</span>
+      <span class="rb-modal-close" onclick="document.getElementById('rb-login-modal').classList.add('hidden')">✕</span>
+    </div>
+    <p style="color:var(--rb-muted);margin-bottom:20px;font-size:0.9rem;">
+      You need to be signed in to like, reply, or repost.
+    </p>
+    <div style="display:flex;gap:10px;">
+      <a href="/rumblr/login.html" class="rb-btn rb-btn-primary" style="flex:1;justify-content:center;">Sign In</a>
+      <a href="/rumblr/signup.html" class="rb-btn rb-btn-outline" style="flex:1;justify-content:center;">Join</a>
+    </div>
+  </div>
+</div>
+
+<!-- Toast container -->
+<div class="rb-toast-container"></div>
+
+<script type="module">
+  import { initFeed, clearFilter } from '../assets/js/rumblr-app.js';
+  import { initSignOut } from '../assets/js/rumblr-auth.js';
+
+  document.addEventListener('DOMContentLoaded', () => {
+    initFeed();
+    initSignOut();
+
+    // Show welcome banner after signup redirect
+    if (new URLSearchParams(location.search).get('welcome') === '1') {
+      document.getElementById('rb-welcome-banner').style.display = 'block';
+    }
+
+    // Clear filter global (used by filter banner)
+    window.__rumblrClearFilter = clearFilter;
+  });
+</script>
+</body>
+</html>

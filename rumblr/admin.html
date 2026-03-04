@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Rumblr Admin — TSDL</title>
+  <link rel="icon" href="../assets/images/rumblr-logo.png">
+  <link rel="stylesheet" href="../assets/css/rumblr.css">
+  <!-- Instruct search engines not to index this page -->
+  <meta name="robots" content="noindex, nofollow">
+</head>
+<body class="rumblr-page">
+
+<header class="rb-header">
+  <a href="/rumblr/" class="rb-header-logo">
+    <img src="../assets/images/rumblr-logo.png" alt="Rumblr">
+  </a>
+  <span style="font-family:'Oswald',sans-serif;font-size:0.85rem;color:var(--rb-red);
+               letter-spacing:0.1em;text-transform:uppercase;">Admin</span>
+  <div class="rb-header-actions">
+    <a href="/rumblr/" class="rb-btn rb-btn-ghost">← Feed</a>
+  </div>
+</header>
+
+<!-- Access denied message -->
+<div id="rb-admin-gate" style="display:none;padding:60px 20px;text-align:center;">
+  <div style="font-size:2rem;margin-bottom:12px;">🚫</div>
+  <div style="font-family:'Oswald',sans-serif;font-size:1.1rem;margin-bottom:8px;">Access Denied</div>
+  <div id="rb-access-error" style="display:none;color:var(--rb-muted);font-size:0.9rem;">
+    You don't have admin privileges. Make sure you're signed in as the commissioner account
+    and that your Firebase UID is set in <code>rumblr-admin.js</code>.
+  </div>
+</div>
+
+<!-- Admin dashboard -->
+<div id="rb-admin-dash" class="rb-admin-layout" style="display:none;">
+
+  <div class="rb-admin-title">Rumblr Admin</div>
+  <div class="rb-admin-sub">Manage accounts and moderate content</div>
+
+  <!-- ── Pending Verifications ───────────────────────── -->
+  <section style="margin-bottom:40px;">
+    <div class="rb-admin-section-title">
+      Pending Verifications
+      <span id="rb-pending-badge" style="background:var(--rb-red);color:#fff;
+             font-size:0.7rem;padding:1px 8px;border-radius:20px;margin-left:8px;">0</span>
+    </div>
+    <p style="font-size:0.85rem;color:var(--rb-muted);margin-bottom:16px;">
+      These accounts signed up but haven't been verified yet. Approve to grant the ⚾ badge.
+    </p>
+    <div id="rb-pending-list"></div>
+  </section>
+
+  <!-- ── All Accounts ────────────────────────────────── -->
+  <section style="margin-bottom:40px;">
+    <div class="rb-admin-section-title">All Accounts (last 50)</div>
+    <div id="rb-all-users-list"></div>
+  </section>
+
+  <!-- ── Recent Posts ────────────────────────────────── -->
+  <section style="margin-bottom:40px;">
+    <div class="rb-admin-section-title">Recent Posts (last 50)</div>
+    <p style="font-size:0.85rem;color:var(--rb-muted);margin-bottom:16px;">
+      Delete any inappropriate content. This action is permanent.
+    </p>
+    <div id="rb-recent-posts-list"></div>
+  </section>
+
+</div><!-- /.rb-admin-layout -->
+
+<div class="rb-toast-container"></div>
+
+<script type="module">
+  import { initAdmin } from '../assets/js/rumblr-admin.js';
+  document.addEventListener('DOMContentLoaded', initAdmin);
+</script>
+</body>
+</html>
