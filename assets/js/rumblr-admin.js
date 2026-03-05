@@ -41,9 +41,10 @@ export function initAdmin() {
     const uidEl = document.getElementById('rb-my-uid');
     if (uidEl) uidEl.textContent = user.uid;
 
-    await loadPendingUsers();
-    await loadAllUsers();
-    await loadRecentPosts();
+    try { await loadPendingUsers(); } catch (e) { console.error('loadPendingUsers:', e); }
+    try { await loadAllUsers(); }    catch (e) { console.error('loadAllUsers:', e); }
+    loadAIWriters();
+    try { await loadRecentPosts(); } catch (e) { console.error('loadRecentPosts:', e); }
     initWriterPanels();
   });
 }
@@ -58,8 +59,7 @@ async function loadPendingUsers() {
 
   const snap = await getDocs(query(
     collection(firestore, 'users'),
-    where('verified', '==', false),
-    orderBy('joined_at', 'asc')
+    where('verified', '==', false)
   ));
 
   if (badge) badge.textContent = snap.size;
@@ -162,6 +162,40 @@ async function loadAllUsers() {
       row.remove();
       showToast('Profile deleted.');
     });
+    container.appendChild(row);
+  });
+}
+
+// ══════════════════════════════════════════════════════════
+// ESTN AI Writers (config-driven, not from Firestore)
+// ══════════════════════════════════════════════════════════
+function loadAIWriters() {
+  const container = document.getElementById('rb-ai-writers-list');
+  if (!container) return;
+
+  container.innerHTML = '';
+  AI_WRITERS.forEach(w => {
+    const row = document.createElement('div');
+    row.className = 'rb-admin-user-row';
+    row.innerHTML = `
+      <div class="rb-post-avatar rb-post-avatar-img" style="background:${w.color};width:36px;height:36px;flex-shrink:0;overflow:hidden;">
+        <img src="${w.image}" alt="${escHtml(w.name)}"
+             style="width:100%;height:100%;object-fit:cover;"
+             onerror="this.style.display='none';">
+      </div>
+      <div class="rb-admin-user-info" style="flex:1;">
+        <div class="rb-admin-user-name">
+          ${escHtml(w.name)}
+          <span class="rb-verified" title="Verified">⚾</span>
+        </div>
+        <div class="rb-admin-user-detail">${escHtml(w.handle)}</div>
+        <div class="rb-admin-user-detail" style="color:var(--rb-subtle);font-size:0.78rem;">
+          ${(w.stats?.followers||0).toLocaleString()} followers &nbsp;·&nbsp; ${(w.stats?.posts||0).toLocaleString()} posts
+        </div>
+      </div>
+      <a href="profile.html?handle=${encodeURIComponent(w.handle)}" target="_blank"
+         class="rb-btn rb-btn-ghost rb-btn-sm" style="font-size:0.72rem;">View Profile</a>
+    `;
     container.appendChild(row);
   });
 }
