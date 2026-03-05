@@ -19,25 +19,27 @@ import {
 import { showToast } from './rumblr-app.js';
 
 // ── Team data (color_1 from team_season_branding) ─────────
+// image: path relative to /rumblr/ pages (GitHub Pages URL)
+const TEAM_IMG_BASE = '../assets/images/rumblr/team%20profile%20images/2026/';
 export const TEAM_DATA = {
-  ARI: { name: 'Arizona Diamondbacks',    color: '#2CCCD3', abbrev: 'ARI' },
-  ATL: { name: 'Atlanta Braves',          color: '#002855', abbrev: 'ATL' },
-  BOS: { name: 'Boston Red Sox',          color: '#0C2340', abbrev: 'BOS' },
-  CHC: { name: 'Chicago Cubs',            color: '#002F6C', abbrev: 'CHC' },
-  CIN: { name: 'Cincinnati Reds',         color: '#BA0C2F', abbrev: 'CIN' },
-  COL: { name: 'Colorado Rockies',        color: '#330072', abbrev: 'COL' },
-  HOU: { name: 'Houston Astros',          color: '#FF8200', abbrev: 'HOU' },
-  LVA: { name: 'Las Vegas Athletics',     color: '#006341', abbrev: 'LVA' },
-  MIA: { name: 'Miami Marlins',           color: '#00A3E0', abbrev: 'MIA' },
-  MIL: { name: 'Milwaukee Brewers',       color: '#13294B', abbrev: 'MIL' },
-  NYY: { name: 'New York Yankees',        color: '#0C2340', abbrev: 'NYY' },
-  PHI: { name: 'Philadelphia Phillies',   color: '#002D72', abbrev: 'PHI' },
-  SAN: { name: 'San Diego Padres',        color: '#3E342F', abbrev: 'SAN' },
-  SEA: { name: 'Seattle Mariners',        color: '#0C2340', abbrev: 'SEA' },
-  STL: { name: 'St. Louis Cardinals',     color: '#0C2340', abbrev: 'STL' },
-  TEX: { name: 'Texas Rangers',           color: '#6CACE4', abbrev: 'TEX' },
-  TOR: { name: 'Toronto Blue Jays',       color: '#041E42', abbrev: 'TOR' },
-  WSH: { name: 'Washington Nationals',    color: '#BA0C2F', abbrev: 'WSH' },
+  ARI: { name: 'Arizona Diamondbacks',    color: '#2CCCD3', abbrev: 'ARI', image: TEAM_IMG_BASE + 'ARI%202026.jpg' },
+  ATL: { name: 'Atlanta Braves',          color: '#002855', abbrev: 'ATL', image: TEAM_IMG_BASE + 'ATL%202026.jpg' },
+  BOS: { name: 'Boston Red Sox',          color: '#0C2340', abbrev: 'BOS', image: TEAM_IMG_BASE + 'BOS%202026.jpg' },
+  CHC: { name: 'Chicago Cubs',            color: '#002F6C', abbrev: 'CHC', image: TEAM_IMG_BASE + 'CHC%202026.jpg' },
+  CIN: { name: 'Cincinnati Reds',         color: '#BA0C2F', abbrev: 'CIN', image: TEAM_IMG_BASE + 'CIN%202026.jpg' },
+  COL: { name: 'Colorado Rockies',        color: '#330072', abbrev: 'COL', image: TEAM_IMG_BASE + 'COL%202026.jpg' },
+  HOU: { name: 'Houston Astros',          color: '#FF8200', abbrev: 'HOU', image: TEAM_IMG_BASE + 'HOU%202026.jpg' },
+  LVA: { name: 'Las Vegas Athletics',     color: '#006341', abbrev: 'LVA', image: TEAM_IMG_BASE + 'LV%202026.jpg' },
+  MIA: { name: 'Miami Marlins',           color: '#00A3E0', abbrev: 'MIA', image: TEAM_IMG_BASE + 'MIA%202026.jpg' },
+  MIL: { name: 'Milwaukee Brewers',       color: '#13294B', abbrev: 'MIL', image: TEAM_IMG_BASE + 'MIL%202026.jpg' },
+  NYY: { name: 'New York Yankees',        color: '#0C2340', abbrev: 'NYY', image: TEAM_IMG_BASE + 'NYY%202026.jpg' },
+  PHI: { name: 'Philadelphia Phillies',   color: '#002D72', abbrev: 'PHI', image: TEAM_IMG_BASE + 'PHI%202026.jpg' },
+  SAN: { name: 'San Diego Padres',        color: '#3E342F', abbrev: 'SAN', image: TEAM_IMG_BASE + 'SD%202026.jpg' },
+  SEA: { name: 'Seattle Mariners',        color: '#0C2340', abbrev: 'SEA', image: TEAM_IMG_BASE + 'SEA%202026.jpg' },
+  STL: { name: 'St. Louis Cardinals',     color: '#0C2340', abbrev: 'STL', image: TEAM_IMG_BASE + 'STL%202026.jpg' },
+  TEX: { name: 'Texas Rangers',           color: '#6CACE4', abbrev: 'TEX', image: TEAM_IMG_BASE + 'TEX%202026.jpg' },
+  TOR: { name: 'Toronto Blue Jays',       color: '#041E42', abbrev: 'TOR', image: TEAM_IMG_BASE + 'TOR%202026.jpg' },
+  WSH: { name: 'Washington Nationals',    color: '#BA0C2F', abbrev: 'WSH', image: TEAM_IMG_BASE + 'WSH%202026.jpg' },
 };
 
 const MAX_CHARS = 280;
@@ -142,10 +144,12 @@ export function initSignup() {
       const card = document.createElement('div');
       card.className = 'rb-team-card';
       card.dataset.teamId = id;
-      card.innerHTML = `
-        <div class="rb-team-circle" style="background:${t.color}">${t.abbrev}</div>
-        <div class="rb-team-name">${t.name}</div>
-      `;
+      const logoHtml = t.image
+        ? `<img class="rb-team-logo" src="${t.image}" alt="${t.abbrev}"
+               onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
+           <div class="rb-team-circle" style="background:${t.color};display:none;">${t.abbrev}</div>`
+        : `<div class="rb-team-circle" style="background:${t.color}">${t.abbrev}</div>`;
+      card.innerHTML = `${logoHtml}<div class="rb-team-name">${t.name}</div>`;
       card.addEventListener('click', () => {
         grid.querySelectorAll('.rb-team-card').forEach(c => c.classList.remove('selected'));
         card.classList.add('selected');
@@ -179,16 +183,24 @@ export function initSignup() {
   if (step1Next) {
     step1Next.addEventListener('click', () => {
       if (!selectedTeam) return;
+      const t = TEAM_DATA[selectedTeam];
       // Auto-fill handle suggestion
       const handleInput = document.getElementById('rb-handle');
       if (handleInput && !handleInput.value) {
-        handleInput.value = `@${TEAM_DATA[selectedTeam].abbrev}Official`;
+        handleInput.value = `@${t.abbrev}Official`;
       }
-      // Show avatar preview
-      const prevCircle = document.getElementById('rb-preview-circle');
-      if (prevCircle) {
-        prevCircle.style.background = TEAM_DATA[selectedTeam].color;
-        prevCircle.textContent = TEAM_DATA[selectedTeam].abbrev;
+      // Pre-fill avatar URL with team logo image (user can override)
+      const avatarInput = document.getElementById('rb-avatar-url');
+      if (avatarInput && !avatarInput.value && t.image) {
+        avatarInput.value = t.image;
+        // Trigger preview
+        const preview = document.getElementById('rb-avatar-preview');
+        const previewImg = document.getElementById('rb-avatar-preview-img');
+        if (preview && previewImg) {
+          previewImg.src = t.image;
+          preview.style.display = 'block';
+          previewImg.onerror = () => { preview.style.display = 'none'; };
+        }
       }
       goToStep(2);
     });
@@ -199,13 +211,24 @@ export function initSignup() {
   if (step2Next) {
     step2Next.addEventListener('click', () => {
       if (!validateStep2()) return;
-      // Populate review
       const t = TEAM_DATA[selectedTeam];
       setText('rb-review-name',   document.getElementById('rb-display-name')?.value || '');
       setText('rb-review-handle', document.getElementById('rb-handle')?.value || '');
       setText('rb-review-team',   t.name);
-      const rc = document.getElementById('rb-review-circle');
-      if (rc) { rc.style.background = t.color; rc.textContent = t.abbrev; }
+      // Review avatar: show team logo or colored circle
+      const rc = document.getElementById('rb-preview-circle');
+      const avatarUrl = document.getElementById('rb-avatar-url')?.value.trim();
+      if (rc) {
+        if (avatarUrl) {
+          rc.innerHTML = `<img src="${avatarUrl}" alt="${t.abbrev}"
+            style="width:100%;height:100%;object-fit:cover;border-radius:50%;"
+            onerror="this.style.display='none';this.parentElement.style.background='${t.color}';this.parentElement.textContent='${t.abbrev}';">`;
+          rc.style.background = 'transparent';
+        } else {
+          rc.style.background = t.color;
+          rc.textContent = t.abbrev;
+        }
+      }
       goToStep(3);
     });
   }

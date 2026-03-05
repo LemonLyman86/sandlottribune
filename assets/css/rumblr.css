@@ -834,6 +834,16 @@ input::placeholder, textarea::placeholder { color: var(--rb-subtle); }
   margin: 0 auto 8px;
 }
 
+.rb-team-logo {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  object-fit: cover;
+  margin: 0 auto 8px;
+  display: block;
+  border: 2px solid var(--rb-border);
+}
+
 .rb-team-name {
   font-family: 'Oswald', sans-serif;
   font-size: 0.7rem;

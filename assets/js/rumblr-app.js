@@ -19,24 +19,25 @@ const POSTS_COL    = collection(firestore, 'posts');
 
 // ── AI Writers config ──────────────────────────────────────
 export const AI_WRITERS = [
-  { name: 'Jeff Passan',     handle: '@JeffPassan',    color: '#1E3A5F', initials: 'JP', image: '../assets/images/rumblr/jeff_passan.png' },
-  { name: 'Ken Rosenthal',   handle: '@Ken_Rosenthal', color: '#C8102E', initials: 'KR', image: '../assets/images/rumblr/ken_rosenthal.png' },
-  { name: 'Bob Nightengale', handle: '@BNightengale',  color: '#574C3F', initials: 'BN', image: '../assets/images/rumblr/bob_nightengale.png' },
-  { name: 'Jon Heyman',      handle: '@JonHeyman',     color: '#2E6B3E', initials: 'JH', image: '../assets/images/rumblr/jon_heyman.png' },
-  { name: 'Buster Olney',    handle: '@Buster_ESPN',   color: '#8B4513', initials: 'BO', image: '../assets/images/rumblr/buster_olney.png' },
-  { name: 'Tim Kurkjian',    handle: '@TKurkjian',     color: '#4B0082', initials: 'TK', image: '../assets/images/rumblr/tim_kurkjian.png' },
-  { name: 'Keith Law',       handle: '@Keithlaw',      color: '#B8860B', initials: 'KL', image: '../assets/images/rumblr/keith_law.png' },
-  { name: 'Jason Stark',     handle: '@jaysonst',      color: '#C05020', initials: 'JST', image: '../assets/images/rumblr/jason_stark.png' },
-  { name: 'Joel Sherman',    handle: '@joelsherman1',  color: '#1A6B8A', initials: 'JSH', image: '../assets/images/rumblr/joel_sherman.png' },
-  { name: 'Peter Gammons',   handle: '@pgammo',        color: '#6B6B6B', initials: 'PG', image: '../assets/images/rumblr/peter_gammons.png' },
+  { name: 'Jeff Passan',     handle: '@JeffPassan',    color: '#1E3A5F', initials: 'JP',  image: '../assets/images/rumblr/jeff_passan.png',    bio: 'MLB Insider @ESPN. Breaking news, deep analysis, and the occasional dad joke. Covering the game since 2000.' },
+  { name: 'Ken Rosenthal',   handle: '@Ken_Rosenthal', color: '#C8102E', initials: 'KR',  image: '../assets/images/rumblr/ken_rosenthal.png',  bio: 'Fox Sports / The Athletic. 30+ years covering baseball. Still faster than your timeline.' },
+  { name: 'Bob Nightengale', handle: '@BNightengale',  color: '#574C3F', initials: 'BN',  image: '../assets/images/rumblr/bob_nightengale.png', bio: 'USA Today baseball columnist. Hot takes, roster moves, and bad coffee.' },
+  { name: 'Jon Heyman',      handle: '@JonHeyman',     color: '#2E6B3E', initials: 'JH',  image: '../assets/images/rumblr/jon_heyman.png',     bio: 'MLB Network / FanSided. First to know, first to tweet. Blocking trolls since 2009.' },
+  { name: 'Buster Olney',    handle: '@Buster_ESPN',   color: '#8B4513', initials: 'BO',  image: '../assets/images/rumblr/buster_olney.png',   bio: 'ESPN. Author. Former NYT Yankees beat reporter. Watching baseball since \'78.' },
+  { name: 'Tim Kurkjian',    handle: '@TKurkjian',     color: '#4B0082', initials: 'TK',  image: '../assets/images/rumblr/tim_kurkjian.png',   bio: 'ESPN analyst. Author of "Is This a Great Game or What?" Spoiler: Yes. Yes it is.' },
+  { name: 'Keith Law',       handle: '@Keithlaw',      color: '#B8860B', initials: 'KL',  image: '../assets/images/rumblr/keith_law.png',      bio: 'The Athletic. Prospect guru. Rates your favorite team\'s farm system too low on purpose.' },
+  { name: 'Jason Stark',     handle: '@jaysonst',      color: '#C05020', initials: 'JST', image: '../assets/images/rumblr/jason_stark.png',    bio: 'The Athletic. Hall of Fame voter. Covering baseball since the Reagan administration.' },
+  { name: 'Joel Sherman',    handle: '@joelsherman1',  color: '#1A6B8A', initials: 'JSH', image: '../assets/images/rumblr/joel_sherman.png',   bio: 'NY Post baseball columnist. Breaking transactions, deadline drama, and Yankee gossip.' },
+  { name: 'Peter Gammons',   handle: '@pgammo',        color: '#6B6B6B', initials: 'PG',  image: '../assets/images/rumblr/peter_gammons.png',  bio: 'Baseball Hall of Fame writer. Legendary reporter. Godfather of baseball journalism.' },
 ];
 
 // ── State ─────────────────────────────────────────────────
 let lastDoc        = null;
-let activeFilter   = { type: 'all' };   // { type: 'all'|'tab'|'author'|'hashtag', value }
+let activeFilter   = { type: 'all' };   // { type: 'all'|'tab'|'author'|'hashtag'|'following', value }
 let currentUser    = null;
 let currentUserDoc = null;
 let loadingMore    = false;
+let followedHandles = [];  // handles the current user follows
 
 // ── DOM refs (set after DOMContentLoaded) ─────────────────
 let feedEl, filterBannerEl, loadMoreBtn, spinnerEl;
@@ -56,8 +57,10 @@ export function initFeed() {
     if (user) {
       const snap = await getDoc(doc(firestore, 'users', user.uid));
       currentUserDoc = snap.exists() ? snap.data() : null;
+      await loadFollows(user.uid);
     } else {
       currentUserDoc = null;
+      followedHandles = [];
     }
     renderAuthUI();
     initCompose(currentUser, currentUserDoc, refreshFeed);
@@ -115,23 +118,47 @@ async function loadFeed(reset = true) {
   if (loadMoreBtn) loadMoreBtn.style.display = 'none';
 
   try {
-    const q = buildQuery();
+    // "Following" tab needs special handling when no follows exist
+    if (activeFilter.type === 'following' && followedHandles.length === 0) {
+      feedEl.innerHTML = `
+        <div class="rb-empty">
+          <div class="rb-empty-icon">👀</div>
+          <div class="rb-empty-msg">You're not following anyone yet.</div>
+          <div class="rb-empty-sub">Follow writers and team accounts to see their posts here.</div>
+        </div>`;
+      showSpinner(false);
+      loadingMore = false;
+      return;
+    }
+
+    const { q, clientSort } = buildQuery();
     const snap = await getDocs(q);
 
     if (snap.empty && reset) {
       showEmpty();
+      showSpinner(false);
+      loadingMore = false;
       return;
     }
 
-    snap.forEach(d => {
-      feedEl.appendChild(renderPost(d.id, d.data()));
-    });
+    // Client-side sort when Firestore orderBy can't be used (avoids composite index requirement)
+    let docs = [...snap.docs];
+    if (clientSort) {
+      docs.sort((a, b) => {
+        const ta = a.data().timestamp?.toMillis?.() || 0;
+        const tb = b.data().timestamp?.toMillis?.() || 0;
+        return tb - ta;
+      });
+    }
 
-    lastDoc = snap.docs[snap.docs.length - 1];
+    docs.forEach(d => feedEl.appendChild(renderPost(d.id, d.data())));
 
-    // Show load-more if a full page was returned
-    if (loadMoreBtn) {
-      loadMoreBtn.style.display = snap.docs.length === PAGE_SIZE ? 'block' : 'none';
+    // Cursor pagination only for the "all" feed (no composite index needed there)
+    if (!clientSort) {
+      lastDoc = snap.docs[snap.docs.length - 1];
+      if (loadMoreBtn) {
+        loadMoreBtn.style.display = snap.docs.length === PAGE_SIZE ? 'block' : 'none';
+      }
     }
   } catch (err) {
     console.error('Feed load error:', err);
@@ -142,47 +169,93 @@ async function loadFeed(reset = true) {
   }
 }
 
+// Returns { q, clientSort }
+// clientSort=true means we fetched without orderBy and must sort client-side;
+// this avoids the Firestore composite index requirement for where()+orderBy() combos.
 function buildQuery() {
-  let q;
-  const base = [orderBy('timestamp', 'desc'), limit(PAGE_SIZE)];
-
-  if (activeFilter.type === 'author') {
-    q = query(POSTS_COL, where('author_handle', '==', activeFilter.value), ...base);
-  } else if (activeFilter.type === 'hashtag') {
-    q = query(POSTS_COL, where('hashtags', 'array-contains', '#' + activeFilter.value), ...base);
-  } else if (activeFilter.type === 'tab' && activeFilter.value === 'writers') {
-    q = query(POSTS_COL, where('author_type', '==', 'ai'), ...base);
-  } else if (activeFilter.type === 'tab' && activeFilter.value === 'teams') {
-    q = query(POSTS_COL, where('author_type', '==', 'user'), ...base);
-  } else {
-    // All top-level posts by recency (no composite index needed)
-    q = query(POSTS_COL, ...base);
-  }
-
-  if (lastDoc) {
-    // Rebuild with cursor (startAfter)
-    if (activeFilter.type === 'author') {
-      q = query(POSTS_COL, where('author_handle', '==', activeFilter.value),
-                orderBy('timestamp', 'desc'), startAfter(lastDoc), limit(PAGE_SIZE));
-    } else if (activeFilter.type === 'hashtag') {
-      q = query(POSTS_COL, where('hashtags', 'array-contains', '#' + activeFilter.value),
-                orderBy('timestamp', 'desc'), startAfter(lastDoc), limit(PAGE_SIZE));
-    } else if (activeFilter.type === 'tab' && activeFilter.value === 'writers') {
-      q = query(POSTS_COL, where('author_type', '==', 'ai'),
-                orderBy('timestamp', 'desc'), startAfter(lastDoc), limit(PAGE_SIZE));
-    } else if (activeFilter.type === 'tab' && activeFilter.value === 'teams') {
-      q = query(POSTS_COL, where('author_type', '==', 'user'),
-                orderBy('timestamp', 'desc'), startAfter(lastDoc), limit(PAGE_SIZE));
-    } else {
-      q = query(POSTS_COL, orderBy('timestamp', 'desc'), startAfter(lastDoc), limit(PAGE_SIZE));
+  // "All" feed: native Firestore order + cursor pagination
+  if (activeFilter.type === 'all' || !activeFilter.type) {
+    if (lastDoc) {
+      return { q: query(POSTS_COL, orderBy('timestamp', 'desc'), startAfter(lastDoc), limit(PAGE_SIZE)), clientSort: false };
     }
+    return { q: query(POSTS_COL, orderBy('timestamp', 'desc'), limit(PAGE_SIZE)), clientSort: false };
   }
 
-  return q;
+  // Filtered queries: no orderBy (avoids composite index); sort client-side after fetch
+  const FILTERED_LIMIT = 60;
+
+  if (activeFilter.type === 'tab' && activeFilter.value === 'writers') {
+    return { q: query(POSTS_COL, where('author_type', '==', 'ai'), limit(FILTERED_LIMIT)), clientSort: true };
+  }
+  if (activeFilter.type === 'tab' && activeFilter.value === 'teams') {
+    return { q: query(POSTS_COL, where('author_type', '==', 'user'), limit(FILTERED_LIMIT)), clientSort: true };
+  }
+  if (activeFilter.type === 'hashtag') {
+    return { q: query(POSTS_COL, where('hashtags', 'array-contains', '#' + activeFilter.value), limit(FILTERED_LIMIT)), clientSort: true };
+  }
+  if (activeFilter.type === 'author') {
+    return { q: query(POSTS_COL, where('author_handle', '==', activeFilter.value), limit(FILTERED_LIMIT)), clientSort: true };
+  }
+  if (activeFilter.type === 'following' && followedHandles.length > 0) {
+    // Firestore 'in' supports up to 30 values
+    const handles = followedHandles.slice(0, 30);
+    return { q: query(POSTS_COL, where('author_handle', 'in', handles), limit(FILTERED_LIMIT)), clientSort: true };
+  }
+
+  // Fallback
+  return { q: query(POSTS_COL, orderBy('timestamp', 'desc'), limit(PAGE_SIZE)), clientSort: false };
 }
 
 function refreshFeed() {
   loadFeed(true);
+}
+
+// ══════════════════════════════════════════════════════════
+// Follows
+// ══════════════════════════════════════════════════════════
+async function loadFollows(uid) {
+  try {
+    const snap = await getDocs(
+      query(collection(firestore, 'follows'), where('follower_uid', '==', uid))
+    );
+    followedHandles = snap.docs.map(d => d.data().followed_handle);
+  } catch (_) {
+    followedHandles = [];
+  }
+}
+
+// Toggle follow/unfollow for a handle. Returns true if now following, false if unfollowed.
+export async function toggleFollow(handle, type = 'user', followedUid = null) {
+  if (!currentUser) return null;
+  const followId = `${currentUser.uid}_${handle.replace(/[^a-zA-Z0-9]/g, '_')}`;
+  const followRef = doc(firestore, 'follows', followId);
+  const isFollowing = followedHandles.includes(handle);
+
+  if (isFollowing) {
+    const { deleteDoc } = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js');
+    await deleteDoc(followRef);
+    followedHandles = followedHandles.filter(h => h !== handle);
+    return false;
+  } else {
+    const { setDoc } = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js');
+    await setDoc(followRef, {
+      follower_uid:  currentUser.uid,
+      followed_handle: handle,
+      followed_type: type,
+      followed_uid:  followedUid,
+      timestamp:     new Date().toISOString(),
+    });
+    followedHandles = [...followedHandles, handle];
+    return true;
+  }
+}
+
+export function isFollowing(handle) {
+  return followedHandles.includes(handle);
+}
+
+export function getCurrentUser() {
+  return currentUser;
 }
 
 // ══════════════════════════════════════════════════════════
@@ -417,12 +490,14 @@ function renderAuthUI() {
   const userMenu   = document.getElementById('rb-user-menu');
   const composeWrap = document.getElementById('rb-compose-wrap');
   const profileLink = document.getElementById('rb-profile-link');
+  const followingTab = document.getElementById('rb-tab-following');
 
   if (currentUser) {
     if (signInBtn)  signInBtn.style.display  = 'none';
     if (signOutBtn) signOutBtn.style.display = 'inline-flex';
     if (userMenu)   userMenu.style.display   = 'flex';
     if (composeWrap) composeWrap.style.display = 'block';
+    if (followingTab) followingTab.style.display = 'flex';
     // Set profile link to include user's UID so their profile loads correctly
     if (profileLink) profileLink.href = `profile.html?uid=${currentUser.uid}`;
 
@@ -444,6 +519,7 @@ function renderAuthUI() {
     if (signOutBtn) signOutBtn.style.display = 'none';
     if (userMenu)   userMenu.style.display   = 'none';
     if (composeWrap) composeWrap.style.display = 'none';
+    if (followingTab) followingTab.style.display = 'none';
   }
 }
 

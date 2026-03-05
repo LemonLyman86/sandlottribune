@@ -35,6 +35,11 @@
                 style="display:none;margin-left:10px;font-size:0.78rem;padding:4px 10px;">
           ✏️ Edit Profile
         </button>
+        <!-- Follow button — visible to logged-in users viewing other profiles -->
+        <button id="rb-follow-btn" class="rb-btn rb-btn-primary"
+                style="display:none;margin-left:10px;font-size:0.78rem;padding:4px 12px;">
+          + Follow
+        </button>
       </div>
       <div id="rb-profile-handle" class="rb-profile-handle"></div>
       <div id="rb-profile-bio"    class="rb-profile-bio"></div>
@@ -116,7 +121,7 @@
     where, limit, getDocs, startAfter, updateDoc
   } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js';
   import { onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js';
-  import { renderPost, AI_WRITERS, showToast } from '../assets/js/rumblr-app.js';
+  import { renderPost, AI_WRITERS, showToast, toggleFollow, isFollowing, getCurrentUser } from '../assets/js/rumblr-app.js';
 
   const PAGE_SIZE   = 20;
   const params      = new URLSearchParams(location.search);
@@ -126,12 +131,55 @@
   let currentUserUid = null;
   let storedUserData = null;  // saved for edit modal pre-fill
 
-  // Track auth state to show/hide Edit button
+  // Track auth state to show/hide Edit / Follow buttons
   onAuthStateChanged(auth, user => {
     currentUserUid = user ? user.uid : null;
-    const editBtn = document.getElementById('rb-edit-profile-btn');
-    if (editBtn && uid && currentUserUid === uid) {
-      editBtn.style.display = 'inline-flex';
+    const editBtn   = document.getElementById('rb-edit-profile-btn');
+    const followBtn = document.getElementById('rb-follow-btn');
+
+    if (uid && currentUserUid === uid) {
+      // Own profile: show Edit, hide Follow
+      if (editBtn)   editBtn.style.display   = 'inline-flex';
+      if (followBtn) followBtn.style.display  = 'none';
+    } else if (currentUserUid && (uid || handle)) {
+      // Other profile, logged in: show Follow
+      if (editBtn)   editBtn.style.display   = 'none';
+      if (followBtn) {
+        followBtn.style.display = 'inline-flex';
+        updateFollowBtn(followBtn);
+      }
+    }
+  });
+
+  // ── Follow Button ───────────────────────────────────────
+  function updateFollowBtn(btn) {
+    // profileHandle is set by renderUserProfile/renderWriterProfile after load
+    const handle = profileHandle || uid;
+    if (!handle) return;
+    const following = isFollowing(profileHandle || handle);
+    btn.textContent = following ? '✓ Following' : '+ Follow';
+    btn.className   = following ? 'rb-btn rb-btn-ghost' : 'rb-btn rb-btn-primary';
+    btn.style.cssText = 'display:inline-flex;margin-left:10px;font-size:0.78rem;padding:4px 12px;';
+  }
+
+  let profileHandle = null;  // set once profile loads
+
+  document.getElementById('rb-follow-btn').addEventListener('click', async () => {
+    const btn = document.getElementById('rb-follow-btn');
+    btn.disabled = true;
+    try {
+      const targetHandle = profileHandle;
+      if (!targetHandle) return;
+      const writer = AI_WRITERS.find(w => w.handle === targetHandle);
+      const type   = writer ? 'ai' : 'user';
+      const now    = await toggleFollow(targetHandle, type, uid || null);
+      updateFollowBtn(btn);
+      showToast(now ? `Following ${targetHandle}` : `Unfollowed ${targetHandle}`);
+    } catch (err) {
+      console.error('Follow error:', err);
+      showToast('Could not update follow. Try again.');
+    } finally {
+      btn.disabled = false;
     }
   });
 
@@ -280,11 +328,15 @@
   }
 
   function renderUserProfile(u) {
+    profileHandle = u.handle || null;
     document.title = `${u.display_name} — Rumblr`;
     setAvatar(u.avatar_url, u.team_color, u.team_abbrev);
     document.getElementById('rb-profile-name-text').textContent = u.display_name;
     document.getElementById('rb-profile-handle').textContent = u.handle;
     document.getElementById('rb-profile-bio').textContent = u.bio || '';
+    // Refresh follow button state once profile handle is known
+    const followBtn = document.getElementById('rb-follow-btn');
+    if (followBtn && followBtn.style.display !== 'none') updateFollowBtn(followBtn);
     document.getElementById('rb-profile-team').textContent = u.team_name || '';
     document.getElementById('rb-profile-post-count').textContent = `${u.post_count || 0} Rumbl'ings`;
 
@@ -301,11 +353,18 @@
   }
 
   function renderWriterProfile(writer) {
+    profileHandle = writer.handle || null;
     document.title = `${writer.name} — Rumblr`;
     setAvatar(writer.image, writer.color, writer.initials);
     document.getElementById('rb-profile-name-text').textContent = writer.name;
     document.getElementById('rb-profile-handle').textContent = writer.handle;
-    document.getElementById('rb-profile-bio').textContent = 'ESTN Writer';
+    document.getElementById('rb-profile-bio').textContent = writer.bio || 'ESTN Writer';
+    // Show follow button for writers (not own profile)
+    const followBtn = document.getElementById('rb-follow-btn');
+    if (followBtn && currentUserUid) {
+      followBtn.style.display = 'inline-flex';
+      updateFollowBtn(followBtn);
+    }
     document.getElementById('rb-profile-team').textContent = 'ESTN Network';
     document.getElementById('rb-profile-joined').textContent = '';
     document.getElementById('rb-profile-post-count').textContent = '';
@@ -314,6 +373,7 @@
   }
 
   function renderProfileFromPost(postData) {
+    profileHandle = postData.author_handle || null;
     document.title = `${postData.author_name} — Rumblr`;
     const img = postData.author_image ||
       AI_WRITERS.find(w => w.handle === postData.author_handle)?.image || null;
