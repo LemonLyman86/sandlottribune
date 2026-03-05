@@ -190,7 +190,7 @@ export function renderPost(postId, data, isReply = false) {
     </div>
     <div class="rb-post-body">
       <div class="rb-post-header">
-        <a class="rb-post-name" href="/rumblr/profile.html?uid=${data.author_uid || ''}"
+        <a class="rb-post-name" href="profile.html?uid=${data.author_uid || ''}"
            onclick="event.stopPropagation()">
           ${escHtml(data.author_name)}
         </a>
@@ -222,7 +222,7 @@ export function renderPost(postId, data, isReply = false) {
   // Navigate to post page on card click (but not on links/buttons)
   el.addEventListener('click', e => {
     if (e.target.closest('a, button')) return;
-    window.location.href = `/rumblr/post.html?id=${postId}`;
+    window.location.href = `post.html?id=${postId}`;
   });
 
   // Wire up interactions after render

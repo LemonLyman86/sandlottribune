@@ -24,7 +24,7 @@ export function initAdmin() {
 
   onAuthStateChanged(auth, async user => {
     if (!user) {
-      window.location.href = '/rumblr/login.html?redirect=/rumblr/admin.html';
+      window.location.href = 'login.html?redirect=admin.html';
       return;
     }
     if (user.uid !== ADMIN_UID) {

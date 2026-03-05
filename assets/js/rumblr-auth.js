@@ -265,7 +265,7 @@ async function handleSignup(selectedTeam) {
       post_count:    0,
       bio,
     });
-    window.location.href = '/rumblr/?welcome=1';
+    window.location.href = './?welcome=1';
   } catch (err) {
     console.error('Signup error:', err);
     const msg = err.code === 'auth/email-already-in-use'
@@ -294,7 +294,7 @@ export function initLogin() {
       if (errEl) errEl.textContent = '';
       try {
         await signInWithEmailAndPassword(auth, email, pass);
-        const redirect = new URLSearchParams(location.search).get('redirect') || '/rumblr/';
+        const redirect = new URLSearchParams(location.search).get('redirect') || './';
         window.location.href = redirect;
       } catch (err) {
         if (errEl) errEl.textContent = 'Invalid email or password.';
@@ -325,7 +325,7 @@ export function initSignOut() {
   if (btn) {
     btn.addEventListener('click', async () => {
       await signOut(auth);
-      window.location.href = '/rumblr/';
+      window.location.href = './';
     });
   }
 }

@@ -140,14 +140,14 @@ async function handleRepost(postId, postData, btn, user) {
 // ══════════════════════════════════════════════════════════
 function handleReply(postId, user) {
   if (!user) { promptLogin(); return; }
-  window.location.href = `/rumblr/post.html?id=${postId}&reply=1`;
+  window.location.href = `post.html?id=${postId}&reply=1`;
 }
 
 // ══════════════════════════════════════════════════════════
 // Share — copy link
 // ══════════════════════════════════════════════════════════
 function handleShare(postId) {
-  const url = `${window.location.origin}/rumblr/post.html?id=${postId}`;
+  const url = new URL(`post.html?id=${postId}`, window.location.href).href;
   navigator.clipboard.writeText(url)
     .then(() => showToast('Link copied!'))
     .catch(() => {
@@ -171,6 +171,6 @@ function promptLogin() {
     overlay.classList.remove('hidden');
   } else {
     // Fallback redirect
-    window.location.href = '/rumblr/login.html';
+    window.location.href = 'login.html';
   }
 }
