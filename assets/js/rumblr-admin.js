@@ -15,7 +15,7 @@ import { onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.12.0/f
 import { AI_WRITERS } from './rumblr-app.js';
 
 // ── Set this to your Firebase Auth UID ───────────────────
-const ADMIN_UID = 'wIVL4PEkOvTuBFagFAmLS1mnLEf2';
+const ADMIN_UID = 'xNRN4Ae3VTeYqXB4XvcsDMXVABZ2';
 // ─────────────────────────────────────────────────────────
 
 export function initAdmin() {
