@@ -201,9 +201,11 @@ export function renderPost(postId, data, isReply = false) {
     ? `profile.html?uid=${data.author_uid}`
     : `profile.html?handle=${encodeURIComponent(data.author_handle || '')}`;
 
-  // Avatar: use image if available, fall back to colored initials
-  const avatarHtml = data.author_image
-    ? `<img class="rb-post-avatar rb-post-avatar-img" src="${escHtml(data.author_image)}"
+  // Avatar: use stored image, or look up from AI_WRITERS by handle, or fall back to colored initials
+  const writerImage = data.author_image ||
+    AI_WRITERS.find(w => w.handle === data.author_handle)?.image || null;
+  const avatarHtml = writerImage
+    ? `<img class="rb-post-avatar rb-post-avatar-img" src="${escHtml(writerImage)}"
            alt="${escHtml(data.author_name)}" title="${escHtml(data.author_name)}"
            onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
        <div class="rb-post-avatar" style="background:${data.author_avatar_color || '#555'};display:none;"
@@ -288,9 +290,7 @@ async function loadAuthorSidebar() {
 
     writersSection.querySelectorAll('.rb-sidebar-writer').forEach(el => {
       el.addEventListener('click', () => {
-        document.querySelectorAll('.rb-sidebar-link').forEach(e => e.classList.remove('active'));
-        el.classList.add('active');
-        setFilter({ type: 'author', value: el.dataset.handle });
+        window.location.href = `profile.html?handle=${encodeURIComponent(el.dataset.handle)}`;
       });
       el.addEventListener('keydown', e => { if (e.key === 'Enter') el.click(); });
     });
@@ -371,9 +371,7 @@ function renderOwners(container, snap) {
 
   container.querySelectorAll('.rb-sidebar-owner').forEach(el => {
     el.addEventListener('click', () => {
-      document.querySelectorAll('.rb-sidebar-link').forEach(e => e.classList.remove('active'));
-      el.classList.add('active');
-      setFilter({ type: 'author', value: el.dataset.handle });
+      window.location.href = `profile.html?uid=${el.dataset.uid}`;
     });
     el.addEventListener('keydown', e => { if (e.key === 'Enter') el.click(); });
   });

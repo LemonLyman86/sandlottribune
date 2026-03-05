@@ -14,6 +14,7 @@
     <img src="../assets/images/rumblr-logo.png" alt="Rumblr">
   </a>
   <div class="rb-header-actions">
+    <a href="../" class="rb-btn rb-btn-ghost" style="font-size:0.78rem;">📰 Tribune</a>
     <a href="./" class="rb-btn rb-btn-ghost">← Feed</a>
   </div>
 </header>
@@ -25,10 +26,15 @@
     <div id="rb-profile-avatar-wrap">
       <div id="rb-profile-avatar" class="rb-profile-avatar" style="background:#555">?</div>
     </div>
-    <div>
+    <div style="flex:1;">
       <div class="rb-profile-name">
         <span id="rb-profile-name-text">Loading…</span>
         <span id="rb-profile-badge"></span>
+        <!-- Edit button — only visible when viewing own profile -->
+        <button id="rb-edit-profile-btn" class="rb-btn rb-btn-ghost"
+                style="display:none;margin-left:10px;font-size:0.78rem;padding:4px 10px;">
+          ✏️ Edit Profile
+        </button>
       </div>
       <div id="rb-profile-handle" class="rb-profile-handle"></div>
       <div id="rb-profile-bio"    class="rb-profile-bio"></div>
@@ -59,21 +65,161 @@
 
 </div>
 
+<!-- ── Edit Profile Modal ─────────────────────────────────── -->
+<div id="rb-edit-modal" class="rb-modal-overlay hidden">
+  <div class="rb-modal" style="max-width:460px;width:92%;">
+    <div class="rb-modal-header">
+      <span class="rb-modal-title">Edit Profile</span>
+      <span class="rb-modal-close" id="rb-edit-close">✕</span>
+    </div>
+
+    <div class="rb-form-group" style="margin-top:16px;">
+      <label class="rb-form-label" for="rb-edit-name">Display Name</label>
+      <input id="rb-edit-name" type="text" maxlength="40">
+    </div>
+
+    <div class="rb-form-group">
+      <label class="rb-form-label" for="rb-edit-handle">Handle</label>
+      <input id="rb-edit-handle" type="text" maxlength="25">
+      <div class="rb-form-hint">Must start with @. Changing your handle resets your verification badge.</div>
+    </div>
+
+    <div class="rb-form-group">
+      <label class="rb-form-label" for="rb-edit-bio">Bio <span style="color:var(--rb-subtle);font-size:0.8em;">(optional)</span></label>
+      <input id="rb-edit-bio" type="text" maxlength="100">
+    </div>
+
+    <div class="rb-form-group">
+      <label class="rb-form-label" for="rb-edit-avatar">Logo / Avatar URL <span style="color:var(--rb-subtle);font-size:0.8em;">(optional)</span></label>
+      <input id="rb-edit-avatar" type="url" placeholder="https://example.com/logo.png">
+      <div class="rb-form-hint">Leave blank to use your team color.</div>
+      <div id="rb-edit-avatar-preview" style="display:none;margin-top:8px;">
+        <img id="rb-edit-avatar-img" style="width:48px;height:48px;border-radius:50%;object-fit:cover;border:2px solid var(--rb-border);" alt="Preview">
+      </div>
+    </div>
+
+    <div id="rb-edit-error" class="rb-form-error" style="margin-bottom:10px;"></div>
+
+    <div style="display:flex;gap:10px;margin-top:4px;">
+      <button id="rb-edit-cancel" class="rb-btn rb-btn-outline" style="flex:0 0 auto;">Cancel</button>
+      <button id="rb-edit-save"   class="rb-btn rb-btn-primary" style="flex:1;justify-content:center;">Save Changes</button>
+    </div>
+  </div>
+</div>
+
+<div class="rb-toast-container"></div>
+
 <script type="module">
-  import { firestore } from '../assets/js/firebase-config.js';
+  import { firestore, auth } from '../assets/js/firebase-config.js';
   import {
     doc, getDoc, collection, query,
-    where, orderBy, limit, getDocs, startAfter
+    where, limit, getDocs, startAfter, updateDoc
   } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js';
-  import { renderPost, AI_WRITERS } from '../assets/js/rumblr-app.js';
+  import { onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js';
+  import { renderPost, AI_WRITERS, showToast } from '../assets/js/rumblr-app.js';
 
-  const PAGE_SIZE = 20;
-  const params    = new URLSearchParams(location.search);
-  const uid       = params.get('uid');    // Firebase UID for regular users
-  const handle    = params.get('handle'); // Handle for AI writers (author_uid is null)
-  let lastDoc     = null;
-  let profileUid  = uid;  // the resolved identifier used for post queries
+  const PAGE_SIZE   = 20;
+  const params      = new URLSearchParams(location.search);
+  const uid         = params.get('uid');
+  const handle      = params.get('handle');
+  let lastDoc       = null;
+  let currentUserUid = null;
+  let storedUserData = null;  // saved for edit modal pre-fill
 
+  // Track auth state to show/hide Edit button
+  onAuthStateChanged(auth, user => {
+    currentUserUid = user ? user.uid : null;
+    const editBtn = document.getElementById('rb-edit-profile-btn');
+    if (editBtn && uid && currentUserUid === uid) {
+      editBtn.style.display = 'inline-flex';
+    }
+  });
+
+  // ── Edit Profile Modal ─────────────────────────────────
+  document.getElementById('rb-edit-profile-btn').addEventListener('click', openEditModal);
+  document.getElementById('rb-edit-close').addEventListener('click', closeEditModal);
+  document.getElementById('rb-edit-cancel').addEventListener('click', closeEditModal);
+
+  document.getElementById('rb-edit-avatar').addEventListener('input', () => {
+    const url = document.getElementById('rb-edit-avatar').value.trim();
+    const preview = document.getElementById('rb-edit-avatar-preview');
+    const img = document.getElementById('rb-edit-avatar-img');
+    if (url && preview && img) {
+      img.src = url;
+      preview.style.display = 'block';
+      img.onerror = () => { preview.style.display = 'none'; };
+    } else if (preview) {
+      preview.style.display = 'none';
+    }
+  });
+
+  document.getElementById('rb-edit-handle').addEventListener('blur', () => {
+    const h = document.getElementById('rb-edit-handle');
+    if (h && h.value && !h.value.startsWith('@')) h.value = '@' + h.value;
+  });
+
+  function openEditModal() {
+    if (!storedUserData) return;
+    document.getElementById('rb-edit-name').value   = storedUserData.display_name || '';
+    document.getElementById('rb-edit-handle').value = storedUserData.handle || '';
+    document.getElementById('rb-edit-bio').value    = storedUserData.bio || '';
+    document.getElementById('rb-edit-avatar').value = storedUserData.avatar_url || '';
+    document.getElementById('rb-edit-error').textContent = '';
+    document.getElementById('rb-edit-modal').classList.remove('hidden');
+  }
+
+  function closeEditModal() {
+    document.getElementById('rb-edit-modal').classList.add('hidden');
+  }
+
+  document.getElementById('rb-edit-save').addEventListener('click', async () => {
+    const name      = document.getElementById('rb-edit-name').value.trim();
+    const newHandle = document.getElementById('rb-edit-handle').value.trim();
+    const bio       = document.getElementById('rb-edit-bio').value.trim();
+    const avatarUrl = document.getElementById('rb-edit-avatar').value.trim();
+    const errEl     = document.getElementById('rb-edit-error');
+    const saveBtn   = document.getElementById('rb-edit-save');
+
+    if (!name)   { errEl.textContent = 'Display name is required.'; return; }
+    if (!newHandle) { errEl.textContent = 'Handle is required.'; return; }
+
+    saveBtn.disabled = true;
+    errEl.textContent = '';
+
+    try {
+      const updates = {
+        display_name: name,
+        handle:       newHandle,
+        bio,
+      };
+      if (avatarUrl) {
+        updates.avatar_url = avatarUrl;
+      } else {
+        // Remove avatar_url if cleared (use deleteField if needed, but null is fine)
+        updates.avatar_url = null;
+      }
+
+      // If handle changed, reset verified status
+      if (storedUserData && newHandle !== storedUserData.handle) {
+        updates.verified = false;
+      }
+
+      await updateDoc(doc(firestore, 'users', uid), updates);
+
+      // Refresh profile display
+      storedUserData = { ...storedUserData, ...updates };
+      renderUserProfile(storedUserData);
+      closeEditModal();
+      showToast('Profile updated!');
+    } catch (err) {
+      console.error('Profile update error:', err);
+      errEl.textContent = 'Could not save changes. Try again.';
+    } finally {
+      saveBtn.disabled = false;
+    }
+  });
+
+  // ── Profile Loading ────────────────────────────────────
   async function loadProfile() {
     const nameEl = document.getElementById('rb-profile-name-text');
 
@@ -82,12 +228,16 @@
       return;
     }
 
-    // ── Try Firestore user doc first ──────────────────────
     if (uid) {
       try {
         const snap = await getDoc(doc(firestore, 'users', uid));
         if (snap.exists()) {
-          renderUserProfile(snap.data());
+          storedUserData = snap.data();
+          renderUserProfile(storedUserData);
+          // Show edit button if own profile (auth may resolve after loadProfile, handled by onAuthStateChanged above)
+          if (currentUserUid === uid) {
+            document.getElementById('rb-edit-profile-btn').style.display = 'inline-flex';
+          }
           loadPosts();
           return;
         }
@@ -96,32 +246,24 @@
       }
     }
 
-    // ── Fallback: look up by handle (AI writers or handle param) ──
     const lookupHandle = handle || null;
 
     if (lookupHandle) {
-      // Check hardcoded AI writer list
       const writer = AI_WRITERS.find(w =>
         w.handle.toLowerCase() === decodeURIComponent(lookupHandle).toLowerCase()
       );
       if (writer) {
         renderWriterProfile(writer);
-        profileUid = null;  // will query by handle instead
-        loadPosts(true, lookupHandle);
+        loadPosts(true, lookupHandle, true);
         return;
       }
     }
 
-    // ── Last resort: try to find author data from their posts ──
     const searchHandle = lookupHandle || uid;
     if (searchHandle) {
       try {
         const field = lookupHandle ? 'author_handle' : 'author_uid';
-        const q = query(
-          collection(firestore, 'posts'),
-          where(field, '==', searchHandle),
-          limit(1)
-        );
+        const q = query(collection(firestore, 'posts'), where(field, '==', searchHandle), limit(1));
         const postsSnap = await getDocs(q);
         if (!postsSnap.empty) {
           const postData = postsSnap.docs[0].data();
@@ -147,11 +289,9 @@
     document.getElementById('rb-profile-post-count').textContent = `${u.post_count || 0} Rumbl'ings`;
 
     const badge = document.getElementById('rb-profile-badge');
-    if (u.verified) {
-      badge.innerHTML = '<span class="rb-badge-verified">⚾ Verified</span>';
-    } else {
-      badge.innerHTML = '<span class="rb-badge-pending">⏳ Pending</span>';
-    }
+    badge.innerHTML = u.verified
+      ? '<span class="rb-badge-verified">⚾ Verified</span>'
+      : '<span class="rb-badge-pending">💩 Unverified</span>';
 
     if (u.joined_at?.toDate) {
       const d = u.joined_at.toDate();
@@ -175,7 +315,9 @@
 
   function renderProfileFromPost(postData) {
     document.title = `${postData.author_name} — Rumblr`;
-    setAvatar(postData.author_image, postData.author_avatar_color, postData.author_initials);
+    const img = postData.author_image ||
+      AI_WRITERS.find(w => w.handle === postData.author_handle)?.image || null;
+    setAvatar(img, postData.author_avatar_color, postData.author_initials);
     document.getElementById('rb-profile-name-text').textContent = postData.author_name;
     document.getElementById('rb-profile-handle').textContent = postData.author_handle;
     document.getElementById('rb-profile-bio').textContent = '';
@@ -199,15 +341,10 @@
           ${initials||'?'}
         </div>`;
     } else {
-      const av = document.getElementById('rb-profile-avatar');
-      if (av) {
-        av.style.background = color || '#555';
-        av.textContent = initials || '?';
-      }
+      wrap.innerHTML = `<div class="rb-profile-avatar" style="background:${color||'#555'}">${initials||'?'}</div>`;
     }
   }
 
-  // queryByHandle=true uses author_handle field (for AI writers)
   async function loadPosts(reset = true, identifier = null, queryByHandle = false) {
     const feed        = document.getElementById('rb-profile-feed');
     const spinner     = document.getElementById('rb-spinner');
@@ -217,17 +354,11 @@
     if (reset) { feed.innerHTML = ''; lastDoc = null; }
 
     try {
-      // Determine query field
       const field = queryByHandle ? 'author_handle' : 'author_uid';
       const value = identifier || (queryByHandle ? handle : uid);
 
-      if (!value) {
-        spinner.style.display = 'none';
-        return;
-      }
+      if (!value) { spinner.style.display = 'none'; return; }
 
-      // Query WITHOUT orderBy to avoid needing a composite Firestore index.
-      // We sort client-side instead (fine for PAGE_SIZE posts).
       let q;
       if (lastDoc) {
         q = query(collection(firestore, 'posts'), where(field, '==', value),
@@ -239,7 +370,6 @@
       const snap = await getDocs(q);
       spinner.style.display = 'none';
 
-      // Sort by timestamp descending client-side
       const sorted = [...snap.docs].sort((a, b) => {
         const ta = a.data().timestamp?.toMillis?.() || 0;
         const tb = b.data().timestamp?.toMillis?.() || 0;
@@ -264,8 +394,7 @@
   }
 
   document.getElementById('rb-load-more-btn').addEventListener('click', () => {
-    const byHandle = !!handle || (uid && !document.getElementById('rb-profile-joined').textContent);
-    loadPosts(false, handle || uid, byHandle);
+    loadPosts(false, handle || uid, !!handle);
   });
 
   document.addEventListener('DOMContentLoaded', loadProfile);
