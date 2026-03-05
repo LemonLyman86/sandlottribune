@@ -134,6 +134,7 @@ async function loadAllUsers() {
   container.innerHTML = '';
   snap.forEach(d => {
     const u = d.data();
+    const displayName = u.display_name || u.email || '(unknown)';
     const row = document.createElement('div');
     row.className = 'rb-admin-user-row';
     row.innerHTML = `
@@ -141,18 +142,26 @@ async function loadAllUsers() {
         ${u.team_abbrev||'?'}
       </div>
       <div class="rb-admin-user-info">
-        <div class="rb-admin-user-name">${escHtml(u.display_name)}
+        <div class="rb-admin-user-name">${escHtml(displayName)}
           ${u.verified ? '<span class="rb-verified" title="Verified">⚾</span>' : ''}
         </div>
-        <div class="rb-admin-user-detail">${escHtml(u.handle)} &nbsp;·&nbsp; ${escHtml(u.team_name)}</div>
+        <div class="rb-admin-user-detail">${escHtml(u.handle||'')} &nbsp;·&nbsp; ${escHtml(u.team_name||u.account_type||'')}</div>
+        <div class="rb-admin-user-detail" style="color:var(--rb-subtle);font-size:0.78rem;">${escHtml(u.email||'')}</div>
       </div>
       <span style="font-family:'Oswald',sans-serif;font-size:0.8rem;color:var(--rb-subtle);">
         ${u.post_count||0} posts
       </span>
       ${!u.verified ? `<button class="rb-admin-btn-approve" data-uid="${d.id}">Verify</button>` : ''}
+      <button class="rb-admin-btn-reject rb-admin-btn-delete-user" data-uid="${d.id}" style="font-size:0.72rem;padding:3px 8px;" title="Delete account">&#128465;</button>
     `;
     const verifyBtn = row.querySelector('.rb-admin-btn-approve');
     if (verifyBtn) verifyBtn.addEventListener('click', () => approveUser(d.id, verifyBtn.parentElement));
+    row.querySelector('.rb-admin-btn-delete-user').addEventListener('click', async () => {
+      if (!confirm(`Delete account for ${u.email || displayName}? This removes their profile but NOT their Firebase Auth login.`)) return;
+      await deleteDoc(doc(firestore, 'users', d.id));
+      row.remove();
+      showToast('Profile deleted.');
+    });
     container.appendChild(row);
   });
 }

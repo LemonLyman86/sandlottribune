@@ -1317,9 +1317,17 @@ input::placeholder, textarea::placeholder { color: var(--rb-subtle); }
   margin: 0;
   padding: 0;
   flex: 1;
-  justify-content: flex-start;
-  margin-left: 16px;
+  justify-content: center;
 }
+.rb-nav-rumblr-logo {
+  height: 22px;
+  width: auto;
+  vertical-align: middle;
+  opacity: 0.9;
+  transition: opacity 0.15s;
+}
+.rb-nav-links a:hover .rb-nav-rumblr-logo,
+.rb-nav-links a.active .rb-nav-rumblr-logo { opacity: 1; }
 
 .rb-nav-links a {
   font-family: 'Oswald', sans-serif;

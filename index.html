@@ -406,12 +406,28 @@
           container.innerHTML = '<div style="padding:20px;color:#718096;font-family:\'Oswald\',sans-serif;font-size:0.85rem;text-align:center;">No Rumbl\'ings yet. <a href="rumblr/" style="color:#C8102E;">Be the first →</a></div>';
           return;
         }
+        // Known writer handle → image map (relative paths from site root)
+        const WRITER_IMAGES = {
+          '@JeffPassan':    'assets/images/rumblr/jeff_passan.png',
+          '@Ken_Rosenthal': 'assets/images/rumblr/ken_rosenthal.png',
+          '@BNightengale':  'assets/images/rumblr/bob_nightengale.png',
+          '@JonHeyman':     'assets/images/rumblr/jon_heyman.png',
+          '@Buster_ESPN':   'assets/images/rumblr/buster_olney.png',
+          '@TKurkjian':     'assets/images/rumblr/tim_kurkjian.png',
+          '@Keithlaw':      'assets/images/rumblr/keith_law.png',
+          '@JasonStark':    'assets/images/rumblr/jason_stark.png',
+          '@JSherman':      'assets/images/rumblr/joel_sherman.png',
+          '@PGammons':      'assets/images/rumblr/peter_gammons.png',
+        };
         const html = snap.docs.map(d => {
           const p = d.data();
           const t = p.timestamp?.toDate ? p.timestamp.toDate() : new Date();
-          const avatarHtml = p.author_image
-            ? `<img src="${esc(p.author_image)}" alt="${esc(p.author_name)}" style="width:36px;height:36px;border-radius:50%;object-fit:cover;flex-shrink:0;" onerror="this.style.display='none';">`
-            : `<div style="width:36px;height:36px;border-radius:50%;background:${esc(p.author_avatar_color||'#555')};display:flex;align-items:center;justify-content:center;font-family:'Oswald',sans-serif;font-size:0.72rem;color:#fff;flex-shrink:0;">${esc(p.author_initials||'??')}</div>`;
+          // Prefer known writer map (always correct), then stored avatar_url for real users
+          const imgSrc = WRITER_IMAGES[p.author_handle] || (p.author_type !== 'ai' ? p.author_image : null);
+          const initials = `<div style="width:36px;height:36px;border-radius:50%;background:${esc(p.author_avatar_color||'#555')};display:flex;align-items:center;justify-content:center;font-family:'Oswald',sans-serif;font-size:0.72rem;color:#fff;flex-shrink:0;">${esc(p.author_initials||'??')}</div>`;
+          const avatarHtml = imgSrc
+            ? `<img src="${esc(imgSrc)}" alt="${esc(p.author_name)}" style="width:36px;height:36px;border-radius:50%;object-fit:cover;flex-shrink:0;" onerror="this.outerHTML='${initials.replace(/'/g, "\\'")}';">`
+            : initials;
           const content = esc(p.content||'').replace(/#(\w+)/g, '<span style="color:#C8102E;">#$1</span>');
           return `
             <a href="rumblr/post.html?id=${esc(d.id)}" class="rumblr-preview-post" style="display:flex;gap:12px;padding:14px 16px;border-bottom:1px solid #2D3748;text-decoration:none;cursor:pointer;transition:background 0.15s;" onmouseover="this.style.background='#161B22'" onmouseout="this.style.background='transparent'">
