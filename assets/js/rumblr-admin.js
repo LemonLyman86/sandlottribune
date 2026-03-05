@@ -72,11 +72,15 @@ async function loadPendingUsers() {
   container.innerHTML = '';
   snap.forEach(d => {
     const u = d.data();
+    const pendingAvatarHtml = u.avatar_url
+      ? `<img src="${escHtml(u.avatar_url)}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;"
+             onerror="this.style.display='none';">`
+      : escHtml((u.team_abbrev||'?').slice(0,3));
     const row = document.createElement('div');
     row.className = 'rb-admin-user-row';
     row.innerHTML = `
-      <div class="rb-post-avatar" style="background:${u.team_color||'#555'};width:36px;height:36px;font-size:0.72rem;">
-        ${u.team_abbrev||'?'}
+      <div class="rb-post-avatar" style="background:${u.team_color||'#555'};width:36px;height:36px;font-size:0.72rem;overflow:hidden;">
+        ${pendingAvatarHtml}
       </div>
       <div class="rb-admin-user-info">
         <div class="rb-admin-user-name">${escHtml(u.display_name)} &nbsp;<span style="font-weight:400;color:var(--rb-muted)">${escHtml(u.handle)}</span></div>
@@ -85,8 +89,8 @@ async function loadPendingUsers() {
           Joined ${u.joined_at?.toDate ? u.joined_at.toDate().toLocaleDateString() : '—'}
         </div>
       </div>
-      <button class="rb-admin-btn-approve" data-uid="${d.id}">✅ Approve</button>
-      <button class="rb-admin-btn-reject"  data-uid="${d.id}">❌ Reject</button>
+      <button class="rb-admin-btn-approve" data-uid="${d.id}">Approve</button>
+      <button class="rb-admin-btn-reject"  data-uid="${d.id}">Reject</button>
     `;
     row.querySelector('.rb-admin-btn-approve').addEventListener('click', () => approveUser(d.id, row));
     row.querySelector('.rb-admin-btn-reject').addEventListener('click',  () => rejectUser(d.id, u.email, row));
@@ -135,11 +139,15 @@ async function loadAllUsers() {
   snap.forEach(d => {
     const u = d.data();
     const displayName = u.display_name || u.email || '(unknown)';
+    const allAvatarHtml = u.avatar_url
+      ? `<img src="${escHtml(u.avatar_url)}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;"
+             onerror="this.style.display='none';">`
+      : escHtml((u.team_abbrev||'?').slice(0,3));
     const row = document.createElement('div');
     row.className = 'rb-admin-user-row';
     row.innerHTML = `
-      <div class="rb-post-avatar" style="background:${u.team_color||'#555'};width:36px;height:36px;font-size:0.72rem;">
-        ${u.team_abbrev||'?'}
+      <div class="rb-post-avatar" style="background:${u.team_color||'#555'};width:36px;height:36px;font-size:0.72rem;overflow:hidden;">
+        ${allAvatarHtml}
       </div>
       <div class="rb-admin-user-info">
         <div class="rb-admin-user-name">${escHtml(displayName)}

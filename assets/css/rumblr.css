@@ -864,6 +864,24 @@ input::placeholder, textarea::placeholder { color: var(--rb-subtle); }
   height: 200px;
   background: linear-gradient(135deg, #1A2030 0%, #0D1117 100%);
   flex-shrink: 0;
+  position: relative;
+  overflow: hidden;
+}
+
+/* ESTN official banner for AI writer profiles */
+.rb-profile-banner--estn {
+  background: linear-gradient(135deg, #1a0305 0%, #2a0508 40%, #0D1117 100%);
+}
+.rb-profile-banner--estn::after {
+  content: '';
+  position: absolute;
+  right: 28px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 90px;
+  height: 36px;
+  background: url('../images/estn-logo.png') no-repeat center / contain;
+  opacity: 0.2;
 }
 
 .rb-profile-content {
@@ -873,11 +891,11 @@ input::placeholder, textarea::placeholder { color: var(--rb-subtle); }
 .rb-profile-avatar-outer {
   position: relative;
   padding: 0 20px;
-  min-height: 38px;   /* half the avatar bleeds above */
+  min-height: 30px;   /* half the avatar bleeds above */
   display: flex;
   align-items: flex-end;
   justify-content: space-between;
-  margin-top: -38px;
+  margin-top: -30px;
 }
 
 .rb-profile-avatar-wrap {
@@ -886,15 +904,15 @@ input::placeholder, textarea::placeholder { color: var(--rb-subtle); }
 }
 
 .rb-profile-avatar-lg {
-  width: 60px;
-  height: 60px;
+  width: 48px;
+  height: 48px;
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
   font-family: 'Oswald', sans-serif;
   font-weight: 700;
-  font-size: 1.1rem;
+  font-size: 0.9rem;
   color: #fff;
   border: 3px solid var(--rb-bg);
   flex-shrink: 0;
@@ -1627,5 +1645,5 @@ input::placeholder, textarea::placeholder { color: var(--rb-subtle); }
   .rb-auth-card { padding: 24px 18px; }
   .rb-engagement { gap: 16px; }
   .rb-profile-banner { height: 140px; }
-  .rb-profile-avatar-lg { width: 50px; height: 50px; font-size: 0.95rem; }
+  .rb-profile-avatar-lg { width: 40px; height: 40px; font-size: 0.78rem; }
 }

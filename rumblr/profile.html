@@ -367,7 +367,12 @@
     profileHandle = writer.handle || null;
     document.title = `${writer.name} — Rumblr`;
     setAvatar(writer.image, writer.color, writer.initials);
-    setBanner(null, writer.bannerColor || writer.color);
+    // Apply ESTN branded banner instead of individual writer color
+    const bannerEl = document.getElementById('rb-profile-banner');
+    if (bannerEl) {
+      bannerEl.style.cssText = '';  // clear any inline styles
+      bannerEl.classList.add('rb-profile-banner--estn');
+    }
     document.getElementById('rb-profile-name-text').textContent = writer.name;
     document.getElementById('rb-profile-handle').textContent = writer.handle;
     document.getElementById('rb-profile-bio').textContent = writer.bio || 'ESTN Writer';
