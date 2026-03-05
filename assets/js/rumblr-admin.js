@@ -14,7 +14,7 @@ import {
 import { onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js';
 
 // ── Set this to your Firebase Auth UID ───────────────────
-const ADMIN_UID = 'ryans8626@gmail.com';
+const ADMIN_UID = 'wIVL4PEkOvTuBFagFAmLS1mnLEf2';
 // ─────────────────────────────────────────────────────────
 
 export function initAdmin() {
