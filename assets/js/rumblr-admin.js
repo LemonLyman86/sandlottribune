@@ -167,7 +167,7 @@ async function loadRecentPosts() {
   const snap = await getDocs(query(
     collection(firestore, 'posts'),
     orderBy('timestamp', 'desc'),
-    limit(50)
+    limit(100)
   ));
 
   if (snap.empty) {
@@ -175,44 +175,128 @@ async function loadRecentPosts() {
     return;
   }
 
-  container.innerHTML = '';
-  snap.forEach(d => {
-    const p = d.data();
-    const row = document.createElement('div');
-    row.style.cssText = 'padding:12px 0;border-bottom:1px solid var(--rb-border);';
-    row.innerHTML = `
-      <div style="display:flex;align-items:baseline;gap:8px;margin-bottom:6px;">
-        <div class="rb-post-avatar" style="background:${p.author_avatar_color||'#555'};
-             width:28px;height:28px;font-size:0.65rem;flex-shrink:0">
-          ${p.author_initials||'?'}
-        </div>
-        <span style="font-family:'Oswald',sans-serif;font-size:0.88rem;font-weight:600;">
-          ${escHtml(p.author_name)}
-        </span>
-        <span style="font-family:'Oswald',sans-serif;font-size:0.8rem;color:var(--rb-muted);">
-          ${escHtml(p.author_handle)}
-        </span>
-        <span style="margin-left:auto;font-family:'Oswald',sans-serif;font-size:0.78rem;color:var(--rb-subtle);">
-          ${p.timestamp?.toDate ? p.timestamp.toDate().toLocaleString() : ''}
-        </span>
-      </div>
-      <div style="font-size:0.88rem;color:var(--rb-muted);margin-left:36px;margin-bottom:8px;">
-        ${escHtml(p.content)}
-      </div>
-      <div style="margin-left:36px;">
-        <button class="rb-admin-btn-reject" data-postid="${d.id}" style="font-size:0.75rem;padding:3px 10px;">
-          🗑 Delete
-        </button>
-      </div>
-    `;
-    row.querySelector('.rb-admin-btn-reject').addEventListener('click', async () => {
-      if (!confirm('Delete this post permanently?')) return;
-      await deleteDoc(doc(firestore, 'posts', d.id));
-      row.remove();
-      showToast('Post deleted.');
+  // Build post cache for client-side filtering
+  const allPosts = [];
+  snap.forEach(d => allPosts.push({ id: d.id, ...d.data() }));
+
+  // Filter bar
+  let activeFilter = 'all';
+  const filterBar = document.createElement('div');
+  filterBar.className = 'rb-admin-filter-bar';
+  filterBar.innerHTML = `
+    <button class="rb-admin-filter-btn active" data-filter="all">All (${allPosts.length})</button>
+    <button class="rb-admin-filter-btn" data-filter="ai">AI Writers</button>
+    <button class="rb-admin-filter-btn" data-filter="user">Users</button>
+    <button class="rb-admin-filter-btn" data-filter="replies">Replies</button>
+  `;
+  container.before(filterBar);
+
+  filterBar.querySelectorAll('.rb-admin-filter-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      filterBar.querySelectorAll('.rb-admin-filter-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      activeFilter = btn.dataset.filter;
+      renderPosts();
     });
-    container.appendChild(row);
   });
+
+  function renderPosts() {
+    container.innerHTML = '';
+    const filtered = allPosts.filter(p => {
+      if (activeFilter === 'ai')      return p.author_type === 'ai' && !p.parent_post_id;
+      if (activeFilter === 'user')    return p.author_type !== 'ai' && !p.parent_post_id;
+      if (activeFilter === 'replies') return !!p.parent_post_id;
+      return true;
+    });
+
+    if (!filtered.length) {
+      container.innerHTML = '<p style="color:var(--rb-subtle);font-size:0.88rem;">No posts in this category.</p>';
+      return;
+    }
+
+    filtered.forEach(p => {
+      const isAI    = p.author_type === 'ai';
+      const isReply = !!p.parent_post_id;
+      const typeLabel = isReply ? 'reply' : isAI ? 'ai' : 'user';
+      const typeColor = isReply ? '#6B6B6B' : isAI ? '#2E6B3E' : '#1E3A5F';
+
+      const row = document.createElement('div');
+      row.className = 'rb-admin-post-row';
+      row.innerHTML = `
+        <div class="rb-admin-post-header">
+          <div class="rb-post-avatar" style="background:${p.author_avatar_color||'#555'};
+               width:28px;height:28px;font-size:0.65rem;flex-shrink:0;">
+            ${p.author_initials||'?'}
+          </div>
+          <span class="rb-admin-post-name">${escHtml(p.author_name)}</span>
+          <span class="rb-admin-post-handle">${escHtml(p.author_handle)}</span>
+          <span class="rb-admin-type-badge" style="background:${typeColor};">${typeLabel}</span>
+          <span class="rb-admin-post-ts">${p.timestamp?.toDate ? p.timestamp.toDate().toLocaleString() : ''}</span>
+        </div>
+        ${isReply ? `<div class="rb-admin-reply-label">&#8618; Reply to post <code>${p.parent_post_id}</code></div>` : ''}
+        <div class="rb-admin-post-content">${escHtml(p.content)}</div>
+        <div class="rb-admin-post-actions">
+          <button class="rb-admin-btn-edit">&#9998; Edit</button>
+          <button class="rb-admin-btn-reject">&#128465; Delete</button>
+          <span class="rb-admin-post-stats">
+            &#9829; ${p.like_count||0} &nbsp;&nbsp; &#128172; ${p.reply_count||0} &nbsp;&nbsp; &#8635; ${p.repost_count||0}
+          </span>
+        </div>
+        <div class="rb-admin-edit-area">
+          <textarea class="rb-admin-edit-textarea" rows="3">${escHtml(p.content)}</textarea>
+          <div class="rb-admin-edit-btns">
+            <button class="rb-btn rb-btn-primary rb-admin-btn-save" style="font-size:0.78rem;padding:4px 14px;">Save</button>
+            <button class="rb-btn rb-btn-ghost rb-admin-btn-cancel" style="font-size:0.78rem;padding:4px 14px;">Cancel</button>
+          </div>
+        </div>
+      `;
+
+      const contentDiv   = row.querySelector('.rb-admin-post-content');
+      const editArea     = row.querySelector('.rb-admin-edit-area');
+      const editTextarea = row.querySelector('.rb-admin-edit-textarea');
+      const editBtn      = row.querySelector('.rb-admin-btn-edit');
+
+      // Delete
+      row.querySelector('.rb-admin-btn-reject').addEventListener('click', async () => {
+        if (!confirm('Delete this post permanently?')) return;
+        await deleteDoc(doc(firestore, 'posts', p.id));
+        row.remove();
+        const idx = allPosts.findIndex(x => x.id === p.id);
+        if (idx !== -1) allPosts.splice(idx, 1);
+        showToast('Post deleted.');
+      });
+
+      // Open edit
+      editBtn.addEventListener('click', () => {
+        editArea.style.display = 'block';
+        editBtn.style.display = 'none';
+        editTextarea.focus();
+      });
+
+      // Cancel edit
+      row.querySelector('.rb-admin-btn-cancel').addEventListener('click', () => {
+        editArea.style.display = 'none';
+        editBtn.style.display = '';
+        editTextarea.value = p.content;
+      });
+
+      // Save edit
+      row.querySelector('.rb-admin-btn-save').addEventListener('click', async () => {
+        const newContent = editTextarea.value.trim();
+        if (!newContent) { showToast('Content cannot be empty.'); return; }
+        await updateDoc(doc(firestore, 'posts', p.id), { content: newContent });
+        p.content = newContent;
+        contentDiv.textContent = newContent;
+        editArea.style.display = 'none';
+        editBtn.style.display = '';
+        showToast('Post updated.');
+      });
+
+      container.appendChild(row);
+    });
+  }
+
+  renderPosts();
 }
 
 // ══════════════════════════════════════════════════════════

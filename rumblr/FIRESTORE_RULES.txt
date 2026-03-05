@@ -7,6 +7,14 @@ rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
 
+    // Admin must be the designated UID AND have verified: true in their user profile.
+    // This prevents someone who gains the UID from acting as admin without verification.
+    function isVerifiedAdmin() {
+      return request.auth != null
+          && request.auth.uid == 'wIVL4PEkOvTuBFagFAmLS1mnLEf2'
+          && get(/databases/$(database)/documents/users/$(request.auth.uid)).data.get('verified', false) == true;
+    }
+
     // Posts: anyone can read; authenticated users or AI system can create
     match /posts/{postId} {
       allow read: if true;
@@ -14,10 +22,10 @@ service cloud.firestore {
                  || request.resource.data.is_ai_generated == true;
       allow update: if request.auth != null
                  && (request.auth.uid == resource.data.author_uid
-                  || request.auth.uid == 'wIVL4PEkOvTuBFagFAmLS1mnLEf2');
+                  || isVerifiedAdmin());
       allow delete: if request.auth != null
                  && (request.auth.uid == resource.data.author_uid
-                  || request.auth.uid == 'wIVL4PEkOvTuBFagFAmLS1mnLEf2');
+                  || isVerifiedAdmin());
     }
 
     // User profiles: anyone can read; only the account owner can write
@@ -47,11 +55,10 @@ service cloud.firestore {
                  && request.auth.uid == resource.data.follower_uid;
     }
 
-    // AI follows: anyone can read; only admin can write
+    // AI follows: anyone can read; only verified admin can write
     match /ai_follows/{docId} {
       allow read: if true;
-      allow write: if request.auth != null
-                 && request.auth.uid == 'wIVL4PEkOvTuBFagFAmLS1mnLEf2';
+      allow write: if isVerifiedAdmin();
     }
 
     // Admin collection: managed via Firebase Console only — no client access

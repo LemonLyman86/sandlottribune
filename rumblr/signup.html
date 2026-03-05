@@ -42,13 +42,21 @@
     <div class="rb-step-dot"></div>
   </div>
 
-  <!-- STEP 1: Choose team -->
+  <!-- STEP 1: Choose team or fan -->
   <div class="rb-signup-step" style="display:block;">
     <p style="color:var(--rb-muted);font-family:'Oswald',sans-serif;font-size:0.88rem;
                letter-spacing:0.06em;text-transform:uppercase;margin-bottom:14px;">
       Step 1 &mdash; Select Your Team
     </p>
     <div id="rb-team-grid" class="rb-team-grid"></div>
+    <div style="display:flex;align-items:center;gap:12px;margin:14px 0 10px;">
+      <hr style="flex:1;border:none;border-top:1px solid var(--rb-border);">
+      <span style="font-family:'Oswald',sans-serif;font-size:0.75rem;color:var(--rb-subtle);letter-spacing:0.1em;text-transform:uppercase;">or</span>
+      <hr style="flex:1;border:none;border-top:1px solid var(--rb-border);">
+    </div>
+    <button id="rb-fan-btn" class="rb-btn rb-btn-outline" style="width:100%;justify-content:center;margin-bottom:12px;">
+      Join as a Fan &#128293;
+    </button>
     <button id="rb-step1-next" class="rb-btn rb-btn-primary" style="width:100%;justify-content:center;" disabled>
       Continue &rarr;
     </button>

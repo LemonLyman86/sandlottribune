@@ -156,6 +156,7 @@ async function submitPost(textarea, user, userDoc, onPosted) {
 // ══════════════════════════════════════════════════════════
 export function initSignup() {
   let selectedTeam     = null;
+  let isFanAccount     = false;
   let selectedAvatarUrl = null;   // null = use team color circle
   let activeAvatarYear  = '2026';
   let currentStep       = 1;
@@ -177,10 +178,26 @@ export function initSignup() {
         grid.querySelectorAll('.rb-team-card').forEach(c => c.classList.remove('selected'));
         card.classList.add('selected');
         selectedTeam = id;
+        isFanAccount = false;
+        const fanBtn = document.getElementById('rb-fan-btn');
+        if (fanBtn) fanBtn.classList.remove('active');
         const btn = document.getElementById('rb-step1-next');
         if (btn) btn.disabled = false;
       });
       grid.appendChild(card);
+    });
+  }
+
+  // ── Fan account option ───────────────────────────────────
+  const fanBtn = document.getElementById('rb-fan-btn');
+  if (fanBtn) {
+    fanBtn.addEventListener('click', () => {
+      grid?.querySelectorAll('.rb-team-card').forEach(c => c.classList.remove('selected'));
+      selectedTeam = null;
+      isFanAccount = true;
+      fanBtn.classList.add('active');
+      const nextBtn = document.getElementById('rb-step1-next');
+      if (nextBtn) nextBtn.disabled = false;
     });
   }
 
@@ -274,20 +291,23 @@ export function initSignup() {
   const step1Next = document.getElementById('rb-step1-next');
   if (step1Next) {
     step1Next.addEventListener('click', () => {
-      if (!selectedTeam) return;
-      const t = TEAM_DATA[selectedTeam];
-      // Auto-fill handle suggestion
-      const handleInput = document.getElementById('rb-handle');
-      if (handleInput && !handleInput.value) {
-        handleInput.value = `@${t.abbrev}Official`;
-      }
-      // Build avatar grid with team's 2026 image pre-selected
+      if (!selectedTeam && !isFanAccount) return;
+      // Build avatar grid
       buildAvatarGrid('2026');
-      // Auto-select this team's 2026 image
-      const autoUrl = getAvatarUrl('2026', selectedTeam);
-      const autoOpt = document.querySelector(`#rb-avatar-grid .rb-avatar-option[data-abbrev="${selectedTeam}"]`);
-      selectAvatar(autoUrl, `${selectedTeam} 2026`, autoOpt);
-
+      if (isFanAccount) {
+        // No pre-selection for fans — they pick any logo
+        const handleInput = document.getElementById('rb-handle');
+        if (handleInput && !handleInput.value) handleInput.value = '@';
+      } else {
+        const t = TEAM_DATA[selectedTeam];
+        // Auto-fill handle suggestion
+        const handleInput = document.getElementById('rb-handle');
+        if (handleInput && !handleInput.value) handleInput.value = `@${t.abbrev}Official`;
+        // Auto-select this team's 2026 image
+        const autoUrl = getAvatarUrl('2026', selectedTeam);
+        const autoOpt = document.querySelector(`#rb-avatar-grid .rb-avatar-option[data-abbrev="${selectedTeam}"]`);
+        selectAvatar(autoUrl, `${selectedTeam} 2026`, autoOpt);
+      }
       goToStep(2);
     });
   }
@@ -297,21 +317,23 @@ export function initSignup() {
   if (step2Next) {
     step2Next.addEventListener('click', () => {
       if (!validateStep2()) return;
-      const t = TEAM_DATA[selectedTeam];
+      const t = isFanAccount ? null : TEAM_DATA[selectedTeam];
       setText('rb-review-name',   document.getElementById('rb-display-name')?.value || '');
       setText('rb-review-handle', document.getElementById('rb-handle')?.value || '');
-      setText('rb-review-team',   t.name);
+      setText('rb-review-team',   t ? t.name : 'Fan Account');
       // Review avatar
       const rc = document.getElementById('rb-preview-circle');
       if (rc) {
         if (selectedAvatarUrl) {
-          rc.innerHTML = `<img src="${selectedAvatarUrl}" alt="${t.abbrev}"
+          const fallbackColor = t ? t.color : '#555';
+          const fallbackText  = t ? t.abbrev : '?';
+          rc.innerHTML = `<img src="${selectedAvatarUrl}" alt="avatar"
             style="width:100%;height:100%;object-fit:cover;border-radius:50%;"
-            onerror="this.style.display='none';this.parentElement.style.background='${t.color}';this.parentElement.textContent='${t.abbrev}';">`;
+            onerror="this.style.display='none';this.parentElement.style.background='${fallbackColor}';this.parentElement.textContent='${fallbackText}';">`;
           rc.style.background = 'transparent';
         } else {
-          rc.style.background = t.color;
-          rc.textContent = t.abbrev;
+          rc.style.background = t ? t.color : '#555';
+          rc.textContent = t ? t.abbrev : '?';
         }
       }
       goToStep(3);
@@ -325,7 +347,7 @@ export function initSignup() {
   // Final submit
   const submitBtn = document.getElementById('rb-signup-submit');
   if (submitBtn) {
-    submitBtn.addEventListener('click', () => handleSignup(selectedTeam, selectedAvatarUrl));
+    submitBtn.addEventListener('click', () => handleSignup(selectedTeam, isFanAccount, selectedAvatarUrl));
   }
 
   // Handle field — enforce @ prefix
@@ -363,13 +385,13 @@ export function initSignup() {
   }
 }
 
-async function handleSignup(selectedTeam, avatarUrl) {
+async function handleSignup(selectedTeam, isFanAccount, avatarUrl) {
   const name   = document.getElementById('rb-display-name')?.value.trim();
   const handle = document.getElementById('rb-handle')?.value.trim();
   const email  = document.getElementById('rb-email')?.value.trim();
   const pass   = document.getElementById('rb-password')?.value;
   const bio    = document.getElementById('rb-bio')?.value.trim() || '';
-  const t      = TEAM_DATA[selectedTeam];
+  const t      = isFanAccount ? null : TEAM_DATA[selectedTeam];
   const errEl  = document.getElementById('rb-signup-error');
   const btn    = document.getElementById('rb-signup-submit');
 
@@ -383,10 +405,11 @@ async function handleSignup(selectedTeam, avatarUrl) {
       email,
       display_name:  name,
       handle,
-      team_id:       selectedTeam,
-      team_name:     t.name,
-      team_color:    t.color,
-      team_abbrev:   t.abbrev,
+      account_type:  isFanAccount ? 'fan' : 'team',
+      team_id:       t ? selectedTeam : null,
+      team_name:     t ? t.name : null,
+      team_color:    t ? t.color : '#555555',
+      team_abbrev:   t ? t.abbrev : null,
       verified:      false,
       joined_at:     serverTimestamp(),
       post_count:    0,

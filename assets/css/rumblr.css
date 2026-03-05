@@ -132,6 +132,7 @@ input::placeholder, textarea::placeholder { color: var(--rb-subtle); }
   border: 1px solid var(--rb-border);
 }
 .rb-btn-outline:hover { border-color: var(--rb-red); color: var(--rb-red); text-decoration: none; }
+.rb-btn-outline.active { border-color: var(--rb-red); color: var(--rb-red); background: rgba(200,16,46,0.08); }
 
 .rb-btn-ghost {
   background: transparent;
@@ -1165,6 +1166,92 @@ input::placeholder, textarea::placeholder { color: var(--rb-subtle); }
   transition: background 0.12s;
 }
 .rb-admin-btn-reject:hover { background: rgba(200,16,46,0.25); }
+
+.rb-admin-filter-bar {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-bottom: 14px;
+}
+.rb-admin-filter-btn {
+  font-family: 'Oswald', sans-serif;
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  background: transparent;
+  color: var(--rb-muted);
+  border: 1px solid var(--rb-border);
+  padding: 4px 14px;
+  border-radius: 20px;
+  cursor: pointer;
+  transition: background 0.12s, color 0.12s, border-color 0.12s;
+}
+.rb-admin-filter-btn:hover { border-color: var(--rb-red); color: var(--rb-red); }
+.rb-admin-filter-btn.active { background: var(--rb-red); border-color: var(--rb-red); color: #fff; }
+
+.rb-admin-post-row { padding: 12px 0; border-bottom: 1px solid var(--rb-border); }
+.rb-admin-post-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-bottom: 6px;
+}
+.rb-admin-post-name { font-family: 'Oswald', sans-serif; font-size: 0.88rem; font-weight: 600; }
+.rb-admin-post-handle { font-family: 'Oswald', sans-serif; font-size: 0.8rem; color: var(--rb-muted); }
+.rb-admin-type-badge {
+  font-family: 'Oswald', sans-serif;
+  font-size: 0.65rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: #fff;
+  padding: 1px 8px;
+  border-radius: 20px;
+}
+.rb-admin-post-ts { margin-left: auto; font-family: 'Oswald', sans-serif; font-size: 0.75rem; color: var(--rb-subtle); }
+.rb-admin-reply-label { font-family: 'Oswald', sans-serif; font-size: 0.72rem; color: var(--rb-subtle); margin-left: 36px; margin-bottom: 4px; }
+.rb-admin-post-content {
+  font-size: 0.88rem;
+  color: var(--rb-muted);
+  line-height: 1.5;
+  margin-left: 36px;
+  margin-bottom: 8px;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+.rb-admin-post-actions { display: flex; align-items: center; gap: 10px; margin-left: 36px; }
+.rb-admin-btn-edit {
+  font-family: 'Oswald', sans-serif;
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  background: rgba(107,107,107,0.12);
+  color: var(--rb-muted);
+  border: 1px solid var(--rb-border);
+  padding: 3px 10px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background 0.12s;
+}
+.rb-admin-btn-edit:hover { background: rgba(107,107,107,0.25); }
+.rb-admin-post-stats { font-family: 'Oswald', sans-serif; font-size: 0.78rem; color: var(--rb-subtle); margin-left: auto; }
+.rb-admin-edit-area { display: none; margin-left: 36px; margin-top: 8px; }
+.rb-admin-edit-textarea {
+  background: var(--rb-surface-2);
+  border: 1px solid var(--rb-border);
+  color: var(--rb-text);
+  padding: 8px 12px;
+  border-radius: 6px;
+  width: 100%;
+  font-family: 'Marcellus', serif;
+  font-size: 0.92rem;
+  resize: vertical;
+  box-sizing: border-box;
+}
+.rb-admin-edit-btns { display: flex; gap: 8px; margin-top: 6px; }
 
 /* ── Single Post Page ────────────────────────────────────── */
 .rb-post-page {
