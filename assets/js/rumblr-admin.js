@@ -9,7 +9,7 @@
 import { firestore, auth } from './firebase-config.js';
 import {
   collection, query, where, orderBy, limit,
-  getDocs, doc, updateDoc, deleteDoc, getDoc, addDoc, setDoc, serverTimestamp
+  getDocs, doc, updateDoc, deleteDoc, getDoc, addDoc, setDoc, serverTimestamp, increment
 } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js';
 import { onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js';
 import { AI_WRITERS } from './rumblr-app.js';
@@ -283,7 +283,7 @@ function initWriterPanels() {
           timestamp:           serverTimestamp(),
         });
         // Increment parent post reply_count
-        await updateDoc(doc(firestore, 'posts', postId), { reply_count: 0 });
+        await updateDoc(doc(firestore, 'posts', postId), { reply_count: increment(1) });
 
         if (resultEl) {
           resultEl.style.display = 'block';
