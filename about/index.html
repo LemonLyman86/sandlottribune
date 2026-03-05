@@ -171,7 +171,7 @@
 
 <script type="module">
   import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js';
-  import { getFirestore, collection, query, orderBy, limit, getDocs }
+  import { getFirestore, collection, query, orderBy, limit, getDocs, getDoc, doc }
     from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js';
 
   const app = initializeApp({
@@ -244,7 +244,27 @@
     }
   }
 
-  document.addEventListener('DOMContentLoaded', loadRumblrFeed);
+  async function loadTickerText() {
+    const trackEl = document.querySelector('.estn-ticker-track');
+    if (!trackEl) return;
+    try {
+      const snap = await getDoc(doc(db, 'settings', 'ticker'));
+      if (!snap.exists()) return;
+      const data = snap.data();
+      if (data.enabled === false || !data.items?.length) return;
+      const sep    = ' \u00a0\u2022\u00a0 ';
+      const joined = data.items.map(s => String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;')).join(sep) + sep;
+      // Duplicate for seamless infinite scroll
+      trackEl.innerHTML = `<span class="estn-ticker-text">${joined}${joined}</span>`;
+    } catch (e) {
+      // Keep hardcoded fallback on any error
+    }
+  }
+
+  document.addEventListener('DOMContentLoaded', () => {
+    loadRumblrFeed();
+    loadTickerText();
+  });
 </script>
 </body>
 </html>

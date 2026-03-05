@@ -62,6 +62,12 @@ service cloud.firestore {
       allow write: if isVerifiedAdmin();
     }
 
+    // Site settings (ticker, etc.): anyone can read; only verified admin can write
+    match /settings/{docId} {
+      allow read: if true;
+      allow write: if isVerifiedAdmin();
+    }
+
     // Admin collection: managed via Firebase Console only — no client access
     match /admin/{docId} {
       allow read, write: if false;

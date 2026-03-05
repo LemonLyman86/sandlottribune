@@ -41,10 +41,11 @@ export function initAdmin() {
     const uidEl = document.getElementById('rb-my-uid');
     if (uidEl) uidEl.textContent = user.uid;
 
-    try { await loadPendingUsers(); } catch (e) { console.error('loadPendingUsers:', e); }
-    try { await loadAllUsers(); }    catch (e) { console.error('loadAllUsers:', e); }
+    try { await loadPendingUsers(); }     catch (e) { console.error('loadPendingUsers:', e); }
+    try { await loadAllUsers(); }         catch (e) { console.error('loadAllUsers:', e); }
     loadAIWriters();
-    try { await loadRecentPosts(); } catch (e) { console.error('loadRecentPosts:', e); }
+    try { await loadTickerSettings(); }   catch (e) { console.error('loadTickerSettings:', e); }
+    try { await loadRecentPosts(); }      catch (e) { console.error('loadRecentPosts:', e); }
     initWriterPanels();
   });
 }
@@ -160,10 +161,26 @@ async function loadAllUsers() {
         ${u.post_count||0} posts
       </span>
       ${!u.verified ? `<button class="rb-admin-btn-approve" data-uid="${d.id}">Verify</button>` : ''}
+      <button class="rb-admin-btn-edit-avatar" title="Edit avatar URL" style="font-size:0.72rem;padding:3px 8px;background:var(--rb-surface-2);border:1px solid var(--rb-border);color:var(--rb-text);border-radius:4px;cursor:pointer;">&#9998;</button>
       <button class="rb-admin-btn-reject rb-admin-btn-delete-user" data-uid="${d.id}" style="font-size:0.72rem;padding:3px 8px;" title="Delete account">&#128465;</button>
     `;
     const verifyBtn = row.querySelector('.rb-admin-btn-approve');
     if (verifyBtn) verifyBtn.addEventListener('click', () => approveUser(d.id, verifyBtn.parentElement));
+
+    // Edit avatar
+    const avatarCircle = row.querySelector('.rb-post-avatar');
+    row.querySelector('.rb-admin-btn-edit-avatar').addEventListener('click', async () => {
+      const newUrl = prompt(`Avatar URL for ${displayName}:\n(leave blank to remove)`, u.avatar_url || '');
+      if (newUrl === null) return; // cancelled
+      const url = newUrl.trim() || null;
+      await updateDoc(doc(firestore, 'users', d.id), { avatar_url: url });
+      u.avatar_url = url;
+      avatarCircle.innerHTML = url
+        ? `<img src="${escHtml(url)}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;" onerror="this.style.display='none';">`
+        : escHtml((u.team_abbrev||'?').slice(0,3));
+      showToast('Avatar updated!');
+    });
+
     row.querySelector('.rb-admin-btn-delete-user').addEventListener('click', async () => {
       if (!confirm(`Delete account for ${u.email || displayName}? This removes their profile but NOT their Firebase Auth login.`)) return;
       await deleteDoc(doc(firestore, 'users', d.id));
@@ -205,6 +222,62 @@ function loadAIWriters() {
          class="rb-btn rb-btn-ghost rb-btn-sm" style="font-size:0.72rem;">View Profile</a>
     `;
     container.appendChild(row);
+  });
+}
+
+// ══════════════════════════════════════════════════════════
+// ESTN Ticker settings
+// ══════════════════════════════════════════════════════════
+async function loadTickerSettings() {
+  const textarea  = document.getElementById('rb-ticker-items');
+  const checkbox  = document.getElementById('rb-ticker-enabled');
+  const saveBtn   = document.getElementById('rb-ticker-save');
+  const statusEl  = document.getElementById('rb-ticker-status');
+  if (!textarea || !saveBtn) return;
+
+  // Default items (shown before first save)
+  const defaultItems = [
+    'RUMBLR IS LIVE — POST YOUR TAKES NOW',
+    'THE BABE RUTH PODCAST DROPS IN 2026',
+    'ESTN — MORE THAN A LEAGUE. MORE THAN A PAPER.',
+  ];
+
+  try {
+    const snap = await getDoc(doc(firestore, 'settings', 'ticker'));
+    if (snap.exists()) {
+      const data = snap.data();
+      textarea.value = (data.items || defaultItems).join('\n');
+      if (checkbox) checkbox.checked = data.enabled !== false;
+    } else {
+      textarea.value = defaultItems.join('\n');
+      if (checkbox) checkbox.checked = true;
+    }
+  } catch (e) {
+    textarea.value = defaultItems.join('\n');
+    if (checkbox) checkbox.checked = true;
+  }
+
+  saveBtn.addEventListener('click', async () => {
+    const items   = textarea.value.split('\n').map(s => s.trim()).filter(Boolean);
+    const enabled = checkbox ? checkbox.checked : true;
+    saveBtn.disabled = true;
+    try {
+      await setDoc(doc(firestore, 'settings', 'ticker'), {
+        items,
+        enabled,
+        updated_at: serverTimestamp(),
+      });
+      if (statusEl) {
+        statusEl.style.display = 'inline';
+        setTimeout(() => { statusEl.style.display = 'none'; }, 4000);
+      }
+      showToast('Ticker saved!');
+    } catch (e) {
+      console.error('saveTickerSettings:', e);
+      showToast('Error saving ticker. Check Firestore rules.');
+    } finally {
+      saveBtn.disabled = false;
+    }
   });
 }
 
