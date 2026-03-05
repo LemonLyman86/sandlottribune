@@ -170,7 +170,7 @@
 
 <script type="module">
   import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js';
-  import { getFirestore, collection, query, where, orderBy, limit, getDocs }
+  import { getFirestore, collection, query, orderBy, limit, getDocs }
     from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js';
 
   const app = initializeApp({
@@ -203,7 +203,6 @@
     try {
       const q = query(
         collection(db, 'posts'),
-        where('parent_post_id', '==', null),
         orderBy('timestamp', 'desc'),
         limit(5)
       );

@@ -141,16 +141,15 @@ function buildQuery() {
   } else if (activeFilter.type === 'tab' && activeFilter.value === 'teams') {
     q = query(POSTS_COL, where('author_type', '==', 'user'), ...base);
   } else {
-    // top-level posts only (parent_post_id == null)
-    q = query(POSTS_COL, where('parent_post_id', '==', null), ...base);
+    // All top-level posts by recency (no composite index needed)
+    q = query(POSTS_COL, ...base);
   }
 
   if (lastDoc) {
     // Rebuild with cursor (startAfter)
-    const args = q._query?.filters ? [] : [];  // handled via spread below
     if (activeFilter.type === 'author') {
       q = query(POSTS_COL, where('author_handle', '==', activeFilter.value),
-                ...base.slice(0, -1), startAfter(lastDoc), limit(PAGE_SIZE));
+                orderBy('timestamp', 'desc'), startAfter(lastDoc), limit(PAGE_SIZE));
     } else if (activeFilter.type === 'hashtag') {
       q = query(POSTS_COL, where('hashtags', 'array-contains', '#' + activeFilter.value),
                 orderBy('timestamp', 'desc'), startAfter(lastDoc), limit(PAGE_SIZE));
@@ -161,8 +160,7 @@ function buildQuery() {
       q = query(POSTS_COL, where('author_type', '==', 'user'),
                 orderBy('timestamp', 'desc'), startAfter(lastDoc), limit(PAGE_SIZE));
     } else {
-      q = query(POSTS_COL, where('parent_post_id', '==', null),
-                orderBy('timestamp', 'desc'), startAfter(lastDoc), limit(PAGE_SIZE));
+      q = query(POSTS_COL, orderBy('timestamp', 'desc'), startAfter(lastDoc), limit(PAGE_SIZE));
     }
   }
 
