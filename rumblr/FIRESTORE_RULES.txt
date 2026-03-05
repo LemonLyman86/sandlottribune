@@ -11,7 +11,7 @@ service cloud.firestore {
     // This prevents someone who gains the UID from acting as admin without verification.
     function isVerifiedAdmin() {
       return request.auth != null
-          && request.auth.uid == 'wIVL4PEkOvTuBFagFAmLS1mnLEf2'
+          && request.auth.uid == 'xNRN4Ae3VTeYqXB4XvcsDMXVABZ2'
           && get(/databases/$(database)/documents/users/$(request.auth.uid)).data.get('verified', false) == true;
     }
 
