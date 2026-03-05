@@ -22,7 +22,9 @@
 
   <!-- Profile header -->
   <div id="rb-profile-header" class="rb-profile-header">
-    <div id="rb-profile-avatar" class="rb-profile-avatar" style="background:#555">?</div>
+    <div id="rb-profile-avatar-wrap">
+      <div id="rb-profile-avatar" class="rb-profile-avatar" style="background:#555">?</div>
+    </div>
     <div>
       <div class="rb-profile-name">
         <span id="rb-profile-name-text">Loading…</span>
@@ -63,25 +65,81 @@
     doc, getDoc, collection, query,
     where, orderBy, limit, getDocs, startAfter
   } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js';
-  import { renderPost } from '../assets/js/rumblr-app.js';
+  import { renderPost, AI_WRITERS } from '../assets/js/rumblr-app.js';
 
   const PAGE_SIZE = 20;
-  const uid = new URLSearchParams(location.search).get('uid');
-  let lastDoc = null;
+  const params    = new URLSearchParams(location.search);
+  const uid       = params.get('uid');    // Firebase UID for regular users
+  const handle    = params.get('handle'); // Handle for AI writers (author_uid is null)
+  let lastDoc     = null;
+  let profileUid  = uid;  // the resolved identifier used for post queries
 
   async function loadProfile() {
-    if (!uid) { document.getElementById('rb-profile-name-text').textContent = 'User not found'; return; }
+    const nameEl = document.getElementById('rb-profile-name-text');
 
-    const snap = await getDoc(doc(firestore, 'users', uid));
-    if (!snap.exists()) { document.getElementById('rb-profile-name-text').textContent = 'User not found'; return; }
+    if (!uid && !handle) {
+      nameEl.textContent = 'User not found';
+      return;
+    }
 
-    const u = snap.data();
+    // ── Try Firestore user doc first ──────────────────────
+    if (uid) {
+      try {
+        const snap = await getDoc(doc(firestore, 'users', uid));
+        if (snap.exists()) {
+          renderUserProfile(snap.data());
+          loadPosts();
+          return;
+        }
+      } catch (err) {
+        console.error('User doc fetch error:', err);
+      }
+    }
 
+    // ── Fallback: look up by handle (AI writers or handle param) ──
+    const lookupHandle = handle || null;
+
+    if (lookupHandle) {
+      // Check hardcoded AI writer list
+      const writer = AI_WRITERS.find(w =>
+        w.handle.toLowerCase() === decodeURIComponent(lookupHandle).toLowerCase()
+      );
+      if (writer) {
+        renderWriterProfile(writer);
+        profileUid = null;  // will query by handle instead
+        loadPosts(true, lookupHandle);
+        return;
+      }
+    }
+
+    // ── Last resort: try to find author data from their posts ──
+    const searchHandle = lookupHandle || uid;
+    if (searchHandle) {
+      try {
+        const field = lookupHandle ? 'author_handle' : 'author_uid';
+        const q = query(
+          collection(firestore, 'posts'),
+          where(field, '==', searchHandle),
+          limit(1)
+        );
+        const postsSnap = await getDocs(q);
+        if (!postsSnap.empty) {
+          const postData = postsSnap.docs[0].data();
+          renderProfileFromPost(postData);
+          loadPosts(true, lookupHandle || uid, field === 'author_handle');
+          return;
+        }
+      } catch (err) {
+        console.error('Post fallback error:', err);
+      }
+    }
+
+    nameEl.textContent = 'Profile not found';
+  }
+
+  function renderUserProfile(u) {
     document.title = `${u.display_name} — Rumblr`;
-    const avatar = document.getElementById('rb-profile-avatar');
-    avatar.style.background = u.team_color || '#555';
-    avatar.textContent = u.team_abbrev || '?';
-
+    setAvatar(u.avatar_url, u.team_color, u.team_abbrev);
     document.getElementById('rb-profile-name-text').textContent = u.display_name;
     document.getElementById('rb-profile-handle').textContent = u.handle;
     document.getElementById('rb-profile-bio').textContent = u.bio || '';
@@ -100,49 +158,116 @@
       document.getElementById('rb-profile-joined').textContent =
         'Joined ' + d.toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
     }
-
-    loadPosts();
   }
 
-  async function loadPosts(reset = true) {
-    const feed = document.getElementById('rb-profile-feed');
-    const spinner = document.getElementById('rb-spinner');
+  function renderWriterProfile(writer) {
+    document.title = `${writer.name} — Rumblr`;
+    setAvatar(writer.image, writer.color, writer.initials);
+    document.getElementById('rb-profile-name-text').textContent = writer.name;
+    document.getElementById('rb-profile-handle').textContent = writer.handle;
+    document.getElementById('rb-profile-bio').textContent = 'ESTN Writer';
+    document.getElementById('rb-profile-team').textContent = 'ESTN Network';
+    document.getElementById('rb-profile-joined').textContent = '';
+    document.getElementById('rb-profile-post-count').textContent = '';
+    document.getElementById('rb-profile-badge').innerHTML =
+      '<span class="rb-badge-verified">⚾ Verified</span>';
+  }
+
+  function renderProfileFromPost(postData) {
+    document.title = `${postData.author_name} — Rumblr`;
+    setAvatar(postData.author_image, postData.author_avatar_color, postData.author_initials);
+    document.getElementById('rb-profile-name-text').textContent = postData.author_name;
+    document.getElementById('rb-profile-handle').textContent = postData.author_handle;
+    document.getElementById('rb-profile-bio').textContent = '';
+    document.getElementById('rb-profile-team').textContent = '';
+    document.getElementById('rb-profile-joined').textContent = '';
+    document.getElementById('rb-profile-post-count').textContent = '';
+    if (postData.author_verified) {
+      document.getElementById('rb-profile-badge').innerHTML =
+        '<span class="rb-badge-verified">⚾ Verified</span>';
+    }
+  }
+
+  function setAvatar(imageUrl, color, initials) {
+    const wrap = document.getElementById('rb-profile-avatar-wrap');
+    if (imageUrl) {
+      wrap.innerHTML = `
+        <img src="${imageUrl}" alt="Avatar"
+             class="rb-profile-avatar rb-profile-avatar-img"
+             onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
+        <div class="rb-profile-avatar" style="background:${color||'#555'};display:none;">
+          ${initials||'?'}
+        </div>`;
+    } else {
+      const av = document.getElementById('rb-profile-avatar');
+      if (av) {
+        av.style.background = color || '#555';
+        av.textContent = initials || '?';
+      }
+    }
+  }
+
+  // queryByHandle=true uses author_handle field (for AI writers)
+  async function loadPosts(reset = true, identifier = null, queryByHandle = false) {
+    const feed        = document.getElementById('rb-profile-feed');
+    const spinner     = document.getElementById('rb-spinner');
     const loadMoreBtn = document.getElementById('rb-load-more-btn');
 
     spinner.style.display = 'block';
     if (reset) { feed.innerHTML = ''; lastDoc = null; }
 
-    let q = query(
-      collection(firestore, 'posts'),
-      where('author_uid', '==', uid),
-      orderBy('timestamp', 'desc'),
-      limit(PAGE_SIZE)
-    );
-    if (lastDoc) {
-      q = query(
-        collection(firestore, 'posts'),
-        where('author_uid', '==', uid),
-        orderBy('timestamp', 'desc'),
-        startAfter(lastDoc),
-        limit(PAGE_SIZE)
-      );
+    try {
+      // Determine query field
+      const field = queryByHandle ? 'author_handle' : 'author_uid';
+      const value = identifier || (queryByHandle ? handle : uid);
+
+      if (!value) {
+        spinner.style.display = 'none';
+        return;
+      }
+
+      // Query WITHOUT orderBy to avoid needing a composite Firestore index.
+      // We sort client-side instead (fine for PAGE_SIZE posts).
+      let q;
+      if (lastDoc) {
+        q = query(collection(firestore, 'posts'), where(field, '==', value),
+                  startAfter(lastDoc), limit(PAGE_SIZE));
+      } else {
+        q = query(collection(firestore, 'posts'), where(field, '==', value), limit(PAGE_SIZE));
+      }
+
+      const snap = await getDocs(q);
+      spinner.style.display = 'none';
+
+      // Sort by timestamp descending client-side
+      const sorted = [...snap.docs].sort((a, b) => {
+        const ta = a.data().timestamp?.toMillis?.() || 0;
+        const tb = b.data().timestamp?.toMillis?.() || 0;
+        return tb - ta;
+      });
+
+      if (sorted.length === 0 && reset) {
+        feed.innerHTML = '<div class="rb-empty"><div class="rb-empty-icon">🤫</div>' +
+          '<div class="rb-empty-msg">No Rumbl\'ings yet.</div></div>';
+        return;
+      }
+
+      sorted.forEach(d => feed.appendChild(renderPost(d.id, d.data())));
+      lastDoc = snap.docs[snap.docs.length - 1];
+      loadMoreBtn.style.display = snap.docs.length === PAGE_SIZE ? 'block' : 'none';
+    } catch (err) {
+      spinner.style.display = 'none';
+      console.error('Profile posts error:', err);
+      feed.innerHTML = '<div style="padding:20px;color:var(--rb-muted);font-family:\'Oswald\',sans-serif;">' +
+        'Could not load posts.</div>';
     }
-
-    const snap = await getDocs(q);
-    spinner.style.display = 'none';
-
-    if (snap.empty && reset) {
-      feed.innerHTML = '<div class="rb-empty"><div class="rb-empty-icon">🤫</div>' +
-        '<div class="rb-empty-msg">No Rumbl\'ings yet.</div></div>';
-      return;
-    }
-
-    snap.forEach(d => feed.appendChild(renderPost(d.id, d.data())));
-    lastDoc = snap.docs[snap.docs.length - 1];
-    loadMoreBtn.style.display = snap.docs.length === PAGE_SIZE ? 'block' : 'none';
   }
 
-  document.getElementById('rb-load-more-btn').addEventListener('click', () => loadPosts(false));
+  document.getElementById('rb-load-more-btn').addEventListener('click', () => {
+    const byHandle = !!handle || (uid && !document.getElementById('rb-profile-joined').textContent);
+    loadPosts(false, handle || uid, byHandle);
+  });
+
   document.addEventListener('DOMContentLoaded', loadProfile);
 </script>
 </body>

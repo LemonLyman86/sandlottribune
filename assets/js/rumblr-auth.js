@@ -157,6 +157,23 @@ export function initSignup() {
     });
   }
 
+  // Logo URL preview
+  const avatarUrlInput = document.getElementById('rb-avatar-url');
+  if (avatarUrlInput) {
+    avatarUrlInput.addEventListener('input', () => {
+      const url = avatarUrlInput.value.trim();
+      const preview = document.getElementById('rb-avatar-preview');
+      const previewImg = document.getElementById('rb-avatar-preview-img');
+      if (url && preview && previewImg) {
+        previewImg.src = url;
+        preview.style.display = 'block';
+        previewImg.onerror = () => { preview.style.display = 'none'; };
+      } else if (preview) {
+        preview.style.display = 'none';
+      }
+    });
+  }
+
   // Step 1 → Step 2
   const step1Next = document.getElementById('rb-step1-next');
   if (step1Next) {
@@ -237,12 +254,13 @@ export function initSignup() {
 }
 
 async function handleSignup(selectedTeam) {
-  const name   = document.getElementById('rb-display-name')?.value.trim();
-  const handle = document.getElementById('rb-handle')?.value.trim();
-  const email  = document.getElementById('rb-email')?.value.trim();
-  const pass   = document.getElementById('rb-password')?.value;
-  const bio    = document.getElementById('rb-bio')?.value.trim() || '';
-  const t      = TEAM_DATA[selectedTeam];
+  const name      = document.getElementById('rb-display-name')?.value.trim();
+  const handle    = document.getElementById('rb-handle')?.value.trim();
+  const email     = document.getElementById('rb-email')?.value.trim();
+  const pass      = document.getElementById('rb-password')?.value;
+  const bio       = document.getElementById('rb-bio')?.value.trim() || '';
+  const avatarUrl = document.getElementById('rb-avatar-url')?.value.trim() || '';
+  const t         = TEAM_DATA[selectedTeam];
   const errEl  = document.getElementById('rb-signup-error');
   const btn    = document.getElementById('rb-signup-submit');
 
@@ -252,7 +270,7 @@ async function handleSignup(selectedTeam) {
   try {
     const cred = await createUserWithEmailAndPassword(auth, email, pass);
     await sendEmailVerification(cred.user);
-    await setDoc(doc(firestore, 'users', cred.user.uid), {
+    const userDoc = {
       email,
       display_name:  name,
       handle,
@@ -264,7 +282,9 @@ async function handleSignup(selectedTeam) {
       joined_at:     serverTimestamp(),
       post_count:    0,
       bio,
-    });
+    };
+    if (avatarUrl) userDoc.avatar_url = avatarUrl;
+    await setDoc(doc(firestore, 'users', cred.user.uid), userDoc);
     window.location.href = './?welcome=1';
   } catch (err) {
     console.error('Signup error:', err);

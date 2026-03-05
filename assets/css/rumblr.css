@@ -235,6 +235,91 @@ input::placeholder, textarea::placeholder { color: var(--rb-subtle); }
   margin: 12px 0;
 }
 
+/* ── Sidebar groups (ESTN Writers / TSDL Owners) ─────────── */
+.rb-sidebar-group {
+  margin-bottom: 4px;
+}
+
+.rb-sidebar-group-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 6px 16px;
+  font-family: 'Oswald', sans-serif;
+  font-size: 0.7rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--rb-subtle);
+  cursor: pointer;
+  user-select: none;
+}
+.rb-sidebar-group-header:hover {
+  color: var(--rb-muted);
+}
+
+.rb-group-chevron {
+  font-size: 0.65rem;
+  color: var(--rb-subtle);
+  transition: transform 0.2s;
+}
+
+.rb-sidebar-group-items {
+  /* collapsible content */
+}
+
+/* ── Image avatars in sidebar and posts ───────────────────── */
+.rb-sidebar-avatar-wrap {
+  width: 28px;
+  height: 28px;
+  flex-shrink: 0;
+  position: relative;
+}
+
+.rb-sidebar-avatar-img {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  object-fit: cover;
+  display: block;
+}
+
+.rb-post-avatar-wrap {
+  display: flex;
+  flex-shrink: 0;
+}
+
+.rb-post-avatar-img {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  object-fit: cover;
+  display: block;
+}
+
+/* ── Profile image ────────────────────────────────────────── */
+.rb-profile-avatar-img {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  object-fit: cover;
+  display: block;
+}
+
+/* ── Article link inside post ─────────────────────────────── */
+.rb-article-link {
+  display: inline-block;
+  margin: 6px 0 2px;
+  font-family: 'Oswald', sans-serif;
+  font-size: 0.78rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--rb-red);
+  text-decoration: none;
+}
+.rb-article-link:hover {
+  text-decoration: underline;
+}
+
 /* ── Main Feed Column ────────────────────────────────────── */
 .rb-feed-column {
   border-right: 1px solid var(--rb-border);

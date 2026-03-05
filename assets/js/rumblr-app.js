@@ -17,6 +17,20 @@ import { initInteractions }   from './rumblr-interactions.js';
 const PAGE_SIZE    = 20;
 const POSTS_COL    = collection(firestore, 'posts');
 
+// ── AI Writers config ──────────────────────────────────────
+export const AI_WRITERS = [
+  { name: 'Jeff Passan',     handle: '@JeffPassan',    color: '#1E3A5F', initials: 'JP', image: '../assets/images/rumblr/jeff_passan.png' },
+  { name: 'Ken Rosenthal',   handle: '@Ken_Rosenthal', color: '#C8102E', initials: 'KR', image: '../assets/images/rumblr/ken_rosenthal.png' },
+  { name: 'Bob Nightengale', handle: '@BNightengale',  color: '#574C3F', initials: 'BN', image: '../assets/images/rumblr/bob_nightengale.png' },
+  { name: 'Jon Heyman',      handle: '@JonHeyman',     color: '#2E6B3E', initials: 'JH', image: '../assets/images/rumblr/jon_heyman.png' },
+  { name: 'Buster Olney',    handle: '@Buster_ESPN',   color: '#8B4513', initials: 'BO', image: '../assets/images/rumblr/buster_olney.png' },
+  { name: 'Tim Kurkjian',    handle: '@TKurkjian',     color: '#4B0082', initials: 'TK', image: '../assets/images/rumblr/tim_kurkjian.png' },
+  { name: 'Keith Law',       handle: '@Keithlaw',      color: '#B8860B', initials: 'KL', image: '../assets/images/rumblr/keith_law.png' },
+  { name: 'Jason Stark',     handle: '@jaysonst',      color: '#C05020', initials: 'JST', image: '../assets/images/rumblr/jason_stark.png' },
+  { name: 'Joel Sherman',    handle: '@joelsherman1',  color: '#1A6B8A', initials: 'JSH', image: '../assets/images/rumblr/joel_sherman.png' },
+  { name: 'Peter Gammons',   handle: '@pgammo',        color: '#6B6B6B', initials: 'PG', image: '../assets/images/rumblr/peter_gammons.png' },
+];
+
 // ── State ─────────────────────────────────────────────────
 let lastDoc        = null;
 let activeFilter   = { type: 'all' };   // { type: 'all'|'tab'|'author'|'hashtag', value }
@@ -182,14 +196,35 @@ export function renderPost(postId, data, isReply = false) {
   const timeAgo = formatTimeAgo(data.timestamp?.toDate ? data.timestamp.toDate() : new Date());
   const content  = linkifyContent(data.content || '');
 
+  // Profile link: use handle for AI writers (author_uid is null), uid for regular users
+  const profileHref = data.author_uid
+    ? `profile.html?uid=${data.author_uid}`
+    : `profile.html?handle=${encodeURIComponent(data.author_handle || '')}`;
+
+  // Avatar: use image if available, fall back to colored initials
+  const avatarHtml = data.author_image
+    ? `<img class="rb-post-avatar rb-post-avatar-img" src="${escHtml(data.author_image)}"
+           alt="${escHtml(data.author_name)}" title="${escHtml(data.author_name)}"
+           onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
+       <div class="rb-post-avatar" style="background:${data.author_avatar_color || '#555'};display:none;"
+            title="${escHtml(data.author_name)}">${escHtml(data.author_initials || '??')}</div>`
+    : `<div class="rb-post-avatar" style="background:${data.author_avatar_color || '#555'}"
+           title="${escHtml(data.author_name)}">${escHtml(data.author_initials || '??')}</div>`;
+
+  // Article link (if post references an article)
+  const articleLinkHtml = data.article_url
+    ? `<a class="rb-article-link" href="${escHtml(data.article_url)}" onclick="event.stopPropagation()">
+         Read Article &rarr;
+       </a>`
+    : '';
+
   el.innerHTML = `
-    <div class="rb-post-avatar" style="background:${data.author_avatar_color || '#555'}" title="${data.author_name}">
-      ${escHtml(data.author_initials || '??')}
+    <div class="rb-post-avatar-wrap">
+      ${avatarHtml}
     </div>
     <div class="rb-post-body">
       <div class="rb-post-header">
-        <a class="rb-post-name" href="profile.html?uid=${data.author_uid || ''}"
-           onclick="event.stopPropagation()">
+        <a class="rb-post-name" href="${profileHref}" onclick="event.stopPropagation()">
           ${escHtml(data.author_name)}
         </a>
         ${data.author_verified ? '<span class="rb-verified" title="Verified">⚾</span>' : ''}
@@ -197,6 +232,7 @@ export function renderPost(postId, data, isReply = false) {
         <span class="rb-post-time">${timeAgo}</span>
       </div>
       <div class="rb-post-content">${content}</div>
+      ${articleLinkHtml}
       <div class="rb-engagement">
         <button class="rb-engage-btn rb-reply-btn" title="Reply" onclick="event.stopPropagation()">
           <span class="rb-engage-icon">💬</span>
@@ -230,39 +266,116 @@ export function renderPost(postId, data, isReply = false) {
 }
 
 // ══════════════════════════════════════════════════════════
-// Author sidebar
+// Author sidebar — Users: ESTN Writers (collapsible) + TSDL Owners
 // ══════════════════════════════════════════════════════════
 async function loadAuthorSidebar() {
   const sidebar = document.getElementById('rb-author-sidebar');
   if (!sidebar) return;
 
-  // Get distinct authors by querying recent posts (simplified: just load writers config)
-  const AI_WRITERS = [
-    { name: 'Jeff Passan',     handle: '@JeffPassan',    color: '#1E3A5F', initials: 'JP' },
-    { name: 'Ken Rosenthal',   handle: '@Ken_Rosenthal', color: '#C8102E', initials: 'KR' },
-    { name: 'Bob Nightengale', handle: '@BNightengale',  color: '#574C3F', initials: 'BN' },
-    { name: 'Jon Heyman',      handle: '@JonHeyman',     color: '#2E6B3E', initials: 'JH' },
-    { name: 'Buster Olney',    handle: '@Buster_ESPN',   color: '#8B4513', initials: 'BO' },
-    { name: 'Tim Kurkjian',    handle: '@TKurkjian',     color: '#4B0082', initials: 'TK' },
-    { name: 'Keith Law',       handle: '@Keithlaw',      color: '#B8860B', initials: 'KL' },
-    { name: 'Kiley McDaniel',  handle: '@kileymcd',      color: '#C05020', initials: 'KM' },
-    { name: 'Joel Sherman',    handle: '@joelsherman1',  color: '#1A6B8A', initials: 'JS' },
-    { name: 'Peter Gammons',   handle: '@pgammo',        color: '#6B6B6B', initials: 'PG' },
-  ];
+  // ── ESTN Writers (collapsible) ──────────────────────────
+  const writersSection = document.getElementById('rb-writers-section');
+  if (writersSection) {
+    writersSection.innerHTML = AI_WRITERS.map(w => `
+      <div class="rb-sidebar-link rb-sidebar-writer" data-handle="${w.handle}" role="button" tabindex="0">
+        <div class="rb-sidebar-avatar-wrap">
+          <img class="rb-sidebar-avatar-img" src="${w.image}" alt="${w.name}"
+               onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
+          <div class="rb-sidebar-avatar" style="background:${w.color};display:none;">${w.initials}</div>
+        </div>
+        <span>${w.name}</span>
+      </div>
+    `).join('');
 
-  sidebar.innerHTML = AI_WRITERS.map(w => `
-    <div class="rb-sidebar-link" data-handle="${w.handle}" role="button" tabindex="0">
-      <div class="rb-sidebar-avatar" style="background:${w.color}">${w.initials}</div>
-      <span>${w.name}</span>
-    </div>
-  `).join('');
+    writersSection.querySelectorAll('.rb-sidebar-writer').forEach(el => {
+      el.addEventListener('click', () => {
+        document.querySelectorAll('.rb-sidebar-link').forEach(e => e.classList.remove('active'));
+        el.classList.add('active');
+        setFilter({ type: 'author', value: el.dataset.handle });
+      });
+      el.addEventListener('keydown', e => { if (e.key === 'Enter') el.click(); });
+    });
+  }
 
-  sidebar.querySelectorAll('.rb-sidebar-link').forEach(el => {
+  // Collapsible toggle
+  const writersToggle = document.getElementById('rb-writers-toggle');
+  if (writersToggle && writersSection) {
+    writersToggle.addEventListener('click', () => {
+      const isOpen = writersSection.style.display !== 'none';
+      writersSection.style.display = isOpen ? 'none' : 'block';
+      const chevron = writersToggle.querySelector('.rb-group-chevron');
+      if (chevron) chevron.textContent = isOpen ? '▶' : '▼';
+    });
+  }
+
+  // ── TSDL Owners (dynamic from Firestore) ───────────────
+  const ownersSection = document.getElementById('rb-owners-section');
+  if (ownersSection) {
+    try {
+      const snap = await getDocs(query(
+        collection(firestore, 'users'),
+        where('author_type', '!=', 'ai'),
+        orderBy('author_type'),
+        orderBy('joined_at', 'desc'),
+        limit(30)
+      ));
+
+      if (snap.empty) {
+        // Fallback: query without filter (users collection has all team owners)
+        const allSnap = await getDocs(query(
+          collection(firestore, 'users'),
+          orderBy('joined_at', 'asc'),
+          limit(30)
+        ));
+        renderOwners(ownersSection, allSnap);
+      } else {
+        renderOwners(ownersSection, snap);
+      }
+    } catch (err) {
+      // Simple fallback query
+      try {
+        const snap = await getDocs(query(
+          collection(firestore, 'users'),
+          orderBy('joined_at', 'asc'),
+          limit(30)
+        ));
+        renderOwners(ownersSection, snap);
+      } catch (_) {
+        ownersSection.innerHTML = '<div style="font-size:0.8rem;color:var(--rb-subtle);padding:4px 16px;">No accounts yet.</div>';
+      }
+    }
+  }
+}
+
+function renderOwners(container, snap) {
+  if (snap.empty) {
+    container.innerHTML = '<div style="font-size:0.8rem;color:var(--rb-subtle);padding:4px 16px;">No accounts yet.</div>';
+    return;
+  }
+  container.innerHTML = snap.docs.map(d => {
+    const u = d.data();
+    const avatarHtml = u.avatar_url
+      ? `<img class="rb-sidebar-avatar-img" src="${escHtml(u.avatar_url)}" alt="${escHtml(u.display_name)}"
+             onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
+         <div class="rb-sidebar-avatar" style="background:${u.team_color||'#555'};display:none;">${escHtml((u.team_abbrev||'?').slice(0,3))}</div>`
+      : `<div class="rb-sidebar-avatar" style="background:${u.team_color||'#555'}">${escHtml((u.team_abbrev||'?').slice(0,3))}</div>`;
+    return `
+      <div class="rb-sidebar-link rb-sidebar-owner" data-uid="${d.id}" data-handle="${escHtml(u.handle||'')}" role="button" tabindex="0">
+        <div class="rb-sidebar-avatar-wrap">${avatarHtml}</div>
+        <div>
+          <div>${escHtml(u.display_name)}</div>
+          <div style="font-size:0.75rem;color:var(--rb-subtle);">${escHtml(u.team_name||'')}</div>
+        </div>
+      </div>
+    `;
+  }).join('');
+
+  container.querySelectorAll('.rb-sidebar-owner').forEach(el => {
     el.addEventListener('click', () => {
-      document.querySelectorAll('#rb-author-sidebar .rb-sidebar-link').forEach(e => e.classList.remove('active'));
+      document.querySelectorAll('.rb-sidebar-link').forEach(e => e.classList.remove('active'));
       el.classList.add('active');
       setFilter({ type: 'author', value: el.dataset.handle });
     });
+    el.addEventListener('keydown', e => { if (e.key === 'Enter') el.click(); });
   });
 }
 
@@ -278,7 +391,7 @@ export function setFilter(filter) {
 export function clearFilter() {
   activeFilter = { type: 'all' };
   if (filterBannerEl) filterBannerEl.style.display = 'none';
-  document.querySelectorAll('#rb-author-sidebar .rb-sidebar-link').forEach(e => e.classList.remove('active'));
+  document.querySelectorAll('.rb-sidebar-link').forEach(e => e.classList.remove('active'));
   loadFeed(true);
 }
 
@@ -305,18 +418,27 @@ function renderAuthUI() {
   const signOutBtn = document.getElementById('rb-signout-btn');
   const userMenu   = document.getElementById('rb-user-menu');
   const composeWrap = document.getElementById('rb-compose-wrap');
+  const profileLink = document.getElementById('rb-profile-link');
 
   if (currentUser) {
     if (signInBtn)  signInBtn.style.display  = 'none';
     if (signOutBtn) signOutBtn.style.display = 'inline-flex';
     if (userMenu)   userMenu.style.display   = 'flex';
     if (composeWrap) composeWrap.style.display = 'block';
+    // Set profile link to include user's UID so their profile loads correctly
+    if (profileLink) profileLink.href = `profile.html?uid=${currentUser.uid}`;
 
     if (currentUserDoc && userMenu) {
       const av = userMenu.querySelector('.rb-header-avatar');
       if (av) {
-        av.style.background = currentUserDoc.team_color || '#555';
-        av.textContent = (currentUserDoc.team_abbrev || '?').slice(0, 2);
+        if (currentUserDoc.avatar_url) {
+          av.innerHTML = `<img src="${escHtml(currentUserDoc.avatar_url)}" alt="Profile"
+                              style="width:100%;height:100%;object-fit:cover;border-radius:50%;"
+                              onerror="this.style.display='none';">`;
+        } else {
+          av.style.background = currentUserDoc.team_color || '#555';
+          av.textContent = (currentUserDoc.team_abbrev || '?').slice(0, 3);
+        }
       }
     }
   } else {

@@ -32,10 +32,31 @@
 <!-- ── 3-column layout ─────────────────────────────────── -->
 <div class="rb-layout">
 
-  <!-- Left Sidebar: Authors -->
+  <!-- Left Sidebar: Users -->
   <aside class="rb-left-sidebar">
-    <div class="rb-sidebar-label">Writers</div>
-    <div id="rb-author-sidebar"></div>
+    <div class="rb-sidebar-label">Users</div>
+
+    <!-- ESTN Writers (collapsible) -->
+    <div class="rb-sidebar-group">
+      <div class="rb-sidebar-group-header" id="rb-writers-toggle" role="button" tabindex="0">
+        <span>ESTN Writers</span>
+        <span class="rb-group-chevron">▼</span>
+      </div>
+      <div id="rb-writers-section" class="rb-sidebar-group-items"></div>
+    </div>
+
+    <!-- TSDL Owners (dynamic) -->
+    <div class="rb-sidebar-group">
+      <div class="rb-sidebar-group-header">
+        <span>TSDL Owners</span>
+      </div>
+      <div id="rb-owners-section" class="rb-sidebar-group-items">
+        <div style="font-size:0.8rem;color:var(--rb-subtle);padding:4px 16px;">Loading…</div>
+      </div>
+    </div>
+
+    <!-- Keep old container for compat -->
+    <div id="rb-author-sidebar" style="display:none;"></div>
 
     <hr class="rb-sidebar-divider">
     <div class="rb-sidebar-label">Navigation</div>

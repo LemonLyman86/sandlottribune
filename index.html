@@ -127,6 +127,20 @@
       </div>
     </div>
 
+    <!-- ===== RUMBLR FEED PREVIEW ===== -->
+    <section aria-label="Latest Rumbl'ings">
+      <h2 class="section-label" style="display:flex;align-items:center;gap:10px;">
+        Latest Rumbl'ings
+        <a href="rumblr/" style="font-family:'Oswald',sans-serif;font-size:0.7rem;letter-spacing:0.08em;
+           color:#C8102E;text-decoration:none;font-weight:400;">See all &rarr;</a>
+      </h2>
+      <div id="rumblr-preview-feed" style="background:#0D1117;border:1px solid #2D3748;border-radius:6px;overflow:hidden;">
+        <div style="padding:20px;color:#A0AEC0;font-family:'Oswald',sans-serif;font-size:0.85rem;text-align:center;">
+          Loading Rumbl'ings…
+        </div>
+      </div>
+    </section>
+
     <!-- ===== LATEST NEWS ===== -->
     <section aria-label="Latest News">
       <h2 class="section-label">Latest</h2>
@@ -356,6 +370,70 @@
       'season_preview_2026_stl',
       'season_preview_2026_ari'
     ]);
+  </script>
+
+  <!-- Rumblr feed preview -->
+  <script type="module">
+    import { firestore } from './assets/js/firebase-config.js';
+    import {
+      collection, query, orderBy, limit, getDocs
+    } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js';
+
+    function esc(str) {
+      return String(str||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+    }
+
+    function timeAgo(date) {
+      if (!date) return '';
+      const diff = Math.floor((Date.now() - date.getTime()) / 1000);
+      if (diff < 60)    return `${diff}s`;
+      if (diff < 3600)  return `${Math.floor(diff/60)}m`;
+      if (diff < 86400) return `${Math.floor(diff/3600)}h`;
+      return `${Math.floor(diff/86400)}d`;
+    }
+
+    async function loadRumblrPreview() {
+      const container = document.getElementById('rumblr-preview-feed');
+      if (!container) return;
+      try {
+        const snap = await getDocs(query(
+          collection(firestore, 'posts'),
+          orderBy('timestamp', 'desc'),
+          limit(5)
+        ));
+        if (snap.empty) {
+          container.innerHTML = '<div style="padding:20px;color:#718096;font-family:\'Oswald\',sans-serif;font-size:0.85rem;text-align:center;">No Rumbl\'ings yet. <a href="rumblr/" style="color:#C8102E;">Be the first →</a></div>';
+          return;
+        }
+        const html = snap.docs.map(d => {
+          const p = d.data();
+          const t = p.timestamp?.toDate ? p.timestamp.toDate() : new Date();
+          const avatarHtml = p.author_image
+            ? `<img src="${esc(p.author_image)}" alt="${esc(p.author_name)}" style="width:36px;height:36px;border-radius:50%;object-fit:cover;flex-shrink:0;" onerror="this.style.display='none';">`
+            : `<div style="width:36px;height:36px;border-radius:50%;background:${esc(p.author_avatar_color||'#555')};display:flex;align-items:center;justify-content:center;font-family:'Oswald',sans-serif;font-size:0.72rem;color:#fff;flex-shrink:0;">${esc(p.author_initials||'??')}</div>`;
+          const content = esc(p.content||'').replace(/#(\w+)/g, '<span style="color:#C8102E;">#$1</span>');
+          return `
+            <a href="rumblr/post.html?id=${esc(d.id)}" class="rumblr-preview-post" style="display:flex;gap:12px;padding:14px 16px;border-bottom:1px solid #2D3748;text-decoration:none;cursor:pointer;transition:background 0.15s;" onmouseover="this.style.background='#161B22'" onmouseout="this.style.background='transparent'">
+              ${avatarHtml}
+              <div style="flex:1;min-width:0;">
+                <div style="display:flex;gap:8px;align-items:baseline;margin-bottom:4px;">
+                  <span style="font-family:'Oswald',sans-serif;font-size:0.88rem;font-weight:600;color:#fff;">${esc(p.author_name)}</span>
+                  ${p.author_verified ? '<span style="font-size:0.78rem;">⚾</span>' : ''}
+                  <span style="font-family:'Oswald',sans-serif;font-size:0.8rem;color:#A0AEC0;">${esc(p.author_handle)}</span>
+                  <span style="font-family:'Oswald',sans-serif;font-size:0.78rem;color:#718096;margin-left:auto;">${timeAgo(t)}</span>
+                </div>
+                <div style="font-family:'Marcellus',serif;font-size:0.88rem;color:#E2E8F0;line-height:1.5;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;">${content}</div>
+              </div>
+            </a>`;
+        }).join('');
+        container.innerHTML = html + `<div style="text-align:center;padding:12px;border-top:1px solid #2D3748;"><a href="rumblr/" style="font-family:'Oswald',sans-serif;font-size:0.82rem;color:#C8102E;text-decoration:none;letter-spacing:0.06em;text-transform:uppercase;">View all Rumbl\'ings &rarr;</a></div>`;
+      } catch (err) {
+        console.error('Rumblr preview error:', err);
+        container.innerHTML = '<div style="padding:20px;color:#718096;font-family:\'Oswald\',sans-serif;font-size:0.85rem;text-align:center;"><a href="rumblr/" style="color:#C8102E;">Visit Rumblr &rarr;</a></div>';
+      }
+    }
+
+    loadRumblrPreview();
   </script>
 
 </body>

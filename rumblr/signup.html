@@ -76,6 +76,15 @@
       <input id="rb-bio" type="text" placeholder="Official TSDL team account · Philly" maxlength="100">
     </div>
 
+    <div class="rb-form-group">
+      <label class="rb-form-label" for="rb-avatar-url">Logo / Avatar URL <span style="color:var(--rb-subtle);font-size:0.8em;">(optional)</span></label>
+      <input id="rb-avatar-url" type="url" placeholder="https://example.com/your-logo.png">
+      <div class="rb-form-hint">Paste a URL to an image to use as your profile logo. Leave blank to use your team color.</div>
+      <div id="rb-avatar-preview" style="display:none;margin-top:8px;">
+        <img id="rb-avatar-preview-img" style="width:56px;height:56px;border-radius:50%;object-fit:cover;border:2px solid var(--rb-border);" alt="Logo preview">
+      </div>
+    </div>
+
     <div style="display:flex;gap:10px;margin-top:4px;">
       <button id="rb-step2-back" class="rb-btn rb-btn-outline" style="flex:0 0 auto;">← Back</button>
       <button id="rb-step2-next" class="rb-btn rb-btn-primary" style="flex:1;justify-content:center;">
