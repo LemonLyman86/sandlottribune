@@ -5,74 +5,104 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Profile — Rumblr</title>
   <link rel="icon" href="../assets/images/rumblr-logo.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=Marcellus&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="../assets/css/rumblr.css">
 </head>
 <body class="rumblr-page">
 
+<!-- ── Header (Tribune-style nav) ─────────────────────── -->
 <header class="rb-header">
-  <a href="./" class="rb-header-logo">
-    <img src="../assets/images/rumblr-logo.png" alt="Rumblr">
-  </a>
-  <div class="rb-header-actions">
-    <a href="../" class="rb-btn rb-btn-ghost" style="font-size:0.78rem;">📰 Tribune</a>
-    <a href="./" class="rb-btn rb-btn-ghost">← Feed</a>
-  </div>
+  <nav class="rb-nav-inner">
+    <a href="./" class="rb-header-logo">
+      <img src="../assets/images/rumblr-logo.png" alt="Rumblr">
+      <span class="rb-header-logo-text">Rumb<span>lr</span></span>
+    </a>
+    <ul class="rb-nav-links">
+      <li><a href="https://rschneider2020.github.io/sandlottribune/" target="_top">Home</a></li>
+      <li><a href="https://rschneider2020.github.io/sandlottribune/between-the-chalk/" target="_top">Between The Chalk</a></li>
+      <li><a href="https://rschneider2020.github.io/sandlottribune/season-deadlines/" target="_top">Season Deadlines</a></li>
+      <li><a href="https://rschneider2020.github.io/sandlottribune/league-records/" target="_top">League Records</a></li>
+      <li><a href="./" class="active">Rumblr</a></li>
+      <li><a href="https://rschneider2020.github.io/sandlottribune/about/" target="_top"><img class="rb-nav-estn" src="../assets/images/estn-logo.png" alt="ESTN"></a></li>
+    </ul>
+    <div class="rb-header-actions">
+      <a id="rb-signin-btn"  href="login.html"  class="rb-btn rb-btn-ghost"   style="display:none;font-size:0.78rem;">Sign In</a>
+      <button id="rb-signout-btn" class="rb-btn rb-btn-ghost" style="display:none;font-size:0.78rem;">Sign Out</button>
+      <div id="rb-user-menu" style="display:none;align-items:center;gap:8px;">
+        <a id="rb-profile-link" href="profile.html" class="rb-header-avatar" style="width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:#555;font-size:0.72rem;font-weight:700;color:#fff;text-decoration:none;overflow:hidden;flex-shrink:0;font-family:'Oswald',sans-serif;"></a>
+      </div>
+    </div>
+  </nav>
 </header>
 
-<div class="rb-post-page">
+<!-- ── Profile ─────────────────────────────────────────── -->
+<div class="rb-profile-page">
 
-  <!-- Profile header -->
-  <div id="rb-profile-header" class="rb-profile-header">
-    <div id="rb-profile-avatar-wrap">
-      <div id="rb-profile-avatar" class="rb-profile-avatar" style="background:#555">?</div>
-    </div>
-    <div style="flex:1;">
-      <div class="rb-profile-name">
-        <span id="rb-profile-name-text">Loading…</span>
-        <span id="rb-profile-badge"></span>
-        <!-- Edit button — only visible when viewing own profile -->
-        <button id="rb-edit-profile-btn" class="rb-btn rb-btn-ghost"
-                style="display:none;margin-left:10px;font-size:0.78rem;padding:4px 10px;">
+  <!-- Banner -->
+  <div id="rb-profile-banner" class="rb-profile-banner"></div>
+
+  <!-- Profile content -->
+  <div class="rb-profile-content">
+
+    <!-- Avatar (overlaps banner) -->
+    <div class="rb-profile-avatar-outer">
+      <div id="rb-profile-avatar-wrap" class="rb-profile-avatar-wrap">
+        <div id="rb-profile-avatar" class="rb-profile-avatar-lg" style="background:#555">?</div>
+      </div>
+      <!-- Edit / Follow buttons top-right -->
+      <div class="rb-profile-action-btns">
+        <button id="rb-edit-profile-btn" class="rb-btn rb-btn-ghost rb-btn-sm" style="display:none;">
           ✏️ Edit Profile
         </button>
-        <!-- Follow button — visible to logged-in users viewing other profiles -->
-        <button id="rb-follow-btn" class="rb-btn rb-btn-primary"
-                style="display:none;margin-left:10px;font-size:0.78rem;padding:4px 12px;">
+        <button id="rb-follow-btn" class="rb-btn rb-btn-primary rb-btn-sm" style="display:none;">
           + Follow
         </button>
       </div>
-      <div id="rb-profile-handle" class="rb-profile-handle"></div>
-      <div id="rb-profile-bio"    class="rb-profile-bio"></div>
-      <div class="rb-profile-meta">
-        <span id="rb-profile-team"></span>
-        <span>·</span>
-        <span id="rb-profile-joined"></span>
-        <span>·</span>
-        <span id="rb-profile-post-count"></span>
+    </div>
+
+    <!-- Name + handle + bio + stats -->
+    <div class="rb-profile-info">
+      <h1 id="rb-profile-name-text" class="rb-profile-display-name">Loading…</h1>
+      <div class="rb-profile-handle-row">
+        <span id="rb-profile-handle" class="rb-profile-handle-text"></span>
+        <span id="rb-profile-badge" class="rb-profile-badge-inline"></span>
+      </div>
+      <div id="rb-profile-bio" class="rb-profile-bio-text"></div>
+      <div class="rb-profile-meta-row">
+        <span id="rb-profile-team" class="rb-profile-meta-item"></span>
+        <span id="rb-profile-joined" class="rb-profile-meta-item"></span>
+      </div>
+      <div class="rb-profile-stats-row">
+        <span class="rb-profile-stat"><strong id="rb-stat-posts">—</strong> Posts</span>
+        <span class="rb-profile-stat"><strong id="rb-stat-followers">—</strong> Followers</span>
+        <span class="rb-profile-stat"><strong id="rb-stat-following">—</strong> Following</span>
       </div>
     </div>
+
+    <!-- Feed tabs -->
+    <div class="rb-profile-tabs">
+      <div class="rb-profile-tab active" data-ptab="posts">Posts</div>
+      <div class="rb-profile-tab" data-ptab="media">Media</div>
+      <div class="rb-profile-tab" data-ptab="comments">Comments</div>
+    </div>
+
+    <!-- Spinner -->
+    <div id="rb-spinner" class="rb-spinner" style="display:none;"></div>
+
+    <!-- Feed -->
+    <div id="rb-profile-feed"></div>
+
+    <div class="rb-load-more">
+      <button id="rb-load-more-btn" class="rb-load-more-btn" style="display:none;">Load more</button>
+    </div>
+
   </div>
-
-  <!-- Posts label -->
-  <div class="rb-replies-label">Rumbl'ings</div>
-
-  <!-- Spinner -->
-  <div id="rb-spinner" class="rb-spinner" style="display:none;"></div>
-
-  <!-- User's posts -->
-  <div id="rb-profile-feed"></div>
-
-  <div class="rb-load-more">
-    <button id="rb-load-more-btn" class="rb-load-more-btn" style="display:none;">
-      Load more
-    </button>
-  </div>
-
 </div>
 
-<!-- ── Edit Profile Modal ─────────────────────────────────── -->
+<!-- ── Edit Profile Modal ─────────────────────────────── -->
 <div id="rb-edit-modal" class="rb-modal-overlay hidden">
-  <div class="rb-modal" style="max-width:460px;width:92%;">
+  <div class="rb-modal" style="max-width:480px;width:92%;">
     <div class="rb-modal-header">
       <span class="rb-modal-title">Edit Profile</span>
       <span class="rb-modal-close" id="rb-edit-close">✕</span>
@@ -82,29 +112,33 @@
       <label class="rb-form-label" for="rb-edit-name">Display Name</label>
       <input id="rb-edit-name" type="text" maxlength="40">
     </div>
-
     <div class="rb-form-group">
       <label class="rb-form-label" for="rb-edit-handle">Handle</label>
       <input id="rb-edit-handle" type="text" maxlength="25">
       <div class="rb-form-hint">Must start with @. Changing your handle resets your verification badge.</div>
     </div>
-
     <div class="rb-form-group">
       <label class="rb-form-label" for="rb-edit-bio">Bio <span style="color:var(--rb-subtle);font-size:0.8em;">(optional)</span></label>
-      <input id="rb-edit-bio" type="text" maxlength="100">
+      <input id="rb-edit-bio" type="text" maxlength="160">
     </div>
-
     <div class="rb-form-group">
-      <label class="rb-form-label" for="rb-edit-avatar">Logo / Avatar URL <span style="color:var(--rb-subtle);font-size:0.8em;">(optional)</span></label>
+      <label class="rb-form-label" for="rb-edit-avatar">Avatar URL <span style="color:var(--rb-subtle);font-size:0.8em;">(optional)</span></label>
       <input id="rb-edit-avatar" type="url" placeholder="https://example.com/logo.png">
       <div class="rb-form-hint">Leave blank to use your team color.</div>
       <div id="rb-edit-avatar-preview" style="display:none;margin-top:8px;">
         <img id="rb-edit-avatar-img" style="width:48px;height:48px;border-radius:50%;object-fit:cover;border:2px solid var(--rb-border);" alt="Preview">
       </div>
     </div>
+    <div class="rb-form-group">
+      <label class="rb-form-label" for="rb-edit-banner">Banner Image URL <span style="color:var(--rb-subtle);font-size:0.8em;">(optional)</span></label>
+      <input id="rb-edit-banner" type="url" placeholder="https://example.com/banner.jpg">
+      <div class="rb-form-hint">Paste any image URL to use as your profile banner. Leave blank for default.</div>
+      <div id="rb-edit-banner-preview" style="display:none;margin-top:8px;">
+        <img id="rb-edit-banner-img" style="width:100%;height:60px;object-fit:cover;border-radius:4px;border:2px solid var(--rb-border);" alt="Banner preview">
+      </div>
+    </div>
 
     <div id="rb-edit-error" class="rb-form-error" style="margin-bottom:10px;"></div>
-
     <div style="display:flex;gap:10px;margin-top:4px;">
       <button id="rb-edit-cancel" class="rb-btn rb-btn-outline" style="flex:0 0 auto;">Cancel</button>
       <button id="rb-edit-save"   class="rb-btn rb-btn-primary" style="flex:1;justify-content:center;">Save Changes</button>
@@ -118,63 +152,109 @@
   import { firestore, auth } from '../assets/js/firebase-config.js';
   import {
     doc, getDoc, collection, query,
-    where, limit, getDocs, startAfter, updateDoc
+    where, limit, getDocs, updateDoc
   } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js';
-  import { onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js';
-  import { renderPost, AI_WRITERS, showToast, toggleFollow, isFollowing, getCurrentUser } from '../assets/js/rumblr-app.js';
+  import { onAuthStateChanged, signOut } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js';
+  import {
+    renderPost, AI_WRITERS, showToast,
+    toggleFollow, isFollowing, loadFollows, loadProfileStats
+  } from '../assets/js/rumblr-app.js';
 
-  const PAGE_SIZE   = 20;
-  const params      = new URLSearchParams(location.search);
-  const uid         = params.get('uid');
-  const handle      = params.get('handle');
-  let lastDoc       = null;
+  const params       = new URLSearchParams(location.search);
+  const uid          = params.get('uid');
+  const handleParam  = params.get('handle');
   let currentUserUid = null;
-  let storedUserData = null;  // saved for edit modal pre-fill
+  let storedUserData = null;
+  let profileHandle  = null;
+  let activeTab      = 'posts';
+  let allPosts       = [];   // cached fetch, filtered per tab
 
-  // Track auth state to show/hide Edit / Follow buttons
-  onAuthStateChanged(auth, user => {
+  // ── Sign out ────────────────────────────────────────────
+  const signOutBtn = document.getElementById('rb-signout-btn');
+  if (signOutBtn) signOutBtn.addEventListener('click', () => signOut(auth));
+
+  // ── Auth state ──────────────────────────────────────────
+  onAuthStateChanged(auth, async user => {
     currentUserUid = user ? user.uid : null;
+
+    // Populate header user menu
+    const profileLinkEl = document.getElementById('rb-profile-link');
+    const userMenuEl    = document.getElementById('rb-user-menu');
+    const signInBtnEl   = document.getElementById('rb-signin-btn');
+    const signOutBtnEl  = document.getElementById('rb-signout-btn');
+
+    if (user) {
+      if (signInBtnEl)  signInBtnEl.style.display  = 'none';
+      if (signOutBtnEl) signOutBtnEl.style.display = 'inline-flex';
+      if (userMenuEl)   userMenuEl.style.display   = 'flex';
+      if (profileLinkEl) profileLinkEl.href = `profile.html?uid=${user.uid}`;
+
+      // Load follows so isFollowing() works
+      await loadFollows(user.uid);
+
+      // Load user doc for avatar in header
+      try {
+        const snap = await getDoc(doc(firestore, 'users', user.uid));
+        if (snap.exists()) {
+          const ud = snap.data();
+          const av = profileLinkEl;
+          if (av) {
+            if (ud.avatar_url) {
+              av.innerHTML = `<img src="${ud.avatar_url}" alt="Profile"
+                style="width:100%;height:100%;object-fit:cover;border-radius:50%;"
+                onerror="this.style.display='none';">`;
+              av.style.background = 'transparent';
+            } else {
+              av.style.background = ud.team_color || '#555';
+              av.textContent = (ud.team_abbrev || '?').slice(0, 3);
+            }
+          }
+        }
+      } catch (_) {}
+    } else {
+      if (signInBtnEl)  signInBtnEl.style.display  = 'inline-flex';
+      if (signOutBtnEl) signOutBtnEl.style.display = 'none';
+      if (userMenuEl)   userMenuEl.style.display   = 'none';
+    }
+
+    // Show/hide Edit vs Follow buttons
     const editBtn   = document.getElementById('rb-edit-profile-btn');
     const followBtn = document.getElementById('rb-follow-btn');
 
     if (uid && currentUserUid === uid) {
-      // Own profile: show Edit, hide Follow
       if (editBtn)   editBtn.style.display   = 'inline-flex';
-      if (followBtn) followBtn.style.display  = 'none';
-    } else if (currentUserUid && (uid || handle)) {
-      // Other profile, logged in: show Follow
+      if (followBtn) followBtn.style.display = 'none';
+    } else if (currentUserUid && (uid || handleParam)) {
       if (editBtn)   editBtn.style.display   = 'none';
       if (followBtn) {
         followBtn.style.display = 'inline-flex';
-        updateFollowBtn(followBtn);
+        refreshFollowBtn();
       }
+    } else {
+      if (editBtn)   editBtn.style.display   = 'none';
+      if (followBtn) followBtn.style.display = 'none';
     }
   });
 
-  // ── Follow Button ───────────────────────────────────────
-  function updateFollowBtn(btn) {
-    // profileHandle is set by renderUserProfile/renderWriterProfile after load
-    const handle = profileHandle || uid;
-    if (!handle) return;
-    const following = isFollowing(profileHandle || handle);
+  // ── Follow button ───────────────────────────────────────
+  function refreshFollowBtn() {
+    const btn = document.getElementById('rb-follow-btn');
+    if (!btn || !profileHandle) return;
+    const following = isFollowing(profileHandle);
     btn.textContent = following ? '✓ Following' : '+ Follow';
-    btn.className   = following ? 'rb-btn rb-btn-ghost' : 'rb-btn rb-btn-primary';
-    btn.style.cssText = 'display:inline-flex;margin-left:10px;font-size:0.78rem;padding:4px 12px;';
+    btn.className   = 'rb-btn rb-btn-sm ' + (following ? 'rb-btn-ghost' : 'rb-btn-primary');
   }
-
-  let profileHandle = null;  // set once profile loads
 
   document.getElementById('rb-follow-btn').addEventListener('click', async () => {
     const btn = document.getElementById('rb-follow-btn');
+    if (!profileHandle || !currentUserUid) return;
     btn.disabled = true;
     try {
-      const targetHandle = profileHandle;
-      if (!targetHandle) return;
-      const writer = AI_WRITERS.find(w => w.handle === targetHandle);
+      const writer = AI_WRITERS.find(w => w.handle === profileHandle);
       const type   = writer ? 'ai' : 'user';
-      const now    = await toggleFollow(targetHandle, type, uid || null);
-      updateFollowBtn(btn);
-      showToast(now ? `Following ${targetHandle}` : `Unfollowed ${targetHandle}`);
+      const now    = await toggleFollow(profileHandle, type, uid || null);
+      refreshFollowBtn();
+      showToast(now ? `Following ${profileHandle}` : `Unfollowed ${profileHandle}`);
     } catch (err) {
       console.error('Follow error:', err);
       showToast('Could not update follow. Try again.');
@@ -183,96 +263,178 @@
     }
   });
 
-  // ── Edit Profile Modal ─────────────────────────────────
-  document.getElementById('rb-edit-profile-btn').addEventListener('click', openEditModal);
-  document.getElementById('rb-edit-close').addEventListener('click', closeEditModal);
-  document.getElementById('rb-edit-cancel').addEventListener('click', closeEditModal);
+  // ── Profile tabs ────────────────────────────────────────
+  document.querySelectorAll('.rb-profile-tab').forEach(tab => {
+    tab.addEventListener('click', () => {
+      document.querySelectorAll('.rb-profile-tab').forEach(t => t.classList.remove('active'));
+      tab.classList.add('active');
+      activeTab = tab.dataset.ptab;
+      renderTabFeed();
+    });
+  });
 
-  document.getElementById('rb-edit-avatar').addEventListener('input', () => {
-    const url = document.getElementById('rb-edit-avatar').value.trim();
-    const preview = document.getElementById('rb-edit-avatar-preview');
-    const img = document.getElementById('rb-edit-avatar-img');
-    if (url && preview && img) {
-      img.src = url;
-      preview.style.display = 'block';
-      img.onerror = () => { preview.style.display = 'none'; };
-    } else if (preview) {
-      preview.style.display = 'none';
+  function renderTabFeed() {
+    const feedEl = document.getElementById('rb-profile-feed');
+    feedEl.innerHTML = '';
+    let filtered;
+    if (activeTab === 'posts') {
+      filtered = allPosts.filter(d => !d.data().parent_post_id && !d.data().article_url);
+    } else if (activeTab === 'media') {
+      filtered = allPosts.filter(d => d.data().article_url);
+    } else {
+      filtered = allPosts.filter(d => d.data().parent_post_id);
     }
-  });
-
-  document.getElementById('rb-edit-handle').addEventListener('blur', () => {
-    const h = document.getElementById('rb-edit-handle');
-    if (h && h.value && !h.value.startsWith('@')) h.value = '@' + h.value;
-  });
-
-  function openEditModal() {
-    if (!storedUserData) return;
-    document.getElementById('rb-edit-name').value   = storedUserData.display_name || '';
-    document.getElementById('rb-edit-handle').value = storedUserData.handle || '';
-    document.getElementById('rb-edit-bio').value    = storedUserData.bio || '';
-    document.getElementById('rb-edit-avatar').value = storedUserData.avatar_url || '';
-    document.getElementById('rb-edit-error').textContent = '';
-    document.getElementById('rb-edit-modal').classList.remove('hidden');
+    if (filtered.length === 0) {
+      feedEl.innerHTML = `<div class="rb-empty">
+        <div class="rb-empty-icon">${activeTab === 'comments' ? '💬' : '📭'}</div>
+        <div class="rb-empty-msg">No ${activeTab} yet.</div>
+      </div>`;
+      return;
+    }
+    filtered.forEach(d => feedEl.appendChild(renderPost(d.id, d.data())));
   }
 
-  function closeEditModal() {
-    document.getElementById('rb-edit-modal').classList.add('hidden');
+  // ── Stats display ───────────────────────────────────────
+  function fmtNum(n) {
+    if (n >= 1000000) return (n / 1000000).toFixed(1).replace(/\.0$/, '') + 'M';
+    if (n >= 1000)    return (n / 1000).toFixed(1).replace(/\.0$/, '') + 'K';
+    return String(n);
   }
 
-  document.getElementById('rb-edit-save').addEventListener('click', async () => {
-    const name      = document.getElementById('rb-edit-name').value.trim();
-    const newHandle = document.getElementById('rb-edit-handle').value.trim();
-    const bio       = document.getElementById('rb-edit-bio').value.trim();
-    const avatarUrl = document.getElementById('rb-edit-avatar').value.trim();
-    const errEl     = document.getElementById('rb-edit-error');
-    const saveBtn   = document.getElementById('rb-edit-save');
+  function setStats(posts, followers, following) {
+    const p = document.getElementById('rb-stat-posts');
+    const f = document.getElementById('rb-stat-followers');
+    const g = document.getElementById('rb-stat-following');
+    if (p) p.textContent = fmtNum(posts);
+    if (f) f.textContent = fmtNum(followers);
+    if (g) g.textContent = fmtNum(following);
+  }
 
-    if (!name)   { errEl.textContent = 'Display name is required.'; return; }
-    if (!newHandle) { errEl.textContent = 'Handle is required.'; return; }
+  // ── Banner ──────────────────────────────────────────────
+  function setBanner(bannerUrl, fallbackColor) {
+    const el = document.getElementById('rb-profile-banner');
+    if (!el) return;
+    if (bannerUrl) {
+      el.style.backgroundImage = `url('${bannerUrl}')`;
+      el.style.backgroundSize  = 'cover';
+      el.style.backgroundPosition = 'center';
+    } else if (fallbackColor) {
+      el.style.background = `linear-gradient(135deg, ${fallbackColor}CC 0%, #0D1117 100%)`;
+    } else {
+      el.style.background = 'linear-gradient(135deg, #1A2030 0%, #0D1117 100%)';
+    }
+  }
 
-    saveBtn.disabled = true;
-    errEl.textContent = '';
+  // ── Profile rendering ───────────────────────────────────
+  function setAvatar(imageUrl, color, initials) {
+    const wrap = document.getElementById('rb-profile-avatar-wrap');
+    if (!wrap) return;
+    if (imageUrl) {
+      wrap.innerHTML = `
+        <img src="${imageUrl}" alt="Avatar" class="rb-profile-avatar-lg rb-profile-avatar-img"
+             onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
+        <div class="rb-profile-avatar-lg" style="background:${color||'#555'};display:none;">${initials||'?'}</div>`;
+    } else {
+      wrap.innerHTML = `<div class="rb-profile-avatar-lg" style="background:${color||'#555'}">${initials||'?'}</div>`;
+    }
+  }
 
+  function renderUserProfile(u) {
+    profileHandle = u.handle || null;
+    document.title = `${u.display_name} — Rumblr`;
+    setAvatar(u.avatar_url, u.team_color, u.team_abbrev);
+    setBanner(u.banner_url, u.team_color);
+    document.getElementById('rb-profile-name-text').textContent = u.display_name;
+    document.getElementById('rb-profile-handle').textContent = u.handle;
+    document.getElementById('rb-profile-bio').textContent = u.bio || '';
+    document.getElementById('rb-profile-team').textContent = u.team_name || '';
+    if (u.joined_at?.toDate) {
+      const d = u.joined_at.toDate();
+      document.getElementById('rb-profile-joined').textContent =
+        'Joined ' + d.toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
+    }
+    const badge = document.getElementById('rb-profile-badge');
+    badge.innerHTML = u.verified
+      ? '<span class="rb-badge-verified">⚾ Verified</span>'
+      : '<span class="rb-badge-pending">💩 Unverified</span>';
+    // Refresh follow button now that handle is known
+    refreshFollowBtn();
+    // Load real stats
+    loadProfileStats(u.handle, uid).then(s => setStats(s.posts, s.followers, s.following));
+  }
+
+  function renderWriterProfile(writer) {
+    profileHandle = writer.handle || null;
+    document.title = `${writer.name} — Rumblr`;
+    setAvatar(writer.image, writer.color, writer.initials);
+    setBanner(null, writer.bannerColor || writer.color);
+    document.getElementById('rb-profile-name-text').textContent = writer.name;
+    document.getElementById('rb-profile-handle').textContent = writer.handle;
+    document.getElementById('rb-profile-bio').textContent = writer.bio || 'ESTN Writer';
+    document.getElementById('rb-profile-team').textContent = 'ESTN Network';
+    document.getElementById('rb-profile-joined').textContent = '';
+    document.getElementById('rb-profile-badge').innerHTML =
+      '<span class="rb-badge-verified">⚾ Verified</span>';
+    // Hardcoded stats
+    const s = writer.stats || { followers: 0, following: 0, posts: 0 };
+    setStats(s.posts, s.followers, s.following);
+    // Show follow button for writers when logged in
+    if (currentUserUid) {
+      const btn = document.getElementById('rb-follow-btn');
+      if (btn) { btn.style.display = 'inline-flex'; refreshFollowBtn(); }
+    }
+  }
+
+  function renderProfileFromPost(postData) {
+    profileHandle = postData.author_handle || null;
+    document.title = `${postData.author_name} — Rumblr`;
+    const img = postData.author_image ||
+      AI_WRITERS.find(w => w.handle === postData.author_handle)?.image || null;
+    setAvatar(img, postData.author_avatar_color, postData.author_initials);
+    setBanner(null, postData.author_avatar_color);
+    document.getElementById('rb-profile-name-text').textContent = postData.author_name;
+    document.getElementById('rb-profile-handle').textContent = postData.author_handle;
+    if (postData.author_verified) {
+      document.getElementById('rb-profile-badge').innerHTML =
+        '<span class="rb-badge-verified">⚾ Verified</span>';
+    }
+    setStats(0, 0, 0);
+    refreshFollowBtn();
+  }
+
+  // ── Post loading ────────────────────────────────────────
+  async function loadPosts(identifier, queryByHandle) {
+    const spinner = document.getElementById('rb-spinner');
+    spinner.style.display = 'block';
+    document.getElementById('rb-profile-feed').innerHTML = '';
+    document.getElementById('rb-load-more-btn').style.display = 'none';
     try {
-      const updates = {
-        display_name: name,
-        handle:       newHandle,
-        bio,
-      };
-      if (avatarUrl) {
-        updates.avatar_url = avatarUrl;
-      } else {
-        // Remove avatar_url if cleared (use deleteField if needed, but null is fine)
-        updates.avatar_url = null;
-      }
-
-      // If handle changed, reset verified status
-      if (storedUserData && newHandle !== storedUserData.handle) {
-        updates.verified = false;
-      }
-
-      await updateDoc(doc(firestore, 'users', uid), updates);
-
-      // Refresh profile display
-      storedUserData = { ...storedUserData, ...updates };
-      renderUserProfile(storedUserData);
-      closeEditModal();
-      showToast('Profile updated!');
+      const field = queryByHandle ? 'author_handle' : 'author_uid';
+      const q = query(
+        collection(firestore, 'posts'),
+        where(field, '==', identifier),
+        limit(100)
+      );
+      const snap = await getDocs(q);
+      allPosts = [...snap.docs].sort((a, b) => {
+        const ta = a.data().timestamp?.toMillis?.() || 0;
+        const tb = b.data().timestamp?.toMillis?.() || 0;
+        return tb - ta;
+      });
+      renderTabFeed();
     } catch (err) {
-      console.error('Profile update error:', err);
-      errEl.textContent = 'Could not save changes. Try again.';
+      console.error('Profile posts error:', err);
+      document.getElementById('rb-profile-feed').innerHTML =
+        '<div style="padding:20px;color:var(--rb-muted);font-family:\'Oswald\',sans-serif;">Could not load posts.</div>';
     } finally {
-      saveBtn.disabled = false;
+      spinner.style.display = 'none';
     }
-  });
+  }
 
-  // ── Profile Loading ────────────────────────────────────
+  // ── Profile loader ──────────────────────────────────────
   async function loadProfile() {
-    const nameEl = document.getElementById('rb-profile-name-text');
-
-    if (!uid && !handle) {
-      nameEl.textContent = 'User not found';
+    if (!uid && !handleParam) {
+      document.getElementById('rb-profile-name-text').textContent = 'User not found';
       return;
     }
 
@@ -282,182 +444,107 @@
         if (snap.exists()) {
           storedUserData = snap.data();
           renderUserProfile(storedUserData);
-          // Show edit button if own profile (auth may resolve after loadProfile, handled by onAuthStateChanged above)
-          if (currentUserUid === uid) {
-            document.getElementById('rb-edit-profile-btn').style.display = 'inline-flex';
-          }
-          loadPosts();
+          await loadPosts(uid, false);
           return;
         }
-      } catch (err) {
-        console.error('User doc fetch error:', err);
-      }
+      } catch (err) { console.error(err); }
     }
 
-    const lookupHandle = handle || null;
-
-    if (lookupHandle) {
-      const writer = AI_WRITERS.find(w =>
-        w.handle.toLowerCase() === decodeURIComponent(lookupHandle).toLowerCase()
-      );
+    if (handleParam) {
+      const decoded = decodeURIComponent(handleParam);
+      const writer  = AI_WRITERS.find(w => w.handle.toLowerCase() === decoded.toLowerCase());
       if (writer) {
         renderWriterProfile(writer);
-        loadPosts(true, lookupHandle, true);
+        await loadPosts(writer.handle, true);
         return;
       }
     }
 
-    const searchHandle = lookupHandle || uid;
-    if (searchHandle) {
-      try {
-        const field = lookupHandle ? 'author_handle' : 'author_uid';
-        const q = query(collection(firestore, 'posts'), where(field, '==', searchHandle), limit(1));
-        const postsSnap = await getDocs(q);
-        if (!postsSnap.empty) {
-          const postData = postsSnap.docs[0].data();
-          renderProfileFromPost(postData);
-          loadPosts(true, lookupHandle || uid, field === 'author_handle');
-          return;
-        }
-      } catch (err) {
-        console.error('Post fallback error:', err);
-      }
-    }
-
-    nameEl.textContent = 'Profile not found';
-  }
-
-  function renderUserProfile(u) {
-    profileHandle = u.handle || null;
-    document.title = `${u.display_name} — Rumblr`;
-    setAvatar(u.avatar_url, u.team_color, u.team_abbrev);
-    document.getElementById('rb-profile-name-text').textContent = u.display_name;
-    document.getElementById('rb-profile-handle').textContent = u.handle;
-    document.getElementById('rb-profile-bio').textContent = u.bio || '';
-    // Refresh follow button state once profile handle is known
-    const followBtn = document.getElementById('rb-follow-btn');
-    if (followBtn && followBtn.style.display !== 'none') updateFollowBtn(followBtn);
-    document.getElementById('rb-profile-team').textContent = u.team_name || '';
-    document.getElementById('rb-profile-post-count').textContent = `${u.post_count || 0} Rumbl'ings`;
-
-    const badge = document.getElementById('rb-profile-badge');
-    badge.innerHTML = u.verified
-      ? '<span class="rb-badge-verified">⚾ Verified</span>'
-      : '<span class="rb-badge-pending">💩 Unverified</span>';
-
-    if (u.joined_at?.toDate) {
-      const d = u.joined_at.toDate();
-      document.getElementById('rb-profile-joined').textContent =
-        'Joined ' + d.toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
-    }
-  }
-
-  function renderWriterProfile(writer) {
-    profileHandle = writer.handle || null;
-    document.title = `${writer.name} — Rumblr`;
-    setAvatar(writer.image, writer.color, writer.initials);
-    document.getElementById('rb-profile-name-text').textContent = writer.name;
-    document.getElementById('rb-profile-handle').textContent = writer.handle;
-    document.getElementById('rb-profile-bio').textContent = writer.bio || 'ESTN Writer';
-    // Show follow button for writers (not own profile)
-    const followBtn = document.getElementById('rb-follow-btn');
-    if (followBtn && currentUserUid) {
-      followBtn.style.display = 'inline-flex';
-      updateFollowBtn(followBtn);
-    }
-    document.getElementById('rb-profile-team').textContent = 'ESTN Network';
-    document.getElementById('rb-profile-joined').textContent = '';
-    document.getElementById('rb-profile-post-count').textContent = '';
-    document.getElementById('rb-profile-badge').innerHTML =
-      '<span class="rb-badge-verified">⚾ Verified</span>';
-  }
-
-  function renderProfileFromPost(postData) {
-    profileHandle = postData.author_handle || null;
-    document.title = `${postData.author_name} — Rumblr`;
-    const img = postData.author_image ||
-      AI_WRITERS.find(w => w.handle === postData.author_handle)?.image || null;
-    setAvatar(img, postData.author_avatar_color, postData.author_initials);
-    document.getElementById('rb-profile-name-text').textContent = postData.author_name;
-    document.getElementById('rb-profile-handle').textContent = postData.author_handle;
-    document.getElementById('rb-profile-bio').textContent = '';
-    document.getElementById('rb-profile-team').textContent = '';
-    document.getElementById('rb-profile-joined').textContent = '';
-    document.getElementById('rb-profile-post-count').textContent = '';
-    if (postData.author_verified) {
-      document.getElementById('rb-profile-badge').innerHTML =
-        '<span class="rb-badge-verified">⚾ Verified</span>';
-    }
-  }
-
-  function setAvatar(imageUrl, color, initials) {
-    const wrap = document.getElementById('rb-profile-avatar-wrap');
-    if (imageUrl) {
-      wrap.innerHTML = `
-        <img src="${imageUrl}" alt="Avatar"
-             class="rb-profile-avatar rb-profile-avatar-img"
-             onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
-        <div class="rb-profile-avatar" style="background:${color||'#555'};display:none;">
-          ${initials||'?'}
-        </div>`;
-    } else {
-      wrap.innerHTML = `<div class="rb-profile-avatar" style="background:${color||'#555'}">${initials||'?'}</div>`;
-    }
-  }
-
-  async function loadPosts(reset = true, identifier = null, queryByHandle = false) {
-    const feed        = document.getElementById('rb-profile-feed');
-    const spinner     = document.getElementById('rb-spinner');
-    const loadMoreBtn = document.getElementById('rb-load-more-btn');
-
-    spinner.style.display = 'block';
-    if (reset) { feed.innerHTML = ''; lastDoc = null; }
-
+    // Fallback: search posts
+    const searchVal = handleParam ? decodeURIComponent(handleParam) : uid;
+    const searchField = handleParam ? 'author_handle' : 'author_uid';
     try {
-      const field = queryByHandle ? 'author_handle' : 'author_uid';
-      const value = identifier || (queryByHandle ? handle : uid);
-
-      if (!value) { spinner.style.display = 'none'; return; }
-
-      let q;
-      if (lastDoc) {
-        q = query(collection(firestore, 'posts'), where(field, '==', value),
-                  startAfter(lastDoc), limit(PAGE_SIZE));
-      } else {
-        q = query(collection(firestore, 'posts'), where(field, '==', value), limit(PAGE_SIZE));
-      }
-
-      const snap = await getDocs(q);
-      spinner.style.display = 'none';
-
-      const sorted = [...snap.docs].sort((a, b) => {
-        const ta = a.data().timestamp?.toMillis?.() || 0;
-        const tb = b.data().timestamp?.toMillis?.() || 0;
-        return tb - ta;
-      });
-
-      if (sorted.length === 0 && reset) {
-        feed.innerHTML = '<div class="rb-empty"><div class="rb-empty-icon">🤫</div>' +
-          '<div class="rb-empty-msg">No Rumbl\'ings yet.</div></div>';
+      const q = query(collection(firestore, 'posts'), where(searchField, '==', searchVal), limit(1));
+      const postsSnap = await getDocs(q);
+      if (!postsSnap.empty) {
+        renderProfileFromPost(postsSnap.docs[0].data());
+        await loadPosts(searchVal, !!handleParam);
         return;
       }
+    } catch (err) { console.error(err); }
 
-      sorted.forEach(d => feed.appendChild(renderPost(d.id, d.data())));
-      lastDoc = snap.docs[snap.docs.length - 1];
-      loadMoreBtn.style.display = snap.docs.length === PAGE_SIZE ? 'block' : 'none';
-    } catch (err) {
-      spinner.style.display = 'none';
-      console.error('Profile posts error:', err);
-      feed.innerHTML = '<div style="padding:20px;color:var(--rb-muted);font-family:\'Oswald\',sans-serif;">' +
-        'Could not load posts.</div>';
-    }
+    document.getElementById('rb-profile-name-text').textContent = 'Profile not found';
   }
 
-  document.getElementById('rb-load-more-btn').addEventListener('click', () => {
-    loadPosts(false, handle || uid, !!handle);
+  loadProfile();
+
+  // ── Edit Profile Modal ──────────────────────────────────
+  document.getElementById('rb-edit-profile-btn').addEventListener('click', () => {
+    if (!storedUserData) return;
+    document.getElementById('rb-edit-name').value   = storedUserData.display_name || '';
+    document.getElementById('rb-edit-handle').value = storedUserData.handle || '';
+    document.getElementById('rb-edit-bio').value    = storedUserData.bio || '';
+    document.getElementById('rb-edit-avatar').value = storedUserData.avatar_url || '';
+    document.getElementById('rb-edit-banner').value = storedUserData.banner_url || '';
+    document.getElementById('rb-edit-error').textContent = '';
+    document.getElementById('rb-edit-modal').classList.remove('hidden');
   });
 
-  document.addEventListener('DOMContentLoaded', loadProfile);
+  ['rb-edit-close','rb-edit-cancel'].forEach(id => {
+    document.getElementById(id).addEventListener('click', () =>
+      document.getElementById('rb-edit-modal').classList.add('hidden')
+    );
+  });
+
+  document.getElementById('rb-edit-avatar').addEventListener('input', () => {
+    const url = document.getElementById('rb-edit-avatar').value.trim();
+    const preview = document.getElementById('rb-edit-avatar-preview');
+    const img     = document.getElementById('rb-edit-avatar-img');
+    if (url && preview && img) { img.src = url; preview.style.display = 'block'; img.onerror = () => { preview.style.display = 'none'; }; }
+    else if (preview) preview.style.display = 'none';
+  });
+
+  document.getElementById('rb-edit-banner').addEventListener('input', () => {
+    const url = document.getElementById('rb-edit-banner').value.trim();
+    const preview = document.getElementById('rb-edit-banner-preview');
+    const img     = document.getElementById('rb-edit-banner-img');
+    if (url && preview && img) { img.src = url; preview.style.display = 'block'; img.onerror = () => { preview.style.display = 'none'; }; }
+    else if (preview) preview.style.display = 'none';
+  });
+
+  document.getElementById('rb-edit-handle').addEventListener('blur', () => {
+    const h = document.getElementById('rb-edit-handle');
+    if (h && h.value && !h.value.startsWith('@')) h.value = '@' + h.value;
+  });
+
+  document.getElementById('rb-edit-save').addEventListener('click', async () => {
+    const name      = document.getElementById('rb-edit-name').value.trim();
+    const newHandle = document.getElementById('rb-edit-handle').value.trim();
+    const bio       = document.getElementById('rb-edit-bio').value.trim();
+    const avatarUrl = document.getElementById('rb-edit-avatar').value.trim();
+    const bannerUrl = document.getElementById('rb-edit-banner').value.trim();
+    const errEl     = document.getElementById('rb-edit-error');
+    const saveBtn   = document.getElementById('rb-edit-save');
+
+    if (!name)      { errEl.textContent = 'Display name is required.'; return; }
+    if (!newHandle) { errEl.textContent = 'Handle is required.'; return; }
+    saveBtn.disabled = true;
+    errEl.textContent = '';
+    try {
+      const updates = { display_name: name, handle: newHandle, bio, avatar_url: avatarUrl || null, banner_url: bannerUrl || null };
+      if (storedUserData && newHandle !== storedUserData.handle) updates.verified = false;
+      await updateDoc(doc(firestore, 'users', uid), updates);
+      storedUserData = { ...storedUserData, ...updates };
+      renderUserProfile(storedUserData);
+      document.getElementById('rb-edit-modal').classList.add('hidden');
+      showToast('Profile updated!');
+    } catch (err) {
+      console.error('Profile update error:', err);
+      errEl.textContent = 'Could not save changes. Try again.';
+    } finally {
+      saveBtn.disabled = false;
+    }
+  });
 </script>
 </body>
 </html>

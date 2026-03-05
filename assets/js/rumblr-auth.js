@@ -44,6 +44,27 @@ export const TEAM_DATA = {
 
 const MAX_CHARS = 280;
 
+// ── Avatar picker config ───────────────────────────────────
+const AVATAR_BASE = '../assets/images/rumblr/team%20profile%20images/';
+
+// year → { nameMap?, ext?, extMap? }
+// nameMap: abbrev overrides for filename (e.g. LVA → LV)
+// ext: single extension for all teams
+// extMap: per-team extension (use 'default' as fallback)
+const AVATAR_YEARS = {
+  '2026': { ext: 'jpg',  nameMap: { LVA: 'LV', SAN: 'SD' } },
+  '2025': { nameMap: { SAN: 'SDP' }, extMap: { ARI: 'jpg', CIN: 'jpg', LVA: 'jpg', default: 'JPG' } },
+  '2024': { ext: 'png',  nameMap: { SAN: 'SDP' } },
+};
+
+function getAvatarUrl(year, abbrev) {
+  const opts = AVATAR_YEARS[year];
+  if (!opts) return null;
+  const name = opts.nameMap?.[abbrev] || abbrev;
+  const ext  = opts.ext || (opts.extMap && (opts.extMap[abbrev] || opts.extMap.default)) || 'jpg';
+  return `${AVATAR_BASE}${year}/${encodeURIComponent(name + ' ' + year)}.${ext}`;
+}
+
 // ══════════════════════════════════════════════════════════
 // Compose bar (on feed page)
 // ══════════════════════════════════════════════════════════
@@ -134,10 +155,12 @@ async function submitPost(textarea, user, userDoc, onPosted) {
 // Sign-up page
 // ══════════════════════════════════════════════════════════
 export function initSignup() {
-  let selectedTeam = null;
-  let currentStep  = 1;
+  let selectedTeam     = null;
+  let selectedAvatarUrl = null;   // null = use team color circle
+  let activeAvatarYear  = '2026';
+  let currentStep       = 1;
 
-  // Build team grid
+  // ── Step 1: Build team grid ──────────────────────────────
   const grid = document.getElementById('rb-team-grid');
   if (grid) {
     Object.entries(TEAM_DATA).sort((a, b) => a[1].name.localeCompare(b[1].name)).forEach(([id, t]) => {
@@ -161,24 +184,93 @@ export function initSignup() {
     });
   }
 
-  // Logo URL preview
-  const avatarUrlInput = document.getElementById('rb-avatar-url');
-  if (avatarUrlInput) {
-    avatarUrlInput.addEventListener('input', () => {
-      const url = avatarUrlInput.value.trim();
-      const preview = document.getElementById('rb-avatar-preview');
-      const previewImg = document.getElementById('rb-avatar-preview-img');
-      if (url && preview && previewImg) {
-        previewImg.src = url;
-        preview.style.display = 'block';
-        previewImg.onerror = () => { preview.style.display = 'none'; };
-      } else if (preview) {
-        preview.style.display = 'none';
+  // ── Avatar picker: year tabs ─────────────────────────────
+  document.querySelectorAll('.rb-avatar-tab').forEach(tab => {
+    tab.addEventListener('click', () => {
+      document.querySelectorAll('.rb-avatar-tab').forEach(t => t.classList.remove('active'));
+      tab.classList.add('active');
+      activeAvatarYear = tab.dataset.year;
+      buildAvatarGrid(activeAvatarYear);
+    });
+  });
+
+  function buildAvatarGrid(year) {
+    const gridEl = document.getElementById('rb-avatar-grid');
+    if (!gridEl) return;
+    gridEl.innerHTML = '';
+
+    const teams = Object.entries(TEAM_DATA).sort((a, b) => a[1].name.localeCompare(b[1].name));
+
+    teams.forEach(([abbrev, t]) => {
+      const opt = document.createElement('div');
+      opt.className = 'rb-avatar-option';
+      opt.dataset.abbrev = abbrev;
+
+      if (year === 'letters') {
+        // Color circle with team abbreviation
+        opt.innerHTML = `
+          <div class="rb-team-circle" style="background:${t.color};width:44px;height:44px;
+               display:flex;align-items:center;justify-content:center;border-radius:50%;
+               font-family:'Oswald',sans-serif;font-weight:700;font-size:0.78rem;color:#fff;">${abbrev}</div>
+          <span class="rb-option-label">${abbrev}</span>`;
+        opt.addEventListener('click', () => {
+          selectAvatar(null, `${t.name} (${abbrev})`, opt);
+        });
+      } else {
+        const url = getAvatarUrl(year, abbrev);
+        opt.innerHTML = `
+          <img src="${url}" alt="${abbrev}"
+               style="width:44px;height:44px;border-radius:50%;object-fit:cover;"
+               onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
+          <div class="rb-team-circle" style="background:${t.color};width:44px;height:44px;display:none;
+               align-items:center;justify-content:center;border-radius:50%;
+               font-family:'Oswald',sans-serif;font-weight:700;font-size:0.78rem;color:#fff;">${abbrev}</div>
+          <span class="rb-option-label">${abbrev}</span>`;
+        opt.addEventListener('click', () => {
+          selectAvatar(url, `${abbrev} ${year}`, opt);
+        });
       }
+
+      // Restore selected state after rebuild
+      if (year !== 'letters' && selectedAvatarUrl === getAvatarUrl(year, abbrev)) {
+        opt.classList.add('selected');
+      }
+
+      gridEl.appendChild(opt);
     });
   }
 
-  // Step 1 → Step 2
+  function selectAvatar(url, label, optEl) {
+    document.querySelectorAll('#rb-avatar-grid .rb-avatar-option').forEach(o => o.classList.remove('selected'));
+    if (optEl) optEl.classList.add('selected');
+    selectedAvatarUrl = url;
+
+    // Show preview
+    const previewWrap  = document.getElementById('rb-avatar-selected-preview');
+    const previewEl    = document.getElementById('rb-avatar-preview-el');
+    const previewLabel = document.getElementById('rb-avatar-preview-label');
+    if (previewWrap && previewEl) {
+      previewWrap.style.display = 'flex';
+      if (url) {
+        const t = selectedTeam ? TEAM_DATA[selectedTeam] : null;
+        previewEl.innerHTML = `<img src="${url}" alt="${label}"
+          style="width:48px;height:48px;border-radius:50%;object-fit:cover;border:2px solid var(--rb-border);"
+          onerror="this.style.display='none';">`;
+      } else {
+        // Letters tab — show team color circle
+        const t = selectedTeam ? TEAM_DATA[selectedTeam] : { color: '#555', abbrev: '?' };
+        const abParts = label.match(/\((\w+)\)/);
+        const ab = abParts ? abParts[1] : '?';
+        const tData = TEAM_DATA[ab] || t;
+        previewEl.innerHTML = `<div style="width:48px;height:48px;border-radius:50%;
+          background:${tData.color};display:flex;align-items:center;justify-content:center;
+          font-family:'Oswald',sans-serif;font-weight:700;font-size:0.85rem;color:#fff;">${ab}</div>`;
+      }
+      if (previewLabel) previewLabel.textContent = label;
+    }
+  }
+
+  // ── Step 1 → Step 2 ──────────────────────────────────────
   const step1Next = document.getElementById('rb-step1-next');
   if (step1Next) {
     step1Next.addEventListener('click', () => {
@@ -189,24 +281,18 @@ export function initSignup() {
       if (handleInput && !handleInput.value) {
         handleInput.value = `@${t.abbrev}Official`;
       }
-      // Pre-fill avatar URL with team logo image (user can override)
-      const avatarInput = document.getElementById('rb-avatar-url');
-      if (avatarInput && !avatarInput.value && t.image) {
-        avatarInput.value = t.image;
-        // Trigger preview
-        const preview = document.getElementById('rb-avatar-preview');
-        const previewImg = document.getElementById('rb-avatar-preview-img');
-        if (preview && previewImg) {
-          previewImg.src = t.image;
-          preview.style.display = 'block';
-          previewImg.onerror = () => { preview.style.display = 'none'; };
-        }
-      }
+      // Build avatar grid with team's 2026 image pre-selected
+      buildAvatarGrid('2026');
+      // Auto-select this team's 2026 image
+      const autoUrl = getAvatarUrl('2026', selectedTeam);
+      const autoOpt = document.querySelector(`#rb-avatar-grid .rb-avatar-option[data-abbrev="${selectedTeam}"]`);
+      selectAvatar(autoUrl, `${selectedTeam} 2026`, autoOpt);
+
       goToStep(2);
     });
   }
 
-  // Step 2 → Step 3 (review)
+  // ── Step 2 → Step 3 (review) ─────────────────────────────
   const step2Next = document.getElementById('rb-step2-next');
   if (step2Next) {
     step2Next.addEventListener('click', () => {
@@ -215,12 +301,11 @@ export function initSignup() {
       setText('rb-review-name',   document.getElementById('rb-display-name')?.value || '');
       setText('rb-review-handle', document.getElementById('rb-handle')?.value || '');
       setText('rb-review-team',   t.name);
-      // Review avatar: show team logo or colored circle
+      // Review avatar
       const rc = document.getElementById('rb-preview-circle');
-      const avatarUrl = document.getElementById('rb-avatar-url')?.value.trim();
       if (rc) {
-        if (avatarUrl) {
-          rc.innerHTML = `<img src="${avatarUrl}" alt="${t.abbrev}"
+        if (selectedAvatarUrl) {
+          rc.innerHTML = `<img src="${selectedAvatarUrl}" alt="${t.abbrev}"
             style="width:100%;height:100%;object-fit:cover;border-radius:50%;"
             onerror="this.style.display='none';this.parentElement.style.background='${t.color}';this.parentElement.textContent='${t.abbrev}';">`;
           rc.style.background = 'transparent';
@@ -240,14 +325,16 @@ export function initSignup() {
   // Final submit
   const submitBtn = document.getElementById('rb-signup-submit');
   if (submitBtn) {
-    submitBtn.addEventListener('click', () => handleSignup(selectedTeam));
+    submitBtn.addEventListener('click', () => handleSignup(selectedTeam, selectedAvatarUrl));
   }
 
-  // Handle suggestion — enforce @ prefix
+  // Handle field — enforce @ prefix
   const handleInput = document.getElementById('rb-handle');
   if (handleInput) {
     handleInput.addEventListener('blur', () => {
-      if (!handleInput.value.startsWith('@')) handleInput.value = '@' + handleInput.value;
+      if (handleInput.value && !handleInput.value.startsWith('@')) {
+        handleInput.value = '@' + handleInput.value;
+      }
     });
   }
 
@@ -276,14 +363,13 @@ export function initSignup() {
   }
 }
 
-async function handleSignup(selectedTeam) {
-  const name      = document.getElementById('rb-display-name')?.value.trim();
-  const handle    = document.getElementById('rb-handle')?.value.trim();
-  const email     = document.getElementById('rb-email')?.value.trim();
-  const pass      = document.getElementById('rb-password')?.value;
-  const bio       = document.getElementById('rb-bio')?.value.trim() || '';
-  const avatarUrl = document.getElementById('rb-avatar-url')?.value.trim() || '';
-  const t         = TEAM_DATA[selectedTeam];
+async function handleSignup(selectedTeam, avatarUrl) {
+  const name   = document.getElementById('rb-display-name')?.value.trim();
+  const handle = document.getElementById('rb-handle')?.value.trim();
+  const email  = document.getElementById('rb-email')?.value.trim();
+  const pass   = document.getElementById('rb-password')?.value;
+  const bio    = document.getElementById('rb-bio')?.value.trim() || '';
+  const t      = TEAM_DATA[selectedTeam];
   const errEl  = document.getElementById('rb-signup-error');
   const btn    = document.getElementById('rb-signup-submit');
 

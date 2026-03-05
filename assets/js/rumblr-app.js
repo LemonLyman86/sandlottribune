@@ -7,7 +7,8 @@
 import { firestore, auth } from './firebase-config.js';
 import {
   collection, query, orderBy, limit, startAfter,
-  where, getDocs, onSnapshot, doc, getDoc, updateDoc, increment
+  where, getDocs, onSnapshot, doc, getDoc, updateDoc, increment,
+  setDoc, deleteDoc, getCountFromServer
 } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js';
 import { onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js';
 import { initCompose }        from './rumblr-auth.js';
@@ -19,16 +20,16 @@ const POSTS_COL    = collection(firestore, 'posts');
 
 // ── AI Writers config ──────────────────────────────────────
 export const AI_WRITERS = [
-  { name: 'Jeff Passan',     handle: '@JeffPassan',    color: '#1E3A5F', initials: 'JP',  image: '../assets/images/rumblr/jeff_passan.png',    bio: 'MLB Insider @ESPN. Breaking news, deep analysis, and the occasional dad joke. Covering the game since 2000.' },
-  { name: 'Ken Rosenthal',   handle: '@Ken_Rosenthal', color: '#C8102E', initials: 'KR',  image: '../assets/images/rumblr/ken_rosenthal.png',  bio: 'Fox Sports / The Athletic. 30+ years covering baseball. Still faster than your timeline.' },
-  { name: 'Bob Nightengale', handle: '@BNightengale',  color: '#574C3F', initials: 'BN',  image: '../assets/images/rumblr/bob_nightengale.png', bio: 'USA Today baseball columnist. Hot takes, roster moves, and bad coffee.' },
-  { name: 'Jon Heyman',      handle: '@JonHeyman',     color: '#2E6B3E', initials: 'JH',  image: '../assets/images/rumblr/jon_heyman.png',     bio: 'MLB Network / FanSided. First to know, first to tweet. Blocking trolls since 2009.' },
-  { name: 'Buster Olney',    handle: '@Buster_ESPN',   color: '#8B4513', initials: 'BO',  image: '../assets/images/rumblr/buster_olney.png',   bio: 'ESPN. Author. Former NYT Yankees beat reporter. Watching baseball since \'78.' },
-  { name: 'Tim Kurkjian',    handle: '@TKurkjian',     color: '#4B0082', initials: 'TK',  image: '../assets/images/rumblr/tim_kurkjian.png',   bio: 'ESPN analyst. Author of "Is This a Great Game or What?" Spoiler: Yes. Yes it is.' },
-  { name: 'Keith Law',       handle: '@Keithlaw',      color: '#B8860B', initials: 'KL',  image: '../assets/images/rumblr/keith_law.png',      bio: 'The Athletic. Prospect guru. Rates your favorite team\'s farm system too low on purpose.' },
-  { name: 'Jason Stark',     handle: '@jaysonst',      color: '#C05020', initials: 'JST', image: '../assets/images/rumblr/jason_stark.png',    bio: 'The Athletic. Hall of Fame voter. Covering baseball since the Reagan administration.' },
-  { name: 'Joel Sherman',    handle: '@joelsherman1',  color: '#1A6B8A', initials: 'JSH', image: '../assets/images/rumblr/joel_sherman.png',   bio: 'NY Post baseball columnist. Breaking transactions, deadline drama, and Yankee gossip.' },
-  { name: 'Peter Gammons',   handle: '@pgammo',        color: '#6B6B6B', initials: 'PG',  image: '../assets/images/rumblr/peter_gammons.png',  bio: 'Baseball Hall of Fame writer. Legendary reporter. Godfather of baseball journalism.' },
+  { name: 'Jeff Passan',     handle: '@JeffPassan',    color: '#1E3A5F', initials: 'JP',  image: '../assets/images/rumblr/jeff_passan.png',    bio: 'MLB Insider @ESPN. Breaking news, deep analysis, and the occasional dad joke. Covering the game since 2000.',     bannerColor: '#0D1E40', stats: { followers: 2847302, following: 412,  posts: 8441  } },
+  { name: 'Ken Rosenthal',   handle: '@Ken_Rosenthal', color: '#C8102E', initials: 'KR',  image: '../assets/images/rumblr/ken_rosenthal.png',  bio: 'Fox Sports / The Athletic. 30+ years covering baseball. Still faster than your timeline.',                      bannerColor: '#3A0510', stats: { followers: 814500,  following: 1203, posts: 21044 } },
+  { name: 'Bob Nightengale', handle: '@BNightengale',  color: '#574C3F', initials: 'BN',  image: '../assets/images/rumblr/bob_nightengale.png', bio: 'USA Today baseball columnist. Hot takes, roster moves, and bad coffee.',                                          bannerColor: '#2B2318', stats: { followers: 502800,  following: 822,  posts: 15300 } },
+  { name: 'Jon Heyman',      handle: '@JonHeyman',     color: '#2E6B3E', initials: 'JH',  image: '../assets/images/rumblr/jon_heyman.png',     bio: 'MLB Network / FanSided. First to know, first to tweet. Blocking trolls since 2009.',                              bannerColor: '#0E2B18', stats: { followers: 618000,  following: 544,  posts: 18720 } },
+  { name: 'Buster Olney',    handle: '@Buster_ESPN',   color: '#8B4513', initials: 'BO',  image: '../assets/images/rumblr/buster_olney.png',   bio: "ESPN. Author. Former NYT Yankees beat reporter. Watching baseball since '78.",                                    bannerColor: '#3A1A05', stats: { followers: 724100,  following: 310,  posts: 11200 } },
+  { name: 'Tim Kurkjian',    handle: '@TKurkjian',     color: '#4B0082', initials: 'TK',  image: '../assets/images/rumblr/tim_kurkjian.png',   bio: 'ESPN analyst. Author of "Is This a Great Game or What?" Spoiler: Yes. Yes it is.',                                bannerColor: '#1E0038', stats: { followers: 221000,  following: 178,  posts: 9440  } },
+  { name: 'Keith Law',       handle: '@Keithlaw',      color: '#B8860B', initials: 'KL',  image: '../assets/images/rumblr/keith_law.png',      bio: "The Athletic. Prospect guru. Rates your favorite team's farm system too low on purpose.",                         bannerColor: '#2E2000', stats: { followers: 312500,  following: 290,  posts: 7830  } },
+  { name: 'Jason Stark',     handle: '@jaysonst',      color: '#C05020', initials: 'JST', image: '../assets/images/rumblr/jason_stark.png',    bio: 'The Athletic. Hall of Fame voter. Covering baseball since the Reagan administration.',                             bannerColor: '#2E0E00', stats: { followers: 396000,  following: 201,  posts: 12100 } },
+  { name: 'Joel Sherman',    handle: '@joelsherman1',  color: '#1A6B8A', initials: 'JSH', image: '../assets/images/rumblr/joel_sherman.png',   bio: 'NY Post baseball columnist. Breaking transactions, deadline drama, and Yankee gossip.',                            bannerColor: '#081E2A', stats: { followers: 281000,  following: 430,  posts: 13650 } },
+  { name: 'Peter Gammons',   handle: '@pgammo',        color: '#6B6B6B', initials: 'PG',  image: '../assets/images/rumblr/peter_gammons.png',  bio: 'Baseball Hall of Fame writer. Legendary reporter. Godfather of baseball journalism.',                              bannerColor: '#1A1A1A', stats: { followers: 194000,  following: 112,  posts: 5820  } },
 ];
 
 // ── State ─────────────────────────────────────────────────
@@ -213,7 +214,7 @@ function refreshFeed() {
 // ══════════════════════════════════════════════════════════
 // Follows
 // ══════════════════════════════════════════════════════════
-async function loadFollows(uid) {
+export async function loadFollows(uid) {
   try {
     const snap = await getDocs(
       query(collection(firestore, 'follows'), where('follower_uid', '==', uid))
@@ -232,18 +233,16 @@ export async function toggleFollow(handle, type = 'user', followedUid = null) {
   const isFollowing = followedHandles.includes(handle);
 
   if (isFollowing) {
-    const { deleteDoc } = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js');
     await deleteDoc(followRef);
     followedHandles = followedHandles.filter(h => h !== handle);
     return false;
   } else {
-    const { setDoc } = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js');
     await setDoc(followRef, {
-      follower_uid:  currentUser.uid,
+      follower_uid:    currentUser.uid,
       followed_handle: handle,
-      followed_type: type,
-      followed_uid:  followedUid,
-      timestamp:     new Date().toISOString(),
+      followed_type:   type,
+      followed_uid:    followedUid,
+      timestamp:       new Date().toISOString(),
     });
     followedHandles = [...followedHandles, handle];
     return true;
@@ -256,6 +255,64 @@ export function isFollowing(handle) {
 
 export function getCurrentUser() {
   return currentUser;
+}
+
+// ══════════════════════════════════════════════════════════
+// Profile stats (used by profile.html)
+// ══════════════════════════════════════════════════════════
+export async function loadProfileStats(handle, uid) {
+  const followsColl = collection(firestore, 'follows');
+  const aiFollowsColl = collection(firestore, 'ai_follows');
+  try {
+    const [followerSnap, aiFollowerSnap, followingSnap, postSnap] = await Promise.all([
+      getDocs(query(followsColl,   where('followed_handle', '==', handle))),
+      getDocs(query(aiFollowsColl, where('followed_handle', '==', handle))).catch(() => ({ size: 0 })),
+      uid ? getDocs(query(followsColl, where('follower_uid',    '==', uid)))    : Promise.resolve({ size: 0 }),
+      uid ? getDocs(query(collection(firestore, 'posts'), where('author_uid', '==', uid))) : Promise.resolve({ size: 0 }),
+    ]);
+    return {
+      followers: followerSnap.size + (aiFollowerSnap.size || 0),
+      following: followingSnap.size,
+      posts:     postSnap.size,
+    };
+  } catch (_) {
+    return { followers: 0, following: 0, posts: 0 };
+  }
+}
+
+// ══════════════════════════════════════════════════════════
+// Trending hashtags (used by index.html sidebar)
+// ══════════════════════════════════════════════════════════
+export async function loadTrendingHashtags(containerEl) {
+  if (!containerEl) return;
+  try {
+    const snap = await getDocs(query(POSTS_COL, orderBy('timestamp', 'desc'), limit(200)));
+    const counts = {};
+    snap.docs.forEach(d => {
+      const tags = d.data().hashtags || [];
+      tags.forEach(t => { counts[t] = (counts[t] || 0) + 1; });
+    });
+    const top5 = Object.entries(counts).sort((a, b) => b[1] - a[1]).slice(0, 5);
+    if (top5.length === 0) {
+      containerEl.innerHTML = '<div style="color:var(--rb-subtle);font-size:0.8rem;padding:4px 0;">No trending tags yet.</div>';
+      return;
+    }
+    containerEl.innerHTML = top5.map(([tag, count]) => `
+      <div class="rb-trending-tag" data-tag="${tag.replace(/^#/, '')}" role="button" tabindex="0">
+        <span class="rb-trending-name">${tag}</span>
+        <span class="rb-trending-count">${count}</span>
+      </div>
+    `).join('');
+    containerEl.querySelectorAll('.rb-trending-tag').forEach(el => {
+      el.addEventListener('click', () => {
+        document.querySelectorAll('.rb-tab').forEach(t => t.classList.remove('active'));
+        window.__rumblrHashtag(el.dataset.tag);
+      });
+      el.addEventListener('keydown', e => { if (e.key === 'Enter') el.click(); });
+    });
+  } catch (err) {
+    console.error('Trending hashtags error:', err);
+  }
 }
 
 // ══════════════════════════════════════════════════════════
@@ -485,41 +542,78 @@ function updateFilterBanner() {
 // Auth UI
 // ══════════════════════════════════════════════════════════
 function renderAuthUI() {
-  const signInBtn  = document.getElementById('rb-signin-btn');
-  const signOutBtn = document.getElementById('rb-signout-btn');
-  const userMenu   = document.getElementById('rb-user-menu');
-  const composeWrap = document.getElementById('rb-compose-wrap');
-  const profileLink = document.getElementById('rb-profile-link');
+  const signInBtn    = document.getElementById('rb-signin-btn');
+  const signOutBtn   = document.getElementById('rb-signout-btn');
+  const userMenu     = document.getElementById('rb-user-menu');
+  const composeWrap  = document.getElementById('rb-compose-wrap');
+  const profileLink  = document.getElementById('rb-profile-link');
   const followingTab = document.getElementById('rb-tab-following');
+  const authSection  = document.getElementById('rb-auth-section');   // "Join the Rumbl"
+  const profileCard  = document.getElementById('rb-profile-card');   // mini profile card
 
   if (currentUser) {
-    if (signInBtn)  signInBtn.style.display  = 'none';
-    if (signOutBtn) signOutBtn.style.display = 'inline-flex';
-    if (userMenu)   userMenu.style.display   = 'flex';
+    if (signInBtn)   signInBtn.style.display   = 'none';
+    if (signOutBtn)  signOutBtn.style.display  = 'inline-flex';
+    if (userMenu)    userMenu.style.display    = 'flex';
     if (composeWrap) composeWrap.style.display = 'block';
     if (followingTab) followingTab.style.display = 'flex';
+    if (authSection) authSection.style.display = 'none';
+    if (profileCard) profileCard.style.display = 'block';
     // Set profile link to include user's UID so their profile loads correctly
     if (profileLink) profileLink.href = `profile.html?uid=${currentUser.uid}`;
 
-    if (currentUserDoc && userMenu) {
-      const av = userMenu.querySelector('.rb-header-avatar');
-      if (av) {
-        if (currentUserDoc.avatar_url) {
-          av.innerHTML = `<img src="${escHtml(currentUserDoc.avatar_url)}" alt="Profile"
-                              style="width:100%;height:100%;object-fit:cover;border-radius:50%;"
-                              onerror="this.style.display='none';">`;
-        } else {
-          av.style.background = currentUserDoc.team_color || '#555';
-          av.textContent = (currentUserDoc.team_abbrev || '?').slice(0, 3);
+    if (currentUserDoc) {
+      // Header avatar
+      if (userMenu) {
+        const av = userMenu.querySelector('.rb-header-avatar');
+        if (av) {
+          if (currentUserDoc.avatar_url) {
+            av.innerHTML = `<img src="${escHtml(currentUserDoc.avatar_url)}" alt="Profile"
+                                style="width:100%;height:100%;object-fit:cover;border-radius:50%;"
+                                onerror="this.style.display='none';">`;
+          } else {
+            av.style.background = currentUserDoc.team_color || '#555';
+            av.textContent = (currentUserDoc.team_abbrev || '?').slice(0, 3);
+          }
         }
+      }
+      // Mini profile card in left sidebar
+      if (profileCard) {
+        const cardAvEl   = profileCard.querySelector('.rb-card-avatar');
+        const cardName   = profileCard.querySelector('.rb-card-name');
+        const cardHandle = profileCard.querySelector('.rb-card-handle');
+        const cardLink   = profileCard.querySelector('.rb-card-profile-link');
+        if (cardName)   cardName.textContent   = currentUserDoc.display_name || '';
+        if (cardHandle) cardHandle.textContent = currentUserDoc.handle || '';
+        if (cardLink)   cardLink.href          = `profile.html?uid=${currentUser.uid}`;
+        if (cardAvEl) {
+          if (currentUserDoc.avatar_url) {
+            cardAvEl.innerHTML = `<img src="${escHtml(currentUserDoc.avatar_url)}" alt="Profile"
+              style="width:100%;height:100%;object-fit:cover;border-radius:50%;"
+              onerror="this.style.display='none';">`;
+            cardAvEl.style.background = 'transparent';
+          } else {
+            cardAvEl.style.background = currentUserDoc.team_color || '#555';
+            cardAvEl.textContent = (currentUserDoc.team_abbrev || '?').slice(0, 3);
+          }
+        }
+        // Load post/following counts for card
+        loadProfileStats(currentUserDoc.handle, currentUser.uid).then(stats => {
+          const statsEl = profileCard.querySelector('.rb-card-stats');
+          if (statsEl) {
+            statsEl.textContent = `${stats.posts} posts · ${stats.following} following`;
+          }
+        });
       }
     }
   } else {
-    if (signInBtn)  signInBtn.style.display  = 'inline-flex';
-    if (signOutBtn) signOutBtn.style.display = 'none';
-    if (userMenu)   userMenu.style.display   = 'none';
+    if (signInBtn)   signInBtn.style.display   = 'inline-flex';
+    if (signOutBtn)  signOutBtn.style.display  = 'none';
+    if (userMenu)    userMenu.style.display    = 'none';
     if (composeWrap) composeWrap.style.display = 'none';
     if (followingTab) followingTab.style.display = 'none';
+    if (authSection) authSection.style.display = 'block';
+    if (profileCard) profileCard.style.display = 'none';
   }
 }
 

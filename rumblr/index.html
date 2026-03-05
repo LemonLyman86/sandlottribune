@@ -10,54 +10,63 @@
 </head>
 <body class="rumblr-page">
 
-<!-- ── Header ──────────────────────────────────────────── -->
+<!-- ── Header ──────────────────────────────────────────────── -->
 <header class="rb-header">
-  <a href="./" class="rb-header-logo">
-    <img src="../assets/images/rumblr-logo.png" alt="Rumblr">
-  </a>
-  <span class="rb-header-eyebrow">ESTN Network &nbsp;|&nbsp; The Sandlot Dynasty League</span>
-  <div class="rb-header-actions">
-    <a href="../" class="rb-btn rb-btn-ghost" style="font-size:0.78rem;">📰 Tribune</a>
-    <!-- Shown when logged out -->
-    <a id="rb-signin-btn" href="login.html" class="rb-btn rb-btn-outline">Sign In</a>
-    <a href="signup.html" class="rb-btn rb-btn-primary">Join Rumblr</a>
-    <!-- Shown when logged in -->
-    <div id="rb-user-menu" style="display:none; align-items:center; gap:10px;">
-      <a id="rb-profile-link" href="profile.html" class="rb-header-avatar rb-post-avatar"
-         style="width:34px;height:34px;font-size:0.72rem;text-decoration:none;">?</a>
-      <button id="rb-signout-btn" class="rb-btn rb-btn-ghost" style="display:none;">Sign Out</button>
+  <nav class="rb-nav-inner">
+    <a class="rb-header-logo" href="index.html">
+      <img src="../assets/images/rumblr-logo.png" alt="Rumblr">
+      <span class="rb-header-logo-text">Rumb<span>lr</span></span>
+    </a>
+    <ul class="rb-nav-links">
+      <li><a href="https://rschneider2020.github.io/sandlottribune/">Home</a></li>
+      <li><a href="../between-the-chalk/">Between The Chalk</a></li>
+      <li><a href="../season-deadlines/">Season Deadlines</a></li>
+      <li><a href="../league-records/">League Records</a></li>
+      <li><a href="index.html" class="active">Rumblr</a></li>
+      <li><a href="../about/"><img class="rb-nav-estn" src="../assets/images/estn-logo.png" alt="ESTN"></a></li>
+    </ul>
+    <div class="rb-header-actions">
+      <!-- Shown when logged out -->
+      <a id="rb-signin-btn" href="login.html" class="rb-btn rb-btn-outline">Sign In</a>
+      <!-- Shown when logged in -->
+      <div id="rb-user-menu" style="display:none; align-items:center; gap:10px;">
+        <a id="rb-profile-link" href="profile.html" class="rb-header-avatar rb-post-avatar"
+           style="width:34px;height:34px;font-size:0.72rem;text-decoration:none;">?</a>
+        <button id="rb-signout-btn" class="rb-btn rb-btn-ghost" style="display:none;">Sign Out</button>
+      </div>
     </div>
-  </div>
+  </nav>
 </header>
 
-<!-- ── 3-column layout ─────────────────────────────────── -->
+<!-- ── 3-column layout ──────────────────────────────────────── -->
 <div class="rb-layout">
 
-  <!-- Left Sidebar: Users -->
+  <!-- Left Sidebar: Auth Rail -->
   <aside class="rb-left-sidebar">
-    <div class="rb-sidebar-label">Users</div>
 
-    <!-- ESTN Writers (collapsible) -->
-    <div class="rb-sidebar-group">
-      <div class="rb-sidebar-group-header" id="rb-writers-toggle" role="button" tabindex="0">
-        <span>ESTN Writers</span>
-        <span class="rb-group-chevron">▼</span>
-      </div>
-      <div id="rb-writers-section" class="rb-sidebar-group-items"></div>
-    </div>
-
-    <!-- TSDL Owners (dynamic) -->
-    <div class="rb-sidebar-group">
-      <div class="rb-sidebar-group-header">
-        <span>TSDL Owners</span>
-      </div>
-      <div id="rb-owners-section" class="rb-sidebar-group-items">
-        <div style="font-size:0.8rem;color:var(--rb-subtle);padding:4px 16px;">Loading…</div>
+    <!-- LOGGED OUT: Join the Rumbl -->
+    <div id="rb-auth-section" class="rb-auth-section">
+      <img class="rb-join-logo" src="../assets/images/rumblr-logo.png" alt="Rumblr">
+      <h3 class="rb-join-heading">Join the Rumbl</h3>
+      <p class="rb-join-sub">The social hub of The Sandlot Dynasty League</p>
+      <div class="rb-join-btns">
+        <a href="signup.html" class="rb-btn rb-btn-primary" style="justify-content:center;">Sign Up</a>
+        <a href="login.html" class="rb-btn rb-btn-outline" style="justify-content:center;">Log In</a>
       </div>
     </div>
 
-    <!-- Keep old container for compat -->
-    <div id="rb-author-sidebar" style="display:none;"></div>
+    <!-- LOGGED IN: Mini profile card -->
+    <div id="rb-profile-card" class="rb-profile-card" style="display:none;">
+      <div class="rb-card-row">
+        <div class="rb-card-avatar rb-sidebar-avatar" style="background:#555;">?</div>
+        <div>
+          <div class="rb-card-name">Loading…</div>
+          <div class="rb-card-handle"></div>
+        </div>
+      </div>
+      <div class="rb-card-stats"></div>
+      <a class="rb-card-profile-link rb-btn rb-btn-ghost rb-btn-sm" href="profile.html">View Profile &rarr;</a>
+    </div>
 
     <hr class="rb-sidebar-divider">
     <div class="rb-sidebar-label">Navigation</div>
@@ -86,13 +95,13 @@
     <!-- Active filter banner -->
     <div id="rb-filter-banner" class="rb-filter-banner" style="display:none;">
       <span class="rb-filter-label"></span>
-      <span class="rb-filter-clear" onclick="window.__rumblrClearFilter()">✕ Clear</span>
+      <span class="rb-filter-clear" onclick="window.__rumblrClearFilter()">&#x2715; Clear</span>
     </div>
 
     <!-- Welcome banner (shown after signup redirect) -->
     <div id="rb-welcome-banner" style="display:none; padding:14px 20px; background:rgba(56,161,105,0.12);
          border-bottom:1px solid #38A169; font-family:'Oswald',sans-serif; font-size:0.9rem; color:#68D391;">
-      ⚾ Welcome to Rumblr! Your account is pending verification by the commissioner.
+      Welcome to Rumblr! Your account is pending verification by the commissioner.
       You can post and interact while you wait.
     </div>
 
@@ -126,34 +135,60 @@
 
   </main>
 
-  <!-- Right Sidebar: Trending hashtags -->
+  <!-- Right Sidebar -->
   <aside class="rb-right-sidebar">
+
+    <!-- Trending Hashtags -->
     <div class="rb-widget">
-      <div class="rb-widget-title">Search Hashtags</div>
+      <div class="rb-widget-title">Trending</div>
+      <div id="rb-trending-tags" class="rb-trending-list">
+        <div style="color:var(--rb-subtle);font-size:0.8rem;">Loading…</div>
+      </div>
       <input id="rb-hashtag-search" class="rb-search-box" type="text"
-             placeholder="#TSDL, #TradeAlert …" autocomplete="off">
-      <div class="rb-widget-title" style="margin-top:8px;">Trending</div>
-      <div id="rb-trending-tags">
-        <span class="rb-trending-tag" onclick="window.__rumblrHashtag('TSDL')">#TSDL</span>
-        <span class="rb-trending-tag" onclick="window.__rumblrHashtag('SandlotDynasty')">#SandlotDynasty</span>
-        <span class="rb-trending-tag" onclick="window.__rumblrHashtag('TradeAlert')">#TradeAlert</span>
-        <span class="rb-trending-tag" onclick="window.__rumblrHashtag('Rumblr')">#Rumblr</span>
-        <span class="rb-trending-tag" onclick="window.__rumblrHashtag('PowerRankings')">#PowerRankings</span>
-        <span class="rb-trending-tag" onclick="window.__rumblrHashtag('Waiver')">#Waiver</span>
+             placeholder="Search #hashtag…" autocomplete="off" style="margin-top:10px;">
+    </div>
+
+    <!-- ESTN Writers (collapsible) -->
+    <div class="rb-widget rb-sidebar-group">
+      <div class="rb-widget-title rb-sidebar-group-header" id="rb-writers-toggle" role="button" tabindex="0">
+        <span>ESTN Writers</span>
+        <span class="rb-group-chevron">&#9660;</span>
+      </div>
+      <div id="rb-writers-section" class="rb-sidebar-group-items"></div>
+    </div>
+
+    <!-- Grumblrs (all Rumblr users, collapsible) -->
+    <div class="rb-widget rb-sidebar-group">
+      <div class="rb-widget-title rb-sidebar-group-header" id="rb-grumblrs-toggle" role="button" tabindex="0">
+        <span>Grumblrs</span>
+        <span class="rb-group-chevron">&#9660;</span>
+      </div>
+      <div id="rb-owners-section" class="rb-sidebar-group-items">
+        <div style="font-size:0.8rem;color:var(--rb-subtle);padding:4px 16px;">Loading…</div>
       </div>
     </div>
 
-    <div class="rb-widget">
-      <div class="rb-widget-title">About Rumblr</div>
-      <p style="font-size:0.85rem; color:var(--rb-muted); line-height:1.6;">
-        Rumblr is the official social hub of The Sandlot Dynasty League on the ESTN Network.
-        Writers post scoops, team reps share takes, and the whole league talks baseball.
-      </p>
+    <!-- TSDL Ownership (hardcoded, collapsible) -->
+    <div class="rb-widget rb-sidebar-group">
+      <div class="rb-widget-title rb-sidebar-group-header" id="rb-ownership-toggle" role="button" tabindex="0">
+        <span>TSDL Ownership</span>
+        <span class="rb-group-chevron">&#9660;</span>
+      </div>
+      <div id="rb-ownership-section" class="rb-sidebar-group-items">
+        <div class="rb-ownership-row">
+          <span class="rb-ownership-role">Commissioner</span>
+          <span class="rb-ownership-name">Ryan Schneider</span>
+        </div>
+      </div>
     </div>
 
-    <div style="text-align:center; margin-top:8px;">
-      <img src="../assets/images/estn-logo.png" alt="ESTN" style="height:28px; opacity:0.5;">
+    <!-- Hidden compat shim — loadAuthorSidebar() checks for this before populating sections -->
+    <div id="rb-author-sidebar" style="display:none;"></div>
+
+    <div style="text-align:center; margin-top:12px;">
+      <img src="../assets/images/estn-logo.png" alt="ESTN" style="height:24px; opacity:0.4;">
     </div>
+
   </aside>
 
 </div><!-- /.rb-layout -->
@@ -163,7 +198,7 @@
   <div class="rb-modal">
     <div class="rb-modal-header">
       <span class="rb-modal-title">Sign in to Rumblr</span>
-      <span class="rb-modal-close" onclick="document.getElementById('rb-login-modal').classList.add('hidden')">✕</span>
+      <span class="rb-modal-close" onclick="document.getElementById('rb-login-modal').classList.add('hidden')">&#x2715;</span>
     </div>
     <p style="color:var(--rb-muted);margin-bottom:20px;font-size:0.9rem;">
       You need to be signed in to like, reply, or repost.
@@ -179,7 +214,7 @@
 <div class="rb-toast-container"></div>
 
 <script type="module">
-  import { initFeed, clearFilter } from '../assets/js/rumblr-app.js';
+  import { initFeed, clearFilter, loadTrendingHashtags } from '../assets/js/rumblr-app.js';
   import { initSignOut } from '../assets/js/rumblr-auth.js';
 
   document.addEventListener('DOMContentLoaded', () => {
@@ -191,8 +226,44 @@
       document.getElementById('rb-welcome-banner').style.display = 'block';
     }
 
-    // Clear filter global (used by filter banner)
+    // Clear filter global (used by filter banner ✕ button and hashtag clicks)
     window.__rumblrClearFilter = clearFilter;
+
+    // Load real-time trending hashtags
+    loadTrendingHashtags(document.getElementById('rb-trending-tags'));
+
+    // Collapsible toggle helper
+    function makeToggle(toggleId, contentId) {
+      const toggle  = document.getElementById(toggleId);
+      const content = document.getElementById(contentId);
+      if (!toggle || !content) return;
+      toggle.addEventListener('click', () => {
+        const isOpen = content.style.display !== 'none';
+        content.style.display = isOpen ? 'none' : 'block';
+        const chevron = toggle.querySelector('.rb-group-chevron');
+        if (chevron) chevron.textContent = isOpen ? '\u25B6' : '\u25BC';
+      });
+      toggle.addEventListener('keydown', e => { if (e.key === 'Enter') toggle.click(); });
+    }
+
+    // Writers toggle is wired by loadAuthorSidebar() in rumblr-app.js
+    // Wire the remaining collapsible sections here
+    makeToggle('rb-grumblrs-toggle',  'rb-owners-section');
+    makeToggle('rb-ownership-toggle', 'rb-ownership-section');
+
+    // Hashtag search box
+    const hashSearch = document.getElementById('rb-hashtag-search');
+    if (hashSearch) {
+      hashSearch.addEventListener('keydown', e => {
+        if (e.key === 'Enter') {
+          const tag = hashSearch.value.trim().replace(/^#/, '');
+          if (tag) {
+            document.querySelectorAll('.rb-tab').forEach(t => t.classList.remove('active'));
+            window.__rumblrHashtag(tag);
+          }
+        }
+      });
+    }
   });
 </script>
 </body>

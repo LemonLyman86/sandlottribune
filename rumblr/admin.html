@@ -12,15 +12,25 @@
 <body class="rumblr-page">
 
 <header class="rb-header">
-  <a href="./" class="rb-header-logo">
-    <img src="../assets/images/rumblr-logo.png" alt="Rumblr">
-  </a>
-  <span style="font-family:'Oswald',sans-serif;font-size:0.85rem;color:var(--rb-red);
-               letter-spacing:0.1em;text-transform:uppercase;">Admin</span>
-  <div class="rb-header-actions">
-    <a href="../" class="rb-btn rb-btn-ghost" style="font-size:0.78rem;">📰 Tribune</a>
-    <a href="./" class="rb-btn rb-btn-ghost">← Feed</a>
-  </div>
+  <nav class="rb-nav-inner">
+    <a class="rb-header-logo" href="index.html">
+      <img src="../assets/images/rumblr-logo.png" alt="Rumblr">
+      <span class="rb-header-logo-text">Rumb<span>lr</span></span>
+    </a>
+    <ul class="rb-nav-links">
+      <li><a href="https://rschneider2020.github.io/sandlottribune/">Home</a></li>
+      <li><a href="../between-the-chalk/">Between The Chalk</a></li>
+      <li><a href="../season-deadlines/">Season Deadlines</a></li>
+      <li><a href="../league-records/">League Records</a></li>
+      <li><a href="index.html" class="active">Rumblr</a></li>
+      <li><a href="../about/"><img class="rb-nav-estn" src="../assets/images/estn-logo.png" alt="ESTN"></a></li>
+    </ul>
+    <div class="rb-header-actions">
+      <span style="font-family:'Oswald',sans-serif;font-size:0.78rem;color:var(--rb-red);
+                   letter-spacing:0.1em;text-transform:uppercase;">Admin</span>
+      <a href="index.html" class="rb-btn rb-btn-ghost rb-btn-sm">&larr; Feed</a>
+    </div>
+  </nav>
 </header>
 
 <!-- Access denied message -->
@@ -38,6 +48,22 @@
 
   <div class="rb-admin-title">Rumblr Admin</div>
   <div class="rb-admin-sub">Manage accounts and moderate content</div>
+
+  <!-- ── Your Admin UID ──────────────────────────────── -->
+  <section style="margin-bottom:32px;padding:14px 16px;background:var(--rb-surface);
+                  border:1px solid var(--rb-border);border-radius:8px;">
+    <div style="font-family:'Oswald',sans-serif;font-size:0.7rem;letter-spacing:0.1em;
+                text-transform:uppercase;color:var(--rb-subtle);margin-bottom:6px;">
+      Your Firebase Admin UID (copy this into <code>rumblr-admin.js</code> if needed)
+    </div>
+    <div style="display:flex;align-items:center;gap:10px;">
+      <code id="rb-my-uid" style="font-size:0.88rem;color:var(--rb-text);
+             background:var(--rb-surface-2);padding:6px 12px;border-radius:4px;
+             border:1px solid var(--rb-border);flex:1;word-break:break-all;"></code>
+      <button onclick="navigator.clipboard.writeText(document.getElementById('rb-my-uid').textContent).then(()=>this.textContent='Copied!').catch(()=>{})"
+              class="rb-btn rb-btn-ghost rb-btn-sm">Copy</button>
+    </div>
+  </section>
 
   <!-- ── Pending Verifications ───────────────────────── -->
   <section style="margin-bottom:40px;">
@@ -65,6 +91,69 @@
       Delete any inappropriate content. This action is permanent.
     </p>
     <div id="rb-recent-posts-list"></div>
+  </section>
+
+  <!-- ── Writer Reply Panel ──────────────────────────── -->
+  <section style="margin-bottom:40px;">
+    <div class="rb-admin-section-title">Post Writer Reply</div>
+    <p style="font-size:0.85rem;color:var(--rb-muted);margin-bottom:16px;">
+      Post a reply to an existing Rumbl'ing as an ESTN writer.
+      Find the Post ID in the URL when viewing a post (e.g. <code>post.html?id=abc123</code>).
+    </p>
+    <div style="display:flex;flex-direction:column;gap:12px;max-width:560px;">
+      <div class="rb-form-group">
+        <label class="rb-form-label">Writer</label>
+        <select id="rb-reply-writer" style="background:var(--rb-surface-2);border:1px solid var(--rb-border);
+                color:var(--rb-text);padding:10px 14px;border-radius:6px;width:100%;
+                font-family:'Oswald',sans-serif;font-size:0.9rem;">
+          <option value="">-- Select a writer --</option>
+        </select>
+      </div>
+      <div class="rb-form-group">
+        <label class="rb-form-label">Target Post ID</label>
+        <input id="rb-reply-post-id" type="text" placeholder="e.g. Kj2mNpQrXvLw">
+      </div>
+      <div class="rb-form-group">
+        <label class="rb-form-label">Reply Content</label>
+        <textarea id="rb-reply-content" rows="4" maxlength="300"
+          placeholder="Writer's reply text…"
+          style="background:var(--rb-surface-2);border:1px solid var(--rb-border);
+                 color:var(--rb-text);padding:10px 14px;border-radius:6px;width:100%;
+                 font-family:'Marcellus',serif;font-size:0.95rem;resize:vertical;"></textarea>
+        <div id="rb-reply-char" style="text-align:right;font-family:'Oswald',sans-serif;
+             font-size:0.8rem;color:var(--rb-subtle);margin-top:4px;">280</div>
+      </div>
+      <button id="rb-reply-submit-btn" class="rb-btn rb-btn-primary" style="align-self:flex-start;">
+        Post Reply as Writer
+      </button>
+      <div id="rb-reply-result" style="font-size:0.85rem;color:var(--rb-green);display:none;"></div>
+    </div>
+  </section>
+
+  <!-- ── Writer Follow User Panel ────────────────────── -->
+  <section style="margin-bottom:40px;">
+    <div class="rb-admin-section-title">Writer Follows User</div>
+    <p style="font-size:0.85rem;color:var(--rb-muted);margin-bottom:16px;">
+      Record that an ESTN writer is following a Rumblr user. Adds to that user's follower count.
+    </p>
+    <div style="display:flex;flex-direction:column;gap:12px;max-width:560px;">
+      <div class="rb-form-group">
+        <label class="rb-form-label">Writer</label>
+        <select id="rb-follow-writer" style="background:var(--rb-surface-2);border:1px solid var(--rb-border);
+                color:var(--rb-text);padding:10px 14px;border-radius:6px;width:100%;
+                font-family:'Oswald',sans-serif;font-size:0.9rem;">
+          <option value="">-- Select a writer --</option>
+        </select>
+      </div>
+      <div class="rb-form-group">
+        <label class="rb-form-label">User Handle to Follow</label>
+        <input id="rb-follow-handle" type="text" placeholder="@PHIOfficial">
+      </div>
+      <button id="rb-follow-submit-btn" class="rb-btn rb-btn-primary" style="align-self:flex-start;">
+        Record Writer Follow
+      </button>
+      <div id="rb-follow-result" style="font-size:0.85rem;color:var(--rb-green);display:none;"></div>
+    </div>
   </section>
 
 </div><!-- /.rb-admin-layout -->

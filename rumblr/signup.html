@@ -7,8 +7,26 @@
   <link rel="icon" href="../assets/images/rumblr-logo.png">
   <link rel="stylesheet" href="../assets/css/rumblr.css">
 </head>
-<body class="rumblr-page rb-auth-page">
+<body class="rumblr-page">
 
+<header class="rb-header">
+  <nav class="rb-nav-inner">
+    <a class="rb-header-logo" href="index.html">
+      <img src="../assets/images/rumblr-logo.png" alt="Rumblr">
+      <span class="rb-header-logo-text">Rumb<span>lr</span></span>
+    </a>
+    <ul class="rb-nav-links">
+      <li><a href="https://rschneider2020.github.io/sandlottribune/">Home</a></li>
+      <li><a href="../between-the-chalk/">Between The Chalk</a></li>
+      <li><a href="../season-deadlines/">Season Deadlines</a></li>
+      <li><a href="../league-records/">League Records</a></li>
+      <li><a href="index.html" class="active">Rumblr</a></li>
+      <li><a href="../about/"><img class="rb-nav-estn" src="../assets/images/estn-logo.png" alt="ESTN"></a></li>
+    </ul>
+  </nav>
+</header>
+
+<div class="rb-auth-page">
 <div class="rb-auth-card" style="max-width:560px;">
 
   <div class="rb-auth-logo">
@@ -28,15 +46,14 @@
   <div class="rb-signup-step" style="display:block;">
     <p style="color:var(--rb-muted);font-family:'Oswald',sans-serif;font-size:0.88rem;
                letter-spacing:0.06em;text-transform:uppercase;margin-bottom:14px;">
-      Step 1 — Select Your Team
+      Step 1 &mdash; Select Your Team
     </p>
     <div id="rb-team-grid" class="rb-team-grid"></div>
     <button id="rb-step1-next" class="rb-btn rb-btn-primary" style="width:100%;justify-content:center;" disabled>
-      Continue →
+      Continue &rarr;
     </button>
     <p style="text-align:center;margin-top:16px;font-size:0.85rem;color:var(--rb-subtle);">
       Already have an account? <a href="login.html">Sign in</a>
-      &nbsp;&middot;&nbsp; <a href="../" style="color:var(--rb-subtle);">📰 Tribune</a>
     </p>
   </div>
 
@@ -44,7 +61,7 @@
   <div class="rb-signup-step" style="display:none;">
     <p style="color:var(--rb-muted);font-family:'Oswald',sans-serif;font-size:0.88rem;
                letter-spacing:0.06em;text-transform:uppercase;margin-bottom:14px;">
-      Step 2 — Account Details
+      Step 2 &mdash; Account Details
     </p>
 
     <div class="rb-form-group">
@@ -74,22 +91,31 @@
 
     <div class="rb-form-group">
       <label class="rb-form-label" for="rb-bio">Bio <span style="color:var(--rb-subtle);font-size:0.8em;">(optional)</span></label>
-      <input id="rb-bio" type="text" placeholder="Official TSDL team account · Philly" maxlength="100">
+      <input id="rb-bio" type="text" placeholder="Official TSDL team account &middot; Philly" maxlength="100">
     </div>
 
+    <!-- Avatar picker: year tabs + image grid -->
     <div class="rb-form-group">
-      <label class="rb-form-label" for="rb-avatar-url">Logo / Avatar URL <span style="color:var(--rb-subtle);font-size:0.8em;">(optional)</span></label>
-      <input id="rb-avatar-url" type="url" placeholder="https://example.com/your-logo.png">
-      <div class="rb-form-hint">Paste a URL to an image to use as your profile logo. Leave blank to use your team color.</div>
-      <div id="rb-avatar-preview" style="display:none;margin-top:8px;">
-        <img id="rb-avatar-preview-img" style="width:56px;height:56px;border-radius:50%;object-fit:cover;border:2px solid var(--rb-border);" alt="Logo preview">
+      <label class="rb-form-label">Profile Image</label>
+      <div class="rb-avatar-picker" id="rb-avatar-picker">
+        <div class="rb-avatar-tabs">
+          <div class="rb-avatar-tab active" data-year="2026">2026</div>
+          <div class="rb-avatar-tab" data-year="2025">2025</div>
+          <div class="rb-avatar-tab" data-year="2024">2024</div>
+          <div class="rb-avatar-tab" data-year="letters">Letters</div>
+        </div>
+        <div id="rb-avatar-grid" class="rb-avatar-grid"></div>
+        <div id="rb-avatar-selected-preview" class="rb-avatar-selected-preview" style="display:none;">
+          <div id="rb-avatar-preview-el"></div>
+          <span id="rb-avatar-preview-label" style="font-size:0.82rem;color:var(--rb-muted);"></span>
+        </div>
       </div>
     </div>
 
     <div style="display:flex;gap:10px;margin-top:4px;">
-      <button id="rb-step2-back" class="rb-btn rb-btn-outline" style="flex:0 0 auto;">← Back</button>
+      <button id="rb-step2-back" class="rb-btn rb-btn-outline" style="flex:0 0 auto;">&larr; Back</button>
       <button id="rb-step2-next" class="rb-btn rb-btn-primary" style="flex:1;justify-content:center;">
-        Review →
+        Review &rarr;
       </button>
     </div>
   </div>
@@ -98,7 +124,7 @@
   <div class="rb-signup-step" style="display:none;">
     <p style="color:var(--rb-muted);font-family:'Oswald',sans-serif;font-size:0.88rem;
                letter-spacing:0.06em;text-transform:uppercase;margin-bottom:14px;">
-      Step 3 — Review & Create
+      Step 3 &mdash; Review &amp; Create
     </p>
 
     <!-- Avatar preview -->
@@ -111,20 +137,20 @@
         <div style="font-family:'Oswald',sans-serif;font-size:0.8rem;color:var(--rb-subtle);margin-top:2px;" id="rb-review-team"></div>
       </div>
       <div style="margin-left:auto;">
-        <span class="rb-badge-pending">💩 Unverified</span>
+        <span class="rb-badge-pending">Unverified</span>
       </div>
     </div>
 
     <p style="font-size:0.85rem;color:var(--rb-muted);margin-bottom:20px;line-height:1.6;">
       Your account will be <strong style="color:var(--rb-text);">pending verification</strong> until
       the commissioner confirms you're the official team rep. You can post and interact immediately
-      — the ⚾ verified badge appears after approval.
+      &mdash; the &#x26BE; verified badge appears after approval.
     </p>
 
     <div id="rb-signup-error" class="rb-form-error" style="margin-bottom:12px;"></div>
 
     <div style="display:flex;gap:10px;">
-      <button id="rb-step3-back" class="rb-btn rb-btn-outline" style="flex:0 0 auto;">← Back</button>
+      <button id="rb-step3-back" class="rb-btn rb-btn-outline" style="flex:0 0 auto;">&larr; Back</button>
       <button id="rb-signup-submit" class="rb-btn rb-btn-primary" style="flex:1;justify-content:center;">
         Create Account
       </button>
@@ -132,6 +158,7 @@
   </div>
 
 </div><!-- /.rb-auth-card -->
+</div><!-- /.rb-auth-page -->
 
 <script type="module">
   import { initSignup } from '../assets/js/rumblr-auth.js';

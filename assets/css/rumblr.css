@@ -851,15 +851,169 @@ input::placeholder, textarea::placeholder { color: var(--rb-subtle); }
   line-height: 1.3;
 }
 
-/* ── Profile page ────────────────────────────────────────── */
-.rb-profile-header {
-  padding: 24px 20px;
-  border-bottom: 1px solid var(--rb-border);
-  display: flex;
-  gap: 16px;
-  align-items: flex-start;
+/* ── Profile page (Bluesky-style) ───────────────────────── */
+.rb-profile-page {
+  max-width: 680px;
+  margin: 0 auto;
+  min-height: 80vh;
 }
 
+.rb-profile-banner {
+  width: 100%;
+  height: 200px;
+  background: linear-gradient(135deg, #1A2030 0%, #0D1117 100%);
+  flex-shrink: 0;
+}
+
+.rb-profile-content {
+  padding: 0;
+}
+
+.rb-profile-avatar-outer {
+  position: relative;
+  padding: 0 20px;
+  min-height: 52px;   /* half the avatar bleeds above */
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  margin-top: -52px;
+}
+
+.rb-profile-avatar-wrap {
+  position: relative;
+  z-index: 2;
+}
+
+.rb-profile-avatar-lg {
+  width: 84px;
+  height: 84px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Oswald', sans-serif;
+  font-weight: 700;
+  font-size: 1.6rem;
+  color: #fff;
+  border: 4px solid var(--rb-bg);
+  flex-shrink: 0;
+  overflow: hidden;
+}
+
+.rb-profile-avatar-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.rb-profile-action-btns {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  padding-bottom: 8px;
+}
+
+.rb-profile-info {
+  padding: 12px 20px 0;
+}
+
+.rb-profile-display-name {
+  font-family: 'Oswald', sans-serif;
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--rb-text);
+  margin: 0 0 2px;
+  letter-spacing: 0.02em;
+}
+
+.rb-profile-handle-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.rb-profile-handle-text {
+  font-family: 'Oswald', sans-serif;
+  font-size: 0.95rem;
+  color: var(--rb-muted);
+}
+
+.rb-profile-badge-inline {
+  display: inline-flex;
+}
+
+.rb-profile-bio-text {
+  font-size: 0.92rem;
+  color: var(--rb-text);
+  line-height: 1.5;
+  margin-bottom: 8px;
+}
+
+.rb-profile-meta-row {
+  display: flex;
+  gap: 16px;
+  margin-bottom: 10px;
+}
+
+.rb-profile-meta-item {
+  font-family: 'Oswald', sans-serif;
+  font-size: 0.8rem;
+  color: var(--rb-subtle);
+}
+
+.rb-profile-stats-row {
+  display: flex;
+  gap: 20px;
+  margin-bottom: 16px;
+}
+
+.rb-profile-stat {
+  font-family: 'Oswald', sans-serif;
+  font-size: 0.88rem;
+  color: var(--rb-muted);
+  cursor: default;
+}
+
+.rb-profile-stat strong {
+  color: var(--rb-text);
+  font-weight: 700;
+}
+
+/* Profile feed tabs */
+.rb-profile-tabs {
+  display: flex;
+  border-bottom: 1px solid var(--rb-border);
+  padding: 0 20px;
+  gap: 4px;
+}
+
+.rb-profile-tab {
+  font-family: 'Oswald', sans-serif;
+  font-size: 0.9rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--rb-muted);
+  padding: 10px 16px;
+  cursor: pointer;
+  border-bottom: 3px solid transparent;
+  transition: color 0.15s, border-color 0.15s;
+}
+
+.rb-profile-tab:hover { color: var(--rb-text); }
+.rb-profile-tab.active {
+  color: var(--rb-text);
+  border-bottom-color: var(--rb-red);
+}
+
+/* Button size variant */
+.rb-btn-sm {
+  font-size: 0.78rem;
+  padding: 5px 12px;
+}
+
+/* Keep old avatar size class for compatibility */
 .rb-profile-avatar {
   width: 72px;
   height: 72px;
@@ -1056,11 +1210,327 @@ input::placeholder, textarea::placeholder { color: var(--rb-subtle); }
   margin-bottom: 14px;
 }
 
+/* ── Tribune-style nav bar (Rumblr dark theme) ──────────── */
+.rb-nav-inner {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 16px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  height: 58px;
+  width: 100%;
+}
+
+.rb-nav-links {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  flex: 1;
+  justify-content: flex-start;
+  margin-left: 16px;
+}
+
+.rb-nav-links a {
+  font-family: 'Oswald', sans-serif;
+  font-size: 0.78rem;
+  font-weight: 500;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  color: var(--rb-muted);
+  padding: 5px 10px;
+  border-radius: 3px;
+  transition: background 0.15s, color 0.15s;
+  white-space: nowrap;
+  text-decoration: none;
+}
+
+.rb-nav-links a:hover,
+.rb-nav-links a.active {
+  background: rgba(200,16,46,0.12);
+  color: var(--rb-red);
+}
+
+.rb-nav-estn {
+  height: 28px;
+  width: auto;
+  opacity: 0.75;
+  transition: opacity 0.15s;
+}
+.rb-nav-links a:hover .rb-nav-estn { opacity: 1; }
+
+/* ── Left sidebar: auth rail ─────────────────────────────── */
+#rb-auth-section {
+  padding: 16px 14px;
+  border-radius: 8px;
+  background: var(--rb-surface);
+  border: 1px solid var(--rb-border);
+  margin-bottom: 12px;
+  text-align: center;
+}
+
+.rb-join-logo {
+  height: 36px;
+  width: auto;
+  margin: 0 auto 8px;
+  display: block;
+}
+
+.rb-join-heading {
+  font-family: 'Oswald', sans-serif;
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--rb-text);
+  margin: 0 0 4px;
+  letter-spacing: 0.04em;
+}
+
+.rb-join-sub {
+  font-size: 0.78rem;
+  color: var(--rb-muted);
+  margin-bottom: 12px;
+}
+
+.rb-join-btns {
+  display: flex;
+  gap: 8px;
+  flex-direction: column;
+}
+
+/* ── Left sidebar: mini profile card ─────────────────────── */
+#rb-profile-card {
+  display: none;
+  padding: 14px;
+  border-radius: 8px;
+  background: var(--rb-surface);
+  border: 1px solid var(--rb-border);
+  margin-bottom: 12px;
+}
+
+.rb-card-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 8px;
+}
+
+.rb-card-avatar {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Oswald', sans-serif;
+  font-weight: 700;
+  font-size: 0.8rem;
+  color: #fff;
+  overflow: hidden;
+}
+
+.rb-card-name {
+  font-family: 'Oswald', sans-serif;
+  font-weight: 700;
+  font-size: 0.9rem;
+  color: var(--rb-text);
+}
+
+.rb-card-handle {
+  font-size: 0.78rem;
+  color: var(--rb-muted);
+}
+
+.rb-card-stats {
+  font-size: 0.75rem;
+  color: var(--rb-subtle);
+  margin-bottom: 8px;
+}
+
+.rb-card-profile-link {
+  font-family: 'Oswald', sans-serif;
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--rb-red);
+  text-decoration: none;
+}
+.rb-card-profile-link:hover { text-decoration: underline; }
+
+/* ── Right sidebar: trending hashtags ────────────────────── */
+.rb-trending-list {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.rb-trending-tag {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 6px 10px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.12s;
+}
+.rb-trending-tag:hover { background: var(--rb-surface-2); }
+
+.rb-trending-name {
+  font-family: 'Oswald', sans-serif;
+  font-weight: 600;
+  font-size: 0.9rem;
+  color: var(--rb-text);
+}
+
+.rb-trending-count {
+  font-size: 0.75rem;
+  color: var(--rb-subtle);
+}
+
+/* ── Avatar picker (signup) ──────────────────────────────── */
+.rb-avatar-picker { margin-bottom: 8px; }
+
+.rb-avatar-tabs {
+  display: flex;
+  gap: 0;
+  margin-bottom: 12px;
+  border-bottom: 1px solid var(--rb-border);
+}
+
+.rb-avatar-tab {
+  font-family: 'Oswald', sans-serif;
+  font-size: 0.82rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--rb-muted);
+  padding: 8px 14px;
+  cursor: pointer;
+  border-bottom: 3px solid transparent;
+  transition: color 0.15s, border-color 0.15s;
+}
+.rb-avatar-tab:hover { color: var(--rb-text); }
+.rb-avatar-tab.active { color: var(--rb-text); border-bottom-color: var(--rb-red); }
+
+.rb-avatar-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(58px, 1fr));
+  gap: 8px;
+  max-height: 220px;
+  overflow-y: auto;
+  padding: 4px 2px;
+}
+
+.rb-avatar-option {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  cursor: pointer;
+  border-radius: 6px;
+  padding: 4px;
+  border: 2px solid transparent;
+  transition: border-color 0.15s, background 0.15s;
+}
+.rb-avatar-option:hover { background: var(--rb-surface-2); }
+.rb-avatar-option.selected {
+  border-color: var(--rb-red);
+  background: rgba(200,16,46,0.08);
+}
+
+.rb-avatar-option img,
+.rb-avatar-option .rb-team-circle {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  object-fit: cover;
+  flex-shrink: 0;
+}
+
+.rb-avatar-option .rb-option-label {
+  font-family: 'Oswald', sans-serif;
+  font-size: 0.65rem;
+  color: var(--rb-subtle);
+  text-align: center;
+  line-height: 1.2;
+}
+
+.rb-avatar-selected-preview {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 0 4px;
+}
+
+.rb-avatar-selected-preview img,
+.rb-avatar-selected-preview .rb-team-circle {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  object-fit: cover;
+  flex-shrink: 0;
+}
+
+.rb-avatar-selected-preview span {
+  font-size: 0.82rem;
+  color: var(--rb-muted);
+}
+
+/* ── Right sidebar: TSDL Ownership rows ─────────────────── */
+.rb-ownership-row {
+  display: flex;
+  flex-direction: column;
+  padding: 7px 16px;
+  border-bottom: 1px solid var(--rb-border);
+}
+.rb-ownership-row:last-child { border-bottom: none; }
+
+.rb-ownership-role {
+  font-family: 'Oswald', sans-serif;
+  font-size: 0.65rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--rb-subtle);
+}
+
+.rb-ownership-name {
+  font-family: 'Oswald', sans-serif;
+  font-size: 0.88rem;
+  color: var(--rb-text);
+}
+
+/* ── Left sidebar auth section spacing ───────────────────── */
+#rb-auth-section { margin: 0 10px 12px; }
+#rb-profile-card { margin: 0 10px 12px; }
+
+/* ── Right sidebar: widget used as collapsible group ─────── */
+.rb-widget.rb-sidebar-group {
+  padding: 0;
+  overflow: hidden;
+}
+.rb-widget.rb-sidebar-group .rb-widget-title.rb-sidebar-group-header {
+  padding: 12px 14px;
+  margin-bottom: 0;
+  border-bottom: 1px solid var(--rb-border);
+}
+.rb-widget.rb-sidebar-group .rb-sidebar-group-items {
+  padding: 4px 0;
+}
+
 /* ── Responsive tweaks ───────────────────────────────────── */
+@media (max-width: 600px) {
+  .rb-nav-links { display: none; }
+}
 @media (max-width: 480px) {
   .rb-header { padding: 0 14px; }
   .rb-header-eyebrow { display: none; }
   .rb-post, .rb-compose { padding: 12px 14px; }
   .rb-auth-card { padding: 24px 18px; }
   .rb-engagement { gap: 16px; }
+  .rb-profile-banner { height: 140px; }
+  .rb-profile-avatar-lg { width: 68px; height: 68px; font-size: 1.2rem; }
 }

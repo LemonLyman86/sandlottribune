@@ -9,9 +9,10 @@
 import { firestore, auth } from './firebase-config.js';
 import {
   collection, query, where, orderBy, limit,
-  getDocs, doc, updateDoc, deleteDoc, getDoc
+  getDocs, doc, updateDoc, deleteDoc, getDoc, addDoc, setDoc, serverTimestamp
 } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js';
 import { onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js';
+import { AI_WRITERS } from './rumblr-app.js';
 
 // ── Set this to your Firebase Auth UID ───────────────────
 const ADMIN_UID = 'wIVL4PEkOvTuBFagFAmLS1mnLEf2';
@@ -36,9 +37,14 @@ export function initAdmin() {
     if (gateEl) gateEl.style.display = 'none';
     if (dashEl) dashEl.style.display = 'block';
 
+    // Show the admin's own UID for easy copy-paste
+    const uidEl = document.getElementById('rb-my-uid');
+    if (uidEl) uidEl.textContent = user.uid;
+
     await loadPendingUsers();
     await loadAllUsers();
     await loadRecentPosts();
+    initWriterPanels();
   });
 }
 
@@ -207,6 +213,134 @@ async function loadRecentPosts() {
     });
     container.appendChild(row);
   });
+}
+
+// ══════════════════════════════════════════════════════════
+// Writer Reply + Writer Follow panels
+// ══════════════════════════════════════════════════════════
+function initWriterPanels() {
+  // Populate writer dropdowns
+  ['rb-reply-writer', 'rb-follow-writer'].forEach(selectId => {
+    const sel = document.getElementById(selectId);
+    if (!sel) return;
+    AI_WRITERS.forEach((w, i) => {
+      const opt = document.createElement('option');
+      opt.value = i;
+      opt.textContent = `${w.name} (${w.handle})`;
+      sel.appendChild(opt);
+    });
+  });
+
+  // ── Writer Reply ─────────────────────────────────────────
+  const replyContent = document.getElementById('rb-reply-content');
+  const replyChar    = document.getElementById('rb-reply-char');
+  if (replyContent && replyChar) {
+    replyContent.addEventListener('input', () => {
+      replyChar.textContent = 280 - replyContent.value.length;
+    });
+  }
+
+  const replyBtn = document.getElementById('rb-reply-submit-btn');
+  if (replyBtn) {
+    replyBtn.addEventListener('click', async () => {
+      const writerIdx = document.getElementById('rb-reply-writer')?.value;
+      const postId    = document.getElementById('rb-reply-post-id')?.value.trim();
+      const content   = replyContent?.value.trim();
+      const resultEl  = document.getElementById('rb-reply-result');
+
+      if (writerIdx === '' || !postId || !content) {
+        showToast('Fill in all fields before posting.');
+        return;
+      }
+      const writer = AI_WRITERS[parseInt(writerIdx)];
+      const hashtags = [...content.matchAll(/#(\w+)/g)].map(m => '#' + m[1]);
+
+      replyBtn.disabled = true;
+      try {
+        // Verify parent post exists
+        const parentSnap = await getDoc(doc(firestore, 'posts', postId));
+        if (!parentSnap.exists()) {
+          showToast('Post ID not found. Double-check and try again.');
+          replyBtn.disabled = false;
+          return;
+        }
+        await addDoc(collection(firestore, 'posts'), {
+          content,
+          parent_post_id:      postId,
+          author_type:         'ai',
+          author_name:         writer.name,
+          author_handle:       writer.handle,
+          author_uid:          null,
+          author_avatar_color: writer.color,
+          author_initials:     writer.initials,
+          author_image:        writer.image,
+          author_verified:     true,
+          hashtags,
+          is_ai_generated:     true,
+          like_count:          0,
+          reply_count:         0,
+          repost_count:        0,
+          timestamp:           serverTimestamp(),
+        });
+        // Increment parent post reply_count
+        await updateDoc(doc(firestore, 'posts', postId), { reply_count: 0 });
+
+        if (resultEl) {
+          resultEl.style.display = 'block';
+          resultEl.textContent = `Reply posted as ${writer.name}!`;
+        }
+        if (replyContent) replyContent.value = '';
+        if (replyChar) replyChar.textContent = '280';
+        showToast(`Reply posted as ${writer.name}`);
+      } catch (err) {
+        console.error('Writer reply error:', err);
+        showToast('Error posting reply. Check console.');
+      } finally {
+        replyBtn.disabled = false;
+      }
+    });
+  }
+
+  // ── Writer Follow User ───────────────────────────────────
+  const followBtn = document.getElementById('rb-follow-submit-btn');
+  if (followBtn) {
+    followBtn.addEventListener('click', async () => {
+      const writerIdx   = document.getElementById('rb-follow-writer')?.value;
+      const userHandle  = document.getElementById('rb-follow-handle')?.value.trim();
+      const resultEl    = document.getElementById('rb-follow-result');
+
+      if (writerIdx === '' || !userHandle) {
+        showToast('Select a writer and enter a handle.');
+        return;
+      }
+      const writer = AI_WRITERS[parseInt(writerIdx)];
+      const handle = userHandle.startsWith('@') ? userHandle : '@' + userHandle;
+      const followId = `ai_${writer.handle.replace(/[^a-zA-Z0-9]/g, '_')}_${handle.replace(/[^a-zA-Z0-9]/g, '_')}`;
+
+      followBtn.disabled = true;
+      try {
+        await setDoc(doc(firestore, 'ai_follows', followId), {
+          follower_handle: writer.handle,
+          follower_type:   'ai',
+          followed_handle: handle,
+          timestamp:       serverTimestamp(),
+        });
+        if (resultEl) {
+          resultEl.style.display = 'block';
+          resultEl.textContent = `${writer.name} is now following ${handle}`;
+        }
+        if (document.getElementById('rb-follow-handle')) {
+          document.getElementById('rb-follow-handle').value = '';
+        }
+        showToast(`${writer.name} now follows ${handle}`);
+      } catch (err) {
+        console.error('Writer follow error:', err);
+        showToast('Error recording follow. Check console.');
+      } finally {
+        followBtn.disabled = false;
+      }
+    });
+  }
 }
 
 // ── Helpers ───────────────────────────────────────────────
