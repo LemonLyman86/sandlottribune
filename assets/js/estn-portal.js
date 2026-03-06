@@ -303,6 +303,17 @@ function renderHeadlines(txnData, customHeadlines) {
 }
 
 // ── Render Rumblr preview ──────────────────────────────────────────────────────
+const userAvatarCache = {};
+async function fetchUserAvatar(uid) {
+  if (uid in userAvatarCache) return userAvatarCache[uid];
+  try {
+    const snap = await getDoc(doc(firestore, 'users', uid));
+    const url = snap.exists() ? (snap.data().avatar_url || null) : null;
+    userAvatarCache[uid] = url;
+    return url;
+  } catch { return null; }
+}
+
 const WRITER_IMAGES = {
   '@JeffPassan':    'assets/images/rumblr/jeff_passan.png',
   '@Ken_Rosenthal': 'assets/images/rumblr/ken_rosenthal.png',
@@ -340,7 +351,9 @@ async function renderRumblrPreview() {
       const avatarText  = esc(p.author_initials || '??');
       const initialsStyle = `width:34px;height:34px;border-radius:50%;background:${avatarColor};display:flex;align-items:center;justify-content:center;font-family:Oswald,sans-serif;font-size:0.7rem;color:#fff;flex-shrink:0;`;
       // Always render both; on img error hide img + reveal initials fallback
-      const avatarHtml = `<div style="flex-shrink:0;position:relative;">
+      // data-uid lets the async avatar fetch below update this element
+      const uidAttr = p.author_uid ? ` data-uid="${esc(p.author_uid)}"` : '';
+      const avatarHtml = `<div style="flex-shrink:0;position:relative;"${uidAttr}>
         ${imgSrc ? `<img src="${esc(imgSrc)}" alt="${esc(p.author_name)}" style="width:34px;height:34px;border-radius:50%;object-fit:cover;display:block;" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">` : ''}
         <div style="${initialsStyle};${imgSrc ? 'display:none;' : ''}">${avatarText}</div>
       </div>`;
@@ -360,6 +373,31 @@ async function renderRumblrPreview() {
         </a>`;
     }).join('');
     el.innerHTML = html + `<div style="text-align:center;padding:10px;border-top:1px solid #2D3748;"><a href="rumblr/" style="font-family:'Oswald',sans-serif;font-size:0.78rem;color:#C8102E;text-decoration:none;letter-spacing:0.06em;text-transform:uppercase;">View All Rumbl'ings &rarr;</a></div>`;
+
+    // Async: for user posts without a resolved image, fetch avatar from their Firestore profile
+    snap.docs.forEach(d => {
+      const p = d.data();
+      if (!p.author_uid) return;
+      if (WRITER_IMAGES[p.author_handle] || p.author_image) return; // already has image
+      fetchUserAvatar(p.author_uid).then(url => {
+        if (!url) return;
+        const wrap = el.querySelector(`[data-uid="${p.author_uid}"]`);
+        if (!wrap) return;
+        const normalUrl = url.replace(/^(\.\.\/)+/, '');
+        const img = wrap.querySelector('img');
+        const fallback = wrap.querySelector('div');
+        if (img) {
+          img.src = normalUrl;
+          img.style.display = 'block';
+          if (fallback) fallback.style.display = 'none';
+        } else if (fallback) {
+          const color = p.author_avatar_color || '#555';
+          const initText = p.author_initials || '??';
+          const iStyle = `width:34px;height:34px;border-radius:50%;background:${color};display:flex;align-items:center;justify-content:center;font-family:Oswald,sans-serif;font-size:0.7rem;color:#fff;flex-shrink:0;`;
+          wrap.innerHTML = `<img src="${normalUrl}" style="width:34px;height:34px;border-radius:50%;object-fit:cover;display:block;" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';"><div style="${iStyle};display:none;">${initText}</div>`;
+        }
+      });
+    });
   } catch (err) {
     console.error('Rumblr preview error:', err);
     el.innerHTML = `<div style="padding:16px;color:#718096;font-size:0.82rem;text-align:center;"><a href="rumblr/" style="color:#C8102E;">Visit Rumblr &rarr;</a></div>`;
@@ -386,7 +424,7 @@ function buildParodyAdHtml(ad, compact) {
   return `
     <div class="estn-ad-unit${compact ? ' estn-pillar-ad' : ''}">
       <div class="ad-label">Advertisement</div>
-      <img src="assets/images/site ads/${esc(ad.file)}" alt="" style="width:100%;display:block;border-radius:4px;" loading="lazy">
+      <img src="assets/images/site%20ads/${esc(ad.file)}" alt="" style="width:100%;display:block;border-radius:4px;" loading="lazy">
     </div>`;
 }
 

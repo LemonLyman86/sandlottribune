@@ -2334,12 +2334,13 @@ img { max-width: 100%; display: block; }
   letter-spacing: 0.14em;
   text-transform: uppercase;
   color: #A0AEC0;
-  padding-bottom: 8px;
+  padding-bottom: 10px;
   border-bottom: 2px solid #C8102E;
-  margin: 0 0 12px;
+  margin: 0 0 18px;
   display: flex;
   align-items: center;
   justify-content: space-between;
+  gap: 20px;
 }
 .estn-section-label a {
   color: #C8102E;
