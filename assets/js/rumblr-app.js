@@ -8,7 +8,7 @@ import { firestore, auth } from './firebase-config.js';
 import {
   collection, query, orderBy, limit, startAfter,
   where, getDocs, onSnapshot, doc, getDoc, updateDoc, increment,
-  setDoc, deleteDoc, getCountFromServer
+  setDoc, deleteDoc, getCountFromServer, addDoc, serverTimestamp
 } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js';
 import { onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js';
 import { initCompose }        from './rumblr-auth.js';
@@ -164,6 +164,8 @@ async function loadFeed(reset = true) {
       });
     }
 
+    // Filter out replies (posts with a parent) — they only appear on the post detail page
+    docs = docs.filter(d => !d.data().parent_post_id);
     docs.forEach(d => feedEl.appendChild(renderPost(d.id, d.data())));
 
     // Cursor pagination only for the "all" feed (no composite index needed there)
@@ -634,6 +636,13 @@ function renderAuthUI() {
         });
       }
     }
+
+    // Notification bell
+    const notifBtn = document.getElementById('rb-notif-btn');
+    if (notifBtn) {
+      notifBtn.style.display = 'flex';
+      initNotificationBell(currentUser.uid);
+    }
   } else {
     if (signInBtn)   signInBtn.style.display   = 'inline-flex';
     if (signOutBtn)  signOutBtn.style.display  = 'none';
@@ -683,6 +692,186 @@ function showEmpty() {
       <div class="rb-empty-sub">Check back after the next update!</div>
     </div>
   `;
+}
+
+// ══════════════════════════════════════════════════════════
+// Notifications
+// ══════════════════════════════════════════════════════════
+
+/**
+ * Write in-app notifications for all followers of `authorHandle`
+ * who have opted in for the given notification type.
+ * type: 'new_post' | 'new_reply'
+ */
+export async function notifyFollowers(authorHandle, authorName, postId, content, type) {
+  try {
+    const followsSnap = await getDocs(
+      query(collection(firestore, 'follows'), where('followed_handle', '==', authorHandle))
+    );
+    if (followsSnap.empty) return;
+
+    const preview = (content || '').slice(0, 100) + (content && content.length > 100 ? '…' : '');
+    const notifCol = collection(firestore, 'notifications');
+    const writes = [];
+
+    followsSnap.forEach(fdoc => {
+      const fdata = fdoc.data();
+      const wantNotif = type === 'new_post'
+        ? fdata.notify_posts !== false && fdata.notify_posts === true
+        : fdata.notify_replies !== false && fdata.notify_replies === true;
+      if (!wantNotif) return;
+      if (!fdata.follower_uid) return;
+
+      writes.push(addDoc(notifCol, {
+        recipient_uid: fdata.follower_uid,
+        type,
+        actor_handle: authorHandle,
+        actor_name:   authorName,
+        post_id:      postId,
+        preview,
+        read:         false,
+        timestamp:    serverTimestamp(),
+      }));
+    });
+
+    await Promise.all(writes);
+  } catch (err) {
+    console.warn('notifyFollowers error:', err);
+  }
+}
+
+/** Returns unread notification count for the current user. */
+export async function loadNotificationCount(uid) {
+  try {
+    const snap = await getDocs(
+      query(collection(firestore, 'notifications'),
+        where('recipient_uid', '==', uid),
+        where('read', '==', false),
+        limit(50))
+    );
+    return snap.size;
+  } catch { return 0; }
+}
+
+/** Returns up to `maxCount` notifications for uid, newest first. */
+export async function loadNotifications(uid, maxCount = 20) {
+  try {
+    const snap = await getDocs(
+      query(collection(firestore, 'notifications'),
+        where('recipient_uid', '==', uid),
+        orderBy('timestamp', 'desc'),
+        limit(maxCount))
+    );
+    return snap.docs.map(d => ({ id: d.id, ...d.data() }));
+  } catch { return []; }
+}
+
+/** Mark all unread notifications as read for uid. */
+export async function markNotificationsRead(uid) {
+  try {
+    const snap = await getDocs(
+      query(collection(firestore, 'notifications'),
+        where('recipient_uid', '==', uid),
+        where('read', '==', false),
+        limit(50))
+    );
+    await Promise.all(snap.docs.map(d => updateDoc(d.ref, { read: true })));
+  } catch { /* silent */ }
+}
+
+/** Update notification preferences on a follow doc. */
+export async function updateFollowNotifPref(followerUid, handle, field, value) {
+  if (!followerUid) return;
+  try {
+    const followId = `${followerUid}_${handle.replace(/[^a-zA-Z0-9]/g, '_')}`;
+    await updateDoc(doc(firestore, 'follows', followId), { [field]: value });
+  } catch { /* follow doc may not exist */ }
+}
+
+/** Get notification prefs for a single follow relationship. Returns {notify_posts, notify_replies}. */
+export async function getFollowNotifPrefs(followerUid, handle) {
+  if (!followerUid) return {};
+  try {
+    const followId = `${followerUid}_${handle.replace(/[^a-zA-Z0-9]/g, '_')}`;
+    const snap = await getDoc(doc(firestore, 'follows', followId));
+    return snap.exists() ? { notify_posts: snap.data().notify_posts || false, notify_replies: snap.data().notify_replies || false } : {};
+  } catch { return {}; }
+}
+
+// ── Notification bell UI ────────────────────────────────────────────────────────
+let notifPanelOpen = false;
+
+export async function initNotificationBell(uid) {
+  const bellBtn   = document.getElementById('rb-notif-btn');
+  const badge     = document.getElementById('rb-notif-badge');
+  const panel     = document.getElementById('rb-notif-panel');
+  const markBtn   = document.getElementById('rb-notif-mark-read');
+  const listEl    = document.getElementById('rb-notif-list');
+  if (!bellBtn || !panel) return;
+
+  // Load initial count
+  async function refreshCount() {
+    const count = await loadNotificationCount(uid);
+    if (badge) {
+      badge.textContent = count > 9 ? '9+' : count;
+      badge.style.display = count > 0 ? 'flex' : 'none';
+    }
+  }
+  await refreshCount();
+
+  bellBtn.addEventListener('click', async (e) => {
+    e.stopPropagation();
+    notifPanelOpen = !notifPanelOpen;
+    panel.classList.toggle('hidden', !notifPanelOpen);
+
+    if (notifPanelOpen && listEl) {
+      listEl.innerHTML = '<div class="rb-notif-loading">Loading…</div>';
+      const notifs = await loadNotifications(uid, 20);
+      if (notifs.length === 0) {
+        listEl.innerHTML = '<div class="rb-notif-empty">No notifications yet.</div>';
+      } else {
+        listEl.innerHTML = notifs.map(n => {
+          const action = n.type === 'new_post' ? 'posted a new Rumbl\'ing' : 'replied to a post';
+          const ts = n.timestamp?.toDate ? formatTimeAgo(n.timestamp.toDate()) : '';
+          return `
+            <a class="rb-notif-item ${n.read ? 'read' : 'unread'}" href="post.html?id=${n.post_id}">
+              <div class="rb-notif-dot ${n.read ? '' : 'active'}"></div>
+              <div class="rb-notif-body">
+                <div class="rb-notif-text">
+                  <strong>${escHtml(n.actor_name)}</strong> ${action}
+                </div>
+                <div class="rb-notif-preview">${escHtml(n.preview)}</div>
+                <div class="rb-notif-time">${ts}</div>
+              </div>
+            </a>`;
+        }).join('');
+      }
+      // Mark all read and reset badge
+      await markNotificationsRead(uid);
+      if (badge) badge.style.display = 'none';
+    }
+  });
+
+  // Close panel when clicking outside
+  document.addEventListener('click', () => {
+    if (notifPanelOpen) {
+      notifPanelOpen = false;
+      panel.classList.add('hidden');
+    }
+  });
+
+  if (markBtn) {
+    markBtn.addEventListener('click', async (e) => {
+      e.stopPropagation();
+      await markNotificationsRead(uid);
+      if (listEl) listEl.querySelectorAll('.rb-notif-item').forEach(el => {
+        el.classList.remove('unread'); el.classList.add('read');
+        const dot = el.querySelector('.rb-notif-dot');
+        if (dot) dot.classList.remove('active');
+      });
+      if (badge) badge.style.display = 'none';
+    });
+  }
 }
 
 export function showToast(msg) {

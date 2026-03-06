@@ -76,7 +76,7 @@
     where, orderBy, getDocs, updateDoc, increment, serverTimestamp
   } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js';
   import { onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js';
-  import { renderPost, showToast } from '../assets/js/rumblr-app.js';
+  import { renderPost, showToast, notifyFollowers } from '../assets/js/rumblr-app.js';
   import { initInteractions } from '../assets/js/rumblr-interactions.js';
 
   const postId = new URLSearchParams(location.search).get('id');
@@ -173,7 +173,7 @@
 
     replyBtn.disabled = true;
     try {
-      await addDoc(collection(firestore, 'posts'), {
+      const replyRef = await addDoc(collection(firestore, 'posts'), {
         content,
         author_type:         'user',
         author_name:         currentUserDoc.display_name,
@@ -190,6 +190,9 @@
         is_ai_generated:     false,
       });
       await updateDoc(doc(firestore, 'posts', postId), { reply_count: increment(1) });
+
+      // Notify followers who opted in for replies
+      notifyFollowers(currentUserDoc.handle, currentUserDoc.display_name, replyRef.id, content, 'new_reply');
 
       replyInput.value = '';
       replyCounter.textContent = MAX_CHARS;

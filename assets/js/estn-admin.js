@@ -131,25 +131,73 @@ function initFeatured(settings) {
 }
 
 // ── Ticker ─────────────────────────────────────────────────────────────────────
+const TICKER_PAGE_OPTIONS = [
+  { key: 'home',             label: 'Home (Portal)'       },
+  { key: 'league-records',   label: 'League Records'      },
+  { key: 'season-deadlines', label: 'Season Events'       },
+  { key: 'between-the-chalk',label: 'Between the Chalk'   },
+  { key: 'tribune',          label: 'The Tribune'         },
+  { key: 'rumblr',           label: 'Rumblr'              },
+  { key: 'about',            label: 'About'               },
+];
+
+const TICKER_FALLBACK_ITEMS = [
+  '2026 TSDL SEASON KICKS OFF IN MARCH',
+  'RUMBLR IS LIVE — POST YOUR TAKES',
+  'FA AUCTION: MARCH 22',
+  'MILB DRAFT + LEGAL ROSTER DEADLINE: MARCH 15',
+  'ESTN — MORE THAN A LEAGUE',
+];
+
 async function initTicker() {
+  let tickerData = {};
   try {
     const snap = await getDoc(doc(firestore, 'settings', 'ticker'));
-    if (snap.exists()) {
-      const td = snap.data();
-      const enabledEl = document.getElementById('ticker-enabled');
-      const itemsEl   = document.getElementById('ticker-items');
-      if (enabledEl) enabledEl.checked = td.enabled !== false;
-      if (itemsEl && td.items) itemsEl.value = td.items.join('\n');
-    }
+    if (snap.exists()) tickerData = snap.data();
   } catch { /* use defaults */ }
+
+  const enabledEl = document.getElementById('ticker-enabled');
+  const itemsEl   = document.getElementById('ticker-items');
+  if (enabledEl) enabledEl.checked = tickerData.enabled !== false;
+
+  // Populate items — fall back to hardcoded defaults when Firestore is empty
+  if (itemsEl) {
+    const items = (tickerData.items && tickerData.items.length)
+      ? tickerData.items
+      : TICKER_FALLBACK_ITEMS;
+    itemsEl.value = items.join('\n');
+  }
+
+  // Populate page checkboxes
+  const pagesGrid = document.getElementById('ticker-pages-grid');
+  if (pagesGrid) {
+    const allowedPages = tickerData.ticker_pages || [];  // empty = all pages
+    const allChecked   = allowedPages.length === 0;
+    pagesGrid.innerHTML = TICKER_PAGE_OPTIONS.map(p => `
+      <label class="estn-admin-toggle-row" style="margin-bottom:8px;cursor:pointer;">
+        <label class="estn-admin-toggle">
+          <input type="checkbox" class="ticker-page-cb" data-page="${p.key}"
+            ${(allChecked || allowedPages.includes(p.key)) ? 'checked' : ''}>
+          <span class="estn-admin-toggle-slider"></span>
+        </label>
+        <span class="estn-admin-toggle-label">${p.label}</span>
+      </label>`).join('');
+  }
 
   document.getElementById('save-ticker-btn')?.addEventListener('click', async () => {
     const enabled = document.getElementById('ticker-enabled')?.checked ?? true;
     const raw = document.getElementById('ticker-items')?.value || '';
     const items = raw.split('\n').map(s => s.trim()).filter(Boolean);
+
+    // Collect checked pages — if all checked, save empty array (means "all pages")
+    const allCbs    = Array.from(document.querySelectorAll('.ticker-page-cb'));
+    const checked   = allCbs.filter(cb => cb.checked).map(cb => cb.dataset.page);
+    const tickerPages = checked.length === allCbs.length ? [] : checked;
+
     await setDoc(doc(firestore, 'settings', 'ticker'), {
       enabled,
       items,
+      ticker_pages: tickerPages,
       updated_at: serverTimestamp()
     }, { merge: true });
     showToast('Ticker saved.');

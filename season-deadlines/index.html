@@ -77,34 +77,86 @@
       flex: 1; height: 1px; background: #2D3748;
     }
 
+    /* ── Season progress bar ── */
+    .season-progress-wrap {
+      max-width: 960px; margin: 0 auto; padding: 28px 24px 0;
+    }
+    .season-progress-label {
+      display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;
+    }
+    .season-progress-title {
+      font-family: 'Oswald', sans-serif; font-size: 0.65rem; font-weight: 600;
+      letter-spacing: 0.14em; text-transform: uppercase; color: #4A5568;
+    }
+    .season-progress-pct {
+      font-family: 'Oswald', sans-serif; font-size: 0.65rem; font-weight: 600;
+      color: #C8102E;
+    }
+    .season-progress-track {
+      height: 4px; background: #1A1F2E; border-radius: 2px; overflow: hidden;
+    }
+    .season-progress-fill {
+      height: 100%; background: linear-gradient(90deg, #C8102E, #e04060);
+      border-radius: 2px; transition: width 1s ease;
+    }
+    .season-phase-markers {
+      display: flex; justify-content: space-between; margin-top: 8px;
+    }
+    .season-phase-marker {
+      font-family: 'Oswald', sans-serif; font-size: 0.55rem; letter-spacing: 0.08em;
+      text-transform: uppercase; color: #2D3748;
+    }
+
+    /* ── Timeline wrapper ── */
+    .events-timeline { position: relative; }
+    .events-timeline::before {
+      content: ''; position: absolute; left: 30px; top: 0; bottom: 0; width: 2px;
+      background: linear-gradient(to bottom, transparent, #2D3748 40px, #2D3748 calc(100% - 40px), transparent);
+      z-index: 0;
+    }
+
     /* ── Event cards ── */
-    .events-grid { display: flex; flex-direction: column; gap: 10px; margin-bottom: 48px; }
+    .events-grid { display: flex; flex-direction: column; gap: 10px; margin-bottom: 48px; padding-left: 0; }
     .event-card {
-      background: #161B22; border: 1px solid #2D3748; border-radius: 6px;
+      background: #161B22; border: 1px solid #2D3748; border-radius: 8px;
       padding: 16px 20px; display: flex; align-items: flex-start; gap: 16px;
+      position: relative; transition: border-color 0.2s, box-shadow 0.2s;
+      margin-left: 60px;
     }
-    .event-card.status-past { opacity: 0.45; }
+    .event-card:hover { border-color: #4A5568; box-shadow: 0 4px 20px rgba(0,0,0,0.3); }
+
+    /* Timeline dot */
+    .event-card::before {
+      content: attr(data-icon); position: absolute; left: -46px; top: 50%; transform: translateY(-50%);
+      width: 32px; height: 32px; border-radius: 50%; background: #161B22; border: 2px solid #2D3748;
+      display: flex; align-items: center; justify-content: center; font-size: 0.9rem;
+      z-index: 1; line-height: 1; text-align: center; padding-top: 1px;
+    }
+
+    .event-card.status-past { opacity: 0.42; }
+    .event-card.status-past::before { border-color: #1A1F2E; background: #0D1117; }
     .event-card.status-inprogress {
-      border-color: #C8102E; animation: card-pulse-border 2.5s infinite;
+      border-color: #C8102E; box-shadow: 0 0 0 1px rgba(200,16,46,0.2);
+      animation: card-pulse-border 2.5s infinite;
     }
+    .event-card.status-inprogress::before { border-color: #C8102E; background: #2D0A10; }
     @keyframes card-pulse-border {
-      0%, 100% { border-color: #C8102E; box-shadow: 0 0 0 0 rgba(200,16,46,0); }
-      50% { border-color: #e04060; box-shadow: 0 0 0 3px rgba(200,16,46,0.15); }
+      0%, 100% { box-shadow: 0 0 0 1px rgba(200,16,46,0.2); }
+      50% { box-shadow: 0 0 0 4px rgba(200,16,46,0.12); }
     }
-    .event-date-col {
-      min-width: 64px; text-align: center; flex-shrink: 0;
-    }
+
+    .event-date-col { min-width: 66px; text-align: center; flex-shrink: 0; }
     .event-date-day {
-      font-family: 'Oswald', sans-serif; font-size: 1.6rem; font-weight: 700;
+      font-family: 'Oswald', sans-serif; font-size: 1.8rem; font-weight: 700;
       color: #F0F4F8; line-height: 1; display: block;
     }
     .event-date-month {
-      font-family: 'Oswald', sans-serif; font-size: 0.65rem; letter-spacing: 0.1em;
+      font-family: 'Oswald', sans-serif; font-size: 0.62rem; letter-spacing: 0.12em;
       text-transform: uppercase; color: #4A5568; display: block; margin-top: 2px;
     }
     .event-date-range {
       font-family: 'Oswald', sans-serif; font-size: 0.75rem; font-weight: 600;
-      color: #F0F4F8; line-height: 1.3; display: block;
+      color: #F0F4F8; line-height: 1.4; display: block;
     }
     .event-divider { width: 1px; background: #2D3748; align-self: stretch; flex-shrink: 0; }
     .event-body { flex: 1; min-width: 0; }
@@ -126,10 +178,10 @@
     .status-chip.past       { background: #1A1F2E; color: #4A5568; }
     .event-name {
       font-family: 'Oswald', sans-serif; font-size: 1.05rem; font-weight: 600;
-      color: #F0F4F8; margin-bottom: 3px; letter-spacing: 0.02em;
+      color: #F0F4F8; margin-bottom: 4px; letter-spacing: 0.02em;
     }
     .event-detail {
-      font-family: 'Marcellus', serif; font-size: 0.82rem; color: #718096; line-height: 1.5;
+      font-family: 'Marcellus', serif; font-size: 0.83rem; color: #718096; line-height: 1.55;
     }
 
     /* ── Awards Section ── */
@@ -176,12 +228,18 @@
     }
 
     @media (max-width: 900px) { .awards-dark-grid { grid-template-columns: repeat(2, 1fr); } }
+    @media (max-width: 680px) {
+      .events-timeline::before { left: 18px; }
+      .event-card { margin-left: 40px; }
+      .event-card::before { left: -34px; width: 26px; height: 26px; font-size: 0.75rem; }
+    }
     @media (max-width: 600px) {
       .countdown-block { flex-wrap: wrap; }
       .countdown-unit { min-width: 60px; padding: 14px 16px; }
       .countdown-number { font-size: 1.8rem; }
       .awards-dark-grid { grid-template-columns: 1fr; }
-      .event-card { flex-wrap: wrap; }
+      .event-card { flex-wrap: wrap; margin-left: 40px; }
+      .season-progress-wrap { padding: 20px 16px 0; }
     }
   </style>
 </head>
@@ -221,6 +279,23 @@
     </div>
   </div>
 
+  <!-- Season Progress Bar -->
+  <div class="season-progress-wrap">
+    <div class="season-progress-label">
+      <span class="season-progress-title">2026 Season Progress</span>
+      <span class="season-progress-pct" id="season-progress-pct">0%</span>
+    </div>
+    <div class="season-progress-track">
+      <div class="season-progress-fill" id="season-progress-fill" style="width:0%"></div>
+    </div>
+    <div class="season-phase-markers">
+      <span class="season-phase-marker">Pre-Season</span>
+      <span class="season-phase-marker">In-Season</span>
+      <span class="season-phase-marker">Playoffs</span>
+      <span class="season-phase-marker">Off-Season</span>
+    </div>
+  </div>
+
   <!-- Page Content -->
   <div class="events-page-inner">
 
@@ -229,28 +304,36 @@
       <span class="events-section-title">Pre-Season</span>
       <div class="events-section-rule"></div>
     </div>
-    <div class="events-grid" id="events-preseason"></div>
+    <div class="events-timeline">
+      <div class="events-grid" id="events-preseason"></div>
+    </div>
 
     <!-- ── IN-SEASON ── -->
     <div class="events-section-header">
       <span class="events-section-title">In-Season</span>
       <div class="events-section-rule"></div>
     </div>
-    <div class="events-grid" id="events-inseason"></div>
+    <div class="events-timeline">
+      <div class="events-grid" id="events-inseason"></div>
+    </div>
 
     <!-- ── PLAYOFFS ── -->
     <div class="events-section-header">
       <span class="events-section-title">Playoffs</span>
       <div class="events-section-rule"></div>
     </div>
-    <div class="events-grid" id="events-playoffs"></div>
+    <div class="events-timeline">
+      <div class="events-grid" id="events-playoffs"></div>
+    </div>
 
     <!-- ── OFF-SEASON ── -->
     <div class="events-section-header">
       <span class="events-section-title">Off-Season</span>
       <div class="events-section-rule"></div>
     </div>
-    <div class="events-grid" id="events-offseason"></div>
+    <div class="events-timeline">
+      <div class="events-grid" id="events-offseason"></div>
+    </div>
 
     <!-- ── SCORING PERIOD AWARDS ── -->
     <div class="events-section-header" style="margin-top: 16px;">
@@ -425,6 +508,26 @@
       offseason: 'Off-Season'
     };
 
+    // ── Event icons based on name keywords ──
+    function getEventIcon(event) {
+      const name = (event.name || '').toLowerCase();
+      if (name.includes('auction'))      return '💰';
+      if (name.includes('draft'))        return '📋';
+      if (name.includes('trade'))        return '🔄';
+      if (name.includes('playoff'))      return '🏆';
+      if (name.includes('champion'))     return '🏆';
+      if (name.includes('world series')) return '🏆';
+      if (name.includes('opening') || name.includes('faab')) return '⚾';
+      if (name.includes('waiver'))       return '📝';
+      if (name.includes('cut') || name.includes('roster') || name.includes('keeper')) return '✂️';
+      if (name.includes('expansion'))    return '🗺️';
+      if (name.includes('milb') || name.includes('prospect')) return '🌱';
+      if (name.includes('season') && name.includes('end')) return '🎬';
+      if (name.includes('fantrax'))      return '🖥️';
+      if (name.includes('legal'))        return '⚖️';
+      return '📅';
+    }
+
     // ── Status computation ──
     function getStatus(event) {
       if (event.statusOverride) return event.statusOverride;
@@ -442,6 +545,7 @@
       const status = getStatus(event);
       const card = document.createElement('div');
       card.className = `event-card status-${status}`;
+      card.setAttribute('data-icon', getEventIcon(event));
 
       // Date display
       const start = new Date(event.startDate + 'T12:00:00');
@@ -542,11 +646,30 @@
 
       renderEvents(events);
       startCountdown(events);
+      renderSeasonProgress();
+    }
+
+    // ── Season progress bar (Mar 22 opener → Sep 27 conclusion) ──
+    function renderSeasonProgress() {
+      const seasonStart = new Date('2026-03-22T00:00:00');
+      const seasonEnd   = new Date('2026-09-27T23:59:59');
+      const now = new Date();
+      let pct = 0;
+      if (now >= seasonEnd) {
+        pct = 100;
+      } else if (now > seasonStart) {
+        pct = Math.round(((now - seasonStart) / (seasonEnd - seasonStart)) * 100);
+      }
+      const fill = document.getElementById('season-progress-fill');
+      const label = document.getElementById('season-progress-pct');
+      if (fill)  fill.style.width = pct + '%';
+      if (label) label.textContent = pct < 1 ? 'Pre-Season' : pct >= 100 ? 'Complete' : pct + '% Complete';
     }
 
     init();
   </script>
 
   <script type="module" src="../assets/js/estn-auth.js"></script>
+  <script type="module" src="../assets/js/estn-ticker.js"></script>
 </body>
 </html>

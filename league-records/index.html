@@ -175,6 +175,35 @@
     }
     .stadium-strip-img:hover { filter: brightness(0.75) saturate(0.9); }
 
+    /* ── Under Construction Banner ── */
+    .under-construction-banner {
+      background: linear-gradient(135deg, #2D1A00 0%, #3A2200 100%);
+      border-bottom: 2px solid #D97706;
+      padding: 14px 24px;
+      display: flex; align-items: center; justify-content: center; gap: 14px;
+      text-align: center;
+    }
+    .under-construction-icon { font-size: 1.4rem; flex-shrink: 0; }
+    .under-construction-text {
+      font-family: 'Oswald', sans-serif; font-size: 0.82rem; font-weight: 600;
+      letter-spacing: 0.06em; text-transform: uppercase; color: #FCD34D;
+      line-height: 1.5;
+    }
+    .under-construction-sub {
+      font-family: 'Marcellus', serif; font-size: 0.77rem; color: #92400E;
+      color: #B45309; margin-top: 2px; display: block; font-weight: normal;
+      text-transform: none; letter-spacing: 0;
+    }
+
+    /* ── Champion card gradient fallbacks (when image is missing) ── */
+    .champion-card-img {
+      background: linear-gradient(135deg, #161B22 0%, #2D3748 100%);
+    }
+    .champion-card[data-team="ATL"] .champion-card-img { background: linear-gradient(135deg, #002855 0%, #B71234 100%); }
+    .champion-card[data-team="MIL"] .champion-card-img { background: linear-gradient(135deg, #0A2351 0%, #B6922E 100%); }
+    .champion-card[data-team="LVA"] .champion-card-img { background: linear-gradient(135deg, #003831 0%, #EFB21E 100%); }
+    .champion-card[data-team="ARI"] .champion-card-img { background: linear-gradient(135deg, #1C1C1C 0%, #A71930 100%); }
+
     @media (max-width: 900px) {
       .champions-grid { grid-template-columns: repeat(2, 1fr); }
       .awards-seasons-grid { grid-template-columns: repeat(2, 1fr); }
@@ -209,6 +238,16 @@
     </nav>
   </header>
 
+  <!-- Under Construction Banner -->
+  <div class="under-construction-banner">
+    <span class="under-construction-icon">🚧</span>
+    <div class="under-construction-text">
+      Page Under Construction — Data May Be Inaccurate
+      <span class="under-construction-sub">Records, awards, and championship data are being verified. Some figures may be incomplete or incorrect.</span>
+    </div>
+    <span class="under-construction-icon">🚧</span>
+  </div>
+
   <!-- Hero -->
   <div class="records-hero">
     <span class="records-hero-eyebrow">The Sandlot Dynasty League</span>
@@ -227,8 +266,8 @@
     <!-- Champion Cards with Stadium Panoramas -->
     <div class="champions-grid">
       <!-- 2022 ATL -->
-      <div class="champion-card">
-        <img class="champion-card-img" src="../assets/images/stadiums/atl_stadium_panorama.jpg" alt="Atlanta Braves stadium">
+      <div class="champion-card" data-team="ATL">
+        <img class="champion-card-img" src="../assets/images/stadiums/atl_stadium_panorama.jpg" alt="Atlanta Braves stadium" onerror="this.style.opacity='0'">
         <div class="champion-card-overlay">
           <span class="champion-season-badge">2022 &middot; Season 1</span>
           <div class="champion-card-trophy">🏆</div>
@@ -242,8 +281,8 @@
         </div>
       </div>
       <!-- 2023 MIL -->
-      <div class="champion-card">
-        <img class="champion-card-img" src="../assets/images/stadiums/mil_stadium_panorama.jpg" alt="Milwaukee Brewers stadium">
+      <div class="champion-card" data-team="MIL">
+        <img class="champion-card-img" src="../assets/images/stadiums/mil_stadium_panorama.jpg" alt="Milwaukee Brewers stadium" onerror="this.style.opacity='0'">
         <div class="champion-card-overlay">
           <span class="champion-season-badge">2023 &middot; Season 2</span>
           <div class="champion-card-trophy">🏆</div>
@@ -256,8 +295,8 @@
         </div>
       </div>
       <!-- 2024 LVA -->
-      <div class="champion-card">
-        <img class="champion-card-img" src="../assets/images/stadiums/lva_stadium_panorama.jpg" alt="Las Vegas Athletics stadium">
+      <div class="champion-card" data-team="LVA">
+        <img class="champion-card-img" src="../assets/images/stadiums/lva_stadium_panorama.jpg" alt="Las Vegas Athletics stadium" onerror="this.style.opacity='0'">
         <div class="champion-card-overlay">
           <span class="champion-season-badge">2024 &middot; Season 3</span>
           <div class="champion-card-trophy">🏆</div>
@@ -270,8 +309,8 @@
         </div>
       </div>
       <!-- 2025 ARI -->
-      <div class="champion-card">
-        <img class="champion-card-img" src="../assets/images/stadiums/ari_stadium_panorama.jpg" alt="Arizona Diamondbacks stadium">
+      <div class="champion-card" data-team="ARI">
+        <img class="champion-card-img" src="../assets/images/stadiums/ari_stadium_panorama.jpg" alt="Arizona Diamondbacks stadium" onerror="this.style.opacity='0'">
         <div class="champion-card-overlay">
           <span class="champion-season-badge">2025 &middot; Season 4</span>
           <div class="champion-card-trophy">🏆</div>
@@ -429,5 +468,6 @@
   </script>
 
   <script type="module" src="../assets/js/estn-auth.js"></script>
+  <script type="module" src="../assets/js/estn-ticker.js"></script>
 </body>
 </html>

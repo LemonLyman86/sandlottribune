@@ -651,6 +651,137 @@ input::placeholder, textarea::placeholder { color: var(--rb-subtle); }
 }
 @keyframes rb-spin { to { transform: rotate(360deg); } }
 
+/* ── Notification Bell ───────────────────────────────────── */
+.rb-notif-wrap {
+  position: relative;
+}
+.rb-notif-btn {
+  background: none;
+  border: 1px solid var(--rb-border);
+  border-radius: 50%;
+  width: 36px; height: 36px;
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer;
+  color: var(--rb-subtle);
+  transition: color 0.15s, border-color 0.15s, background 0.15s;
+  position: relative;
+  flex-shrink: 0;
+}
+.rb-notif-btn:hover {
+  color: var(--rb-text);
+  border-color: var(--rb-accent);
+  background: rgba(200,16,46,0.06);
+}
+.rb-notif-badge {
+  position: absolute;
+  top: -4px; right: -4px;
+  background: var(--rb-accent);
+  color: #fff;
+  font-family: 'Oswald', sans-serif;
+  font-size: 0.58rem; font-weight: 700;
+  min-width: 16px; height: 16px;
+  border-radius: 8px; padding: 0 3px;
+  display: flex; align-items: center; justify-content: center;
+  pointer-events: none;
+}
+.rb-notif-panel {
+  position: absolute;
+  top: calc(100% + 10px); right: 0;
+  width: 320px; max-height: 420px;
+  background: var(--rb-surface);
+  border: 1px solid var(--rb-border);
+  border-radius: 10px;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.5);
+  z-index: 200;
+  display: flex; flex-direction: column;
+  overflow: hidden;
+}
+.rb-notif-panel.hidden { display: none; }
+.rb-notif-panel-header {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--rb-border);
+  flex-shrink: 0;
+}
+.rb-notif-panel-title {
+  font-family: 'Oswald', sans-serif;
+  font-size: 0.85rem; font-weight: 600;
+  letter-spacing: 0.06em; text-transform: uppercase;
+  color: var(--rb-text);
+}
+.rb-notif-mark-btn {
+  background: none; border: none;
+  font-family: 'Marcellus', serif;
+  font-size: 0.75rem; color: var(--rb-accent);
+  cursor: pointer; padding: 0;
+}
+.rb-notif-mark-btn:hover { text-decoration: underline; }
+.rb-notif-list { overflow-y: auto; flex: 1; }
+.rb-notif-loading, .rb-notif-empty {
+  padding: 24px 16px;
+  font-family: 'Marcellus', serif;
+  font-size: 0.83rem; color: var(--rb-subtle);
+  text-align: center;
+}
+.rb-notif-item {
+  display: flex; align-items: flex-start; gap: 10px;
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--rb-border);
+  text-decoration: none;
+  transition: background 0.15s;
+}
+.rb-notif-item:last-child { border-bottom: none; }
+.rb-notif-item:hover { background: var(--rb-surface-2); }
+.rb-notif-item.unread { background: rgba(200,16,46,0.05); }
+.rb-notif-dot {
+  width: 8px; height: 8px; border-radius: 50%;
+  background: var(--rb-border); flex-shrink: 0; margin-top: 5px;
+}
+.rb-notif-dot.active { background: var(--rb-accent); }
+.rb-notif-body { flex: 1; min-width: 0; }
+.rb-notif-text {
+  font-family: 'Marcellus', serif;
+  font-size: 0.83rem; color: var(--rb-text);
+  line-height: 1.4; margin-bottom: 3px;
+}
+.rb-notif-text strong { color: #fff; }
+.rb-notif-preview {
+  font-family: 'Marcellus', serif;
+  font-size: 0.78rem; color: var(--rb-subtle);
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  margin-bottom: 3px;
+}
+.rb-notif-time {
+  font-family: 'Oswald', sans-serif;
+  font-size: 0.65rem; letter-spacing: 0.06em; color: var(--rb-subtle);
+}
+
+/* ── Follow notification toggles (on profile page) ───────── */
+.rb-follow-notif-prefs {
+  display: flex; align-items: center; gap: 8px;
+  margin-top: 8px; flex-wrap: wrap;
+}
+.rb-notif-pref-label {
+  font-family: 'Oswald', sans-serif; font-size: 0.6rem;
+  letter-spacing: 0.1em; text-transform: uppercase;
+  color: var(--rb-subtle);
+}
+.rb-notif-pref-btn {
+  background: var(--rb-surface-2);
+  border: 1px solid var(--rb-border);
+  border-radius: 20px; padding: 4px 12px;
+  font-family: 'Oswald', sans-serif; font-size: 0.65rem;
+  font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase;
+  color: var(--rb-subtle); cursor: pointer;
+  transition: all 0.15s;
+  display: flex; align-items: center; gap: 5px;
+}
+.rb-notif-pref-btn:hover { border-color: var(--rb-accent); color: var(--rb-accent); }
+.rb-notif-pref-btn.active {
+  background: rgba(200,16,46,0.12);
+  border-color: var(--rb-accent); color: var(--rb-accent);
+}
+
 /* ── Toast Notifications ─────────────────────────────────── */
 .rb-toast-container {
   position: fixed;

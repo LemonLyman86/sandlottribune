@@ -16,7 +16,7 @@ import {
   doc, setDoc, addDoc, collection,
   serverTimestamp, increment, updateDoc
 } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js';
-import { showToast } from './rumblr-app.js';
+import { showToast, notifyFollowers } from './rumblr-app.js';
 
 // ── Team data (color_1 from team_season_branding) ─────────
 // image: path relative to /rumblr/ pages (GitHub Pages URL)
@@ -115,7 +115,7 @@ async function submitPost(textarea, user, userDoc, onPosted) {
   const hashtags = [...content.matchAll(/#(\w+)/g)].map(m => '#' + m[1]);
 
   try {
-    await addDoc(collection(firestore, 'posts'), {
+    const postRef = await addDoc(collection(firestore, 'posts'), {
       content,
       author_type:         'user',
       author_name:         userDoc.display_name,
@@ -137,6 +137,9 @@ async function submitPost(textarea, user, userDoc, onPosted) {
 
     // Increment user post count
     await updateDoc(doc(firestore, 'users', user.uid), { post_count: increment(1) });
+
+    // Notify followers who have opted in for new posts
+    notifyFollowers(userDoc.handle, userDoc.display_name, postRef.id, content, 'new_post');
 
     textarea.value = '';
     const counter = document.getElementById('rb-char-counter');

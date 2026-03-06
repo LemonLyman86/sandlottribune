@@ -207,9 +207,17 @@
               </label>
               <span class="estn-admin-toggle-label">Ticker enabled</span>
             </div>
+
+            <div class="estn-admin-field" style="margin-bottom:16px;">
+              <label class="estn-admin-label">Show Ticker On These Pages</label>
+              <p class="estn-admin-hint" style="margin-bottom:8px;">Uncheck a page to hide the ticker there. Check all to show everywhere.</p>
+              <div id="ticker-pages-grid"></div>
+            </div>
+
             <div class="estn-admin-field">
-              <label class="estn-admin-label">Ticker Items (one per line)</label>
-              <textarea class="estn-admin-textarea" id="ticker-items" style="min-height:120px;" placeholder="2026 TSDL SEASON BEGINS MARCH 22&#10;RUMBLR IS LIVE — POST YOUR TAKES&#10;FA AUCTION: MARCH 22"></textarea>
+              <label class="estn-admin-label">Ticker Messages (one per line)</label>
+              <p class="estn-admin-hint" style="margin-bottom:6px;">Each line becomes a scrolling item. Changes take effect immediately on Save.</p>
+              <textarea class="estn-admin-textarea" id="ticker-items" style="min-height:140px;" placeholder="2026 TSDL SEASON BEGINS MARCH 22&#10;RUMBLR IS LIVE — POST YOUR TAKES&#10;FA AUCTION: MARCH 22"></textarea>
             </div>
             <button class="estn-admin-btn" id="save-ticker-btn">Save Ticker</button>
           </div>

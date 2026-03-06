@@ -30,6 +30,26 @@
       <a id="rb-signin-btn" href="login.html" class="rb-btn rb-btn-outline">Sign In</a>
       <!-- Shown when logged in -->
       <div id="rb-user-menu" style="display:none; align-items:center; gap:10px;">
+        <!-- Notification bell -->
+        <div class="rb-notif-wrap">
+          <button id="rb-notif-btn" class="rb-notif-btn" style="display:none;" title="Notifications"
+                  aria-label="Notifications">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                 stroke-linecap="round" stroke-linejoin="round" width="18" height="18">
+              <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/>
+              <path d="M13.73 21a2 2 0 0 1-3.46 0"/>
+            </svg>
+            <span id="rb-notif-badge" class="rb-notif-badge" style="display:none;">0</span>
+          </button>
+          <!-- Notification panel dropdown -->
+          <div id="rb-notif-panel" class="rb-notif-panel hidden">
+            <div class="rb-notif-panel-header">
+              <span class="rb-notif-panel-title">Notifications</span>
+              <button id="rb-notif-mark-read" class="rb-notif-mark-btn">Mark all read</button>
+            </div>
+            <div id="rb-notif-list" class="rb-notif-list"></div>
+          </div>
+        </div>
         <a id="rb-profile-link" href="profile.html" class="rb-header-avatar rb-post-avatar"
            style="width:34px;height:34px;font-size:0.72rem;text-decoration:none;">?</a>
         <button id="rb-signout-btn" class="rb-btn rb-btn-ghost" style="display:none;">Sign Out</button>

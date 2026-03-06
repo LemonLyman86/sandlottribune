@@ -59,6 +59,18 @@
           + Follow
         </button>
       </div>
+      <!-- Notification preference toggles — shown only when following this person -->
+      <div id="rb-follow-notif-prefs" class="rb-follow-notif-prefs" style="display:none;">
+        <span class="rb-notif-pref-label">Alerts:</span>
+        <button id="rb-notif-posts-btn" class="rb-notif-pref-btn" data-field="notify_posts"
+                title="Get notified when they post">
+          🔔 New Posts
+        </button>
+        <button id="rb-notif-replies-btn" class="rb-notif-pref-btn" data-field="notify_replies"
+                title="Get notified when they reply">
+          💬 Replies
+        </button>
+      </div>
     </div>
 
     <!-- Name + handle + bio + stats -->
@@ -157,7 +169,8 @@
   import { onAuthStateChanged, signOut } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js';
   import {
     renderPost, AI_WRITERS, showToast,
-    toggleFollow, isFollowing, loadFollows, loadProfileStats
+    toggleFollow, isFollowing, loadFollows, loadProfileStats,
+    updateFollowNotifPref, getFollowNotifPrefs
   } from '../assets/js/rumblr-app.js';
 
   const params       = new URLSearchParams(location.search);
@@ -236,13 +249,28 @@
     }
   });
 
-  // ── Follow button ───────────────────────────────────────
-  function refreshFollowBtn() {
-    const btn = document.getElementById('rb-follow-btn');
+  // ── Follow button & notification prefs ─────────────────
+  async function refreshFollowBtn() {
+    const btn       = document.getElementById('rb-follow-btn');
+    const prefsEl   = document.getElementById('rb-follow-notif-prefs');
     if (!btn || !profileHandle) return;
     const following = isFollowing(profileHandle);
     btn.textContent = following ? '✓ Following' : '+ Follow';
     btn.className   = 'rb-btn rb-btn-sm ' + (following ? 'rb-btn-ghost' : 'rb-btn-primary');
+
+    // Show/hide notification preference toggles
+    if (prefsEl) {
+      if (following && currentUserUid) {
+        prefsEl.style.display = 'flex';
+        const prefs = await getFollowNotifPrefs(currentUserUid, profileHandle);
+        const postsBtn   = document.getElementById('rb-notif-posts-btn');
+        const repliesBtn = document.getElementById('rb-notif-replies-btn');
+        if (postsBtn)   postsBtn.classList.toggle('active',   !!prefs.notify_posts);
+        if (repliesBtn) repliesBtn.classList.toggle('active', !!prefs.notify_replies);
+      } else {
+        prefsEl.style.display = 'none';
+      }
+    }
   }
 
   document.getElementById('rb-follow-btn').addEventListener('click', async () => {
@@ -253,7 +281,7 @@
       const writer = AI_WRITERS.find(w => w.handle === profileHandle);
       const type   = writer ? 'ai' : 'user';
       const now    = await toggleFollow(profileHandle, type, uid || null);
-      refreshFollowBtn();
+      await refreshFollowBtn();
       showToast(now ? `Following ${profileHandle}` : `Unfollowed ${profileHandle}`);
     } catch (err) {
       console.error('Follow error:', err);
@@ -261,6 +289,20 @@
     } finally {
       btn.disabled = false;
     }
+  });
+
+  // ── Notification pref toggle buttons ────────────────────
+  ['rb-notif-posts-btn', 'rb-notif-replies-btn'].forEach(btnId => {
+    const btn = document.getElementById(btnId);
+    if (!btn) return;
+    btn.addEventListener('click', async () => {
+      if (!currentUserUid || !profileHandle) return;
+      const field   = btn.dataset.field;
+      const isActive = btn.classList.contains('active');
+      btn.classList.toggle('active', !isActive);
+      await updateFollowNotifPref(currentUserUid, profileHandle, field, !isActive);
+      showToast(!isActive ? 'Notifications on' : 'Notifications off');
+    });
   });
 
   // ── Profile tabs ────────────────────────────────────────

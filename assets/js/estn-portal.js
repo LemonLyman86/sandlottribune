@@ -406,12 +406,21 @@ async function renderRumblrPreview() {
 
 // ── Render ticker ──────────────────────────────────────────────────────────────
 async function loadTicker() {
+  const tickerBar = document.querySelector('.estn-ticker');
+  const tickerEl  = document.getElementById('estn-ticker-text');
   try {
     const tickerSnap = await getDoc(doc(firestore, 'settings', 'ticker'));
     if (tickerSnap.exists()) {
       const td = tickerSnap.data();
-      const tickerEl = document.getElementById('estn-ticker-text');
-      if (tickerEl && td.enabled !== false && td.items && td.items.length) {
+
+      // Hide ticker if globally disabled or 'home' excluded from pages
+      const allowedPages = td.ticker_pages;
+      const homeAllowed  = !allowedPages || allowedPages.length === 0 || allowedPages.includes('home');
+      if (td.enabled === false || !homeAllowed) {
+        if (tickerBar) tickerBar.style.display = 'none';
+        return;
+      }
+      if (tickerEl && td.items && td.items.length) {
         const text = td.items.join('  &nbsp;&bull;&nbsp;  ') + '&nbsp;&nbsp;&nbsp;';
         tickerEl.innerHTML = text + text;
       }
