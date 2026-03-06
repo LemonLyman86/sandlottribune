@@ -495,6 +495,88 @@ input::placeholder, textarea::placeholder { color: var(--rb-subtle); }
 }
 .rb-hashtag:hover { text-decoration: underline; }
 
+/* ── Post more menu (edit / delete) ──────────────────────── */
+.rb-post-more-wrap {
+  position: relative;
+  margin-left: auto;
+  flex-shrink: 0;
+}
+.rb-post-more-btn {
+  background: none;
+  border: none;
+  color: var(--rb-muted);
+  font-size: 1.2rem;
+  cursor: pointer;
+  padding: 0 4px;
+  line-height: 1;
+  border-radius: 4px;
+  transition: color 0.15s, background 0.15s;
+}
+.rb-post-more-btn:hover { color: var(--rb-text); background: var(--rb-surface-2); }
+.rb-post-more-menu {
+  position: absolute;
+  top: calc(100% + 4px);
+  right: 0;
+  background: var(--rb-surface);
+  border: 1px solid var(--rb-border);
+  border-radius: 8px;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.4);
+  min-width: 120px;
+  z-index: 100;
+  overflow: hidden;
+}
+.rb-post-more-menu button {
+  display: block;
+  width: 100%;
+  background: none;
+  border: none;
+  padding: 10px 16px;
+  text-align: left;
+  color: var(--rb-text);
+  font-size: 0.85rem;
+  cursor: pointer;
+  font-family: 'Oswald', sans-serif;
+  transition: background 0.15s;
+}
+.rb-post-more-menu button:hover { background: var(--rb-surface-2); }
+.rb-post-delete-btn { color: var(--rb-red) !important; }
+
+/* ── Post edit inline UI ──────────────────────────────────── */
+.rb-edit-textarea {
+  width: 100%;
+  background: var(--rb-surface-2);
+  border: 1px solid var(--rb-border);
+  border-radius: 6px;
+  color: var(--rb-text);
+  font-family: 'Marcellus', serif;
+  font-size: 0.95rem;
+  line-height: 1.5;
+  padding: 8px 10px;
+  resize: vertical;
+  min-height: 70px;
+  box-sizing: border-box;
+}
+.rb-edit-textarea:focus { outline: none; border-color: var(--rb-red); }
+.rb-edit-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 6px;
+  justify-content: flex-end;
+}
+.rb-edit-counter {
+  font-size: 0.78rem;
+  color: var(--rb-muted);
+  margin-right: auto;
+}
+
+/* ── Edited badge ─────────────────────────────────────────── */
+.rb-edited-badge {
+  font-size: 0.72rem;
+  color: var(--rb-muted);
+  margin-left: 4px;
+}
+
 /* ── Engagement Row ──────────────────────────────────────── */
 .rb-engagement {
   display: flex;
@@ -1032,11 +1114,16 @@ input::placeholder, textarea::placeholder { color: var(--rb-subtle); }
 .rb-profile-avatar-wrap {
   position: relative;
   z-index: 2;
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  overflow: hidden;
+  flex-shrink: 0;
 }
 
 .rb-profile-avatar-lg {
-  width: 48px;
-  height: 48px;
+  width: 80px;
+  height: 80px;
   border-radius: 50%;
   display: flex;
   align-items: center;
@@ -1776,5 +1863,6 @@ input::placeholder, textarea::placeholder { color: var(--rb-subtle); }
   .rb-auth-card { padding: 24px 18px; }
   .rb-engagement { gap: 16px; }
   .rb-profile-banner { height: 140px; }
-  .rb-profile-avatar-lg { width: 40px; height: 40px; font-size: 0.78rem; }
+  .rb-profile-avatar-lg { width: 60px; height: 60px; font-size: 0.78rem; }
+  .rb-profile-avatar-wrap { width: 60px; height: 60px; }
 }

@@ -8,7 +8,7 @@ import {
   doc, setDoc, deleteDoc, getDoc,
   updateDoc, increment, serverTimestamp, addDoc, collection
 } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js';
-import { showToast } from './rumblr-app.js';
+import { showToast, linkifyContent, escHtml } from './rumblr-app.js';
 
 // ══════════════════════════════════════════════════════════
 // Wire up all engagement buttons on a post element
@@ -18,6 +18,10 @@ export function initInteractions(postEl, postId, postData, currentUser) {
   const repostBtn = postEl.querySelector('.rb-repost-btn');
   const replyBtn  = postEl.querySelector('.rb-reply-btn');
   const shareBtn  = postEl.querySelector('.rb-share-btn');
+  const moreBtn   = postEl.querySelector('.rb-post-more-btn');
+  const moreMenu  = postEl.querySelector('.rb-post-more-menu');
+  const editBtn   = postEl.querySelector('.rb-post-edit-btn');
+  const deleteBtn = postEl.querySelector('.rb-post-delete-btn');
 
   // Load initial like/repost state if user is logged in
   if (currentUser) {
@@ -29,6 +33,22 @@ export function initInteractions(postEl, postId, postData, currentUser) {
   if (repostBtn) repostBtn.addEventListener('click', () => handleRepost(postId, postData, repostBtn, currentUser));
   if (replyBtn)  replyBtn.addEventListener('click',  () => handleReply(postId, currentUser));
   if (shareBtn)  shareBtn.addEventListener('click',  () => handleShare(postId));
+
+  // More menu (edit / delete) — only present on own posts
+  if (moreBtn && moreMenu) {
+    moreBtn.addEventListener('click', e => {
+      e.stopPropagation();
+      const isOpen = moreMenu.style.display !== 'none';
+      // Close any other open menus
+      document.querySelectorAll('.rb-post-more-menu').forEach(m => { m.style.display = 'none'; });
+      moreMenu.style.display = isOpen ? 'none' : 'block';
+    });
+    // Close when clicking anywhere outside
+    document.addEventListener('click', () => { moreMenu.style.display = 'none'; });
+  }
+
+  if (editBtn)   editBtn.addEventListener('click',   e => { e.stopPropagation(); handleEdit(postEl, postId, postData, moreMenu); });
+  if (deleteBtn) deleteBtn.addEventListener('click', e => { e.stopPropagation(); handleDelete(postEl, postId, postData); });
 }
 
 // ══════════════════════════════════════════════════════════
@@ -160,6 +180,96 @@ function handleShare(postId) {
       inp.remove();
       showToast('Link copied!');
     });
+}
+
+// ══════════════════════════════════════════════════════════
+// Edit post (inline)
+// ══════════════════════════════════════════════════════════
+async function handleEdit(postEl, postId, postData, moreMenu) {
+  if (moreMenu) moreMenu.style.display = 'none';
+  const contentEl = postEl.querySelector('.rb-post-content');
+  if (!contentEl) return;
+  const originalHtml = contentEl.innerHTML;
+  const originalText = postData.content || '';
+  const MAX = 300;
+
+  contentEl.innerHTML = `
+    <textarea class="rb-edit-textarea" maxlength="${MAX}">${originalText.replace(/</g,'&lt;')}</textarea>
+    <div class="rb-edit-actions">
+      <span class="rb-edit-counter">${MAX - originalText.length}</span>
+      <button class="rb-btn rb-btn-ghost rb-btn-sm rb-edit-cancel-btn">Cancel</button>
+      <button class="rb-btn rb-btn-primary rb-btn-sm rb-edit-save-btn">Save</button>
+    </div>
+  `;
+
+  const textarea  = contentEl.querySelector('.rb-edit-textarea');
+  const counter   = contentEl.querySelector('.rb-edit-counter');
+  const saveBtn   = contentEl.querySelector('.rb-edit-save-btn');
+  const cancelBtn = contentEl.querySelector('.rb-edit-cancel-btn');
+
+  textarea.focus();
+  textarea.selectionStart = textarea.selectionEnd = textarea.value.length;
+
+  textarea.addEventListener('input', () => {
+    const rem = MAX - textarea.value.length;
+    counter.textContent = rem;
+    counter.style.color = rem < 0 ? 'var(--rb-red)' : '';
+    saveBtn.disabled = !textarea.value.trim() || rem < 0;
+  });
+
+  cancelBtn.addEventListener('click', e => { e.stopPropagation(); contentEl.innerHTML = originalHtml; });
+
+  saveBtn.addEventListener('click', async e => {
+    e.stopPropagation();
+    const newContent = textarea.value.trim();
+    if (!newContent) return;
+    saveBtn.disabled = true;
+    try {
+      const hashtags = [...newContent.matchAll(/#(\w+)/g)].map(m => '#' + m[1]);
+      await updateDoc(doc(firestore, 'posts', postId), {
+        content: newContent,
+        hashtags,
+        edited: true,
+        edit_timestamp: serverTimestamp(),
+      });
+      postData.content = newContent;
+      contentEl.innerHTML = linkifyContent(newContent);
+      // Update the time span to show "(edited)" badge
+      const timeEl = postEl.querySelector('.rb-post-time');
+      if (timeEl && !timeEl.querySelector('.rb-edited-badge')) {
+        timeEl.insertAdjacentHTML('beforeend', '<span class="rb-edited-badge">(edited)</span>');
+      }
+      showToast('Rumbl\'ing updated!');
+    } catch (err) {
+      console.error('Edit error:', err);
+      showToast('Could not save edit. Try again.');
+      contentEl.innerHTML = originalHtml;
+    }
+  });
+}
+
+// ══════════════════════════════════════════════════════════
+// Delete post
+// ══════════════════════════════════════════════════════════
+async function handleDelete(postEl, postId, postData) {
+  if (!confirm('Delete this Rumbl\'ing? This cannot be undone.')) return;
+  try {
+    await deleteDoc(doc(firestore, 'posts', postId));
+    // If it was a reply, decrement the parent's reply_count
+    if (postData.parent_post_id) {
+      await updateDoc(doc(firestore, 'posts', postData.parent_post_id), {
+        reply_count: increment(-1),
+      });
+    }
+    // Animate out and remove
+    postEl.style.transition = 'opacity 0.3s';
+    postEl.style.opacity = '0';
+    setTimeout(() => postEl.remove(), 300);
+    showToast('Rumbl\'ing deleted.');
+  } catch (err) {
+    console.error('Delete error:', err);
+    showToast('Could not delete. Try again.');
+  }
 }
 
 // ══════════════════════════════════════════════════════════

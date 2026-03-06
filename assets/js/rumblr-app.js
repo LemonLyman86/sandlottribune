@@ -364,6 +364,19 @@ export function renderPost(postId, data, isReply = false) {
        </a>`
     : '';
 
+  const isOwnPost = currentUser && data.author_uid && data.author_uid === currentUser.uid;
+  const moreMenuHtml = isOwnPost
+    ? `<div class="rb-post-more-wrap">
+         <button class="rb-post-more-btn" title="More options" onclick="event.stopPropagation()">&#x22EF;</button>
+         <div class="rb-post-more-menu" style="display:none;">
+           <button class="rb-post-edit-btn">Edit</button>
+           <button class="rb-post-delete-btn">Delete</button>
+         </div>
+       </div>`
+    : '';
+
+  const editedBadge = data.edited ? '<span class="rb-edited-badge">(edited)</span>' : '';
+
   el.innerHTML = `
     <div class="rb-post-avatar-wrap">
       ${avatarHtml}
@@ -375,7 +388,8 @@ export function renderPost(postId, data, isReply = false) {
         </a>
         ${data.author_verified ? '<span class="rb-verified" title="Verified">⚾</span>' : ''}
         <span class="rb-post-handle">${escHtml(data.author_handle)}</span>
-        <span class="rb-post-time">${timeAgo}</span>
+        <span class="rb-post-time">${timeAgo}${editedBadge}</span>
+        ${moreMenuHtml}
       </div>
       <div class="rb-post-content">${content}</div>
       ${articleLinkHtml}
@@ -657,13 +671,13 @@ function renderAuthUI() {
 // ══════════════════════════════════════════════════════════
 // Helpers
 // ══════════════════════════════════════════════════════════
-function linkifyContent(text) {
+export function linkifyContent(text) {
   return escHtml(text).replace(/#(\w+)/g,
     (_, tag) => `<span class="rb-hashtag" data-tag="${tag}" onclick="window.__rumblrHashtag('${tag}')">#${tag}</span>`
   );
 }
 
-function escHtml(str) {
+export function escHtml(str) {
   return String(str)
     .replace(/&/g, '&amp;')
     .replace(/</g, '&lt;')
