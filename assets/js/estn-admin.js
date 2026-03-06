@@ -17,17 +17,20 @@ const ADMIN_UID = 'xNRN4Ae3VTeYqXB4XvcsDMXVABZ2';
 // ─────────────────────────────────────────────────────────
 
 const ALL_ADS = [
-  { id: 'sandweiser',  name: 'Sandweiser',    brand: 'Budweiser parody'  },
-  { id: 'diamondade',  name: 'Diamondade',    brand: 'Gatorade parody'   },
-  { id: 'state-pharm', name: 'State Pharm',   brand: 'State Farm parody' },
-  { id: 'tsdl-show',   name: 'The TSDL Show', brand: 'MLB The Show parody'},
-  { id: 'fantacola',   name: 'FantaCola',     brand: 'Coca-Cola parody'  },
-  { id: 'rawlingo',    name: 'Rawlingo',      brand: 'Rawlings parody'   },
-  { id: 'spikes',      name: 'SPIKES',        brand: 'Nike parody'       },
-  { id: 'geiyco',      name: 'GEIYCO',        brand: 'Geico parody'      },
-  { id: 'rumblr-ad',   name: 'Rumblr Ad',     brand: 'ESTN Program'      },
-  { id: 'tribune-ad',  name: 'Tribune Ad',    brand: 'ESTN Program'      },
-  { id: 'podcast-ad',  name: 'Podcast Ad',    brand: 'ESTN Program'      },
+  { id: 'gif',              name: 'GIF',             brand: 'Site Ad' },
+  { id: 'lost-it',         name: 'Lost It',         brand: 'Site Ad' },
+  { id: 'krispy-kremated', name: 'Krispy Kremated',  brand: 'Site Ad' },
+  { id: 'spotty-wifi',     name: 'Spotty WiFi',     brand: 'Site Ad' },
+  { id: 'stay-inn',        name: 'Stay Inn',        brand: 'Site Ad' },
+  { id: 'oops',            name: 'Oops',            brand: 'Site Ad' },
+  { id: 'wwf',             name: 'WWF',             brand: 'Site Ad' },
+  { id: 'starwars-coffee', name: 'Starwars Coffee', brand: 'Site Ad' },
+  { id: 'olympics',        name: 'Olympics',        brand: 'Site Ad' },
+  { id: 'adobo',           name: 'Adobo',           brand: 'Site Ad' },
+  { id: 'blink',           name: 'Blink',           brand: 'Site Ad' },
+  { id: 'rumblr-ad',       name: 'Rumblr Ad',       brand: 'ESTN Program' },
+  { id: 'tribune-ad',      name: 'Tribune Ad',      brand: 'ESTN Program' },
+  { id: 'podcast-ad',      name: 'Podcast Ad',      brand: 'ESTN Program' },
 ];
 
 // ── Toast ──────────────────────────────────────────────────────────────────────

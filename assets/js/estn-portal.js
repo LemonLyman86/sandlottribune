@@ -11,78 +11,17 @@ import {
 
 // ── Ad pool ────────────────────────────────────────────────────────────────────
 const PARODY_ADS = [
-  {
-    id: 'sandweiser',
-    cls: 'ad-sandweiser',
-    brand: 'SANDWEISER',
-    tagline: '"The King of Diamonds"',
-    disclaimer: 'Parody. The Official Beer of Dynasty Baseball™',
-    cta: 'Crack One Open',
-    href: '#'
-  },
-  {
-    id: 'diamondade',
-    cls: 'ad-diamondade',
-    brand: 'DIAMONDADE',
-    tagline: '"Fuel the Dynasty"',
-    disclaimer: 'Parody. Electrolytes. For your roster.',
-    cta: 'Stay Hydrated',
-    href: '#'
-  },
-  {
-    id: 'state-pharm',
-    cls: 'ad-state-pharm',
-    brand: 'STATE PHARM',
-    tagline: '"Like a Good GM, State Pharm is There"',
-    disclaimer: 'Parody. Dynasty insurance for when your ace gets hurt.',
-    cta: 'Get a Quote',
-    href: '#'
-  },
-  {
-    id: 'tsdl-show',
-    cls: 'ad-tsdl-show',
-    brand: 'THE TSDL SHOW',
-    tagline: '"Play Your Dynasty"',
-    disclaimer: 'Parody. Available on all platforms. Except the ones you use.',
-    cta: 'Pre-Order Now',
-    href: '#'
-  },
-  {
-    id: 'fantacola',
-    cls: 'ad-fantacola',
-    brand: 'FANTACOLA',
-    tagline: '"The Official Soft Drink of Dynasty Baseball"',
-    disclaimer: 'Parody. Open Happiness. Then check your waiver wire.',
-    cta: 'Grab a Cold One',
-    href: '#'
-  },
-  {
-    id: 'rawlingo',
-    cls: 'ad-rawlingo',
-    brand: 'RAWLINGO',
-    tagline: '"Gear Up. Show Up."',
-    disclaimer: 'Parody. Official gloves of TSDL since 2022. Probably.',
-    cta: 'Shop Now',
-    href: '#'
-  },
-  {
-    id: 'spikes',
-    cls: 'ad-spikes',
-    brand: 'SPIKES',
-    tagline: '"Just Run Home"',
-    disclaimer: 'Parody. For athletes who actually run. Unlike dynasty owners.',
-    cta: 'Find Your Pair',
-    href: '#'
-  },
-  {
-    id: 'geiyco',
-    cls: 'ad-geiyco',
-    brand: 'GEIYCO',
-    tagline: '"15 Minutes Could Save Your Dynasty Roster"',
-    disclaimer: 'Parody. Our gecko knows your waiver wire better than you do.',
-    cta: 'Get a Free Quote',
-    href: '#'
-  }
+  { id: 'gif',             file: 'gif.jpg'             },
+  { id: 'lost-it',        file: 'lost-it.jpg'         },
+  { id: 'krispy-kremated', file: 'krispy_kremated.jpg' },
+  { id: 'spotty-wifi',    file: 'spotty_wifi.jpg'     },
+  { id: 'stay-inn',       file: 'stay_inn.jpg'        },
+  { id: 'oops',           file: 'oops.jpg'            },
+  { id: 'wwf',            file: 'wwf.jpg'             },
+  { id: 'starwars-coffee',file: 'starwars_coffee.jpg' },
+  { id: 'olympics',       file: 'olympics.jpg'        },
+  { id: 'adobo',          file: 'adobo.jpg'           },
+  { id: 'blink',          file: 'blink.jpg'           },
 ];
 
 const PROGRAM_ADS = [
@@ -393,12 +332,18 @@ async function renderRumblrPreview() {
     const html = snap.docs.map(d => {
       const p = d.data();
       const t = p.timestamp?.toDate ? p.timestamp.toDate() : new Date();
-      const rawImg = WRITER_IMAGES[p.author_handle] || (p.author_type !== 'ai' ? p.author_image : null);
-      const imgSrc = rawImg ? rawImg.replace(/^(\.\.\/)+/, '') : null;
-      const initials = `<div style="width:34px;height:34px;border-radius:50%;background:${esc(p.author_avatar_color || '#555')};display:flex;align-items:center;justify-content:center;font-family:'Oswald',sans-serif;font-size:0.7rem;color:#fff;flex-shrink:0;">${esc(p.author_initials || '??')}</div>`;
-      const avatarHtml = imgSrc
-        ? `<img src="${esc(imgSrc)}" alt="${esc(p.author_name)}" style="width:34px;height:34px;border-radius:50%;object-fit:cover;flex-shrink:0;" onerror="this.outerHTML='${initials.replace(/'/g, "\\'")}';">`
-        : initials;
+      // Image: check WRITER_IMAGES by handle, then stored author_image (strip ../ for root context)
+      const rawImg = WRITER_IMAGES[p.author_handle]
+        || (p.author_image ? p.author_image.replace(/^(\.\.\/)+/, '') : null);
+      const imgSrc = rawImg || null;
+      const avatarColor = esc(p.author_avatar_color || '#555');
+      const avatarText  = esc(p.author_initials || '??');
+      const initialsStyle = `width:34px;height:34px;border-radius:50%;background:${avatarColor};display:flex;align-items:center;justify-content:center;font-family:Oswald,sans-serif;font-size:0.7rem;color:#fff;flex-shrink:0;`;
+      // Always render both; on img error hide img + reveal initials fallback
+      const avatarHtml = `<div style="flex-shrink:0;position:relative;">
+        ${imgSrc ? `<img src="${esc(imgSrc)}" alt="${esc(p.author_name)}" style="width:34px;height:34px;border-radius:50%;object-fit:cover;display:block;" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">` : ''}
+        <div style="${initialsStyle};${imgSrc ? 'display:none;' : ''}">${avatarText}</div>
+      </div>`;
       const content = esc(p.content || '').replace(/#(\w+)/g, '<span style="color:#C8102E;">#$1</span>');
       return `
         <a href="rumblr/post.html?id=${esc(d.id)}" style="display:flex;gap:10px;padding:11px 14px;border-bottom:1px solid #2D3748;text-decoration:none;transition:background 0.12s;" onmouseover="this.style.background='#1a2030'" onmouseout="this.style.background='transparent'">
@@ -441,12 +386,7 @@ function buildParodyAdHtml(ad, compact) {
   return `
     <div class="estn-ad-unit${compact ? ' estn-pillar-ad' : ''}">
       <div class="ad-label">Advertisement</div>
-      <div class="estn-parody-ad ${ad.cls}">
-        <div class="estn-parody-ad-brand">${ad.brand}</div>
-        <div class="estn-parody-ad-tagline">${ad.tagline}</div>
-        <div class="estn-parody-ad-disclaimer">${ad.disclaimer}</div>
-        <a href="${ad.href}" class="estn-parody-ad-cta">${ad.cta}</a>
-      </div>
+      <img src="assets/images/site ads/${esc(ad.file)}" alt="" style="width:100%;display:block;border-radius:4px;" loading="lazy">
     </div>`;
 }
 
@@ -487,8 +427,8 @@ function renderAds(disabledAds) {
     centerAd3El.innerHTML = buildParodyAdHtml(availableParody[1], false);
   }
 
-  // Right pillar: 1 compact parody ad
-  const rightAdEl = document.getElementById('portal-right-ad-parody');
+  // Left pillar: 1 compact parody ad
+  const rightAdEl = document.getElementById('portal-pillar-ad');
   if (rightAdEl && availableParody.length > 2) {
     rightAdEl.innerHTML = buildParodyAdHtml(availableParody[2], true);
   }
