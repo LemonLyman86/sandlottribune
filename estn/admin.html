@@ -142,10 +142,23 @@
           <h2>Ad Units</h2>
         </div>
         <div class="estn-admin-section-body">
+
+          <!-- Slot assignments -->
+          <p class="estn-admin-label" style="margin-bottom:8px;">Slot Assignments</p>
           <p style="font-size:0.78rem;color:#718096;margin-bottom:14px;font-family:'Marcellus',serif;">
-            Toggle ads off to exclude them from the random rotation. Disabled ads are never shown to visitors.
+            Pin a specific ad to each slot, or leave as <strong style="color:#A0AEC0;">— Random —</strong> to pick from enabled ads.
+          </p>
+          <div id="ad-slots-grid"></div>
+
+          <div style="border-top:1px solid #2D3748;margin:20px 0 16px;"></div>
+
+          <!-- Enable / disable -->
+          <p class="estn-admin-label" style="margin-bottom:8px;">Enable / Disable</p>
+          <p style="font-size:0.78rem;color:#718096;margin-bottom:14px;font-family:'Marcellus',serif;">
+            Disabled ads are excluded from the random rotation.
           </p>
           <div class="estn-admin-ad-grid" id="ad-toggles-grid"></div>
+
           <div style="margin-top:14px;">
             <button class="estn-admin-btn" id="save-ads-btn">Save Ad Settings</button>
           </div>

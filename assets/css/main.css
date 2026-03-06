@@ -2796,7 +2796,8 @@ img { max-width: 100%; display: block; }
   margin-bottom: 5px;
 }
 .estn-admin-input,
-.estn-admin-textarea {
+.estn-admin-textarea,
+select.estn-admin-input {
   width: 100%;
   background: #0D1117;
   border: 1px solid #2D3748;
@@ -2809,7 +2810,8 @@ img { max-width: 100%; display: block; }
   transition: border-color 0.15s;
 }
 .estn-admin-input:focus,
-.estn-admin-textarea:focus {
+.estn-admin-textarea:focus,
+select.estn-admin-input:focus {
   outline: none;
   border-color: #C8102E;
 }

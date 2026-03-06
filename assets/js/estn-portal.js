@@ -445,30 +445,42 @@ function buildProgramAdHtml(ad) {
     </div>`;
 }
 
-function renderAds(disabledAds) {
+function renderAds(disabledAds, adSlots) {
   const disabled = new Set(disabledAds || []);
+  const slots    = adSlots || {};
 
-  const availableParody = shuffle(PARODY_ADS.filter(a => !disabled.has(a.id)));
-  const availableProgram = shuffle(PROGRAM_ADS.filter(a => !disabled.has(a.id)));
+  const availableParody   = shuffle(PARODY_ADS.filter(a => !disabled.has(a.id)));
+  const availableProgram  = shuffle(PROGRAM_ADS.filter(a => !disabled.has(a.id)));
 
-  // Center column: 1 program ad + 2 parody ads
+  const pinnedParody  = id => PARODY_ADS.find(a => a.id === id);
+  const pinnedProgram = id => PROGRAM_ADS.find(a => a.id === id);
+
+  // Center column: program ad
   const centerAd1El = document.getElementById('portal-center-ad-program');
-  if (centerAd1El && availableProgram.length) {
-    centerAd1El.innerHTML = buildProgramAdHtml(availableProgram[0]);
-  }
-  const centerAd2El = document.getElementById('portal-center-ad-parody1');
-  if (centerAd2El && availableParody.length > 0) {
-    centerAd2El.innerHTML = buildParodyAdHtml(availableParody[0], false);
-  }
-  const centerAd3El = document.getElementById('portal-center-ad-parody2');
-  if (centerAd3El && availableParody.length > 1) {
-    centerAd3El.innerHTML = buildParodyAdHtml(availableParody[1], false);
+  if (centerAd1El) {
+    const ad = (slots.center_program && pinnedProgram(slots.center_program)) || availableProgram[0];
+    if (ad) centerAd1El.innerHTML = buildProgramAdHtml(ad);
   }
 
-  // Left pillar: 1 compact parody ad
+  // Center column: parody ad (top)
+  const centerAd2El = document.getElementById('portal-center-ad-parody1');
+  if (centerAd2El) {
+    const ad = (slots.center_parody1 && pinnedParody(slots.center_parody1)) || availableParody[0];
+    if (ad) centerAd2El.innerHTML = buildParodyAdHtml(ad, false);
+  }
+
+  // Center column: parody ad (bottom)
+  const centerAd3El = document.getElementById('portal-center-ad-parody2');
+  if (centerAd3El) {
+    const ad = (slots.center_parody2 && pinnedParody(slots.center_parody2)) || availableParody[1];
+    if (ad) centerAd3El.innerHTML = buildParodyAdHtml(ad, false);
+  }
+
+  // Left pillar: compact parody ad
   const rightAdEl = document.getElementById('portal-pillar-ad');
-  if (rightAdEl && availableParody.length > 2) {
-    rightAdEl.innerHTML = buildParodyAdHtml(availableParody[2], true);
+  if (rightAdEl) {
+    const ad = (slots.pillar && pinnedParody(slots.pillar)) || availableParody[2];
+    if (ad) rightAdEl.innerHTML = buildParodyAdHtml(ad, true);
   }
 }
 
@@ -591,7 +603,7 @@ async function init() {
   applyFeaturedOverride(settings);
   renderPrograms(settings.hidden_programs);
   renderQuickLinks(settings.quick_links);
-  renderAds(settings.disabled_ads);
+  renderAds(settings.disabled_ads, settings.ad_slots);
   renderHeadlines(txnData, settings.custom_headlines);
 
   // Render data sections

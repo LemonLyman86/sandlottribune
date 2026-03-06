@@ -16,6 +16,13 @@ import { onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.12.0/f
 const ADMIN_UID = 'xNRN4Ae3VTeYqXB4XvcsDMXVABZ2';
 // ─────────────────────────────────────────────────────────
 
+const AD_SLOTS = [
+  { id: 'center_program', label: 'Center Column — Program Ad',         pool: 'program' },
+  { id: 'center_parody1', label: 'Center Column — Parody Ad (top)',    pool: 'parody'  },
+  { id: 'center_parody2', label: 'Center Column — Parody Ad (bottom)', pool: 'parody'  },
+  { id: 'pillar',         label: 'Left Pillar — Compact Parody Ad',    pool: 'parody'  },
+];
+
 const ALL_ADS = [
   { id: 'gif',              name: 'GIF',             brand: 'Site Ad' },
   { id: 'lost-it',         name: 'Lost It',         brand: 'Site Ad' },
@@ -192,27 +199,58 @@ function initHeadlines(settings) {
 
 // ── Ad units ───────────────────────────────────────────────────────────────────
 function initAds(settings) {
-  const disabled = new Set(settings.disabled_ads || []);
-  const grid = document.getElementById('ad-toggles-grid');
-  if (!grid) return;
+  const disabled  = new Set(settings.disabled_ads || []);
+  const pinned    = settings.ad_slots || {};
 
-  grid.innerHTML = ALL_ADS.map(ad => `
-    <div class="estn-admin-ad-row">
-      <div class="estn-admin-ad-name">
-        ${ad.name}
-        <span class="estn-admin-ad-brand">${ad.brand}</span>
-      </div>
-      <label class="estn-admin-toggle">
-        <input type="checkbox" id="ad-${ad.id}" ${!disabled.has(ad.id) ? 'checked' : ''}>
-        <span class="estn-admin-toggle-slider"></span>
-      </label>
-    </div>`).join('');
+  const PROGRAM_IDS = new Set(['rumblr-ad', 'tribune-ad', 'podcast-ad']);
+
+  // ── Slot assignment dropdowns ──
+  const slotsGrid = document.getElementById('ad-slots-grid');
+  if (slotsGrid) {
+    slotsGrid.innerHTML = AD_SLOTS.map(slot => {
+      const pool = ALL_ADS.filter(a =>
+        slot.pool === 'program' ? PROGRAM_IDS.has(a.id) : !PROGRAM_IDS.has(a.id)
+      );
+      const options = [
+        `<option value="">— Random —</option>`,
+        ...pool.map(ad =>
+          `<option value="${ad.id}"${pinned[slot.id] === ad.id ? ' selected' : ''}>${ad.name}</option>`
+        )
+      ].join('');
+      return `
+        <div class="estn-admin-field">
+          <label class="estn-admin-label">${slot.label}</label>
+          <select class="estn-admin-input" id="slot-${slot.id}">${options}</select>
+        </div>`;
+    }).join('');
+  }
+
+  // ── Enable / disable toggles ──
+  const grid = document.getElementById('ad-toggles-grid');
+  if (grid) {
+    grid.innerHTML = ALL_ADS.map(ad => `
+      <div class="estn-admin-ad-row">
+        <div class="estn-admin-ad-name">
+          ${ad.name}
+          <span class="estn-admin-ad-brand">${ad.brand}</span>
+        </div>
+        <label class="estn-admin-toggle">
+          <input type="checkbox" id="ad-${ad.id}" ${!disabled.has(ad.id) ? 'checked' : ''}>
+          <span class="estn-admin-toggle-slider"></span>
+        </label>
+      </div>`).join('');
+  }
 
   document.getElementById('save-ads-btn')?.addEventListener('click', async () => {
     const disabledAds = ALL_ADS
       .filter(ad => !document.getElementById(`ad-${ad.id}`)?.checked)
       .map(ad => ad.id);
-    await saveSettings({ disabled_ads: disabledAds });
+    const adSlots = {};
+    for (const slot of AD_SLOTS) {
+      const val = document.getElementById(`slot-${slot.id}`)?.value || '';
+      if (val) adSlots[slot.id] = val;
+    }
+    await saveSettings({ disabled_ads: disabledAds, ad_slots: adSlots });
     showToast('Ad settings saved.');
   });
 }
