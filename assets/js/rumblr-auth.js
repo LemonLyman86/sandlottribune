@@ -123,6 +123,7 @@ async function submitPost(textarea, user, userDoc, onPosted) {
       author_uid:          user.uid,
       author_team_id:      userDoc.team_id,
       author_verified:     userDoc.verified || false,
+      author_image:        userDoc.avatar_url || null,
       author_avatar_color: userDoc.team_color,
       author_initials:     userDoc.team_abbrev,
       hashtags,

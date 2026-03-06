@@ -18,6 +18,18 @@ import { initInteractions }   from './rumblr-interactions.js';
 const PAGE_SIZE    = 20;
 const POSTS_COL    = collection(firestore, 'posts');
 
+// ── User avatar cache (avoids redundant Firestore reads) ──
+const userAvatarCache = {}; // uid → url|null
+async function fetchUserAvatar(uid) {
+  if (uid in userAvatarCache) return userAvatarCache[uid];
+  try {
+    const snap = await getDoc(doc(firestore, 'users', uid));
+    const url = snap.exists() ? (snap.data().avatar_url || null) : null;
+    userAvatarCache[uid] = url;
+    return url;
+  } catch { return null; }
+}
+
 // ── AI Writers config ──────────────────────────────────────
 export const AI_WRITERS = [
   { name: 'Jeff Passan',     handle: '@JeffPassan',    color: '#1E3A5F', initials: 'JP',  image: '../assets/images/rumblr/jeff_passan.png',    bio: 'MLB Insider @ESPN. Breaking news, deep analysis, and the occasional dad joke. Covering the game since 2000.',     bannerColor: '#0D1E40', stats: { followers: 2847302, following: 412,  posts: 8441  } },
@@ -331,7 +343,7 @@ export function renderPost(postId, data, isReply = false) {
     ? `profile.html?uid=${data.author_uid}`
     : `profile.html?handle=${encodeURIComponent(data.author_handle || '')}`;
 
-  // Avatar: use stored image, or look up from AI_WRITERS by handle, or fall back to colored initials
+  // Avatar: use stored image → AI_WRITERS lookup → colored initials fallback
   const writerImage = data.author_image ||
     AI_WRITERS.find(w => w.handle === data.author_handle)?.image || null;
   const avatarHtml = writerImage
@@ -384,6 +396,22 @@ export function renderPost(postId, data, isReply = false) {
       </div>
     </div>
   `;
+
+  // For user posts without a stored author_image, async-fetch avatar from their profile.
+  // Uses module-level cache so each user is fetched at most once per session.
+  if (!writerImage && data.author_uid) {
+    fetchUserAvatar(data.author_uid).then(url => {
+      if (!url) return;
+      const wrap = el.querySelector('.rb-post-avatar-wrap');
+      if (!wrap) return;
+      wrap.innerHTML = `
+        <img class="rb-post-avatar rb-post-avatar-img" src="${escHtml(url)}"
+             alt="${escHtml(data.author_name)}" title="${escHtml(data.author_name)}"
+             onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
+        <div class="rb-post-avatar" style="background:${data.author_avatar_color || '#555'};display:none;"
+             title="${escHtml(data.author_name)}">${escHtml(data.author_initials || '??')}</div>`;
+    });
+  }
 
   // Navigate to post page on card click (but not on links/buttons)
   el.addEventListener('click', e => {
