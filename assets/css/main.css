@@ -2223,14 +2223,14 @@ img { max-width: 100%; display: block; }
 }
 .estn-featured-img {
   width: 100%;
-  aspect-ratio: 16/7;
+  aspect-ratio: 3/2;
   object-fit: cover;
   display: block;
   background: #0D1117;
 }
 .estn-featured-img-placeholder {
   width: 100%;
-  aspect-ratio: 16/7;
+  aspect-ratio: 3/2;
   background: linear-gradient(135deg, #1a2030, #0D1117);
   display: flex;
   align-items: center;

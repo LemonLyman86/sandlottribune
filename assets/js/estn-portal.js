@@ -372,9 +372,9 @@ const WRITER_IMAGES = {
   '@Buster_ESPN':   'assets/images/rumblr/buster_olney.png',
   '@TKurkjian':     'assets/images/rumblr/tim_kurkjian.png',
   '@Keithlaw':      'assets/images/rumblr/keith_law.png',
-  '@JasonStark':    'assets/images/rumblr/jason_stark.png',
-  '@JSherman':      'assets/images/rumblr/joel_sherman.png',
-  '@PGammons':      'assets/images/rumblr/peter_gammons.png',
+  '@jaysonst':      'assets/images/rumblr/jason_stark.png',
+  '@joelsherman1':  'assets/images/rumblr/joel_sherman.png',
+  '@pgammo':        'assets/images/rumblr/peter_gammons.png',
 };
 
 async function renderRumblrPreview() {
@@ -393,7 +393,8 @@ async function renderRumblrPreview() {
     const html = snap.docs.map(d => {
       const p = d.data();
       const t = p.timestamp?.toDate ? p.timestamp.toDate() : new Date();
-      const imgSrc = WRITER_IMAGES[p.author_handle] || (p.author_type !== 'ai' ? p.author_image : null);
+      const rawImg = WRITER_IMAGES[p.author_handle] || (p.author_type !== 'ai' ? p.author_image : null);
+      const imgSrc = rawImg ? rawImg.replace(/^(\.\.\/)+/, '') : null;
       const initials = `<div style="width:34px;height:34px;border-radius:50%;background:${esc(p.author_avatar_color || '#555')};display:flex;align-items:center;justify-content:center;font-family:'Oswald',sans-serif;font-size:0.7rem;color:#fff;flex-shrink:0;">${esc(p.author_initials || '??')}</div>`;
       const avatarHtml = imgSrc
         ? `<img src="${esc(imgSrc)}" alt="${esc(p.author_name)}" style="width:34px;height:34px;border-radius:50%;object-fit:cover;flex-shrink:0;" onerror="this.outerHTML='${initials.replace(/'/g, "\\'")}';">`
