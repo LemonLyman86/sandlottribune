@@ -3,454 +3,444 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>The Sandlot Tribune</title>
-  <meta name="description" content="The official publication of The Sandlot Dynasty League — season previews, power rankings, trade analysis, and more.">
+  <title>ESTN — The Expanded Sandlot Tribune Network</title>
+  <meta name="description" content="The central hub for The Sandlot Dynasty League — scores, standings, transactions, articles, and Rumblr.">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Marcellus&family=Oswald:wght@400;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Marcellus&family=Oswald:wght@400;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="assets/css/main.css">
 </head>
-<body>
+<body class="estn-portal-body">
 
-  <!-- ===== SITE HEADER / NAV ===== -->
-  <header class="site-header">
+  <!-- ===== PORTAL NAV ===== -->
+  <header class="estn-portal-nav">
     <nav class="nav-inner">
-      <a class="nav-logo" href="index.html" aria-label="The Sandlot Tribune — Home">
-        <img src="assets/images/logo.png" alt="The Sandlot Tribune">
+      <a class="nav-logo" href="index.html" aria-label="ESTN — Home">
+        <img src="assets/images/estn-logo-full.png" alt="ESTN" onerror="this.src='assets/images/estn-logo.png'">
       </a>
       <ul class="nav-links">
         <li><a href="index.html" class="active">Home</a></li>
-        <li><a href="between-the-chalk/index.html">Between The Chalk</a></li>
-        <li><a href="season-deadlines/index.html">Season Deadlines &amp; Events</a></li>
-        <li><a href="league-records/index.html">League Records</a></li>
-        <li><a href="rumblr/index.html">Rumblr</a></li>
-        <li><a href="about/index.html" aria-label="ESTN Network">
-          <img class="nav-estn-logo" src="assets/images/estn-logo.png" alt="ESTN">
-        </a></li>
+        <li><a href="tribune/">The Sandlot Tribune</a></li>
+        <li><a href="rumblr/">Rumblr</a></li>
+        <li><a href="league-records/">League Records</a></li>
+        <li><a href="season-deadlines/">Season Events</a></li>
+        <li><a href="about/">About</a></li>
       </ul>
+      <a href="estn/admin.html" class="nav-admin-link">Admin</a>
     </nav>
   </header>
 
-  <!-- ===== HERO ===== -->
-  <section class="site-hero">
-    <h1>The Sandlot Tribune</h1>
-    <p class="tagline">The Official Publication of The Sandlot Dynasty League</p>
-    <p class="hero-subtagline">Where Legends Never Die</p>
-    <hr class="hero-rule">
-  </section>
-
-  <!-- ===== MAIN CONTENT ===== -->
-  <main class="page-wrapper">
-
-    <!-- ===== UPCOMING EVENTS — NEW PANEL LAYOUT ===== -->
-    <section class="countdown-section" aria-label="Season Countdown">
-      <h2 class="section-label">Upcoming Events</h2>
-
-      <div class="events-panel">
-
-        <!-- Left — live countdown to next event -->
-        <div class="active-event-pane">
-          <span class="active-event-eyebrow">Counting Down To</span>
-          <div class="active-event-name" id="active-event-name">Loading&hellip;</div>
-          <div class="active-event-date" id="active-event-date"></div>
-
-          <div class="event-clock">
-            <div class="event-segment">
-              <div class="event-tiles">
-                <div class="event-tile" id="e-d0"><div class="event-tile-inner"><span>0</span></div></div>
-                <div class="event-tile" id="e-d1"><div class="event-tile-inner"><span>0</span></div></div>
-              </div>
-              <div class="event-seg-label">Days</div>
-            </div>
-            <div class="event-colon">:</div>
-            <div class="event-segment">
-              <div class="event-tiles">
-                <div class="event-tile" id="e-h0"><div class="event-tile-inner"><span>0</span></div></div>
-                <div class="event-tile" id="e-h1"><div class="event-tile-inner"><span>0</span></div></div>
-              </div>
-              <div class="event-seg-label">Hrs</div>
-            </div>
-            <div class="event-colon">:</div>
-            <div class="event-segment">
-              <div class="event-tiles">
-                <div class="event-tile" id="e-m0"><div class="event-tile-inner"><span>0</span></div></div>
-                <div class="event-tile" id="e-m1"><div class="event-tile-inner"><span>0</span></div></div>
-              </div>
-              <div class="event-seg-label">Min</div>
-            </div>
-            <div class="event-colon">:</div>
-            <div class="event-segment">
-              <div class="event-tiles">
-                <div class="event-tile" id="e-s0"><div class="event-tile-inner"><span>0</span></div></div>
-                <div class="event-tile" id="e-s1"><div class="event-tile-inner"><span>0</span></div></div>
-              </div>
-              <div class="event-seg-label">Sec</div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Right — next 2 upcoming events (static, days only) -->
-        <div class="upcoming-events-pane">
-          <div class="upcoming-pane-label">Also Ahead</div>
-          <div id="upcoming-list">
-            <!-- Populated by JS -->
-          </div>
-        </div>
-
-      </div>
-    </section>
-
-    <!-- ===== RUMBLR AD ===== -->
-    <div style="font-family:'Oswald',sans-serif;font-size:0.6rem;letter-spacing:0.12em;
-                text-transform:uppercase;color:#B9A590;text-align:center;margin-bottom:4px;">
-      Advertisement
+  <!-- ===== ESTN TICKER ===== -->
+  <div class="estn-ticker" role="marquee" aria-label="ESTN Breaking News">
+    <span class="estn-ticker-label">ESTN</span>
+    <div class="estn-ticker-track">
+      <span class="estn-ticker-text" id="estn-ticker-text">
+        2026 TSDL SEASON KICKS OFF IN MARCH &nbsp;&bull;&nbsp;
+        RUMBLR IS LIVE — POST YOUR TAKES &nbsp;&bull;&nbsp;
+        SEASON PREVIEWS NOW AVAILABLE FOR ALL 18 TEAMS &nbsp;&bull;&nbsp;
+        FA AUCTION: MARCH 22 &nbsp;&bull;&nbsp;
+        MILB DRAFT + LEGAL ROSTER DEADLINE: MARCH 15 &nbsp;&bull;&nbsp;
+        ESTN — MORE THAN A LEAGUE &nbsp;&bull;&nbsp;
+        2026 TSDL SEASON KICKS OFF IN MARCH &nbsp;&bull;&nbsp;
+        RUMBLR IS LIVE — POST YOUR TAKES &nbsp;&bull;&nbsp;
+        SEASON PREVIEWS NOW AVAILABLE FOR ALL 18 TEAMS &nbsp;&bull;&nbsp;
+        FA AUCTION: MARCH 22 &nbsp;&bull;&nbsp;
+        MILB DRAFT + LEGAL ROSTER DEADLINE: MARCH 15 &nbsp;&bull;&nbsp;
+        ESTN — MORE THAN A LEAGUE &nbsp;&bull;&nbsp;
+      </span>
     </div>
-    <div class="promo-banner" style="background:linear-gradient(135deg,#0D1117 0%,#161B22 60%,#1a0a0a 100%);
-         border:1px solid #2D3748;position:relative;overflow:hidden;">
-      <div style="position:absolute;top:0;left:0;width:4px;height:100%;background:#C8102E;"></div>
-      <div class="promo-banner-inner" style="padding-left:28px;">
-        <img class="promo-banner-logo" src="assets/images/rumblr-logo.png" alt="Rumblr"
-             style="filter:brightness(1.1);">
-        <div class="promo-banner-text">
-          <span class="promo-banner-eyebrow"
-                style="color:#C8102E;letter-spacing:0.14em;">&#x25CF;&nbsp; Now Live on ESTN</span>
-          <p class="promo-banner-headline" style="color:#fff;">
-            The Dynasty League Finally Has Its Own Social Feed.
-          </p>
-          <p class="promo-banner-sub" style="color:#A0AEC0;">
-            Follow the writers. Post your takes. 18 teams. One feed. All the TSDL.
-          </p>
-        </div>
-        <a class="promo-banner-cta" href="rumblr/"
-           style="background:#C8102E;border-color:#C8102E;white-space:nowrap;">
-          Join Rumblr &rarr;
-        </a>
+  </div>
+
+  <!-- ===== 3-COLUMN PORTAL GRID ===== -->
+  <div class="estn-portal-grid">
+
+    <!-- ═══════════════════════════════ LEFT PILLAR ══════════════════════════════ -->
+    <aside class="estn-pillar estn-left-pillar">
+
+      <!-- ESTN Network Links -->
+      <div class="estn-widget">
+        <div class="estn-widget-header">ESTN Network</div>
+        <ul class="estn-network-links">
+          <li>
+            <a href="index.html">
+              <div class="estn-network-link-icon red">&#x25A0;</div>
+              ESTN Home
+              <span class="estn-network-link-badge">LIVE</span>
+            </a>
+          </li>
+          <li>
+            <a href="rumblr/">
+              <div class="estn-network-link-icon red">R</div>
+              Rumblr
+              <span class="estn-network-link-badge">LIVE</span>
+            </a>
+          </li>
+          <li>
+            <a href="tribune/">
+              <div class="estn-network-link-icon gold">T</div>
+              The Sandlot Tribune
+            </a>
+          </li>
+          <li>
+            <a href="league-records/">
+              <div class="estn-network-link-icon blue">&#x2605;</div>
+              League Records
+            </a>
+          </li>
+          <li>
+            <a href="season-deadlines/">
+              <div class="estn-network-link-icon green">&#x25CF;</div>
+              Season Events
+            </a>
+          </li>
+          <li>
+            <a href="about/">
+              <div class="estn-network-link-icon">&#x2630;</div>
+              About ESTN
+            </a>
+          </li>
+        </ul>
       </div>
-    </div>
 
-    <!-- ===== RUMBLR FEED PREVIEW ===== -->
-    <section aria-label="Latest Rumbl'ings">
-      <h2 class="section-label" style="display:flex;align-items:center;gap:10px;">
-        Latest Rumbl'ings
-        <a href="rumblr/" style="font-family:'Oswald',sans-serif;font-size:0.7rem;letter-spacing:0.08em;
-           color:#C8102E;text-decoration:none;font-weight:400;">See all &rarr;</a>
-      </h2>
-      <div id="rumblr-preview-feed" style="background:#0D1117;border:1px solid #2D3748;border-radius:6px;overflow:hidden;">
-        <div style="padding:20px;color:#A0AEC0;font-family:'Oswald',sans-serif;font-size:0.85rem;text-align:center;">
-          Loading Rumbl'ings…
+      <!-- Quick Links -->
+      <div class="estn-widget">
+        <div class="estn-widget-header">Quick Links</div>
+        <ul class="estn-network-links" id="portal-quick-links">
+          <!-- Rendered by estn-portal.js (Firestore override or defaults) -->
+          <li><a href="league-records/"><div class="estn-network-link-icon gold">&#x2192;</div>League Records</a></li>
+          <li><a href="season-deadlines/"><div class="estn-network-link-icon gold">&#x2192;</div>Season Deadlines</a></li>
+          <li><a href="between-the-chalk/"><div class="estn-network-link-icon gold">&#x2192;</div>Between The Chalk</a></li>
+          <li><a href="season-previews/"><div class="estn-network-link-icon gold">&#x2192;</div>Season Previews</a></li>
+        </ul>
+      </div>
+
+      <!-- Programs -->
+      <div class="estn-widget">
+        <div class="estn-widget-header">ESTN Programs</div>
+        <div id="portal-programs">
+          <!-- Rendered by estn-portal.js -->
+          <a href="rumblr/" class="estn-program-pill">
+            <div class="estn-program-pill-icon"><img src="assets/images/rumblr-logo.png" alt="Rumblr"></div>
+            <div class="estn-program-pill-info">
+              <span class="estn-program-pill-name">Rumblr</span>
+              <span class="estn-program-pill-status live">Now Live</span>
+            </div>
+          </a>
+          <a href="tribune/" class="estn-program-pill">
+            <div class="estn-program-pill-icon"><img src="assets/images/logo.png" alt="Tribune"></div>
+            <div class="estn-program-pill-info">
+              <span class="estn-program-pill-name">The Sandlot Tribune</span>
+              <span class="estn-program-pill-status coming-soon">Under Construction</span>
+            </div>
+          </a>
+          <a href="about/" class="estn-program-pill">
+            <div class="estn-program-pill-icon"><img src="assets/images/baberuth-podcast-logo.png" alt="Babe Ruth Podcast" onerror="this.parentElement.textContent='B'"></div>
+            <div class="estn-program-pill-info">
+              <span class="estn-program-pill-name">Babe Ruth Podcast</span>
+              <span class="estn-program-pill-status coming-soon">Coming 2026</span>
+            </div>
+          </a>
         </div>
       </div>
-    </section>
 
-    <!-- ===== LATEST NEWS ===== -->
-    <section aria-label="Latest News">
-      <h2 class="section-label">Latest</h2>
-                              <div class="articles-grid">
-        <!-- Featured Article — SEA Season Preview (most recent) -->
-        <article class="article-card article-card--featured">
-          <img class="card-image" src="assets/images/sea-preview.png" alt="2026 TSDL Season Preview: Seattle Mariners">
-          <div class="card-body">
-            <span class="card-badge">Season Preview</span>
-            <h3 class="card-title">2026 TSDL Season Preview: Seattle Mariners</h3>
-            <p class="card-meta">By Ken Rosenthal &nbsp;&middot;&nbsp; February 28, 2026</p>
-            <div class="card-rating-row" id="card-rating-season_preview_2026_sea"></div>
-            <p class="card-excerpt">
-              Jordan Britton's Seattle Mariners have been one of the TSDL's most compelling teams for four seasons — consistently competitive, occasionally brilliant, and perpetually on the edge of something great without quite reaching the mountaintop. The 2025…
-            </p>
-            <a class="card-link" href="season-previews/season_preview_2026_sea.html">Read Article &rarr;</a>
-          </div>
-        </article>
-
-        <!-- ATL Season Preview -->
-        <article class="article-card">
-          <img
-            class="card-image"
-            src="assets/images/atl-preview.png"
-            alt="2026 TSDL Season Preview: Atlanta Braves">
-          <div class="card-body">
-            <span class="card-badge">Season Preview</span>
-            <h3 class="card-title">2026 TSDL Season Preview: Atlanta Braves</h3>
-            <p class="card-meta">By Tim Kurkjian &nbsp;&middot;&nbsp; February 28, 2026</p>
-            <div class="card-rating-row" id="card-rating-season_preview_2026_atl"></div>
-            <p class="card-excerpt">
-              In four seasons of Sandlot Dynasty League existence, the Atlanta Braves have swung from champion to rubble and back again — twice. Owner Justin Winward won it all in 2022, went 16-3 the following year only to flame out in the playoffs, cratered to a…
-            </p>
-            <a class="card-link" href="season-previews/season_preview_2026_atl.html">Read Article &rarr;</a>
-          </div>
-        </article>
-
-        <!-- LVA Season Preview -->
-        <article class="article-card">
-          <img
-            class="card-image"
-            src="assets/images/lva-preview.png"
-            alt="2026 TSDL Season Preview: Las Vegas Athletics">
-          <div class="card-body">
-            <span class="card-badge">Season Preview</span>
-            <h3 class="card-title">2026 TSDL Season Preview: Las Vegas Athletics</h3>
-            <p class="card-meta">By Keith Law &nbsp;&middot;&nbsp; February 27, 2026</p>
-            <div class="card-rating-row" id="card-rating-season_preview_2026_lva"></div>
-            <p class="card-excerpt">
-              The Las Vegas Athletics arrived in The Sandlot Dynasty League two years ago and promptly decided to skip the learning curve entirely. In 2024, Mike DiMauro won the championship. In 2025, he went 15-4 in the regular season, earned the #2 seed, and…
-            </p>
-            <a class="card-link" href="season-previews/season_preview_2026_lva.html">Read Article &rarr;</a>
-          </div>
-        </article>
-
-        <!-- STL Season Preview -->
-        <article class="article-card">
-          <img
-            class="card-image"
-            src="assets/images/stl-preview.png"
-            alt="2026 TSDL Season Preview: St. Louis Cardinals">
-          <div class="card-body">
-            <span class="card-badge">Season Preview</span>
-            <h3 class="card-title">2026 TSDL Season Preview: St. Louis Cardinals</h3>
-            <p class="card-meta">By Buster Olney &nbsp;&middot;&nbsp; February 27, 2026</p>
-            <div class="card-rating-row" id="card-rating-season_preview_2026_stl"></div>
-            <p class="card-excerpt">
-              Forty-one and a half points. That is the margin separating Sam Crotto & Brian Baker and the St. Louis Cardinals from a TSDL championship banner. In the 2025 title game, Arizona rolled in as the tournament's Cinderella — an eighth seed who had no…
-            </p>
-            <a class="card-link" href="season-previews/season_preview_2026_stl.html">Read Article &rarr;</a>
-          </div>
-        </article>
-
-      </div>
-    </section>
-
-    <!-- ===== EXPLORE ===== -->
-    <section aria-label="Browse by Section">
-      <h2 class="section-label">Explore</h2>
-      <div class="explore-grid">
-
-        <a class="explore-card" href="season-previews/index.html">
-          <span class="explore-card-title">Season Previews</span>
-        </a>
-
-        <a class="explore-card" href="between-the-chalk/index.html">
-          <span class="explore-card-title">Between The Chalk</span>
-        </a>
-
-        <div class="explore-card" style="cursor:default;">
-          <span class="explore-card-title">Power Rankings</span>
-          <span class="badge-coming-soon">Coming Soon</span>
+      <!-- Standings Widget -->
+      <div class="estn-widget">
+        <div class="estn-widget-header">
+          <span id="portal-standings-header">2026 Standings</span>
+          <a href="league-records/">All Records &rarr;</a>
         </div>
-
-        <div class="explore-card" style="cursor:default;">
-          <span class="explore-card-title">Trade Analysis</span>
-          <span class="badge-coming-soon">Coming Soon</span>
+        <div class="estn-widget-body" id="portal-standings">
+          <p class="estn-pre-season-label">Loading&hellip;</p>
         </div>
-
       </div>
-    </section>
 
-  </main>
+      <!-- Next Event Countdown -->
+      <div class="estn-widget">
+        <div class="estn-widget-header">
+          <span>Next Event</span>
+          <a href="season-deadlines/">Full Schedule &rarr;</a>
+        </div>
+        <div class="estn-widget-body" style="text-align:center;padding-bottom:14px;">
+          <div id="mini-event-name" style="font-size:0.82rem;font-weight:700;color:#fff;margin-bottom:6px;line-height:1.3;">Loading&hellip;</div>
+          <div id="mini-event-date" style="font-size:0.65rem;color:#718096;margin-bottom:12px;font-family:'Marcellus',serif;"></div>
+          <div style="display:flex;justify-content:center;gap:8px;">
+            <div style="text-align:center;">
+              <div id="mini-d" style="font-size:1.5rem;font-weight:700;color:#fff;font-family:'Oswald',sans-serif;line-height:1;">00</div>
+              <div style="font-size:0.58rem;color:#718096;letter-spacing:0.1em;text-transform:uppercase;margin-top:2px;">Days</div>
+            </div>
+            <div style="font-size:1.2rem;color:#4A5568;padding-top:2px;">:</div>
+            <div style="text-align:center;">
+              <div id="mini-h" style="font-size:1.5rem;font-weight:700;color:#fff;font-family:'Oswald',sans-serif;line-height:1;">00</div>
+              <div style="font-size:0.58rem;color:#718096;letter-spacing:0.1em;text-transform:uppercase;margin-top:2px;">Hrs</div>
+            </div>
+            <div style="font-size:1.2rem;color:#4A5568;padding-top:2px;">:</div>
+            <div style="text-align:center;">
+              <div id="mini-m" style="font-size:1.5rem;font-weight:700;color:#fff;font-family:'Oswald',sans-serif;line-height:1;">00</div>
+              <div style="font-size:0.58rem;color:#718096;letter-spacing:0.1em;text-transform:uppercase;margin-top:2px;">Min</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </aside>
+
+    <!-- ═══════════════════════════════ CENTER COLUMN ══════════════════════════════ -->
+    <main class="estn-center-col">
+
+      <!-- Featured Article -->
+      <section>
+        <div class="estn-section-label">
+          <span>Latest from The Tribune</span>
+          <a href="between-the-chalk/">All Articles &rarr;</a>
+        </div>
+        <div class="estn-featured-block">
+          <img id="featured-img" class="estn-featured-img" src="assets/images/sea-preview.png" alt="2026 TSDL Season Preview: Seattle Mariners">
+          <div class="estn-featured-body">
+            <span class="estn-featured-badge">Season Preview</span>
+            <h1 class="estn-featured-title" id="featured-title">2026 TSDL Season Preview: Seattle Mariners</h1>
+            <p class="estn-featured-meta" id="featured-meta">By Ken Rosenthal &nbsp;&middot;&nbsp; February 28, 2026</p>
+            <p class="estn-featured-excerpt" id="featured-excerpt">Jordan Britton's Seattle Mariners have been one of the TSDL's most compelling teams for four seasons — consistently competitive, occasionally brilliant, and perpetually on the edge of something great without quite reaching the mountaintop.</p>
+            <a class="estn-featured-link" href="season-previews/season_preview_2026_sea.html" id="featured-link">Read Full Article &rarr;</a>
+          </div>
+          <a href="season-previews/season_preview_2026_atl.html" class="estn-sub-story" id="featured-sub-story">
+            <img class="estn-sub-story-img" src="assets/images/atl-preview.png" alt="Atlanta Braves Season Preview">
+            <div>
+              <span class="estn-sub-story-badge">Season Preview</span>
+              <div class="estn-sub-story-title">2026 TSDL Season Preview: Atlanta Braves — Champions looking to reclaim the throne</div>
+            </div>
+          </a>
+        </div>
+      </section>
+
+      <!-- Week Scoreboard -->
+      <section class="estn-scoreboard-block">
+        <div class="estn-section-label">
+          <span id="portal-scoreboard-label">2026 Matchups</span>
+        </div>
+        <div id="portal-scoreboard">
+          <div class="estn-scoreboard-pre-season">
+            <div class="ps-icon">&#x26BE;</div>
+            <div class="ps-title">Loading matchup data&hellip;</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Recent Transactions -->
+      <section>
+        <div class="estn-section-label">
+          <span>Recent Transactions</span>
+        </div>
+        <div class="estn-txn-feed" id="portal-transactions">
+          <div class="estn-txn-item">
+            <div class="estn-txn-text" style="color:#718096;">Loading transactions&hellip;</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Latest Rumblr Posts -->
+      <section>
+        <div class="estn-section-label">
+          <span>Latest Rumbl'ings</span>
+          <a href="rumblr/">All Posts &rarr;</a>
+        </div>
+        <div class="estn-rumblr-preview" id="portal-rumblr-feed">
+          <div style="padding:20px;color:#718096;font-family:'Oswald',sans-serif;font-size:0.85rem;text-align:center;">Loading Rumbl'ings&hellip;</div>
+        </div>
+      </section>
+
+      <!-- Center Ad: Program -->
+      <div id="portal-center-ad-program"></div>
+
+      <!-- Center Ad: Parody 1 -->
+      <div id="portal-center-ad-parody1"></div>
+
+      <!-- More Articles -->
+      <section>
+        <div class="estn-section-label">
+          <span>More from The Tribune</span>
+          <a href="season-previews/">All Previews &rarr;</a>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+
+          <a href="season-previews/season_preview_2026_lva.html" style="display:flex;flex-direction:column;background:#161B22;border:1px solid #2D3748;border-radius:6px;overflow:hidden;text-decoration:none;transition:border-color 0.15s;" onmouseover="this.style.borderColor='#4A5568'" onmouseout="this.style.borderColor='#2D3748'">
+            <img src="assets/images/lva-preview.png" alt="Las Vegas Athletics" style="width:100%;aspect-ratio:16/9;object-fit:cover;display:block;">
+            <div style="padding:12px 14px;">
+              <span style="font-size:0.62rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:#C8102E;display:block;margin-bottom:4px;">Season Preview</span>
+              <div style="font-size:0.88rem;font-weight:700;color:#fff;line-height:1.3;margin-bottom:6px;">2026 Season Preview: Las Vegas Athletics</div>
+              <div style="font-size:0.72rem;color:#718096;font-family:'Marcellus',serif;">By Keith Law &middot; Feb 27</div>
+            </div>
+          </a>
+
+          <a href="season-previews/season_preview_2026_stl.html" style="display:flex;flex-direction:column;background:#161B22;border:1px solid #2D3748;border-radius:6px;overflow:hidden;text-decoration:none;transition:border-color 0.15s;" onmouseover="this.style.borderColor='#4A5568'" onmouseout="this.style.borderColor='#2D3748'">
+            <img src="assets/images/stl-preview.png" alt="St. Louis Cardinals" style="width:100%;aspect-ratio:16/9;object-fit:cover;display:block;">
+            <div style="padding:12px 14px;">
+              <span style="font-size:0.62rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:#C8102E;display:block;margin-bottom:4px;">Season Preview</span>
+              <div style="font-size:0.88rem;font-weight:700;color:#fff;line-height:1.3;margin-bottom:6px;">2026 Season Preview: St. Louis Cardinals</div>
+              <div style="font-size:0.72rem;color:#718096;font-family:'Marcellus',serif;">By Buster Olney &middot; Feb 27</div>
+            </div>
+          </a>
+
+          <a href="season-previews/season_preview_2026_ari.html" style="display:flex;flex-direction:column;background:#161B22;border:1px solid #2D3748;border-radius:6px;overflow:hidden;text-decoration:none;transition:border-color 0.15s;" onmouseover="this.style.borderColor='#4A5568'" onmouseout="this.style.borderColor='#2D3748'">
+            <img src="assets/images/ari-preview.png" alt="Arizona Diamondbacks" style="width:100%;aspect-ratio:16/9;object-fit:cover;display:block;" onerror="this.style.display='none'">
+            <div style="padding:12px 14px;">
+              <span style="font-size:0.62rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:#C8102E;display:block;margin-bottom:4px;">Season Preview</span>
+              <div style="font-size:0.88rem;font-weight:700;color:#fff;line-height:1.3;margin-bottom:6px;">2026 Season Preview: Arizona Diamondbacks</div>
+              <div style="font-size:0.72rem;color:#718096;font-family:'Marcellus',serif;">By Jeff Passan &middot; Feb 26</div>
+            </div>
+          </a>
+
+          <a href="season-previews/" style="display:flex;align-items:center;justify-content:center;background:#161B22;border:1px dashed #2D3748;border-radius:6px;text-decoration:none;min-height:120px;transition:border-color 0.15s;" onmouseover="this.style.borderColor='#C8102E'" onmouseout="this.style.borderColor='#2D3748'">
+            <div style="text-align:center;">
+              <div style="font-size:0.82rem;font-weight:700;color:#A0AEC0;margin-bottom:4px;">View All Previews</div>
+              <div style="font-size:1.5rem;color:#C8102E;">&#x2192;</div>
+            </div>
+          </a>
+
+        </div>
+      </section>
+
+      <!-- Center Ad: Parody 2 -->
+      <div id="portal-center-ad-parody2"></div>
+
+    </main>
+
+    <!-- ═══════════════════════════════ RIGHT PILLAR ══════════════════════════════ -->
+    <aside class="estn-pillar estn-right-pillar estn-pillar-sticky">
+
+      <!-- League Headlines -->
+      <div class="estn-widget">
+        <div class="estn-widget-header">League Headlines</div>
+        <div id="portal-headlines">
+          <p class="estn-pre-season-label">Loading&hellip;</p>
+        </div>
+      </div>
+
+      <!-- Full Standings -->
+      <div class="estn-widget">
+        <div class="estn-widget-header">
+          <span>2026 Standings</span>
+          <a href="league-records/">Records &rarr;</a>
+        </div>
+        <div class="estn-widget-body" id="portal-full-standings">
+          <p class="estn-pre-season-label">Loading&hellip;</p>
+        </div>
+      </div>
+
+      <!-- ESTN Promo -->
+      <div class="estn-widget" style="overflow:hidden;">
+        <div style="background:linear-gradient(135deg,#0D1117,#1a0a0a);padding:16px;border-bottom:1px solid #2D3748;">
+          <div style="font-size:0.6rem;letter-spacing:0.14em;text-transform:uppercase;color:#C8102E;margin-bottom:6px;">&#x25CF;&nbsp; Now Live on ESTN</div>
+          <div style="font-size:0.92rem;font-weight:700;color:#fff;line-height:1.3;margin-bottom:4px;">Rumblr — The Dynasty Social Network</div>
+          <div style="font-size:0.74rem;color:#A0AEC0;font-family:'Marcellus',serif;margin-bottom:12px;">Post takes. Follow writers. React to every move.</div>
+          <a href="rumblr/" style="display:inline-block;background:#C8102E;color:#fff;font-family:'Oswald',sans-serif;font-size:0.72rem;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;padding:8px 16px;border-radius:3px;text-decoration:none;">Join Rumblr &rarr;</a>
+        </div>
+      </div>
+
+      <!-- Trending on Rumblr (hashtags from Firebase) -->
+      <div class="estn-widget">
+        <div class="estn-widget-header">
+          <span>Trending on Rumblr</span>
+          <a href="rumblr/">Feed &rarr;</a>
+        </div>
+        <div id="portal-trending" class="estn-widget-body">
+          <div style="font-size:0.78rem;color:#718096;font-style:italic;text-align:center;">Loading&hellip;</div>
+        </div>
+      </div>
+
+      <!-- Right Pillar Ad -->
+      <div id="portal-right-ad-parody"></div>
+
+    </aside>
+
+  </div><!-- /estn-portal-grid -->
 
   <!-- ===== FOOTER ===== -->
-  <footer class="site-footer">
-    <p>&copy; 2026 The Sandlot Tribune &nbsp;&middot;&nbsp; The Sandlot Dynasty League</p>
+  <footer class="estn-portal-footer">
+    &copy; 2026 ESTN &nbsp;&middot;&nbsp; The Expanded Sandlot Tribune Network &nbsp;&middot;&nbsp; The Sandlot Dynasty League
   </footer>
 
-  <!-- ===== COUNTDOWN SCRIPT ===== -->
+  <!-- ===== MINI COUNTDOWN ===== -->
   <script>
-    // ── All season events — Eastern Time ──────────────────────────────────────
     var EVENTS = [
-      { name: 'Legal Roster Deadline', short: 'Mar 15', date: new Date('2026-03-15T10:00:00-05:00') },
-      { name: 'MiLB Draft',            short: 'Mar 15', date: new Date('2026-03-15T12:00:00-05:00') },
-      { name: 'FA Auction',            short: 'Mar 22', date: new Date('2026-03-22T12:00:00-05:00') },
-      { name: 'FAAB Opens',            short: 'Mar 25', date: new Date('2026-03-25T10:00:00-05:00') },
-      { name: 'Trade Deadline',        short: 'Aug 4',  date: new Date('2026-08-04T22:00:00-05:00') },
-      { name: 'Playoffs Begin',        short: 'Aug 17', date: new Date('2026-08-17T00:00:00-05:00') },
-      { name: 'Season Conclusion',     short: 'Sep 27', date: new Date('2026-09-27T00:00:00-05:00') },
-      { name: 'Roster Deadline',       short: 'Nov 1',  date: new Date('2026-11-01T00:00:00-05:00') },
-      { name: '2027 FanTrax Season',   short: 'Nov 15', date: new Date('2026-11-15T00:00:00-05:00') },
+      { name: 'Legal Roster Deadline', date: new Date('2026-03-15T10:00:00-05:00') },
+      { name: 'MiLB Draft',            date: new Date('2026-03-15T12:00:00-05:00') },
+      { name: 'FA Auction',            date: new Date('2026-03-22T12:00:00-05:00') },
+      { name: 'FAAB Opens',            date: new Date('2026-03-25T10:00:00-05:00') },
+      { name: 'Trade Deadline',        date: new Date('2026-08-04T22:00:00-05:00') },
+      { name: 'Playoffs Begin',        date: new Date('2026-08-17T00:00:00-05:00') },
+      { name: 'Season Conclusion',     date: new Date('2026-09-27T00:00:00-05:00') },
+      { name: 'Roster Deadline',       date: new Date('2026-11-01T00:00:00-05:00') },
     ];
-
-    // ── Helpers ───────────────────────────────────────────────────────────────
-    function pad2(n) { return String(n).padStart(2, '0'); }
-
-    function daysUntil(date) {
-      return Math.ceil((date - Date.now()) / 86400000);
-    }
-
-    function formatEventDate(d) {
-      var opts = { month: 'long', day: 'numeric', year: 'numeric',
-                   hour: 'numeric', minute: '2-digit', timeZoneName: 'short',
-                   timeZone: 'America/New_York' };
-      return d.toLocaleString('en-US', opts);
-    }
-
-    // ── Flip tile ─────────────────────────────────────────────────────────────
-    function setTile(id, ch) {
-      var el = document.getElementById(id);
-      if (!el) return;
-      var span = el.querySelector('span');
-      if (span.textContent === ch) return;
-      el.classList.remove('flipping');
-      void el.offsetWidth;
-      el.classList.add('flipping');
-      setTimeout(function () { span.textContent = ch; }, 110);
-    }
-
-    // ── Find active + upcoming events ─────────────────────────────────────────
-    function getEventWindow() {
+    function pad2(n) { return String(n).padStart(2,'0'); }
+    function miniTick() {
       var now = Date.now();
-      var future = EVENTS.filter(function(e) { return e.date > now; });
-      if (!future.length) return { active: null, upcoming: [] };
-      return { active: future[0], upcoming: future.slice(1, 3) };
-    }
-
-    // ── Render the upcoming (right-side) list ─────────────────────────────────
-    function renderUpcoming(upcoming) {
-      var ul = document.getElementById('upcoming-list');
-      if (!ul) return;
-      if (!upcoming.length) {
-        ul.innerHTML = '<p style="font-family:\'Marcellus\',serif; font-size:0.82rem; color:var(--text-secondary); font-style:italic;">No more events this season.</p>';
+      var next = EVENTS.filter(function(e){ return e.date > now; })[0];
+      var nameEl = document.getElementById('mini-event-name');
+      var dateEl = document.getElementById('mini-event-date');
+      var dEl = document.getElementById('mini-d');
+      var hEl = document.getElementById('mini-h');
+      var mEl = document.getElementById('mini-m');
+      if (!next) {
+        if (nameEl) nameEl.textContent = 'Season Complete';
+        if (dEl) dEl.textContent = '00';
         return;
       }
-      ul.innerHTML = upcoming.map(function(e) {
-        var days = daysUntil(e.date);
-        return '<div class="upcoming-event-row">' +
-               '<span class="upcoming-date">' + e.short + '</span>' +
-               '<span class="upcoming-name">' + e.name + '</span>' +
-               '<span class="upcoming-days">' + days + ' day' + (days !== 1 ? 's' : '') + '</span>' +
-               '</div>';
-      }).join('');
-    }
-
-    // ── Main tick ─────────────────────────────────────────────────────────────
-    var _lastActiveIdx = -1;
-
-    function tick() {
-      var win = getEventWindow();
-
-      if (!win.active) {
-        document.getElementById('active-event-name').textContent = 'Season Complete';
-        document.getElementById('active-event-date').textContent = '';
-        ['e-d0','e-d1','e-h0','e-h1','e-m0','e-m1','e-s0','e-s1'].forEach(function(id) {
-          var el = document.getElementById(id);
-          if (el) el.querySelector('span').textContent = '0';
-        });
-        return;
-      }
-
-      // Update header text only when active event changes
-      var activeIdx = EVENTS.indexOf(win.active);
-      if (activeIdx !== _lastActiveIdx) {
-        _lastActiveIdx = activeIdx;
-        document.getElementById('active-event-name').textContent = win.active.name;
-        document.getElementById('active-event-date').textContent = formatEventDate(win.active.date);
-        renderUpcoming(win.upcoming);
-      }
-
-      // Live countdown
-      var diff = win.active.date - Date.now();
-      if (diff <= 0) { tick(); return; } // event just passed — re-evaluate
+      if (nameEl) nameEl.textContent = next.name;
+      if (dateEl) dateEl.textContent = next.date.toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric',timeZone:'America/New_York'});
+      var diff = next.date - now;
       var d = Math.floor(diff / 86400000);
       var h = Math.floor((diff % 86400000) / 3600000);
-      var m = Math.floor((diff % 3600000)  / 60000);
-      var s = Math.floor((diff % 60000)    / 1000);
-      var ds = pad2(d), hs = pad2(h), ms = pad2(m), ss = pad2(s);
-      setTile('e-d0', ds[0]); setTile('e-d1', ds[1]);
-      setTile('e-h0', hs[0]); setTile('e-h1', hs[1]);
-      setTile('e-m0', ms[0]); setTile('e-m1', ms[1]);
-      setTile('e-s0', ss[0]); setTile('e-s1', ss[1]);
+      var m = Math.floor((diff % 3600000) / 60000);
+      if (dEl) dEl.textContent = pad2(d);
+      if (hEl) hEl.textContent = pad2(h);
+      if (mEl) mEl.textContent = pad2(m);
     }
-
-    tick();
-    setInterval(tick, 1000);
+    miniTick();
+    setInterval(miniTick, 60000);
   </script>
 
-  <!-- Firebase: load card ratings on home page -->
+  <!-- ===== PORTAL APP ===== -->
   <script type="module">
-    import { fetchCardRatings } from './assets/js/article-engagement.js';
-    fetchCardRatings([
-      'season_preview_2026_sea',
-      'season_preview_2026_atl',
-      'season_preview_2026_lva',
-      'season_preview_2026_stl',
-      'season_preview_2026_ari'
-    ]);
-  </script>
+    import './assets/js/estn-portal.js';
 
-  <!-- Rumblr feed preview -->
-  <script type="module">
+    // Trending hashtags from Firestore
     import { firestore } from './assets/js/firebase-config.js';
     import {
       collection, query, orderBy, limit, getDocs
     } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js';
 
-    function esc(str) {
-      return String(str||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
-    }
-
-    function timeAgo(date) {
-      if (!date) return '';
-      const diff = Math.floor((Date.now() - date.getTime()) / 1000);
-      if (diff < 60)    return `${diff}s`;
-      if (diff < 3600)  return `${Math.floor(diff/60)}m`;
-      if (diff < 86400) return `${Math.floor(diff/3600)}h`;
-      return `${Math.floor(diff/86400)}d`;
-    }
-
-    async function loadRumblrPreview() {
-      const container = document.getElementById('rumblr-preview-feed');
-      if (!container) return;
+    async function loadTrending() {
+      const el = document.getElementById('portal-trending');
+      if (!el) return;
       try {
         const snap = await getDocs(query(
           collection(firestore, 'posts'),
           orderBy('timestamp', 'desc'),
-          limit(5)
+          limit(50)
         ));
-        if (snap.empty) {
-          container.innerHTML = '<div style="padding:20px;color:#718096;font-family:\'Oswald\',sans-serif;font-size:0.85rem;text-align:center;">No Rumbl\'ings yet. <a href="rumblr/" style="color:#C8102E;">Be the first →</a></div>';
+        const hashMap = {};
+        snap.forEach(d => {
+          const tags = d.data().hashtags || [];
+          tags.forEach(tag => { hashMap[tag] = (hashMap[tag] || 0) + 1; });
+        });
+        const sorted = Object.entries(hashMap)
+          .sort((a, b) => b[1] - a[1])
+          .slice(0, 6);
+        if (!sorted.length) {
+          el.innerHTML = '<div style="font-size:0.78rem;color:#718096;font-style:italic;">No trending topics yet.</div>';
           return;
         }
-        // Known writer handle → image map (relative paths from site root)
-        const WRITER_IMAGES = {
-          '@JeffPassan':    'assets/images/rumblr/jeff_passan.png',
-          '@Ken_Rosenthal': 'assets/images/rumblr/ken_rosenthal.png',
-          '@BNightengale':  'assets/images/rumblr/bob_nightengale.png',
-          '@JonHeyman':     'assets/images/rumblr/jon_heyman.png',
-          '@Buster_ESPN':   'assets/images/rumblr/buster_olney.png',
-          '@TKurkjian':     'assets/images/rumblr/tim_kurkjian.png',
-          '@Keithlaw':      'assets/images/rumblr/keith_law.png',
-          '@JasonStark':    'assets/images/rumblr/jason_stark.png',
-          '@JSherman':      'assets/images/rumblr/joel_sherman.png',
-          '@PGammons':      'assets/images/rumblr/peter_gammons.png',
-        };
-        const html = snap.docs.map(d => {
-          const p = d.data();
-          const t = p.timestamp?.toDate ? p.timestamp.toDate() : new Date();
-          // Prefer known writer map (always correct), then stored avatar_url for real users
-          const imgSrc = WRITER_IMAGES[p.author_handle] || (p.author_type !== 'ai' ? p.author_image : null);
-          const initials = `<div style="width:36px;height:36px;border-radius:50%;background:${esc(p.author_avatar_color||'#555')};display:flex;align-items:center;justify-content:center;font-family:'Oswald',sans-serif;font-size:0.72rem;color:#fff;flex-shrink:0;">${esc(p.author_initials||'??')}</div>`;
-          const avatarHtml = imgSrc
-            ? `<img src="${esc(imgSrc)}" alt="${esc(p.author_name)}" style="width:36px;height:36px;border-radius:50%;object-fit:cover;flex-shrink:0;" onerror="this.outerHTML='${initials.replace(/'/g, "\\'")}';">`
-            : initials;
-          const content = esc(p.content||'').replace(/#(\w+)/g, '<span style="color:#C8102E;">#$1</span>');
-          return `
-            <a href="rumblr/post.html?id=${esc(d.id)}" class="rumblr-preview-post" style="display:flex;gap:12px;padding:14px 16px;border-bottom:1px solid #2D3748;text-decoration:none;cursor:pointer;transition:background 0.15s;" onmouseover="this.style.background='#161B22'" onmouseout="this.style.background='transparent'">
-              ${avatarHtml}
-              <div style="flex:1;min-width:0;">
-                <div style="display:flex;gap:8px;align-items:baseline;margin-bottom:4px;">
-                  <span style="font-family:'Oswald',sans-serif;font-size:0.88rem;font-weight:600;color:#fff;">${esc(p.author_name)}</span>
-                  ${p.author_verified ? '<span style="font-size:0.78rem;">⚾</span>' : ''}
-                  <span style="font-family:'Oswald',sans-serif;font-size:0.8rem;color:#A0AEC0;">${esc(p.author_handle)}</span>
-                  <span style="font-family:'Oswald',sans-serif;font-size:0.78rem;color:#718096;margin-left:auto;">${timeAgo(t)}</span>
-                </div>
-                <div style="font-family:'Marcellus',serif;font-size:0.88rem;color:#E2E8F0;line-height:1.5;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;">${content}</div>
-              </div>
-            </a>`;
-        }).join('');
-        container.innerHTML = html + `<div style="text-align:center;padding:12px;border-top:1px solid #2D3748;"><a href="rumblr/" style="font-family:'Oswald',sans-serif;font-size:0.82rem;color:#C8102E;text-decoration:none;letter-spacing:0.06em;text-transform:uppercase;">View all Rumbl\'ings &rarr;</a></div>`;
-      } catch (err) {
-        console.error('Rumblr preview error:', err);
-        container.innerHTML = '<div style="padding:20px;color:#718096;font-family:\'Oswald\',sans-serif;font-size:0.85rem;text-align:center;"><a href="rumblr/" style="color:#C8102E;">Visit Rumblr &rarr;</a></div>';
+        el.innerHTML = sorted.map(([tag, count], i) => `
+          <div style="display:flex;align-items:center;gap:8px;padding:6px 0;border-bottom:1px solid rgba(45,55,72,0.5);${i === sorted.length-1?'border:none;':''}">
+            <span style="font-size:0.72rem;color:#4A5568;width:16px;text-align:right;">${i+1}</span>
+            <a href="rumblr/?tag=${encodeURIComponent(tag)}" style="color:#C8102E;text-decoration:none;font-family:'Oswald',sans-serif;font-size:0.82rem;font-weight:600;">#${tag}</a>
+            <span style="margin-left:auto;font-size:0.68rem;color:#718096;">${count} post${count!==1?'s':''}</span>
+          </div>`).join('');
+      } catch {
+        el.innerHTML = '<div style="font-size:0.78rem;color:#718096;font-style:italic;"><a href="rumblr/" style="color:#C8102E;">Visit Rumblr</a></div>';
       }
     }
-
-    loadRumblrPreview();
+    loadTrending();
   </script>
 
 </body>

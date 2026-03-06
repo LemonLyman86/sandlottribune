@@ -1,0 +1,306 @@
+{
+  "updated": "2026-03-06T00:32:42",
+  "season": 2026,
+  "transactions": [
+    {
+      "date": "2026-02-28",
+      "date_display": "2026-02-28",
+      "type": "drop",
+      "type_label": "Released",
+      "team": "Chicago Cubs",
+      "team_abbrev": "CHC",
+      "player": "Jaden Hamm",
+      "details": "Period 1"
+    },
+    {
+      "date": "2026-02-28",
+      "date_display": "2026-02-28",
+      "type": "drop",
+      "type_label": "Released",
+      "team": "Chicago Cubs",
+      "team_abbrev": "CHC",
+      "player": "Moises Chace",
+      "details": "Period 1"
+    },
+    {
+      "date": "2026-02-28",
+      "date_display": "2026-02-28",
+      "type": "drop",
+      "type_label": "Released",
+      "team": "San Diego Padres",
+      "team_abbrev": "SDP",
+      "player": "Michael Kopech",
+      "details": "Period 1"
+    },
+    {
+      "date": "2026-02-28",
+      "date_display": "2026-02-28",
+      "type": "drop",
+      "type_label": "Released",
+      "team": "San Diego Padres",
+      "team_abbrev": "SDP",
+      "player": "Colin Rea",
+      "details": "Period 1"
+    },
+    {
+      "date": "2026-02-28",
+      "date_display": "2026-02-28",
+      "type": "drop",
+      "type_label": "Released",
+      "team": "San Diego Padres",
+      "team_abbrev": "SDP",
+      "player": "Ronny Henriquez",
+      "details": "Period 1"
+    },
+    {
+      "date": "2026-02-28",
+      "date_display": "2026-02-28",
+      "type": "drop",
+      "type_label": "Released",
+      "team": "Boston Red Sox",
+      "team_abbrev": "BOS",
+      "player": "Michael McGreevy",
+      "details": "Period 1"
+    },
+    {
+      "date": "2026-02-28",
+      "date_display": "2026-02-28",
+      "type": "drop",
+      "type_label": "Released",
+      "team": "Boston Red Sox",
+      "team_abbrev": "BOS",
+      "player": "Chase Dollander",
+      "details": "Period 1"
+    },
+    {
+      "date": "2026-02-28",
+      "date_display": "2026-02-28",
+      "type": "drop",
+      "type_label": "Released",
+      "team": "Boston Red Sox",
+      "team_abbrev": "BOS",
+      "player": "Andres Gimenez",
+      "details": "Period 1"
+    },
+    {
+      "date": "2026-02-28",
+      "date_display": "2026-02-28",
+      "type": "drop",
+      "type_label": "Released",
+      "team": "Boston Red Sox",
+      "team_abbrev": "BOS",
+      "player": "Colt Keith",
+      "details": "Period 1"
+    },
+    {
+      "date": "2026-02-28",
+      "date_display": "2026-02-28",
+      "type": "drop",
+      "type_label": "Released",
+      "team": "St. Louis Cardinals",
+      "team_abbrev": "STL",
+      "player": "Orelvis Martinez",
+      "details": "Period 1"
+    },
+    {
+      "date": "2026-02-28",
+      "date_display": "2026-02-28",
+      "type": "drop",
+      "type_label": "Released",
+      "team": "St. Louis Cardinals",
+      "team_abbrev": "STL",
+      "player": "Drew Thorpe",
+      "details": "Period 1"
+    },
+    {
+      "date": "2026-02-27",
+      "date_display": "2026-02-27",
+      "type": "drop",
+      "type_label": "Released",
+      "team": "Houston Astros",
+      "team_abbrev": "HOU",
+      "player": "Willy Adames",
+      "details": "Period 1"
+    },
+    {
+      "date": "2026-02-27",
+      "date_display": "2026-02-27",
+      "type": "drop",
+      "type_label": "Released",
+      "team": "New York Yankees",
+      "team_abbrev": "NYY",
+      "player": "Carlos Correa",
+      "details": "Period 1"
+    },
+    {
+      "date": "2026-02-27",
+      "date_display": "2026-02-27",
+      "type": "drop",
+      "type_label": "Released",
+      "team": "Boston Red Sox",
+      "team_abbrev": "BOS",
+      "player": "Jonah Heim",
+      "details": "Period 1"
+    },
+    {
+      "date": "2026-02-27",
+      "date_display": "2026-02-27",
+      "type": "drop",
+      "type_label": "Released",
+      "team": "Boston Red Sox",
+      "team_abbrev": "BOS",
+      "player": "Kyren Paris",
+      "details": "Period 1"
+    },
+    {
+      "date": "2026-02-27",
+      "date_display": "2026-02-27",
+      "type": "drop",
+      "type_label": "Released",
+      "team": "Boston Red Sox",
+      "team_abbrev": "BOS",
+      "player": "Cade Cavalli",
+      "details": "Period 1"
+    },
+    {
+      "date": "2026-02-27",
+      "date_display": "2026-02-27",
+      "type": "drop",
+      "type_label": "Released",
+      "team": "Boston Red Sox",
+      "team_abbrev": "BOS",
+      "player": "Luis Garcia",
+      "details": "Period 1"
+    },
+    {
+      "date": "2026-02-26",
+      "date_display": "2026-02-26",
+      "type": "drop",
+      "type_label": "Released",
+      "team": "Arizona Diamondbacks",
+      "team_abbrev": "ARI",
+      "player": "Emiliano Teodo",
+      "details": "Period 1"
+    },
+    {
+      "date": "2026-02-25",
+      "date_display": "2026-02-25",
+      "type": "drop",
+      "type_label": "Released",
+      "team": "Arizona Diamondbacks",
+      "team_abbrev": "ARI",
+      "player": "Kyle Manzardo",
+      "details": "Period 1"
+    },
+    {
+      "date": "2026-02-25",
+      "date_display": "2026-02-25",
+      "type": "drop",
+      "type_label": "Released",
+      "team": "Miami Marlins",
+      "team_abbrev": "MIA",
+      "player": "Jared Triolo",
+      "details": "Period 1"
+    },
+    {
+      "date": "2026-02-23",
+      "date_display": "2026-02-23",
+      "type": "drop",
+      "type_label": "Released",
+      "team": "Houston Astros",
+      "team_abbrev": "HOU",
+      "player": "Jose Ferrer",
+      "details": "Period 1"
+    },
+    {
+      "date": "2026-02-23",
+      "date_display": "2026-02-23",
+      "type": "drop",
+      "type_label": "Released",
+      "team": "Colorado Rockies",
+      "team_abbrev": "COL",
+      "player": "Tomoyuki Sugano",
+      "details": "Period 1"
+    },
+    {
+      "date": "2026-02-23",
+      "date_display": "2026-02-23",
+      "type": "drop",
+      "type_label": "Released",
+      "team": "Colorado Rockies",
+      "team_abbrev": "COL",
+      "player": "Will Vest",
+      "details": "Period 1"
+    },
+    {
+      "date": "2026-02-23",
+      "date_display": "2026-02-23",
+      "type": "drop",
+      "type_label": "Released",
+      "team": "Seattle Mariners",
+      "team_abbrev": "SEA",
+      "player": "Ichiro Cano",
+      "details": "Period 1"
+    },
+    {
+      "date": "2026-02-21",
+      "date_display": "2026-02-21",
+      "type": "drop",
+      "type_label": "Released",
+      "team": "Colorado Rockies",
+      "team_abbrev": "COL",
+      "player": "Conrad Cason",
+      "details": "Period 1"
+    },
+    {
+      "date": "2026-02-20",
+      "date_display": "2026-02-20",
+      "type": "drop",
+      "type_label": "Released",
+      "team": "Milwaukee Brewers",
+      "team_abbrev": "MIL",
+      "player": "Spencer Horwitz",
+      "details": "Period 1"
+    },
+    {
+      "date": "2026-02-20",
+      "date_display": "2026-02-20",
+      "type": "drop",
+      "type_label": "Released",
+      "team": "Seattle Mariners",
+      "team_abbrev": "SEA",
+      "player": "Pablo Lopez",
+      "details": "Period 1"
+    },
+    {
+      "date": "2026-02-18",
+      "date_display": "2026-02-18",
+      "type": "drop",
+      "type_label": "Released",
+      "team": "Colorado Rockies",
+      "team_abbrev": "COL",
+      "player": "Romy Gonzalez",
+      "details": "Period 1"
+    },
+    {
+      "date": "2026-02-17",
+      "date_display": "2026-02-17",
+      "type": "drop",
+      "type_label": "Released",
+      "team": "Miami Marlins",
+      "team_abbrev": "MIA",
+      "player": "Tyler Black",
+      "details": "Period 1"
+    },
+    {
+      "date": "2026-02-16",
+      "date_display": "2026-02-16",
+      "type": "drop",
+      "type_label": "Released",
+      "team": "Colorado Rockies",
+      "team_abbrev": "COL",
+      "player": "Wenceel Perez",
+      "details": "Period 1"
+    }
+  ]
+}

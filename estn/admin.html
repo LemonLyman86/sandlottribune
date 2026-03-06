@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ESTN Admin — Portal Management</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Marcellus&family=Oswald:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../assets/css/main.css">
+</head>
+<body class="estn-admin-body">
+
+  <!-- Nav -->
+  <header class="estn-portal-nav">
+    <nav class="nav-inner">
+      <a class="nav-logo" href="../index.html" aria-label="ESTN Home">
+        <img src="../assets/images/estn-logo-full.png" alt="ESTN" onerror="this.src='../assets/images/estn-logo.png'">
+      </a>
+      <ul class="nav-links">
+        <li><a href="../index.html">Home</a></li>
+        <li><a href="../rumblr/">Rumblr</a></li>
+        <li><a href="../about/">About</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <!-- Access gate (hidden until auth check fails) -->
+  <div id="estn-admin-gate">
+    <h2 style="color:#fff;font-size:1.1rem;margin-bottom:8px;">Access Denied</h2>
+    <p style="color:#718096;font-family:'Marcellus',serif;font-size:0.88rem;">
+      You must be signed in as the ESTN administrator to access this page.<br><br>
+      <a href="../rumblr/login.html?redirect=estn/admin.html" style="color:#C8102E;">Sign In &rarr;</a>
+    </p>
+  </div>
+
+  <!-- Admin dashboard (hidden until authorized) -->
+  <div id="estn-admin-dash" style="display:none;">
+    <div class="estn-admin-wrap">
+
+      <div class="estn-admin-header">
+        <img src="../assets/images/estn-logo.png" alt="ESTN" style="height:28px;">
+        <h1>Portal Admin</h1>
+        <a href="../index.html" class="admin-back">&larr; Back to Portal</a>
+      </div>
+
+      <!-- ── §1 Featured Article Override ─────────────────────────────── -->
+      <div class="estn-admin-section">
+        <div class="estn-admin-section-header">
+          <h2>Featured Article</h2>
+        </div>
+        <div class="estn-admin-section-body">
+          <div class="estn-admin-toggle-row">
+            <label class="estn-admin-toggle">
+              <input type="checkbox" id="featured-pinned">
+              <span class="estn-admin-toggle-slider"></span>
+            </label>
+            <span class="estn-admin-toggle-label">Pin a specific article (overrides auto-selection)</span>
+          </div>
+          <div id="featured-fields" style="display:none;margin-top:12px;">
+            <div class="estn-admin-field">
+              <label class="estn-admin-label">Article URL</label>
+              <input class="estn-admin-input" type="text" id="featured-url" placeholder="e.g. season-previews/season_preview_2026_sea.html">
+            </div>
+            <div class="estn-admin-field">
+              <label class="estn-admin-label">Title</label>
+              <input class="estn-admin-input" type="text" id="featured-title-input" placeholder="Article headline">
+            </div>
+            <div class="estn-admin-field">
+              <label class="estn-admin-label">Byline / Meta</label>
+              <input class="estn-admin-input" type="text" id="featured-byline" placeholder="e.g. By Ken Rosenthal · February 28, 2026">
+            </div>
+            <div class="estn-admin-field">
+              <label class="estn-admin-label">Excerpt</label>
+              <textarea class="estn-admin-textarea" id="featured-excerpt-input" placeholder="2-3 sentence summary for the feature card"></textarea>
+            </div>
+            <div class="estn-admin-field">
+              <label class="estn-admin-label">Hero Image URL</label>
+              <input class="estn-admin-input" type="text" id="featured-image-url" placeholder="e.g. assets/images/sea-preview.png">
+            </div>
+            <div style="border-top:1px solid #2D3748;padding-top:14px;margin-top:4px;">
+              <p class="estn-admin-label" style="margin-bottom:10px;">Sub-Story Card</p>
+              <div class="estn-admin-field">
+                <label class="estn-admin-label">Sub-Story URL</label>
+                <input class="estn-admin-input" type="text" id="sub-story-url" placeholder="e.g. season-previews/season_preview_2026_atl.html">
+              </div>
+              <div class="estn-admin-field">
+                <label class="estn-admin-label">Sub-Story Title</label>
+                <input class="estn-admin-input" type="text" id="sub-story-title" placeholder="Sub-story headline">
+              </div>
+              <div class="estn-admin-field">
+                <label class="estn-admin-label">Sub-Story Image URL</label>
+                <input class="estn-admin-input" type="text" id="sub-story-img" placeholder="e.g. assets/images/atl-preview.png">
+              </div>
+            </div>
+          </div>
+          <button class="estn-admin-btn" id="save-featured-btn">Save Featured Article</button>
+        </div>
+      </div>
+
+      <!-- ── §2 ESTN Ticker ─────────────────────────────────────────────── -->
+      <div class="estn-admin-section">
+        <div class="estn-admin-section-header">
+          <h2>ESTN Ticker</h2>
+        </div>
+        <div class="estn-admin-section-body">
+          <div class="estn-admin-toggle-row" style="margin-bottom:12px;">
+            <label class="estn-admin-toggle">
+              <input type="checkbox" id="ticker-enabled" checked>
+              <span class="estn-admin-toggle-slider"></span>
+            </label>
+            <span class="estn-admin-toggle-label">Ticker enabled</span>
+          </div>
+          <div class="estn-admin-field">
+            <label class="estn-admin-label">Ticker Items (one per line)</label>
+            <textarea class="estn-admin-textarea" id="ticker-items" style="min-height:120px;" placeholder="2026 TSDL SEASON BEGINS MARCH 22&#10;RUMBLR IS LIVE — POST YOUR TAKES&#10;FA AUCTION: MARCH 22"></textarea>
+          </div>
+          <button class="estn-admin-btn" id="save-ticker-btn">Save Ticker</button>
+        </div>
+      </div>
+
+      <!-- ── §3 Custom Headlines ─────────────────────────────────────────── -->
+      <div class="estn-admin-section">
+        <div class="estn-admin-section-header">
+          <h2>Custom Headlines (Right Pillar)</h2>
+        </div>
+        <div class="estn-admin-section-body">
+          <p style="font-size:0.78rem;color:#718096;margin-bottom:12px;font-family:'Marcellus',serif;">
+            These appear at the top of the League Headlines widget, above auto-generated transaction headlines.
+          </p>
+          <div class="estn-admin-link-list" id="headlines-list"></div>
+          <button class="estn-admin-add-btn" id="add-headline-btn">+ Add Headline</button>
+          <div style="margin-top:14px;">
+            <button class="estn-admin-btn" id="save-headlines-btn">Save Headlines</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── §4 Ad Units Manager ─────────────────────────────────────────── -->
+      <div class="estn-admin-section">
+        <div class="estn-admin-section-header">
+          <h2>Ad Units</h2>
+        </div>
+        <div class="estn-admin-section-body">
+          <p style="font-size:0.78rem;color:#718096;margin-bottom:14px;font-family:'Marcellus',serif;">
+            Toggle ads off to exclude them from the random rotation. Disabled ads are never shown to visitors.
+          </p>
+          <div class="estn-admin-ad-grid" id="ad-toggles-grid"></div>
+          <div style="margin-top:14px;">
+            <button class="estn-admin-btn" id="save-ads-btn">Save Ad Settings</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── §5 Quick Links ─────────────────────────────────────────────── -->
+      <div class="estn-admin-section">
+        <div class="estn-admin-section-header">
+          <h2>Quick Links (Left Pillar)</h2>
+        </div>
+        <div class="estn-admin-section-body">
+          <p style="font-size:0.78rem;color:#718096;margin-bottom:12px;font-family:'Marcellus',serif;">
+            Customize the Quick Links block. Leave empty to use the default links.
+          </p>
+          <div class="estn-admin-link-list" id="quick-links-list"></div>
+          <button class="estn-admin-add-btn" id="add-link-btn">+ Add Link</button>
+          <div style="margin-top:14px;">
+            <button class="estn-admin-btn" id="save-links-btn">Save Quick Links</button>
+            <button class="estn-admin-btn secondary" id="reset-links-btn" style="margin-left:8px;">Reset to Defaults</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── §6 Data Status ─────────────────────────────────────────────── -->
+      <div class="estn-admin-section">
+        <div class="estn-admin-section-header">
+          <h2>Data Status</h2>
+        </div>
+        <div class="estn-admin-section-body">
+          <div class="estn-admin-data-row">
+            <span class="estn-admin-data-label">Standings last updated</span>
+            <span class="estn-admin-data-value" id="data-standings-updated">Loading&hellip;</span>
+          </div>
+          <div class="estn-admin-data-row">
+            <span class="estn-admin-data-label">Matchups last updated</span>
+            <span class="estn-admin-data-value" id="data-matchups-updated">Loading&hellip;</span>
+          </div>
+          <div class="estn-admin-data-row">
+            <span class="estn-admin-data-label">Transactions last updated</span>
+            <span class="estn-admin-data-value" id="data-transactions-updated">Loading&hellip;</span>
+          </div>
+          <p class="estn-admin-data-note">
+            To refresh league data: run <code style="background:#0D1117;padding:2px 6px;border-radius:3px;color:#A0AEC0;font-size:0.72rem;">python scripts/export_site_data.py</code> in TSDL2026, then commit and push <code style="background:#0D1117;padding:2px 6px;border-radius:3px;color:#A0AEC0;font-size:0.72rem;">sandlottribune/data/</code> via NB63.
+          </p>
+        </div>
+      </div>
+
+      <!-- ── §7 Programs Visibility ─────────────────────────────────────── -->
+      <div class="estn-admin-section">
+        <div class="estn-admin-section-header">
+          <h2>Programs Visibility (Left Pillar)</h2>
+        </div>
+        <div class="estn-admin-section-body">
+          <div id="programs-toggles">
+            <div class="estn-admin-toggle-row" style="margin-bottom:10px;">
+              <label class="estn-admin-toggle">
+                <input type="checkbox" id="prog-rumblr" checked>
+                <span class="estn-admin-toggle-slider"></span>
+              </label>
+              <span class="estn-admin-toggle-label">Show Rumblr</span>
+            </div>
+            <div class="estn-admin-toggle-row" style="margin-bottom:10px;">
+              <label class="estn-admin-toggle">
+                <input type="checkbox" id="prog-tribune" checked>
+                <span class="estn-admin-toggle-slider"></span>
+              </label>
+              <span class="estn-admin-toggle-label">Show The Sandlot Tribune</span>
+            </div>
+            <div class="estn-admin-toggle-row" style="margin-bottom:10px;">
+              <label class="estn-admin-toggle">
+                <input type="checkbox" id="prog-podcast" checked>
+                <span class="estn-admin-toggle-slider"></span>
+              </label>
+              <span class="estn-admin-toggle-label">Show Babe Ruth Podcast</span>
+            </div>
+          </div>
+          <button class="estn-admin-btn" id="save-programs-btn" style="margin-top:10px;">Save Programs</button>
+        </div>
+      </div>
+
+    </div><!-- /estn-admin-wrap -->
+  </div><!-- /estn-admin-dash -->
+
+  <!-- Toast notification -->
+  <div class="estn-admin-toast" id="estn-toast"></div>
+
+  <!-- Admin Script -->
+  <script type="module" src="../assets/js/estn-admin.js"></script>
+
+</body>
+</html>

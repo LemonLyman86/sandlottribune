@@ -1,0 +1,199 @@
+{
+  "updated": "2026-03-06T00:32:42",
+  "season": 2026,
+  "period": 0,
+  "period_label": "Pre-Season",
+  "season_status": "pre_season",
+  "teams": [
+    {
+      "rank": 1,
+      "team_name": "Arizona Diamondbacks",
+      "abbrev": "ARI",
+      "wins": 0,
+      "losses": 0,
+      "ties": 0,
+      "points_for": 0.0,
+      "rank_change": 0
+    },
+    {
+      "rank": 2,
+      "team_name": "Atlanta Braves",
+      "abbrev": "ATL",
+      "wins": 0,
+      "losses": 0,
+      "ties": 0,
+      "points_for": 0.0,
+      "rank_change": 0
+    },
+    {
+      "rank": 3,
+      "team_name": "Boston Red Sox",
+      "abbrev": "BOS",
+      "wins": 0,
+      "losses": 0,
+      "ties": 0,
+      "points_for": 0.0,
+      "rank_change": 0
+    },
+    {
+      "rank": 4,
+      "team_name": "Chicago Cubs",
+      "abbrev": "CHC",
+      "wins": 0,
+      "losses": 0,
+      "ties": 0,
+      "points_for": 0.0,
+      "rank_change": 0
+    },
+    {
+      "rank": 5,
+      "team_name": "Cincinnati Reds",
+      "abbrev": "CIN",
+      "wins": 0,
+      "losses": 0,
+      "ties": 0,
+      "points_for": 0.0,
+      "rank_change": 0
+    },
+    {
+      "rank": 6,
+      "team_name": "Colorado Rockies",
+      "abbrev": "COL",
+      "wins": 0,
+      "losses": 0,
+      "ties": 0,
+      "points_for": 0.0,
+      "rank_change": 0
+    },
+    {
+      "rank": 7,
+      "team_name": "Free Agent Pool",
+      "abbrev": "FA",
+      "wins": 0,
+      "losses": 0,
+      "ties": 0,
+      "points_for": 0.0,
+      "rank_change": 0
+    },
+    {
+      "rank": 8,
+      "team_name": "Houston Astros",
+      "abbrev": "HOU",
+      "wins": 0,
+      "losses": 0,
+      "ties": 0,
+      "points_for": 0.0,
+      "rank_change": 0
+    },
+    {
+      "rank": 9,
+      "team_name": "Las Vegas Athletics",
+      "abbrev": "LVA",
+      "wins": 0,
+      "losses": 0,
+      "ties": 0,
+      "points_for": 0.0,
+      "rank_change": 0
+    },
+    {
+      "rank": 10,
+      "team_name": "Miami Marlins",
+      "abbrev": "MIA",
+      "wins": 0,
+      "losses": 0,
+      "ties": 0,
+      "points_for": 0.0,
+      "rank_change": 0
+    },
+    {
+      "rank": 11,
+      "team_name": "Milwaukee Brewers",
+      "abbrev": "MIL",
+      "wins": 0,
+      "losses": 0,
+      "ties": 0,
+      "points_for": 0.0,
+      "rank_change": 0
+    },
+    {
+      "rank": 12,
+      "team_name": "New York Yankees",
+      "abbrev": "NYY",
+      "wins": 0,
+      "losses": 0,
+      "ties": 0,
+      "points_for": 0.0,
+      "rank_change": 0
+    },
+    {
+      "rank": 13,
+      "team_name": "Philadelphia Phillies",
+      "abbrev": "PHI",
+      "wins": 0,
+      "losses": 0,
+      "ties": 0,
+      "points_for": 0.0,
+      "rank_change": 0
+    },
+    {
+      "rank": 14,
+      "team_name": "San Diego Padres",
+      "abbrev": "SDP",
+      "wins": 0,
+      "losses": 0,
+      "ties": 0,
+      "points_for": 0.0,
+      "rank_change": 0
+    },
+    {
+      "rank": 15,
+      "team_name": "Seattle Mariners",
+      "abbrev": "SEA",
+      "wins": 0,
+      "losses": 0,
+      "ties": 0,
+      "points_for": 0.0,
+      "rank_change": 0
+    },
+    {
+      "rank": 16,
+      "team_name": "St. Louis Cardinals",
+      "abbrev": "STL",
+      "wins": 0,
+      "losses": 0,
+      "ties": 0,
+      "points_for": 0.0,
+      "rank_change": 0
+    },
+    {
+      "rank": 17,
+      "team_name": "Texas Rangers",
+      "abbrev": "TEX",
+      "wins": 0,
+      "losses": 0,
+      "ties": 0,
+      "points_for": 0.0,
+      "rank_change": 0
+    },
+    {
+      "rank": 18,
+      "team_name": "Toronto Blue Jays",
+      "abbrev": "TOR",
+      "wins": 0,
+      "losses": 0,
+      "ties": 0,
+      "points_for": 0.0,
+      "rank_change": 0
+    },
+    {
+      "rank": 19,
+      "team_name": "Washington Nationals",
+      "abbrev": "WSH",
+      "wins": 0,
+      "losses": 0,
+      "ties": 0,
+      "points_for": 0.0,
+      "rank_change": 0
+    }
+  ]
+}
