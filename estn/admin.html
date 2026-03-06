@@ -8,6 +8,89 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Marcellus&family=Oswald:wght@400;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="../assets/css/main.css">
+  <style>
+    /* ── Tab bar ── */
+    .estn-admin-tab-bar {
+      display: flex; gap: 0; padding: 0 24px;
+      border-bottom: 1px solid #2D3748; margin-bottom: 0; background: #161B22;
+    }
+    .estn-admin-tab {
+      background: none; border: none; border-bottom: 2px solid transparent;
+      color: #718096; font-family: 'Oswald', sans-serif; font-size: 0.78rem;
+      font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase;
+      padding: 11px 18px; cursor: pointer; transition: color 0.15s, border-color 0.15s;
+    }
+    .estn-admin-tab:hover { color: #A0AEC0; }
+    .estn-admin-tab.active { color: #C8102E; border-bottom-color: #C8102E; }
+    .estn-tab-panel { display: none; }
+    .estn-tab-panel.active { display: block; }
+
+    /* ── BTC article rows ── */
+    .btc-article-row {
+      display: grid; grid-template-columns: 18px 56px 1fr auto auto auto;
+      gap: 10px; align-items: center; padding: 8px 10px;
+      border: 1px solid #2D3748; border-radius: 6px; margin-bottom: 5px;
+      background: #0D1117; cursor: default;
+    }
+    .btc-article-row:hover { border-color: #4A5568; }
+    .btc-article-row.dragging { opacity: 0.35; }
+    .drag-handle { color: #4A5568; font-size: 1rem; cursor: grab; user-select: none; }
+    .btc-row-thumb { width: 56px; height: 38px; object-fit: cover; border-radius: 3px; background: #1A202C; }
+    .btc-row-meta { min-width: 0; }
+    .btc-row-title { font-family: 'Oswald',sans-serif; font-size: 0.8rem; color: #E2E8F0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .btc-row-sub { font-family: 'Marcellus',serif; font-size: 0.7rem; color: #718096; }
+    .btc-row-type { font-family: 'Oswald',sans-serif; font-size: 0.62rem; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: #4299E1; background: #1E3A5F; padding: 2px 6px; border-radius: 3px; white-space: nowrap; }
+
+    /* ── Event rows ── */
+    .event-row {
+      display: grid; grid-template-columns: 18px 1fr auto auto auto auto;
+      gap: 10px; align-items: center; padding: 8px 10px;
+      border: 1px solid #2D3748; border-radius: 6px; margin-bottom: 5px; background: #0D1117;
+    }
+    .event-row:hover { border-color: #4A5568; }
+    .event-row.dragging { opacity: 0.35; }
+    .event-row-meta { min-width: 0; }
+    .event-row-name { font-family: 'Oswald',sans-serif; font-size: 0.8rem; color: #E2E8F0; }
+    .event-row-dates { font-family: 'Marcellus',serif; font-size: 0.7rem; color: #718096; }
+    .event-cat-chip {
+      font-family: 'Oswald',sans-serif; font-size: 0.6rem; font-weight: 600; letter-spacing: 0.08em;
+      text-transform: uppercase; padding: 2px 7px; border-radius: 3px; white-space: nowrap;
+    }
+    .event-cat-chip.preseason  { background: #1B4D3E; color: #4ADE80; }
+    .event-cat-chip.inseason   { background: #1E3A5F; color: #60A5FA; }
+    .event-cat-chip.playoffs   { background: #5B1A1A; color: #F87171; }
+    .event-cat-chip.offseason  { background: #1F2937; color: #9CA3AF; }
+
+    /* ── Champion / record rows ── */
+    .champion-row {
+      display: grid; grid-template-columns: 56px 56px 1fr 1fr 56px 1fr 30px;
+      gap: 8px; align-items: center; padding: 8px 10px;
+      border: 1px solid #2D3748; border-radius: 6px; margin-bottom: 5px; background: #0D1117;
+    }
+    .champion-row.header-row { background: #161B22; cursor: default; }
+    .record-row {
+      display: grid; grid-template-columns: 1fr 1fr 80px 60px 60px 1fr 30px;
+      gap: 8px; align-items: center; padding: 8px 10px;
+      border: 1px solid #2D3748; border-radius: 6px; margin-bottom: 5px; background: #0D1117;
+    }
+    .record-row.header-row { background: #161B22; }
+    .row-header-label {
+      font-family: 'Oswald',sans-serif; font-size: 0.6rem; font-weight: 600;
+      letter-spacing: 0.1em; text-transform: uppercase; color: #718096;
+    }
+    .admin-delete-btn {
+      background: #5B1A1A; color: #F87171; border: none; border-radius: 4px;
+      width: 26px; height: 26px; font-size: 0.85rem; cursor: pointer;
+      display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+    }
+    .admin-delete-btn:hover { background: #7B2020; }
+
+    /* ── Shared admin helpers ── */
+    .estn-admin-hint { font-size: 0.78rem; color: #718096; margin-bottom: 12px; font-family: 'Marcellus',serif; }
+    .estn-admin-field-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    .estn-admin-add-form { border-top: 1px solid #2D3748; padding-top: 14px; margin-top: 16px; }
+    select.estn-admin-input { appearance: auto; }
+  </style>
 </head>
 <body class="estn-admin-body">
 
@@ -25,7 +108,7 @@
     </nav>
   </header>
 
-  <!-- Access gate (hidden until auth check fails) -->
+  <!-- Access gate -->
   <div id="estn-admin-gate">
     <h2 style="color:#fff;font-size:1.1rem;margin-bottom:8px;">Access Denied</h2>
     <p style="color:#718096;font-family:'Marcellus',serif;font-size:0.88rem;">
@@ -34,7 +117,7 @@
     </p>
   </div>
 
-  <!-- Admin dashboard (hidden until authorized) -->
+  <!-- Admin dashboard -->
   <div id="estn-admin-dash" style="display:none;">
     <div class="estn-admin-wrap">
 
@@ -44,201 +127,369 @@
         <a href="../index.html" class="admin-back">&larr; Back to Portal</a>
       </div>
 
-      <!-- ── §1 Featured Article Override ─────────────────────────────── -->
-      <div class="estn-admin-section">
-        <div class="estn-admin-section-header">
-          <h2>Featured Article</h2>
-        </div>
-        <div class="estn-admin-section-body">
-          <div class="estn-admin-toggle-row">
-            <label class="estn-admin-toggle">
-              <input type="checkbox" id="featured-pinned">
-              <span class="estn-admin-toggle-slider"></span>
-            </label>
-            <span class="estn-admin-toggle-label">Pin a specific article (overrides auto-selection)</span>
-          </div>
-          <div id="featured-fields" style="display:none;margin-top:12px;">
-            <div class="estn-admin-field">
-              <label class="estn-admin-label">Article URL</label>
-              <input class="estn-admin-input" type="text" id="featured-url" placeholder="e.g. season-previews/season_preview_2026_sea.html">
-            </div>
-            <div class="estn-admin-field">
-              <label class="estn-admin-label">Title</label>
-              <input class="estn-admin-input" type="text" id="featured-title-input" placeholder="Article headline">
-            </div>
-            <div class="estn-admin-field">
-              <label class="estn-admin-label">Byline / Meta</label>
-              <input class="estn-admin-input" type="text" id="featured-byline" placeholder="e.g. By Ken Rosenthal · February 28, 2026">
-            </div>
-            <div class="estn-admin-field">
-              <label class="estn-admin-label">Excerpt</label>
-              <textarea class="estn-admin-textarea" id="featured-excerpt-input" placeholder="2-3 sentence summary for the feature card"></textarea>
-            </div>
-            <div class="estn-admin-field">
-              <label class="estn-admin-label">Hero Image URL</label>
-              <input class="estn-admin-input" type="text" id="featured-image-url" placeholder="e.g. assets/images/sea-preview.png">
-            </div>
-            <div style="border-top:1px solid #2D3748;padding-top:14px;margin-top:4px;">
-              <p class="estn-admin-label" style="margin-bottom:10px;">Sub-Story Card</p>
-              <div class="estn-admin-field">
-                <label class="estn-admin-label">Sub-Story URL</label>
-                <input class="estn-admin-input" type="text" id="sub-story-url" placeholder="e.g. season-previews/season_preview_2026_atl.html">
-              </div>
-              <div class="estn-admin-field">
-                <label class="estn-admin-label">Sub-Story Title</label>
-                <input class="estn-admin-input" type="text" id="sub-story-title" placeholder="Sub-story headline">
-              </div>
-              <div class="estn-admin-field">
-                <label class="estn-admin-label">Sub-Story Image URL</label>
-                <input class="estn-admin-input" type="text" id="sub-story-img" placeholder="e.g. assets/images/atl-preview.png">
-              </div>
-            </div>
-          </div>
-          <button class="estn-admin-btn" id="save-featured-btn">Save Featured Article</button>
-        </div>
+      <!-- ── Tab bar ── -->
+      <div class="estn-admin-tab-bar">
+        <button class="estn-admin-tab active" data-tab="portal">Portal</button>
+        <button class="estn-admin-tab" data-tab="btc">Between the Chalk</button>
+        <button class="estn-admin-tab" data-tab="events">Season Events</button>
+        <button class="estn-admin-tab" data-tab="records">League Records</button>
       </div>
 
-      <!-- ── §2 ESTN Ticker ─────────────────────────────────────────────── -->
-      <div class="estn-admin-section">
-        <div class="estn-admin-section-header">
-          <h2>ESTN Ticker</h2>
-        </div>
-        <div class="estn-admin-section-body">
-          <div class="estn-admin-toggle-row" style="margin-bottom:12px;">
-            <label class="estn-admin-toggle">
-              <input type="checkbox" id="ticker-enabled" checked>
-              <span class="estn-admin-toggle-slider"></span>
-            </label>
-            <span class="estn-admin-toggle-label">Ticker enabled</span>
+      <!-- ════════════════════════════════════════════════
+           TAB: PORTAL (existing sections, unchanged)
+      ════════════════════════════════════════════════ -->
+      <div id="tab-portal" class="estn-tab-panel active">
+
+        <!-- §1 Featured Article Override -->
+        <div class="estn-admin-section">
+          <div class="estn-admin-section-header">
+            <h2>Featured Article</h2>
           </div>
-          <div class="estn-admin-field">
-            <label class="estn-admin-label">Ticker Items (one per line)</label>
-            <textarea class="estn-admin-textarea" id="ticker-items" style="min-height:120px;" placeholder="2026 TSDL SEASON BEGINS MARCH 22&#10;RUMBLR IS LIVE — POST YOUR TAKES&#10;FA AUCTION: MARCH 22"></textarea>
-          </div>
-          <button class="estn-admin-btn" id="save-ticker-btn">Save Ticker</button>
-        </div>
-      </div>
-
-      <!-- ── §3 Custom Headlines ─────────────────────────────────────────── -->
-      <div class="estn-admin-section">
-        <div class="estn-admin-section-header">
-          <h2>Custom Headlines (Right Pillar)</h2>
-        </div>
-        <div class="estn-admin-section-body">
-          <p style="font-size:0.78rem;color:#718096;margin-bottom:12px;font-family:'Marcellus',serif;">
-            These appear at the top of the League Headlines widget, above auto-generated transaction headlines.
-          </p>
-          <div class="estn-admin-link-list" id="headlines-list"></div>
-          <button class="estn-admin-add-btn" id="add-headline-btn">+ Add Headline</button>
-          <div style="margin-top:14px;">
-            <button class="estn-admin-btn" id="save-headlines-btn">Save Headlines</button>
-          </div>
-        </div>
-      </div>
-
-      <!-- ── §4 Ad Units Manager ─────────────────────────────────────────── -->
-      <div class="estn-admin-section">
-        <div class="estn-admin-section-header">
-          <h2>Ad Units</h2>
-        </div>
-        <div class="estn-admin-section-body">
-
-          <!-- Slot assignments -->
-          <p class="estn-admin-label" style="margin-bottom:8px;">Slot Assignments</p>
-          <p style="font-size:0.78rem;color:#718096;margin-bottom:14px;font-family:'Marcellus',serif;">
-            Pin a specific ad to each slot, or leave as <strong style="color:#A0AEC0;">— Random —</strong> to pick from enabled ads.
-          </p>
-          <div id="ad-slots-grid"></div>
-
-          <div style="border-top:1px solid #2D3748;margin:20px 0 16px;"></div>
-
-          <!-- Enable / disable -->
-          <p class="estn-admin-label" style="margin-bottom:8px;">Enable / Disable</p>
-          <p style="font-size:0.78rem;color:#718096;margin-bottom:14px;font-family:'Marcellus',serif;">
-            Disabled ads are excluded from the random rotation.
-          </p>
-          <div class="estn-admin-ad-grid" id="ad-toggles-grid"></div>
-
-          <div style="margin-top:14px;">
-            <button class="estn-admin-btn" id="save-ads-btn">Save Ad Settings</button>
-          </div>
-        </div>
-      </div>
-
-      <!-- ── §5 Quick Links ─────────────────────────────────────────────── -->
-      <div class="estn-admin-section">
-        <div class="estn-admin-section-header">
-          <h2>Quick Links (Left Pillar)</h2>
-        </div>
-        <div class="estn-admin-section-body">
-          <p style="font-size:0.78rem;color:#718096;margin-bottom:12px;font-family:'Marcellus',serif;">
-            Customize the Quick Links block. Leave empty to use the default links.
-          </p>
-          <div class="estn-admin-link-list" id="quick-links-list"></div>
-          <button class="estn-admin-add-btn" id="add-link-btn">+ Add Link</button>
-          <div style="margin-top:14px;">
-            <button class="estn-admin-btn" id="save-links-btn">Save Quick Links</button>
-            <button class="estn-admin-btn secondary" id="reset-links-btn" style="margin-left:8px;">Reset to Defaults</button>
-          </div>
-        </div>
-      </div>
-
-      <!-- ── §6 Data Status ─────────────────────────────────────────────── -->
-      <div class="estn-admin-section">
-        <div class="estn-admin-section-header">
-          <h2>Data Status</h2>
-        </div>
-        <div class="estn-admin-section-body">
-          <div class="estn-admin-data-row">
-            <span class="estn-admin-data-label">Standings last updated</span>
-            <span class="estn-admin-data-value" id="data-standings-updated">Loading&hellip;</span>
-          </div>
-          <div class="estn-admin-data-row">
-            <span class="estn-admin-data-label">Matchups last updated</span>
-            <span class="estn-admin-data-value" id="data-matchups-updated">Loading&hellip;</span>
-          </div>
-          <div class="estn-admin-data-row">
-            <span class="estn-admin-data-label">Transactions last updated</span>
-            <span class="estn-admin-data-value" id="data-transactions-updated">Loading&hellip;</span>
-          </div>
-          <p class="estn-admin-data-note">
-            To refresh league data: run <code style="background:#0D1117;padding:2px 6px;border-radius:3px;color:#A0AEC0;font-size:0.72rem;">python scripts/export_site_data.py</code> in TSDL2026, then commit and push <code style="background:#0D1117;padding:2px 6px;border-radius:3px;color:#A0AEC0;font-size:0.72rem;">sandlottribune/data/</code> via NB63.
-          </p>
-        </div>
-      </div>
-
-      <!-- ── §7 Programs Visibility ─────────────────────────────────────── -->
-      <div class="estn-admin-section">
-        <div class="estn-admin-section-header">
-          <h2>Programs Visibility (Left Pillar)</h2>
-        </div>
-        <div class="estn-admin-section-body">
-          <div id="programs-toggles">
-            <div class="estn-admin-toggle-row" style="margin-bottom:10px;">
+          <div class="estn-admin-section-body">
+            <div class="estn-admin-toggle-row">
               <label class="estn-admin-toggle">
-                <input type="checkbox" id="prog-rumblr" checked>
+                <input type="checkbox" id="featured-pinned">
                 <span class="estn-admin-toggle-slider"></span>
               </label>
-              <span class="estn-admin-toggle-label">Show Rumblr</span>
+              <span class="estn-admin-toggle-label">Pin a specific article (overrides auto-selection)</span>
             </div>
-            <div class="estn-admin-toggle-row" style="margin-bottom:10px;">
+            <div id="featured-fields" style="display:none;margin-top:12px;">
+              <div class="estn-admin-field">
+                <label class="estn-admin-label">Article URL</label>
+                <input class="estn-admin-input" type="text" id="featured-url" placeholder="e.g. season-previews/season_preview_2026_sea.html">
+              </div>
+              <div class="estn-admin-field">
+                <label class="estn-admin-label">Title</label>
+                <input class="estn-admin-input" type="text" id="featured-title-input" placeholder="Article headline">
+              </div>
+              <div class="estn-admin-field">
+                <label class="estn-admin-label">Byline / Meta</label>
+                <input class="estn-admin-input" type="text" id="featured-byline" placeholder="e.g. By Ken Rosenthal · February 28, 2026">
+              </div>
+              <div class="estn-admin-field">
+                <label class="estn-admin-label">Excerpt</label>
+                <textarea class="estn-admin-textarea" id="featured-excerpt-input" placeholder="2-3 sentence summary for the feature card"></textarea>
+              </div>
+              <div class="estn-admin-field">
+                <label class="estn-admin-label">Hero Image URL</label>
+                <input class="estn-admin-input" type="text" id="featured-image-url" placeholder="e.g. assets/images/sea-preview.png">
+              </div>
+              <div style="border-top:1px solid #2D3748;padding-top:14px;margin-top:4px;">
+                <p class="estn-admin-label" style="margin-bottom:10px;">Sub-Story Card</p>
+                <div class="estn-admin-field">
+                  <label class="estn-admin-label">Sub-Story URL</label>
+                  <input class="estn-admin-input" type="text" id="sub-story-url" placeholder="e.g. season-previews/season_preview_2026_atl.html">
+                </div>
+                <div class="estn-admin-field">
+                  <label class="estn-admin-label">Sub-Story Title</label>
+                  <input class="estn-admin-input" type="text" id="sub-story-title" placeholder="Sub-story headline">
+                </div>
+                <div class="estn-admin-field">
+                  <label class="estn-admin-label">Sub-Story Image URL</label>
+                  <input class="estn-admin-input" type="text" id="sub-story-img" placeholder="e.g. assets/images/atl-preview.png">
+                </div>
+              </div>
+            </div>
+            <button class="estn-admin-btn" id="save-featured-btn">Save Featured Article</button>
+          </div>
+        </div>
+
+        <!-- §2 ESTN Ticker -->
+        <div class="estn-admin-section">
+          <div class="estn-admin-section-header">
+            <h2>ESTN Ticker</h2>
+          </div>
+          <div class="estn-admin-section-body">
+            <div class="estn-admin-toggle-row" style="margin-bottom:12px;">
               <label class="estn-admin-toggle">
-                <input type="checkbox" id="prog-tribune" checked>
+                <input type="checkbox" id="ticker-enabled" checked>
                 <span class="estn-admin-toggle-slider"></span>
               </label>
-              <span class="estn-admin-toggle-label">Show The Sandlot Tribune</span>
+              <span class="estn-admin-toggle-label">Ticker enabled</span>
             </div>
-            <div class="estn-admin-toggle-row" style="margin-bottom:10px;">
-              <label class="estn-admin-toggle">
-                <input type="checkbox" id="prog-podcast" checked>
-                <span class="estn-admin-toggle-slider"></span>
-              </label>
-              <span class="estn-admin-toggle-label">Show Babe Ruth Podcast</span>
+            <div class="estn-admin-field">
+              <label class="estn-admin-label">Ticker Items (one per line)</label>
+              <textarea class="estn-admin-textarea" id="ticker-items" style="min-height:120px;" placeholder="2026 TSDL SEASON BEGINS MARCH 22&#10;RUMBLR IS LIVE — POST YOUR TAKES&#10;FA AUCTION: MARCH 22"></textarea>
+            </div>
+            <button class="estn-admin-btn" id="save-ticker-btn">Save Ticker</button>
+          </div>
+        </div>
+
+        <!-- §3 Custom Headlines -->
+        <div class="estn-admin-section">
+          <div class="estn-admin-section-header">
+            <h2>Custom Headlines (Right Pillar)</h2>
+          </div>
+          <div class="estn-admin-section-body">
+            <p class="estn-admin-hint">These appear at the top of the League Headlines widget, above auto-generated transaction headlines.</p>
+            <div class="estn-admin-link-list" id="headlines-list"></div>
+            <button class="estn-admin-add-btn" id="add-headline-btn">+ Add Headline</button>
+            <div style="margin-top:14px;">
+              <button class="estn-admin-btn" id="save-headlines-btn">Save Headlines</button>
             </div>
           </div>
-          <button class="estn-admin-btn" id="save-programs-btn" style="margin-top:10px;">Save Programs</button>
         </div>
-      </div>
+
+        <!-- §4 Ad Units Manager -->
+        <div class="estn-admin-section">
+          <div class="estn-admin-section-header">
+            <h2>Ad Units</h2>
+          </div>
+          <div class="estn-admin-section-body">
+            <p class="estn-admin-label" style="margin-bottom:8px;">Slot Assignments</p>
+            <p class="estn-admin-hint">Pin a specific ad to each slot, or leave as <strong style="color:#A0AEC0;">— Random —</strong> to pick from enabled ads.</p>
+            <div id="ad-slots-grid"></div>
+            <div style="border-top:1px solid #2D3748;margin:20px 0 16px;"></div>
+            <p class="estn-admin-label" style="margin-bottom:8px;">Enable / Disable</p>
+            <p class="estn-admin-hint">Disabled ads are excluded from the random rotation.</p>
+            <div class="estn-admin-ad-grid" id="ad-toggles-grid"></div>
+            <div style="margin-top:14px;">
+              <button class="estn-admin-btn" id="save-ads-btn">Save Ad Settings</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- §5 Quick Links -->
+        <div class="estn-admin-section">
+          <div class="estn-admin-section-header">
+            <h2>Quick Links (Left Pillar)</h2>
+          </div>
+          <div class="estn-admin-section-body">
+            <p class="estn-admin-hint">Customize the Quick Links block. Leave empty to use the default links.</p>
+            <div class="estn-admin-link-list" id="quick-links-list"></div>
+            <button class="estn-admin-add-btn" id="add-link-btn">+ Add Link</button>
+            <div style="margin-top:14px;">
+              <button class="estn-admin-btn" id="save-links-btn">Save Quick Links</button>
+              <button class="estn-admin-btn secondary" id="reset-links-btn" style="margin-left:8px;">Reset to Defaults</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- §6 Data Status -->
+        <div class="estn-admin-section">
+          <div class="estn-admin-section-header">
+            <h2>Data Status</h2>
+          </div>
+          <div class="estn-admin-section-body">
+            <div class="estn-admin-data-row">
+              <span class="estn-admin-data-label">Standings last updated</span>
+              <span class="estn-admin-data-value" id="data-standings-updated">Loading&hellip;</span>
+            </div>
+            <div class="estn-admin-data-row">
+              <span class="estn-admin-data-label">Matchups last updated</span>
+              <span class="estn-admin-data-value" id="data-matchups-updated">Loading&hellip;</span>
+            </div>
+            <div class="estn-admin-data-row">
+              <span class="estn-admin-data-label">Transactions last updated</span>
+              <span class="estn-admin-data-value" id="data-transactions-updated">Loading&hellip;</span>
+            </div>
+            <p class="estn-admin-data-note">
+              To refresh league data: run <code style="background:#0D1117;padding:2px 6px;border-radius:3px;color:#A0AEC0;font-size:0.72rem;">python scripts/export_site_data.py</code> in TSDL2026, then commit and push <code style="background:#0D1117;padding:2px 6px;border-radius:3px;color:#A0AEC0;font-size:0.72rem;">sandlottribune/data/</code> via NB63.
+            </p>
+          </div>
+        </div>
+
+        <!-- §7 Programs Visibility -->
+        <div class="estn-admin-section">
+          <div class="estn-admin-section-header">
+            <h2>Programs Visibility (Left Pillar)</h2>
+          </div>
+          <div class="estn-admin-section-body">
+            <div id="programs-toggles">
+              <div class="estn-admin-toggle-row" style="margin-bottom:10px;">
+                <label class="estn-admin-toggle">
+                  <input type="checkbox" id="prog-rumblr" checked>
+                  <span class="estn-admin-toggle-slider"></span>
+                </label>
+                <span class="estn-admin-toggle-label">Show Rumblr</span>
+              </div>
+              <div class="estn-admin-toggle-row" style="margin-bottom:10px;">
+                <label class="estn-admin-toggle">
+                  <input type="checkbox" id="prog-tribune" checked>
+                  <span class="estn-admin-toggle-slider"></span>
+                </label>
+                <span class="estn-admin-toggle-label">Show The Sandlot Tribune</span>
+              </div>
+              <div class="estn-admin-toggle-row" style="margin-bottom:10px;">
+                <label class="estn-admin-toggle">
+                  <input type="checkbox" id="prog-podcast" checked>
+                  <span class="estn-admin-toggle-slider"></span>
+                </label>
+                <span class="estn-admin-toggle-label">Show Babe Ruth Podcast</span>
+              </div>
+            </div>
+            <button class="estn-admin-btn" id="save-programs-btn" style="margin-top:10px;">Save Programs</button>
+          </div>
+        </div>
+
+      </div><!-- /#tab-portal -->
+
+      <!-- ════════════════════════════════════════════════
+           TAB: BETWEEN THE CHALK
+      ════════════════════════════════════════════════ -->
+      <div id="tab-btc" class="estn-tab-panel">
+
+        <div class="estn-admin-section">
+          <div class="estn-admin-section-header">
+            <h2>Between the Chalk — Article List</h2>
+          </div>
+          <div class="estn-admin-section-body">
+            <p class="estn-admin-hint">Drag rows to reorder. Disabled articles are hidden from the BTC left nav.</p>
+
+            <div id="btc-article-rows"></div>
+
+            <!-- Add article form -->
+            <div class="estn-admin-add-form">
+              <p class="estn-admin-label" style="margin-bottom:10px;">Add Article</p>
+              <div class="estn-admin-field-grid">
+                <div class="estn-admin-field">
+                  <label class="estn-admin-label">Title</label>
+                  <input class="estn-admin-input" type="text" id="btc-add-title" placeholder="Article title">
+                </div>
+                <div class="estn-admin-field">
+                  <label class="estn-admin-label">Author</label>
+                  <input class="estn-admin-input" type="text" id="btc-add-author" placeholder="e.g. Ken Rosenthal">
+                </div>
+                <div class="estn-admin-field">
+                  <label class="estn-admin-label">Date</label>
+                  <input class="estn-admin-input" type="text" id="btc-add-date" placeholder="Mar 1, 2026">
+                </div>
+                <div class="estn-admin-field">
+                  <label class="estn-admin-label">Type</label>
+                  <select class="estn-admin-input" id="btc-add-type">
+                    <option value="season_preview">Season Preview</option>
+                    <option value="power_rankings">Power Rankings</option>
+                    <option value="weekly_recap">Weekly Recap</option>
+                    <option value="matchup_preview">Matchup Preview</option>
+                    <option value="trade_analysis">Trade Analysis</option>
+                  </select>
+                </div>
+                <div class="estn-admin-field">
+                  <label class="estn-admin-label">Article URL</label>
+                  <input class="estn-admin-input" type="text" id="btc-add-url" placeholder="../season-previews/season_preview_2026_sea.html">
+                </div>
+                <div class="estn-admin-field">
+                  <label class="estn-admin-label">Thumbnail URL</label>
+                  <input class="estn-admin-input" type="text" id="btc-add-thumb" placeholder="../assets/images/sea-preview.png">
+                </div>
+              </div>
+              <button class="estn-admin-add-btn" id="btc-add-btn" style="margin-top:8px;">+ Add Article</button>
+            </div>
+
+            <div style="margin-top:16px;">
+              <button class="estn-admin-btn" id="save-btc-btn">Save Article List</button>
+            </div>
+          </div>
+        </div>
+
+      </div><!-- /#tab-btc -->
+
+      <!-- ════════════════════════════════════════════════
+           TAB: SEASON EVENTS
+      ════════════════════════════════════════════════ -->
+      <div id="tab-events" class="estn-tab-panel">
+
+        <div class="estn-admin-section">
+          <div class="estn-admin-section-header">
+            <h2>Season Events</h2>
+          </div>
+          <div class="estn-admin-section-body">
+            <p class="estn-admin-hint">Drag to reorder. Status is auto-computed from dates unless overridden.</p>
+
+            <div id="events-rows"></div>
+
+            <!-- Add event form -->
+            <div class="estn-admin-add-form">
+              <p class="estn-admin-label" style="margin-bottom:10px;">Add Event</p>
+              <div class="estn-admin-field-grid">
+                <div class="estn-admin-field">
+                  <label class="estn-admin-label">Event Name</label>
+                  <input class="estn-admin-input" type="text" id="ev-add-name" placeholder="e.g. FA Auction Draft">
+                </div>
+                <div class="estn-admin-field">
+                  <label class="estn-admin-label">Category</label>
+                  <select class="estn-admin-input" id="ev-add-cat">
+                    <option value="preseason">Pre-Season</option>
+                    <option value="inseason">In-Season</option>
+                    <option value="playoffs">Playoffs</option>
+                    <option value="offseason">Off-Season</option>
+                  </select>
+                </div>
+                <div class="estn-admin-field">
+                  <label class="estn-admin-label">Start Date (YYYY-MM-DD)</label>
+                  <input class="estn-admin-input" type="text" id="ev-add-start" placeholder="2026-03-22">
+                </div>
+                <div class="estn-admin-field">
+                  <label class="estn-admin-label">End Date (YYYY-MM-DD, optional)</label>
+                  <input class="estn-admin-input" type="text" id="ev-add-end" placeholder="2026-03-22">
+                </div>
+                <div class="estn-admin-field" style="grid-column: span 2;">
+                  <label class="estn-admin-label">Description</label>
+                  <input class="estn-admin-input" type="text" id="ev-add-desc" placeholder="Short description of the event">
+                </div>
+              </div>
+              <button class="estn-admin-add-btn" id="ev-add-btn" style="margin-top:8px;">+ Add Event</button>
+            </div>
+
+            <div style="margin-top:16px;">
+              <button class="estn-admin-btn" id="save-events-btn">Save Events</button>
+            </div>
+          </div>
+        </div>
+
+      </div><!-- /#tab-events -->
+
+      <!-- ════════════════════════════════════════════════
+           TAB: LEAGUE RECORDS
+      ════════════════════════════════════════════════ -->
+      <div id="tab-records" class="estn-tab-panel">
+
+        <!-- Champions -->
+        <div class="estn-admin-section">
+          <div class="estn-admin-section-header">
+            <h2>Championship History</h2>
+          </div>
+          <div class="estn-admin-section-body">
+            <!-- Column headers -->
+            <div class="champion-row header-row" style="cursor:default;">
+              <span class="row-header-label">Year</span>
+              <span class="row-header-label">Abbrev</span>
+              <span class="row-header-label">Team Name</span>
+              <span class="row-header-label">Owner</span>
+              <span class="row-header-label">Seed</span>
+              <span class="row-header-label">Note</span>
+              <span></span>
+            </div>
+            <div id="champions-rows"></div>
+            <button class="estn-admin-add-btn" id="champ-add-btn" style="margin-top:8px;">+ Add Champion</button>
+          </div>
+        </div>
+
+        <!-- Season Records -->
+        <div class="estn-admin-section">
+          <div class="estn-admin-section-header">
+            <h2>Season Records</h2>
+          </div>
+          <div class="estn-admin-section-body">
+            <div class="record-row header-row" style="cursor:default;">
+              <span class="row-header-label">Category</span>
+              <span class="row-header-label">Stat</span>
+              <span class="row-header-label">Value</span>
+              <span class="row-header-label">Team</span>
+              <span class="row-header-label">Season</span>
+              <span class="row-header-label">Notes</span>
+              <span></span>
+            </div>
+            <div id="records-rows"></div>
+            <button class="estn-admin-add-btn" id="record-add-btn" style="margin-top:8px;">+ Add Record</button>
+          </div>
+        </div>
+
+        <div style="padding: 0 24px 24px;">
+          <button class="estn-admin-btn" id="save-records-btn">Save All Records</button>
+        </div>
+
+      </div><!-- /#tab-records -->
 
     </div><!-- /estn-admin-wrap -->
   </div><!-- /estn-admin-dash -->

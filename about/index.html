@@ -12,22 +12,21 @@
 </head>
 <body>
 
-  <!-- ===== ESTN DARK HEADER / NAV ===== -->
-  <header class="estn-site-header">
+  <!-- ===== ESTN PORTAL NAV ===== -->
+  <header class="estn-portal-nav">
     <nav class="nav-inner">
-      <a class="nav-logo" href="../index.html" aria-label="The Sandlot Tribune — Home">
-        <img src="../assets/images/logo.png" alt="The Sandlot Tribune">
+      <a class="nav-logo" href="../index.html" aria-label="ESTN Home">
+        <img src="../assets/images/estn-logo-full.png" alt="ESTN">
       </a>
       <ul class="nav-links">
         <li><a href="../index.html">Home</a></li>
-        <li><a href="../between-the-chalk/index.html">Between The Chalk</a></li>
-        <li><a href="../season-deadlines/index.html">Season Deadlines &amp; Events</a></li>
-        <li><a href="../league-records/index.html">League Records</a></li>
-        <li><a href="../rumblr/index.html">Rumblr</a></li>
-        <li><a href="../about/index.html" class="active" aria-label="ESTN Network">
-          <img class="nav-estn-logo" src="../assets/images/estn-logo.png" alt="ESTN">
-        </a></li>
+        <li><a href="../tribune/">The Sandlot Tribune</a></li>
+        <li><a href="../rumblr/">Rumblr</a></li>
+        <li><a href="../league-records/">League Records</a></li>
+        <li><a href="../season-deadlines/">Season Events</a></li>
+        <li><a href="../about/" class="active">About</a></li>
       </ul>
+      <div id="estn-auth-widget"></div>
     </nav>
   </header>
 
@@ -266,5 +265,6 @@
     loadTickerText();
   });
 </script>
+  <script type="module" src="../assets/js/estn-auth.js"></script>
 </body>
 </html>

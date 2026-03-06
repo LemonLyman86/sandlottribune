@@ -12,7 +12,7 @@
   <style>
     body { background: #0D1117; color: #E2E8F0; }
 
-    /* ── Page Hero ── */
+    /* ── Hero ── */
     .records-hero {
       background: linear-gradient(135deg, #0D1117 0%, #161B22 60%, #0a0a1a 100%);
       border-bottom: 1px solid #2D3748;
@@ -29,12 +29,13 @@
       letter-spacing: 0.04em; text-transform: uppercase; color: #F0F4F8;
     }
 
-    /* ── Page layout ── */
+    /* ── Layout ── */
     .records-page-inner { max-width: 1100px; margin: 0 auto; padding: 48px 24px 80px; }
 
-    /* ── Section header ── */
+    /* ── Section headers ── */
     .records-section-header {
-      display: flex; align-items: center; gap: 14px; margin-bottom: 28px; margin-top: 52px;
+      display: flex; align-items: center; gap: 14px;
+      margin-bottom: 28px; margin-top: 52px;
     }
     .records-section-header:first-child { margin-top: 0; }
     .records-section-title {
@@ -43,49 +44,55 @@
     }
     .records-section-rule { flex: 1; height: 1px; background: #2D3748; }
 
-    /* ── Champions Gallery ── */
+    /* ── Champion Cards with Stadium Images ── */
     .champions-grid {
-      display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; margin-bottom: 8px;
+      display: grid; grid-template-columns: repeat(4, 1fr); gap: 3px;
     }
     .champion-card {
-      background: #161B22; border: 1px solid #2D3748;
-      border-top: 3px solid #C8102E; border-radius: 6px;
-      padding: 20px 18px 22px; text-align: center;
+      position: relative; height: 340px; overflow: hidden; cursor: default;
     }
-    .champion-year {
-      font-family: 'Oswald', sans-serif; font-size: 0.65rem; font-weight: 600;
-      letter-spacing: 0.16em; text-transform: uppercase;
-      color: #C8102E; margin-bottom: 10px; display: block;
+    .champion-card-img {
+      width: 100%; height: 100%; object-fit: cover;
+      transition: transform 0.6s ease; display: block;
     }
-    .champion-trophy {
-      font-size: 1.8rem; display: block; margin-bottom: 10px; line-height: 1;
+    .champion-card:hover .champion-card-img { transform: scale(1.05); }
+    .champion-card-overlay {
+      position: absolute; inset: 0;
+      background: linear-gradient(to top, rgba(13,17,23,0.97) 0%, rgba(13,17,23,0.7) 40%, rgba(13,17,23,0.2) 100%);
+      display: flex; flex-direction: column; justify-content: flex-end;
+      padding: 20px 18px;
     }
-    .champion-team {
-      font-family: 'Oswald', sans-serif; font-size: 1.5rem; font-weight: 700;
-      color: #F0F4F8; letter-spacing: 0.04em; margin-bottom: 3px;
+    .champion-season-badge {
+      font-family: 'Oswald', sans-serif; font-size: 0.6rem; font-weight: 600;
+      letter-spacing: 0.18em; text-transform: uppercase; color: #C8102E;
+      margin-bottom: 6px; display: block;
     }
-    .champion-full-name {
-      font-family: 'Marcellus', serif; font-size: 0.8rem; color: #718096;
+    .champion-card-trophy { font-size: 1.4rem; margin-bottom: 4px; line-height: 1; }
+    .champion-card-team {
+      font-family: 'Oswald', sans-serif; font-size: 1.8rem; font-weight: 700;
+      color: #F0F4F8; letter-spacing: 0.06em; line-height: 1; margin-bottom: 2px;
+    }
+    .champion-card-fullname {
+      font-family: 'Marcellus', serif; font-size: 0.78rem; color: #A0AEC0;
       margin-bottom: 10px; line-height: 1.3;
     }
-    .champion-divider { height: 1px; background: #2D3748; margin: 10px 0; }
-    .champion-owner {
-      font-family: 'Oswald', sans-serif; font-size: 0.7rem; letter-spacing: 0.06em;
-      text-transform: uppercase; color: #4A5568; margin-bottom: 2px;
+    .champion-card-divider { height: 1px; background: rgba(255,255,255,0.12); margin-bottom: 8px; }
+    .champion-card-meta {
+      display: flex; align-items: center; justify-content: space-between; gap: 8px;
     }
-    .champion-owner-name {
-      font-family: 'Marcellus', serif; font-size: 0.88rem; color: #A0AEC0;
+    .champion-card-owner {
+      font-family: 'Marcellus', serif; font-size: 0.82rem; color: #CBD5E0;
     }
-    .champion-note {
-      font-family: 'Oswald', sans-serif; font-size: 0.62rem; letter-spacing: 0.08em;
-      text-transform: uppercase; margin-top: 8px;
-      padding: 3px 8px; border-radius: 3px; display: inline-block;
+    .champion-card-note {
+      font-family: 'Oswald', sans-serif; font-size: 0.58rem; font-weight: 600;
+      letter-spacing: 0.1em; text-transform: uppercase; padding: 2px 7px;
+      border-radius: 3px; flex-shrink: 0;
     }
-    .champion-note.cinderella { background: #5B1A1A; color: #F87171; }
-    .champion-note.dominant   { background: #1E3A5F; color: #60A5FA; }
+    .note-cinderella { background: #5B1A1A; color: #F87171; }
+    .note-dominant   { background: #1E3A5F; color: #60A5FA; }
 
     /* ── Records Table ── */
-    .records-table-wrap { overflow-x: auto; margin-bottom: 8px; }
+    .records-table-wrap { overflow-x: auto; }
     .records-table {
       width: 100%; border-collapse: collapse;
       font-family: 'Marcellus', serif; font-size: 0.88rem;
@@ -97,35 +104,52 @@
       background: #161B22;
     }
     .records-table td {
-      padding: 11px 14px; border-bottom: 1px solid #1A1F2E; color: #A0AEC0; line-height: 1.4;
+      padding: 12px 14px; border-bottom: 1px solid #1A1F2E;
+      color: #A0AEC0; line-height: 1.4;
     }
     .records-table tr:last-child td { border-bottom: none; }
     .records-table tr:hover td { background: rgba(200,16,46,0.04); }
-    .records-table td.record-value {
-      font-family: 'Oswald', sans-serif; font-size: 1.1rem; font-weight: 600;
-      color: #F0F4F8; letter-spacing: 0.02em;
+    .record-value {
+      font-family: 'Oswald', sans-serif; font-size: 1.15rem; font-weight: 600;
+      color: #F0F4F8;
     }
-    .records-table td.record-team {
+    .record-team {
       font-family: 'Oswald', sans-serif; font-size: 0.8rem; font-weight: 600;
       letter-spacing: 0.06em; color: #C8102E;
     }
 
-    /* ── Awards grid ── */
+    /* ── Playoff Formats ── */
+    .formats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+    .format-card {
+      background: #161B22; border: 1px solid #2D3748; border-radius: 6px;
+      padding: 20px 22px;
+    }
+    .format-era {
+      font-family: 'Oswald', sans-serif; font-size: 0.7rem; font-weight: 600;
+      letter-spacing: 0.12em; text-transform: uppercase; color: #C8102E;
+      margin-bottom: 6px; display: block;
+    }
+    .format-name {
+      font-family: 'Oswald', sans-serif; font-size: 1.1rem; font-weight: 600;
+      color: #F0F4F8; margin-bottom: 8px;
+    }
+    .format-detail {
+      font-family: 'Marcellus', serif; font-size: 0.83rem; color: #718096; line-height: 1.7;
+    }
+
+    /* ── Awards ── */
     .awards-seasons-grid {
       display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px;
     }
     .award-season-col {
-      background: #161B22; border: 1px solid #2D3748; border-radius: 6px;
-      overflow: hidden;
+      background: #161B22; border: 1px solid #2D3748; border-radius: 6px; overflow: hidden;
     }
     .award-season-header {
       background: #1A1F2E; padding: 10px 14px; border-bottom: 1px solid #2D3748;
       font-family: 'Oswald', sans-serif; font-size: 0.72rem; font-weight: 600;
       letter-spacing: 0.12em; text-transform: uppercase; color: #718096;
     }
-    .award-row {
-      padding: 12px 14px; border-bottom: 1px solid #1A1F2E;
-    }
+    .award-row { padding: 12px 14px; border-bottom: 1px solid #1A1F2E; }
     .award-row:last-child { border-bottom: none; }
     .award-type {
       font-family: 'Oswald', sans-serif; font-size: 0.6rem; letter-spacing: 0.1em;
@@ -139,31 +163,27 @@
       letter-spacing: 0.08em; color: #C8102E; margin-left: 6px;
     }
 
-    /* ── Playoff Formats ── */
-    .formats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
-    .format-card {
-      background: #161B22; border: 1px solid #2D3748; border-radius: 6px;
-      padding: 18px 20px;
+    /* ── Stadium gallery strip ── */
+    .stadium-strip {
+      display: grid; grid-template-columns: repeat(3, 1fr); gap: 3px;
+      margin-top: 3px; /* connects to champion cards above */
     }
-    .format-era {
-      font-family: 'Oswald', sans-serif; font-size: 0.72rem; font-weight: 600;
-      letter-spacing: 0.12em; text-transform: uppercase; color: #C8102E;
-      margin-bottom: 6px; display: block;
+    .stadium-strip-img {
+      width: 100%; height: 120px; object-fit: cover; display: block;
+      filter: brightness(0.5) saturate(0.6);
+      transition: filter 0.3s;
     }
-    .format-name {
-      font-family: 'Oswald', sans-serif; font-size: 1.1rem; font-weight: 600;
-      color: #F0F4F8; margin-bottom: 8px;
-    }
-    .format-detail {
-      font-family: 'Marcellus', serif; font-size: 0.83rem; color: #718096; line-height: 1.6;
-    }
+    .stadium-strip-img:hover { filter: brightness(0.75) saturate(0.9); }
 
     @media (max-width: 900px) {
       .champions-grid { grid-template-columns: repeat(2, 1fr); }
       .awards-seasons-grid { grid-template-columns: repeat(2, 1fr); }
+      .champion-card { height: 260px; }
+      .stadium-strip { grid-template-columns: repeat(2, 1fr); }
     }
     @media (max-width: 600px) {
       .champions-grid { grid-template-columns: 1fr 1fr; }
+      .champion-card { height: 220px; }
       .formats-grid { grid-template-columns: 1fr; }
       .awards-seasons-grid { grid-template-columns: 1fr 1fr; }
     }
@@ -204,48 +224,65 @@
       <div class="records-section-rule"></div>
     </div>
 
-    <div class="champions-grid" id="champions-grid">
-      <!-- 2022 -->
+    <!-- Champion Cards with Stadium Panoramas -->
+    <div class="champions-grid">
+      <!-- 2022 ATL -->
       <div class="champion-card">
-        <span class="champion-year">2022 &middot; Season 1</span>
-        <span class="champion-trophy">🏆</span>
-        <div class="champion-team">ATL</div>
-        <div class="champion-full-name">Atlanta Braves</div>
-        <div class="champion-divider"></div>
-        <div class="champion-owner">Owner</div>
-        <div class="champion-owner-name">Justin Winward</div>
-        <span class="champion-note dominant">#1 Seed</span>
+        <img class="champion-card-img" src="../assets/images/stadiums/atl_stadium_panorama.jpg" alt="Atlanta Braves stadium">
+        <div class="champion-card-overlay">
+          <span class="champion-season-badge">2022 &middot; Season 1</span>
+          <div class="champion-card-trophy">🏆</div>
+          <div class="champion-card-team">ATL</div>
+          <div class="champion-card-fullname">Atlanta Braves</div>
+          <div class="champion-card-divider"></div>
+          <div class="champion-card-meta">
+            <span class="champion-card-owner">Justin Winward</span>
+            <span class="champion-card-note note-dominant">#1 Seed</span>
+          </div>
+        </div>
       </div>
-      <!-- 2023 -->
+      <!-- 2023 MIL -->
       <div class="champion-card">
-        <span class="champion-year">2023 &middot; Season 2</span>
-        <span class="champion-trophy">🏆</span>
-        <div class="champion-team">MIL</div>
-        <div class="champion-full-name">Milwaukee Brewers</div>
-        <div class="champion-divider"></div>
-        <div class="champion-owner">Owner</div>
-        <div class="champion-owner-name">&mdash;</div>
+        <img class="champion-card-img" src="../assets/images/stadiums/mil_stadium_panorama.jpg" alt="Milwaukee Brewers stadium">
+        <div class="champion-card-overlay">
+          <span class="champion-season-badge">2023 &middot; Season 2</span>
+          <div class="champion-card-trophy">🏆</div>
+          <div class="champion-card-team">MIL</div>
+          <div class="champion-card-fullname">Milwaukee Brewers</div>
+          <div class="champion-card-divider"></div>
+          <div class="champion-card-meta">
+            <span class="champion-card-owner" id="mil-owner">&mdash;</span>
+          </div>
+        </div>
       </div>
-      <!-- 2024 -->
+      <!-- 2024 LVA -->
       <div class="champion-card">
-        <span class="champion-year">2024 &middot; Season 3</span>
-        <span class="champion-trophy">🏆</span>
-        <div class="champion-team">LVA</div>
-        <div class="champion-full-name">Las Vegas Athletics</div>
-        <div class="champion-divider"></div>
-        <div class="champion-owner">Owner</div>
-        <div class="champion-owner-name">Mike DiMauro</div>
+        <img class="champion-card-img" src="../assets/images/stadiums/lva_stadium_panorama.jpg" alt="Las Vegas Athletics stadium">
+        <div class="champion-card-overlay">
+          <span class="champion-season-badge">2024 &middot; Season 3</span>
+          <div class="champion-card-trophy">🏆</div>
+          <div class="champion-card-team">LVA</div>
+          <div class="champion-card-fullname">Las Vegas Athletics</div>
+          <div class="champion-card-divider"></div>
+          <div class="champion-card-meta">
+            <span class="champion-card-owner">Mike DiMauro</span>
+          </div>
+        </div>
       </div>
-      <!-- 2025 -->
+      <!-- 2025 ARI -->
       <div class="champion-card">
-        <span class="champion-year">2025 &middot; Season 4</span>
-        <span class="champion-trophy">🏆</span>
-        <div class="champion-team">ARI</div>
-        <div class="champion-full-name">Arizona Diamondbacks</div>
-        <div class="champion-divider"></div>
-        <div class="champion-owner">Owner</div>
-        <div class="champion-owner-name">Cote Nichols</div>
-        <span class="champion-note cinderella">#8 Seed</span>
+        <img class="champion-card-img" src="../assets/images/stadiums/ari_stadium_panorama.jpg" alt="Arizona Diamondbacks stadium">
+        <div class="champion-card-overlay">
+          <span class="champion-season-badge">2025 &middot; Season 4</span>
+          <div class="champion-card-trophy">🏆</div>
+          <div class="champion-card-team">ARI</div>
+          <div class="champion-card-fullname">Arizona Diamondbacks</div>
+          <div class="champion-card-divider"></div>
+          <div class="champion-card-meta">
+            <span class="champion-card-owner">Cote Nichols</span>
+            <span class="champion-card-note note-cinderella">#8 Seed</span>
+          </div>
+        </div>
       </div>
     </div>
 
@@ -259,18 +296,16 @@
         <span class="format-era">2022&ndash;2023 &middot; Seasons 1&ndash;2</span>
         <div class="format-name">6-Team Bracket</div>
         <div class="format-detail">
-          Quarterfinals &rarr; Semifinals &rarr; Championship Finals.
-          2-week matchup rounds. Top 6 teams qualify from a 14-team league.
-          Consolation bracket determines MiLB draft order.
+          Quarterfinals &rarr; Semifinals &rarr; Championship Finals. 2-week matchup rounds.
+          Top 6 teams qualify. Consolation bracket determines MiLB draft order.
         </div>
       </div>
       <div class="format-card">
         <span class="format-era">2024&ndash;Present &middot; Seasons 3+</span>
         <div class="format-name">8-Team Bracket</div>
         <div class="format-detail">
-          Divisional Series &rarr; Conference Series &rarr; World Series.
-          2-week matchup rounds. Plus a separate 5th–8th place bracket.
-          Consolation bracket winner earns the 1st MiLB draft pick.
+          Divisional Series &rarr; Conference Series &rarr; World Series. 2-week rounds.
+          Plus a 5th&ndash;8th place bracket. Consolation winner earns the 1st MiLB draft pick.
         </div>
       </div>
     </div>
@@ -281,7 +316,7 @@
       <div class="records-section-rule"></div>
     </div>
     <div class="records-table-wrap">
-      <table class="records-table" id="records-table">
+      <table class="records-table">
         <thead>
           <tr>
             <th>Category</th>
@@ -292,7 +327,7 @@
           </tr>
         </thead>
         <tbody id="records-tbody">
-          <!-- Populated by JS / Firestore; hardcoded fallback below -->
+          <!-- Populated by JS / Firestore fallback -->
         </tbody>
       </table>
     </div>
@@ -312,51 +347,37 @@
     import { firestore } from '../assets/js/firebase-config.js';
     import { doc, getDoc } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js';
 
-    // ── Fallback data ──
-    const FALLBACK_CHAMPIONS = [
-      { year: 2022, team: 'Atlanta Braves', abbrev: 'ATL', owner: 'Justin Winward', seed: 1, note: 'Season 1' },
-      { year: 2023, team: 'Milwaukee Brewers', abbrev: 'MIL', owner: null, seed: null, note: 'Season 2' },
-      { year: 2024, team: 'Las Vegas Athletics', abbrev: 'LVA', owner: 'Mike DiMauro', seed: null, note: 'Season 3' },
-      { year: 2025, team: 'Arizona Diamondbacks', abbrev: 'ARI', owner: 'Cote Nichols', seed: 8, note: 'Cinderella Run' }
-    ];
-
     const FALLBACK_RECORDS = [
       { category: 'Best Regular Season Record', stat: '17-2', team: 'MIL', season: 2023, notes: 'Best W% in league history' },
-      { category: 'Regular Season Wins', stat: '17', team: 'MIL', season: 2023, notes: 'Single season' },
-      { category: 'Most Fantasy Points (Season)', stat: '7,986.5', team: 'ARI', season: 2025, notes: 'Including playoffs' },
+      { category: 'Regular Season Wins',        stat: '17',   team: 'MIL', season: 2023, notes: 'Single season' },
+      { category: 'Most Total FPts (Season)',   stat: '7,986.5', team: 'ARI', season: 2025, notes: 'Including playoffs' },
       { category: 'Lowest Playoff Seed to Win', stat: '#8 Seed', team: 'ARI', season: 2025, notes: 'Beat #1, #2, #4 seeds' },
-      { category: 'Longest Playoff Run', stat: '3 Rounds', team: 'ARI', season: 2025, notes: 'DS → CS → WS, all wins' }
+      { category: 'Longest Playoff Run',        stat: '3 Rounds', team: 'ARI', season: 2025, notes: 'DS \u2192 CS \u2192 WS' }
     ];
 
     const FALLBACK_AWARDS = {
-      2022: { silverSlugger: '—', cyYoung: '—' },
-      2023: { silverSlugger: '—', cyYoung: '—' },
-      2024: { silverSlugger: '—', cyYoung: '—' },
-      2025: { silverSlugger: '—', cyYoung: '—' }
+      2022: { silverSlugger: '\u2014', silverSluggerTeam: '', cyYoung: '\u2014', cyYoungTeam: '' },
+      2023: { silverSlugger: '\u2014', silverSluggerTeam: '', cyYoung: '\u2014', cyYoungTeam: '' },
+      2024: { silverSlugger: '\u2014', silverSluggerTeam: '', cyYoung: '\u2014', cyYoungTeam: '' },
+      2025: { silverSlugger: '\u2014', silverSluggerTeam: '', cyYoung: '\u2014', cyYoungTeam: '' }
     };
 
-    // ── Render records table ──
     function renderRecords(records) {
       const tbody = document.getElementById('records-tbody');
       tbody.innerHTML = '';
-      if (!records.length) {
-        tbody.innerHTML = '<tr><td colspan="5" style="color:#4A5568;font-style:italic;">No records loaded yet.</td></tr>';
-        return;
-      }
       records.forEach(r => {
         const tr = document.createElement('tr');
         tr.innerHTML = `
           <td>${r.category || ''}</td>
-          <td class="record-value">${r.stat || r.value || '—'}</td>
-          <td class="record-team">${r.team || '—'}</td>
-          <td>${r.season || '—'}</td>
+          <td class="record-value">${r.stat || r.value || '\u2014'}</td>
+          <td class="record-team">${r.team || '\u2014'}</td>
+          <td>${r.season || '\u2014'}</td>
           <td>${r.notes || ''}</td>
         `;
         tbody.appendChild(tr);
       });
     }
 
-    // ── Render awards ──
     function renderAwards(awardsData) {
       const grid = document.getElementById('awards-grid');
       grid.innerHTML = '';
@@ -368,21 +389,20 @@
           <div class="award-season-header">${year} Season</div>
           <div class="award-row">
             <span class="award-type">Silver Slugger (Hitting)</span>
-            <div class="award-winner">${data.silverSlugger || '—'}${data.silverSluggerTeam ? `<span class="award-team-tag">${data.silverSluggerTeam}</span>` : ''}</div>
+            <div class="award-winner">${data.silverSlugger || '\u2014'}${data.silverSluggerTeam ? `<span class="award-team-tag">${data.silverSluggerTeam}</span>` : ''}</div>
           </div>
           <div class="award-row">
             <span class="award-type">Cy Young (Pitching)</span>
-            <div class="award-winner">${data.cyYoung || '—'}${data.cyYoungTeam ? `<span class="award-team-tag">${data.cyYoungTeam}</span>` : ''}</div>
+            <div class="award-winner">${data.cyYoung || '\u2014'}${data.cyYoungTeam ? `<span class="award-team-tag">${data.cyYoungTeam}</span>` : ''}</div>
           </div>
         `;
         grid.appendChild(col);
       });
     }
 
-    // ── Init ──
     async function init() {
       let records = FALLBACK_RECORDS;
-      let awards = FALLBACK_AWARDS;
+      let awards  = FALLBACK_AWARDS;
 
       try {
         const snap = await getDoc(doc(firestore, 'settings', 'league-records'));
@@ -390,6 +410,14 @@
           const data = snap.data();
           if (Array.isArray(data.records) && data.records.length) records = data.records;
           if (data.awards) awards = data.awards;
+          // Update MIL owner if stored
+          if (data.champions) {
+            const mil = data.champions.find(c => c.abbrev === 'MIL' && c.year === 2023);
+            if (mil && mil.owner) {
+              const el = document.getElementById('mil-owner');
+              if (el) el.textContent = mil.owner;
+            }
+          }
         }
       } catch { /* use fallback */ }
 

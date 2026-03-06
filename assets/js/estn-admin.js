@@ -334,6 +334,347 @@ function initPrograms(settings) {
   });
 }
 
+// ── Tab switching ──────────────────────────────────────────────────────────────
+function setupTabs() {
+  document.querySelectorAll('.estn-admin-tab').forEach(tab => {
+    tab.addEventListener('click', () => {
+      document.querySelectorAll('.estn-admin-tab').forEach(t => t.classList.remove('active'));
+      document.querySelectorAll('.estn-tab-panel').forEach(p => p.classList.remove('active'));
+      tab.classList.add('active');
+      const panel = document.getElementById(`tab-${tab.dataset.tab}`);
+      if (panel) panel.classList.add('active');
+    });
+  });
+}
+
+// ── Drag-to-reorder ────────────────────────────────────────────────────────────
+function makeDraggable(container) {
+  let dragSrc = null;
+  container.addEventListener('dragstart', e => {
+    dragSrc = e.target.closest('[draggable="true"]');
+    if (dragSrc) setTimeout(() => dragSrc.classList.add('dragging'), 0);
+  });
+  container.addEventListener('dragend', () => {
+    if (dragSrc) dragSrc.classList.remove('dragging');
+    dragSrc = null;
+  });
+  container.addEventListener('dragover', e => {
+    e.preventDefault();
+    const target = e.target.closest('[draggable="true"]');
+    if (!target || target === dragSrc || !dragSrc) return;
+    const rect = target.getBoundingClientRect();
+    const after = e.clientY > rect.top + rect.height / 2;
+    container.insertBefore(dragSrc, after ? target.nextSibling : target);
+  });
+}
+
+// ── HTML escape helper ─────────────────────────────────────────────────────────
+function esc(s) { return String(s || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+
+// ── BTC article manager ────────────────────────────────────────────────────────
+const BTC_TYPE_LABELS = {
+  season_preview: 'Season Preview', power_rankings: 'Power Rankings',
+  weekly_recap: 'Weekly Recap', matchup_preview: 'Matchup Preview',
+  trade_analysis: 'Trade Analysis',
+};
+
+const FALLBACK_BTC_ARTICLES = [
+  { id:'season_preview_2026_sea', title:'2026 TSDL Season Preview: Seattle Mariners',   author:'Ken Rosenthal', date:'Feb 28, 2026', type:'season_preview', typeLabel:'Season Preview', url:'../season-previews/season_preview_2026_sea.html', thumbnail:'../assets/images/sea-preview.png', enabled:true },
+  { id:'season_preview_2026_atl', title:'2026 TSDL Season Preview: Atlanta Braves',     author:'Tim Kurkjian',  date:'Feb 28, 2026', type:'season_preview', typeLabel:'Season Preview', url:'../season-previews/season_preview_2026_atl.html', thumbnail:'../assets/images/atl-preview.png', enabled:true },
+  { id:'season_preview_2026_lva', title:'2026 TSDL Season Preview: Las Vegas Athletics',author:'Keith Law',     date:'Feb 27, 2026', type:'season_preview', typeLabel:'Season Preview', url:'../season-previews/season_preview_2026_lva.html', thumbnail:'../assets/images/lva-preview.png', enabled:true },
+  { id:'season_preview_2026_stl', title:'2026 TSDL Season Preview: St. Louis Cardinals',author:'Buster Olney',  date:'Feb 27, 2026', type:'season_preview', typeLabel:'Season Preview', url:'../season-previews/season_preview_2026_stl.html', thumbnail:'../assets/images/stl-preview.png', enabled:true },
+  { id:'season_preview_2026_ari', title:'2026 TSDL Season Preview: Arizona Diamondbacks',author:'Jeff Passan', date:'Feb 26, 2026', type:'season_preview', typeLabel:'Season Preview', url:'../season-previews/season_preview_2026_ari.html', thumbnail:'../assets/images/ari-preview.png', enabled:true },
+];
+
+function createBTCRow(article) {
+  const row = document.createElement('div');
+  row.className = 'btc-article-row';
+  row.setAttribute('draggable', 'true');
+  row.dataset.id       = article.id || `a_${Date.now()}`;
+  row.dataset.author   = article.author   || '';
+  row.dataset.date     = article.date     || '';
+  row.dataset.type     = article.type     || '';
+  row.dataset.typeLabel= article.typeLabel|| '';
+  row.dataset.url      = article.url      || '';
+  row.dataset.thumb    = article.thumbnail|| '';
+  row.innerHTML = `
+    <span class="drag-handle" title="Drag to reorder">&#8942;</span>
+    <img class="btc-row-thumb" src="${esc(article.thumbnail)}" alt="" onerror="this.style.opacity='0.15'">
+    <div class="btc-row-meta">
+      <div class="btc-row-title">${esc(article.title)}</div>
+      <div class="btc-row-sub">${esc(article.author)} &middot; ${esc(article.date)}</div>
+    </div>
+    <span class="btc-row-type">${esc(article.typeLabel || article.type)}</span>
+    <label class="estn-admin-toggle" title="Enabled in nav">
+      <input type="checkbox" class="btc-enabled-toggle" ${article.enabled !== false ? 'checked' : ''}>
+      <span class="estn-admin-toggle-slider"></span>
+    </label>
+    <button class="admin-delete-btn" title="Remove">&times;</button>
+  `;
+  row.querySelector('.admin-delete-btn').addEventListener('click', () => row.remove());
+  return row;
+}
+
+function readBTCArticles() {
+  return Array.from(document.querySelectorAll('#btc-article-rows .btc-article-row')).map(row => ({
+    id:        row.dataset.id,
+    title:     row.querySelector('.btc-row-title')?.textContent || '',
+    author:    row.dataset.author,
+    date:      row.dataset.date,
+    type:      row.dataset.type,
+    typeLabel: row.dataset.typeLabel,
+    url:       row.dataset.url,
+    thumbnail: row.dataset.thumb,
+    enabled:   row.querySelector('.btc-enabled-toggle')?.checked !== false,
+  }));
+}
+
+async function initBTC() {
+  let articles;
+  try {
+    const snap = await getDoc(doc(firestore, 'settings', 'btc'));
+    articles = (snap.exists() && Array.isArray(snap.data().articles) && snap.data().articles.length)
+      ? snap.data().articles : FALLBACK_BTC_ARTICLES;
+  } catch { articles = FALLBACK_BTC_ARTICLES; }
+
+  const container = document.getElementById('btc-article-rows');
+  if (!container) return;
+  articles.forEach(a => container.appendChild(createBTCRow(a)));
+  makeDraggable(container);
+
+  document.getElementById('btc-add-btn')?.addEventListener('click', () => {
+    const getV = id => document.getElementById(id)?.value.trim() || '';
+    const type = getV('btc-add-type');
+    const article = {
+      id: `article_${Date.now()}`,
+      title:     getV('btc-add-title'),
+      author:    getV('btc-add-author'),
+      date:      getV('btc-add-date'),
+      type,
+      typeLabel: BTC_TYPE_LABELS[type] || type,
+      url:       getV('btc-add-url'),
+      thumbnail: getV('btc-add-thumb'),
+      enabled:   true,
+    };
+    if (!article.title || !article.url) { showToast('Title and URL are required.', true); return; }
+    container.appendChild(createBTCRow(article));
+    ['btc-add-title','btc-add-author','btc-add-date','btc-add-url','btc-add-thumb'].forEach(id => {
+      const el = document.getElementById(id); if (el) el.value = '';
+    });
+  });
+
+  document.getElementById('save-btc-btn')?.addEventListener('click', async () => {
+    const articles = readBTCArticles();
+    await setDoc(doc(firestore, 'settings', 'btc'), { articles });
+    showToast('BTC article list saved.');
+  });
+}
+
+// ── Events manager ─────────────────────────────────────────────────────────────
+const FALLBACK_EVENTS = [
+  { id:'keeper-deadline',   name:'Keeper Declaration Deadline', category:'preseason', startDate:'2026-03-01', endDate:'',           description:'Submit your keeper list by midnight.' },
+  { id:'expansion-draft',   name:'Expansion Draft',             category:'preseason', startDate:'2026-03-07', endDate:'2026-03-14', description:'Expansion teams select from the available pool.' },
+  { id:'fa-auction',        name:'FA Auction Draft',            category:'preseason', startDate:'2026-03-22', endDate:'',           description:'Main auction — $260 budget per team.' },
+  { id:'milb-draft',        name:'MiLB Draft',                  category:'preseason', startDate:'2026-03-23', endDate:'',           description:'Prospect draft following the FA auction.' },
+  { id:'season-start',      name:'Regular Season Begins',       category:'inseason',  startDate:'2026-03-26', endDate:'',           description:'Week 1 matchups begin.' },
+  { id:'trade-deadline',    name:'Trade Deadline',              category:'inseason',  startDate:'2026-08-31', endDate:'',           description:'No trades after this date.' },
+  { id:'waiver-freeze',     name:'Waiver Wire Freeze',          category:'playoffs',  startDate:'2026-09-14', endDate:'',           description:'Roster moves freeze before playoffs.' },
+  { id:'playoffs-begin',    name:'Playoffs Begin',              category:'playoffs',  startDate:'2026-09-15', endDate:'',           description:'Top 8 teams advance to the bracket.' },
+  { id:'championship',      name:'Championship Week',           category:'playoffs',  startDate:'2026-09-29', endDate:'2026-10-05', description:'TSDL World Series — final week.' },
+  { id:'offseason-begins',  name:'Off-Season Begins',           category:'offseason', startDate:'2026-10-06', endDate:'',           description:'Contracts, cuts, and roster planning begin.' },
+];
+
+const CAT_LABELS = { preseason:'Pre-Season', inseason:'In-Season', playoffs:'Playoffs', offseason:'Off-Season' };
+
+function createEventRow(ev) {
+  const row = document.createElement('div');
+  row.className = 'event-row';
+  row.setAttribute('draggable', 'true');
+  row.dataset.id   = ev.id   || `ev_${Date.now()}`;
+  row.dataset.desc = ev.description || '';
+  row.innerHTML = `
+    <span class="drag-handle" title="Drag to reorder">&#8942;</span>
+    <div class="event-row-meta">
+      <div class="event-row-name">${esc(ev.name)}</div>
+      <div class="event-row-dates">${esc(ev.startDate)}${ev.endDate ? ' – ' + esc(ev.endDate) : ''}</div>
+    </div>
+    <span class="event-cat-chip ${esc(ev.category)}">${esc(CAT_LABELS[ev.category] || ev.category)}</span>
+    <select class="estn-admin-input ev-status-override" style="font-size:0.72rem;padding:3px 6px;width:auto;">
+      <option value="">Auto</option>
+      <option value="upcoming"   ${ev.statusOverride==='upcoming'   ?'selected':''}>Force: Upcoming</option>
+      <option value="inprogress" ${ev.statusOverride==='inprogress' ?'selected':''}>Force: In Progress</option>
+      <option value="past"       ${ev.statusOverride==='past'       ?'selected':''}>Force: Past</option>
+    </select>
+    <label class="estn-admin-toggle" title="Visible on calendar">
+      <input type="checkbox" class="ev-enabled-toggle" ${ev.enabled !== false ? 'checked' : ''}>
+      <span class="estn-admin-toggle-slider"></span>
+    </label>
+    <button class="admin-delete-btn" title="Remove">&times;</button>
+  `;
+  // Store mutable fields as data attrs for read-back
+  row.dataset.name      = ev.name      || '';
+  row.dataset.category  = ev.category  || '';
+  row.dataset.startDate = ev.startDate || '';
+  row.dataset.endDate   = ev.endDate   || '';
+  row.querySelector('.admin-delete-btn').addEventListener('click', () => row.remove());
+  return row;
+}
+
+function readEvents() {
+  return Array.from(document.querySelectorAll('#events-rows .event-row')).map(row => ({
+    id:             row.dataset.id,
+    name:           row.dataset.name,
+    category:       row.dataset.category,
+    startDate:      row.dataset.startDate,
+    endDate:        row.dataset.endDate,
+    description:    row.dataset.desc,
+    statusOverride: row.querySelector('.ev-status-override')?.value || null,
+    enabled:        row.querySelector('.ev-enabled-toggle')?.checked !== false,
+  }));
+}
+
+async function initEvents() {
+  let events;
+  try {
+    const snap = await getDoc(doc(firestore, 'settings', 'events'));
+    events = (snap.exists() && Array.isArray(snap.data().events) && snap.data().events.length)
+      ? snap.data().events : FALLBACK_EVENTS;
+  } catch { events = FALLBACK_EVENTS; }
+
+  const container = document.getElementById('events-rows');
+  if (!container) return;
+  events.forEach(ev => container.appendChild(createEventRow(ev)));
+  makeDraggable(container);
+
+  document.getElementById('ev-add-btn')?.addEventListener('click', () => {
+    const getV = id => document.getElementById(id)?.value.trim() || '';
+    const ev = {
+      id: `ev_${Date.now()}`,
+      name:        getV('ev-add-name'),
+      category:    getV('ev-add-cat'),
+      startDate:   getV('ev-add-start'),
+      endDate:     getV('ev-add-end'),
+      description: getV('ev-add-desc'),
+      enabled:     true,
+    };
+    if (!ev.name || !ev.startDate) { showToast('Name and start date are required.', true); return; }
+    container.appendChild(createEventRow(ev));
+    ['ev-add-name','ev-add-start','ev-add-end','ev-add-desc'].forEach(id => {
+      const el = document.getElementById(id); if (el) el.value = '';
+    });
+  });
+
+  document.getElementById('save-events-btn')?.addEventListener('click', async () => {
+    const events = readEvents();
+    await setDoc(doc(firestore, 'settings', 'events'), { events });
+    showToast('Events saved.');
+  });
+}
+
+// ── League Records manager ─────────────────────────────────────────────────────
+const FALLBACK_CHAMPIONS = [
+  { year:2022, abbrev:'ATL', team:'Atlanta Braves',      owner:'Justin Winward', seed:1, note:'Inaugural champion' },
+  { year:2023, abbrev:'MIL', team:'Milwaukee Brewers',   owner:'',               seed:1, note:'' },
+  { year:2024, abbrev:'LVA', team:'Las Vegas Athletics', owner:'Mike DiMauro',   seed:1, note:'Back-to-back champs' },
+  { year:2025, abbrev:'ARI', team:'Arizona Diamondbacks',owner:'Cote Nichols',   seed:8, note:'#8 seed Cinderella run' },
+];
+
+const FALLBACK_RECORDS = [
+  { category:'Single Season', stat:'Best Regular Season Record', value:'17-2',  team:'MIL', season:2023, notes:'' },
+  { category:'Single Season', stat:'Most Points Scored',         value:'—',     team:'',    season:'',   notes:'TBD' },
+  { category:'Single Season', stat:'Lowest Playoff Seed to Win', value:'#8',    team:'ARI', season:2025, notes:'Arizona Diamondbacks' },
+];
+
+function createChampRow(champ, isNew) {
+  const row = document.createElement('div');
+  row.className = 'champion-row';
+  row.setAttribute('draggable', isNew ? 'false' : 'false');
+  row.innerHTML = `
+    <input class="estn-admin-input champ-year"   type="text" value="${esc(champ.year)}"   placeholder="2026" style="font-size:0.8rem;padding:5px 8px;">
+    <input class="estn-admin-input champ-abbrev" type="text" value="${esc(champ.abbrev)}" placeholder="ATL"  style="font-size:0.8rem;padding:5px 8px;text-transform:uppercase;">
+    <input class="estn-admin-input champ-team"   type="text" value="${esc(champ.team)}"   placeholder="Team name" style="font-size:0.8rem;padding:5px 8px;">
+    <input class="estn-admin-input champ-owner"  type="text" value="${esc(champ.owner)}"  placeholder="Owner name" style="font-size:0.8rem;padding:5px 8px;">
+    <input class="estn-admin-input champ-seed"   type="text" value="${esc(champ.seed)}"   placeholder="1"   style="font-size:0.8rem;padding:5px 8px;">
+    <input class="estn-admin-input champ-note"   type="text" value="${esc(champ.note)}"   placeholder="Notable achievement" style="font-size:0.8rem;padding:5px 8px;">
+    <button class="admin-delete-btn" title="Remove">&times;</button>
+  `;
+  row.querySelector('.admin-delete-btn').addEventListener('click', () => row.remove());
+  return row;
+}
+
+function createRecordRow(rec) {
+  const row = document.createElement('div');
+  row.className = 'record-row';
+  row.innerHTML = `
+    <input class="estn-admin-input rec-category" type="text" value="${esc(rec.category)}" placeholder="Single Season" style="font-size:0.8rem;padding:5px 8px;">
+    <input class="estn-admin-input rec-stat"     type="text" value="${esc(rec.stat)}"     placeholder="Best Record"    style="font-size:0.8rem;padding:5px 8px;">
+    <input class="estn-admin-input rec-value"    type="text" value="${esc(rec.value)}"    placeholder="17-2"           style="font-size:0.8rem;padding:5px 8px;">
+    <input class="estn-admin-input rec-team"     type="text" value="${esc(rec.team)}"     placeholder="MIL"            style="font-size:0.8rem;padding:5px 8px;text-transform:uppercase;">
+    <input class="estn-admin-input rec-season"   type="text" value="${esc(rec.season)}"   placeholder="2023"           style="font-size:0.8rem;padding:5px 8px;">
+    <input class="estn-admin-input rec-notes"    type="text" value="${esc(rec.notes)}"    placeholder="Notes"          style="font-size:0.8rem;padding:5px 8px;">
+    <button class="admin-delete-btn" title="Remove">&times;</button>
+  `;
+  row.querySelector('.admin-delete-btn').addEventListener('click', () => row.remove());
+  return row;
+}
+
+function readChampions() {
+  return Array.from(document.querySelectorAll('#champions-rows .champion-row')).map(row => ({
+    year:   row.querySelector('.champ-year')?.value.trim()   || '',
+    abbrev: row.querySelector('.champ-abbrev')?.value.trim() || '',
+    team:   row.querySelector('.champ-team')?.value.trim()   || '',
+    owner:  row.querySelector('.champ-owner')?.value.trim()  || '',
+    seed:   row.querySelector('.champ-seed')?.value.trim()   || '',
+    note:   row.querySelector('.champ-note')?.value.trim()   || '',
+  }));
+}
+
+function readRecords() {
+  return Array.from(document.querySelectorAll('#records-rows .record-row')).map(row => ({
+    category: row.querySelector('.rec-category')?.value.trim() || '',
+    stat:     row.querySelector('.rec-stat')?.value.trim()     || '',
+    value:    row.querySelector('.rec-value')?.value.trim()    || '',
+    team:     row.querySelector('.rec-team')?.value.trim()     || '',
+    season:   row.querySelector('.rec-season')?.value.trim()   || '',
+    notes:    row.querySelector('.rec-notes')?.value.trim()    || '',
+  }));
+}
+
+async function initRecords() {
+  let champions, records;
+  try {
+    const snap = await getDoc(doc(firestore, 'settings', 'league-records'));
+    const data = snap.exists() ? snap.data() : {};
+    champions = (Array.isArray(data.champions) && data.champions.length) ? data.champions : FALLBACK_CHAMPIONS;
+    records   = (Array.isArray(data.records)   && data.records.length)   ? data.records   : FALLBACK_RECORDS;
+  } catch {
+    champions = FALLBACK_CHAMPIONS;
+    records   = FALLBACK_RECORDS;
+  }
+
+  const champsContainer  = document.getElementById('champions-rows');
+  const recordsContainer = document.getElementById('records-rows');
+  if (!champsContainer || !recordsContainer) return;
+
+  champions.forEach(c => champsContainer.appendChild(createChampRow(c)));
+  records.forEach(r => recordsContainer.appendChild(createRecordRow(r)));
+
+  document.getElementById('champ-add-btn')?.addEventListener('click', () => {
+    champsContainer.appendChild(createChampRow({ year:'', abbrev:'', team:'', owner:'', seed:'', note:'' }));
+  });
+
+  document.getElementById('record-add-btn')?.addEventListener('click', () => {
+    recordsContainer.appendChild(createRecordRow({ category:'', stat:'', value:'', team:'', season:'', notes:'' }));
+  });
+
+  document.getElementById('save-records-btn')?.addEventListener('click', async () => {
+    const champions = readChampions();
+    const records   = readRecords();
+    await setDoc(doc(firestore, 'settings', 'league-records'), { champions, records });
+    showToast('League records saved.');
+  });
+}
+
 // ── Main init ──────────────────────────────────────────────────────────────────
 onAuthStateChanged(auth, async user => {
   const gateEl = document.getElementById('estn-admin-gate');
@@ -352,6 +693,8 @@ onAuthStateChanged(auth, async user => {
   if (gateEl) gateEl.style.display = 'none';
   if (dashEl) dashEl.style.display = 'block';
 
+  setupTabs();
+
   const settings = await getSettings();
 
   initFeatured(settings);
@@ -361,4 +704,7 @@ onAuthStateChanged(auth, async user => {
   initQuickLinks(settings);
   initPrograms(settings);
   loadDataStatus();
+  initBTC();
+  initEvents();
+  initRecords();
 });
