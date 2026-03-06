@@ -3,257 +3,259 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Between The Chalk — The Sandlot Tribune</title>
+  <title>Between The Chalk — ESTN</title>
   <meta name="description" content="In-depth analysis, power rankings, matchup previews, and trade breakdowns for The Sandlot Dynasty League.">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Marcellus&family=Oswald:wght@400;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Marcellus&family=Oswald:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="../assets/css/main.css">
+  <style>
+    /* ── BTC-specific overrides not in main.css ── */
+    html, body { height: 100%; overflow: hidden; }
+    .btc-coming-soon-item {
+      display: flex; align-items: center; gap: 10px;
+      padding: 10px 16px; color: #4A5568;
+      font-family: 'Oswald', sans-serif; font-size: 0.75rem;
+      letter-spacing: 0.06em; text-transform: uppercase;
+    }
+    .btc-coming-soon-item::before {
+      content: ''; display: inline-block; width: 6px; height: 6px;
+      border-radius: 50%; background: #2D3748; flex-shrink: 0;
+    }
+  </style>
 </head>
-<body>
+<body class="btc-page-body">
 
-  <!-- ===== SITE HEADER / NAV ===== -->
-  <header class="site-header">
+  <!-- ESTN Portal Nav -->
+  <header class="estn-portal-nav">
     <nav class="nav-inner">
-      <a class="nav-logo" href="../index.html" aria-label="The Sandlot Tribune — Home">
-        <img src="../assets/images/logo.png" alt="The Sandlot Tribune">
+      <a class="nav-logo" href="../index.html">
+        <img src="../assets/images/estn-logo-full.png" alt="ESTN">
       </a>
       <ul class="nav-links">
         <li><a href="../index.html">Home</a></li>
-        <li><a href="../between-the-chalk/index.html" class="active">Between The Chalk</a></li>
-        <li><a href="../season-deadlines/index.html">Season Deadlines &amp; Events</a></li>
-        <li><a href="../league-records/index.html">League Records</a></li>
-        <li><a href="../rumblr/index.html">Rumblr</a></li>
-        <li><a href="../about/index.html" aria-label="ESTN Network">
-          <img class="nav-estn-logo" src="../assets/images/estn-logo.png" alt="ESTN">
-        </a></li>
+        <li><a href="../tribune/">The Sandlot Tribune</a></li>
+        <li><a href="../rumblr/">Rumblr</a></li>
+        <li><a href="../league-records/">League Records</a></li>
+        <li><a href="../season-deadlines/">Season Events</a></li>
+        <li><a href="../about/">About</a></li>
       </ul>
+      <div id="estn-auth-widget"></div>
     </nav>
   </header>
 
-  <!-- ===== PAGE HERO ===== -->
-  <section class="site-hero">
-    <h1>Between The Chalk</h1>
-    <p class="tagline">Analysis &bull; Rankings &bull; Previews &bull; Trade Talk</p>
-    <hr class="hero-rule">
-  </section>
+  <!-- 2-Column Layout -->
+  <div class="btc-layout">
 
-  <!-- ===== MAIN CONTENT ===== -->
-  <main class="page-wrapper">
-
-    <!-- ── LATEST ── -->
-    <section class="btc-section" aria-label="Latest Articles">
-      <div class="btc-section-header">
-        <h2 class="section-label">Latest</h2>
+    <!-- ── Left: Article Navigator ── -->
+    <aside class="btc-left-nav">
+      <div class="btc-nav-header">
+        <span>BETWEEN THE CHALK</span>
       </div>
 
-      <div class="articles-grid">
-        <!-- Featured Article — SEA Season Preview (most recent) -->
-        <article class="article-card article-card--featured">
-          <img class="card-image" src="../assets/images/sea-preview.png" alt="2026 TSDL Season Preview: Seattle Mariners">
-          <div class="card-body">
-            <span class="card-badge">Season Preview</span>
-            <h3 class="card-title">2026 TSDL Season Preview: Seattle Mariners</h3>
-            <p class="card-meta">By Ken Rosenthal &nbsp;&middot;&nbsp; February 28, 2026</p>
-            <div class="card-rating-row" id="card-rating-season_preview_2026_sea"></div>
-            <p class="card-excerpt">
-              Jordan Britton's Seattle Mariners have been one of the TSDL's most compelling teams for four seasons — consistently competitive, occasionally brilliant, and perpetually on the edge of something great without quite reaching the mountaintop. The 2025…
-            </p>
-            <a class="card-link" href="../season-previews/season_preview_2026_sea.html">Read Article &rarr;</a>
-          </div>
-        </article>
-
-        <!-- ATL Season Preview -->
-        <article class="article-card">
-          <img
-            class="card-image"
-            src="../assets/images/atl-preview.png"
-            alt="2026 TSDL Season Preview: Atlanta Braves">
-          <div class="card-body">
-            <span class="card-badge">Season Preview</span>
-            <h3 class="card-title">2026 TSDL Season Preview: Atlanta Braves</h3>
-            <p class="card-meta">By Tim Kurkjian &nbsp;&middot;&nbsp; February 28, 2026</p>
-            <div class="card-rating-row" id="card-rating-season_preview_2026_atl"></div>
-            <p class="card-excerpt">
-              In four seasons of Sandlot Dynasty League existence, the Atlanta Braves have swung from champion to rubble and back again — twice. Owner Justin Winward won it all in 2022, went 16-3 the following year only to flame out in the playoffs, cratered to a…
-            </p>
-            <a class="card-link" href="../season-previews/season_preview_2026_atl.html">Read Article &rarr;</a>
-          </div>
-        </article>
-
-        <!-- LVA Season Preview -->
-        <article class="article-card">
-          <img
-            class="card-image"
-            src="../assets/images/lva-preview.png"
-            alt="2026 TSDL Season Preview: Las Vegas Athletics">
-          <div class="card-body">
-            <span class="card-badge">Season Preview</span>
-            <h3 class="card-title">2026 TSDL Season Preview: Las Vegas Athletics</h3>
-            <p class="card-meta">By Keith Law &nbsp;&middot;&nbsp; February 27, 2026</p>
-            <div class="card-rating-row" id="card-rating-season_preview_2026_lva"></div>
-            <p class="card-excerpt">
-              The Las Vegas Athletics arrived in The Sandlot Dynasty League two years ago and promptly decided to skip the learning curve entirely. In 2024, Mike DiMauro won the championship. In 2025, he went 15-4 in the regular season, earned the #2 seed, and…
-            </p>
-            <a class="card-link" href="../season-previews/season_preview_2026_lva.html">Read Article &rarr;</a>
-          </div>
-        </article>
-
-        <!-- STL Season Preview -->
-        <article class="article-card">
-          <img
-            class="card-image"
-            src="../assets/images/stl-preview.png"
-            alt="2026 TSDL Season Preview: St. Louis Cardinals">
-          <div class="card-body">
-            <span class="card-badge">Season Preview</span>
-            <h3 class="card-title">2026 TSDL Season Preview: St. Louis Cardinals</h3>
-            <p class="card-meta">By Buster Olney &nbsp;&middot;&nbsp; February 27, 2026</p>
-            <div class="card-rating-row" id="card-rating-season_preview_2026_stl"></div>
-            <p class="card-excerpt">
-              Forty-one and a half points. That is the margin separating Sam Crotto & Brian Baker and the St. Louis Cardinals from a TSDL championship banner. In the 2025 title game, Arizona rolled in as the tournament's Cinderella — an eighth seed who had no…
-            </p>
-            <a class="card-link" href="../season-previews/season_preview_2026_stl.html">Read Article &rarr;</a>
-          </div>
-        </article>
-
+      <div class="btc-nav-filters" id="btc-filter-bar">
+        <button class="btc-filter-btn active" data-filter="all">All</button>
+        <button class="btc-filter-btn" data-filter="season_preview">Previews</button>
+        <button class="btc-filter-btn" data-filter="power_rankings">Rankings</button>
+        <button class="btc-filter-btn" data-filter="weekly_recap">Recaps</button>
       </div>
-    </section>
 
-    <!-- ── RUMBLR AD ── -->
-    <div style="font-family:'Oswald',sans-serif;font-size:0.6rem;letter-spacing:0.12em;
-                text-transform:uppercase;color:#B9A590;text-align:center;margin-bottom:4px;">
-      Advertisement
-    </div>
-    <div class="promo-banner" style="background:linear-gradient(135deg,#0D1117 0%,#161B22 60%,#1a0a0a 100%);
-         border:1px solid #2D3748;position:relative;overflow:hidden;">
-      <div style="position:absolute;top:0;right:0;width:4px;height:100%;background:#C8102E;"></div>
-      <div class="promo-banner-inner" style="padding-right:28px;">
-        <img class="promo-banner-logo" src="../assets/images/rumblr-logo.png" alt="Rumblr"
-             style="filter:brightness(1.1);">
-        <div class="promo-banner-text">
-          <span class="promo-banner-eyebrow"
-                style="color:#C8102E;letter-spacing:0.14em;">ESTN &nbsp;&bull;&nbsp; Rumblr</span>
-          <p class="promo-banner-headline" style="color:#fff;">
-            The Takes Are Flying. Don&rsquo;t Miss Them.
-          </p>
-          <p class="promo-banner-sub" style="color:#A0AEC0;">
-            Passan. Rosenthal. Olney. The intel that doesn&rsquo;t fit in an article &mdash; 280 characters at a time.
-          </p>
-        </div>
-        <a class="promo-banner-cta" href="../rumblr/"
-           style="background:#C8102E;border-color:#C8102E;white-space:nowrap;">
-          Open Feed &rarr;
-        </a>
-      </div>
-    </div>
+      <!-- Article List (populated by JS) -->
+      <div id="btc-article-list"></div>
 
-    <!-- ── TEAM PREVIEWS ── -->
-    <section class="btc-section" aria-label="Team Previews">
-      <div class="btc-section-header">
-        <h2 class="section-label">Team Previews</h2>
-        <a class="btc-browse-link" href="../season-previews/index.html">Browse All Previews &rarr;</a>
-      </div>
-      <p style="font-family:'Marcellus',serif; font-size:0.88rem; color:var(--text-secondary); margin-bottom:20px; line-height:1.65;">
-        In-depth 2026 season breakdowns for every TSDL franchise — roster construction, auction strategy, farm system grades, and season predictions. Use the filter and sort tools on the full page to find any team.
-      </p>
-      <!-- Mini preview of 2 most recent -->
-      <div class="articles-grid" style="grid-template-columns: repeat(2, 1fr);">
-        <article class="article-card">
-          <img class="card-image" src="../assets/images/sea-preview.png" alt="2026 TSDL Season Preview: Seattle Mariners">
-          <div class="card-body">
-            <span class="card-badge">Season Preview</span>
-            <h3 class="card-title">Seattle Mariners</h3>
-            <p class="card-meta">By Ken Rosenthal &nbsp;&middot;&nbsp; February 28, 2026</p>
-            <div class="card-rating-row" id="card-rating-season_preview_2026_sea_2"></div>
-            <a class="card-link" href="../season-previews/season_preview_2026_sea.html">Read Article &rarr;</a>
-          </div>
-        </article>
-        <article class="article-card">
-          <img class="card-image" src="../assets/images/atl-preview.png" alt="2026 TSDL Season Preview: Atlanta Braves">
-          <div class="card-body">
-            <span class="card-badge">Season Preview</span>
-            <h3 class="card-title">Atlanta Braves</h3>
-            <p class="card-meta">By Tim Kurkjian &nbsp;&middot;&nbsp; February 28, 2026</p>
-            <div class="card-rating-row" id="card-rating-season_preview_2026_atl_2"></div>
-            <a class="card-link" href="../season-previews/season_preview_2026_atl.html">Read Article &rarr;</a>
-          </div>
-        </article>
-      </div>
-      <p style="text-align:right; font-family:'Marcellus',serif; font-size:0.78rem; margin-top:12px;">
-        <a class="btc-browse-link" href="../season-previews/index.html">View all 5 previews &rarr;</a>
-      </p>
-    </section>
+      <!-- Ad Slot -->
+      <div class="btc-ad-slot" id="btc-left-ad-1"></div>
 
-    <!-- ── POWER RANKINGS ── -->
-    <section class="btc-section" aria-label="Power Rankings">
-      <div class="btc-section-header">
-        <h2 class="section-label">Power Rankings</h2>
+      <!-- Coming Soon sections -->
+      <div id="btc-coming-soon">
+        <div style="padding: 12px 16px 4px; font-family:'Oswald',sans-serif; font-size:0.62rem; letter-spacing:0.1em; text-transform:uppercase; color:#4A5568;">Coming This Season</div>
+        <div class="btc-coming-soon-item">Power Rankings</div>
+        <div class="btc-coming-soon-item">Weekly Recaps</div>
+        <div class="btc-coming-soon-item">Matchup Previews</div>
+        <div class="btc-coming-soon-item">Trade Analysis</div>
       </div>
-      <div class="btc-coming-soon">
-        <p>Weekly power rankings coming once the 2026 season is underway.</p>
-      </div>
-    </section>
+    </aside>
 
-    <!-- ── MATCHUP RECAPS & PREVIEWS ── -->
-    <section class="btc-section" aria-label="Matchup Recaps and Previews">
-      <div class="btc-section-header">
-        <h2 class="section-label">Matchup Recaps &amp; Previews</h2>
-      </div>
-      <div class="btc-coming-soon">
-        <p>Weekly matchup recaps and upcoming previews will appear here each week during the season.</p>
-      </div>
-    </section>
+    <!-- ── Right: Article Reader ── -->
+    <main class="btc-reader-pane">
+      <div class="btc-reader-spinner" id="btc-spinner"></div>
+      <iframe
+        id="btc-article-frame"
+        class="btc-article-frame"
+        title="Article Reader"
+        src=""
+      ></iframe>
+    </main>
 
-    <!-- ── TRADE ANALYSIS ── -->
-    <section class="btc-section" aria-label="Trade Analysis">
-      <div class="btc-section-header">
-        <h2 class="section-label">Trade Analysis</h2>
-      </div>
-      <div class="btc-coming-soon">
-        <p>Trade breakdowns and analysis will be published here as deals are made.</p>
-      </div>
-    </section>
+  </div><!-- /.btc-layout -->
 
-  </main>
-
-  <!-- ===== FOOTER ===== -->
-  <footer class="site-footer">
-    <p>&copy; 2026 The Sandlot Tribune &nbsp;&middot;&nbsp; The Sandlot Dynasty League</p>
-  </footer>
-
-  <!-- Load card ratings from Firebase -->
   <script type="module">
-    import { fetchCardRatings } from '../assets/js/article-engagement.js';
-    fetchCardRatings([
-      'season_preview_2026_sea',
-      'season_preview_2026_atl',
-      'season_preview_2026_lva',
-      'season_preview_2026_stl',
-      'season_preview_2026_ari'
-    ]);
-    // The mini-cards in the Team Previews section share the same Firebase IDs
-    // but need separate DOM elements — wire them up manually
-    import { db } from '../assets/js/firebase-config.js';
-    import { ref, onValue } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js';
-    function wireRating(articleId, elId) {
-      const el = document.getElementById(elId);
-      if (!el) return;
-      onValue(ref(db, `articles/${articleId}/ratings`), snap => {
-        const data = snap.val();
-        if (!data) { el.innerHTML = ''; return; }
-        const vals = Object.values(data).map(r => r.value).filter(v => typeof v === 'number');
-        if (!vals.length) { el.innerHTML = ''; return; }
-        const avg = vals.reduce((a,b) => a+b,0) / vals.length;
-        const count = vals.length;
-        const stars = Array.from({length:5},(_,i) =>
-          `<span class="star-pip${i < Math.round(avg) ? ' filled' : ''}">★</span>`).join('');
-        el.innerHTML = `<span class="stars-row">${stars}</span><span class="rating-avg">${avg.toFixed(1)}</span><span class="rating-count">(${count})</span>`;
+    import { firestore } from '../assets/js/firebase-config.js';
+    import { doc, getDoc } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js';
+
+    // ── Fallback article list (used if Firestore settings/btc not set) ──
+    const FALLBACK_ARTICLES = [
+      {
+        id: 'season_preview_2026_sea',
+        title: '2026 TSDL Season Preview: Seattle Mariners',
+        author: 'Ken Rosenthal',
+        date: 'Feb 28, 2026',
+        type: 'season_preview',
+        typeLabel: 'Season Preview',
+        url: '../season-previews/season_preview_2026_sea.html',
+        thumbnail: '../assets/images/sea-preview.png',
+        enabled: true
+      },
+      {
+        id: 'season_preview_2026_atl',
+        title: '2026 TSDL Season Preview: Atlanta Braves',
+        author: 'Tim Kurkjian',
+        date: 'Feb 28, 2026',
+        type: 'season_preview',
+        typeLabel: 'Season Preview',
+        url: '../season-previews/season_preview_2026_atl.html',
+        thumbnail: '../assets/images/atl-preview.png',
+        enabled: true
+      },
+      {
+        id: 'season_preview_2026_lva',
+        title: '2026 TSDL Season Preview: Las Vegas Athletics',
+        author: 'Keith Law',
+        date: 'Feb 27, 2026',
+        type: 'season_preview',
+        typeLabel: 'Season Preview',
+        url: '../season-previews/season_preview_2026_lva.html',
+        thumbnail: '../assets/images/lva-preview.png',
+        enabled: true
+      },
+      {
+        id: 'season_preview_2026_stl',
+        title: '2026 TSDL Season Preview: St. Louis Cardinals',
+        author: 'Buster Olney',
+        date: 'Feb 27, 2026',
+        type: 'season_preview',
+        typeLabel: 'Season Preview',
+        url: '../season-previews/season_preview_2026_stl.html',
+        thumbnail: '../assets/images/stl-preview.png',
+        enabled: true
+      },
+      {
+        id: 'season_preview_2026_ari',
+        title: '2026 TSDL Season Preview: Arizona Diamondbacks',
+        author: 'Jeff Passan',
+        date: 'Feb 26, 2026',
+        type: 'season_preview',
+        typeLabel: 'Season Preview',
+        url: '../season-previews/season_preview_2026_ari.html',
+        thumbnail: '../assets/images/ari-preview.png',
+        enabled: true
+      }
+    ];
+
+    // ── State ──
+    let allArticles = [];
+    let activeFilter = 'all';
+
+    // ── Helpers ──
+    const frame   = document.getElementById('btc-article-frame');
+    const spinner = document.getElementById('btc-spinner');
+    const listEl  = document.getElementById('btc-article-list');
+
+    function loadArticle(url, itemEl) {
+      spinner.style.display = 'block';
+      frame.src = url;
+      document.querySelectorAll('.btc-nav-item').forEach(n => n.classList.remove('active'));
+      if (itemEl) itemEl.classList.add('active');
+      // Update URL without reload
+      const params = new URLSearchParams(window.location.search);
+      params.set('article', url.split('/').pop());
+      history.replaceState({}, '', '?' + params.toString());
+    }
+
+    frame.addEventListener('load', () => { spinner.style.display = 'none'; });
+
+    // ── Render article list ──
+    function renderList(articles) {
+      const filtered = activeFilter === 'all'
+        ? articles
+        : articles.filter(a => a.type === activeFilter);
+
+      listEl.innerHTML = '';
+      if (!filtered.length) {
+        listEl.innerHTML = '<div style="padding:16px;font-family:\'Oswald\',sans-serif;font-size:0.75rem;color:#4A5568;letter-spacing:0.06em;">No articles yet in this category.</div>';
+        return;
+      }
+
+      filtered.forEach(article => {
+        if (!article.enabled) return;
+        const item = document.createElement('button');
+        item.className = 'btc-nav-item';
+        item.dataset.url = article.url;
+        item.innerHTML = `
+          <img class="btc-nav-item-thumb" src="${article.thumbnail || '../assets/images/placeholder.png'}" alt="" onerror="this.style.display='none'">
+          <div class="btc-nav-item-meta">
+            <span class="btc-nav-item-type">${article.typeLabel || article.type}</span>
+            <span class="btc-nav-item-title">${article.title}</span>
+            <span class="btc-nav-item-byline">${article.author} &middot; ${article.date}</span>
+          </div>
+        `;
+        // Mark active if current frame matches
+        if (frame.src && frame.src.includes(article.url.split('/').pop())) {
+          item.classList.add('active');
+        }
+        item.addEventListener('click', () => loadArticle(article.url, item));
+        listEl.appendChild(item);
       });
     }
-    wireRating('season_preview_2026_sea', 'card-rating-season_preview_2026_sea_2');
-    wireRating('season_preview_2026_atl', 'card-rating-season_preview_2026_atl_2');
+
+    // ── Filter buttons ──
+    document.querySelectorAll('.btc-filter-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.btc-filter-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        activeFilter = btn.dataset.filter;
+        renderList(allArticles);
+      });
+    });
+
+    // ── Load articles from Firestore, fall back to hardcoded ──
+    async function init() {
+      try {
+        const snap = await getDoc(doc(firestore, 'settings', 'btc'));
+        if (snap.exists() && Array.isArray(snap.data().articles) && snap.data().articles.length) {
+          allArticles = snap.data().articles.filter(a => a.enabled !== false);
+        } else {
+          allArticles = FALLBACK_ARTICLES;
+        }
+      } catch {
+        allArticles = FALLBACK_ARTICLES;
+      }
+
+      renderList(allArticles);
+
+      // ── Deep-link or default ──
+      const params = new URLSearchParams(window.location.search);
+      const articleParam = params.get('article');
+      let initialUrl = null;
+
+      if (articleParam) {
+        const match = allArticles.find(a => a.url.split('/').pop() === articleParam || a.url.includes(articleParam));
+        if (match) initialUrl = match.url;
+      }
+
+      if (!initialUrl && allArticles.length > 0) {
+        initialUrl = allArticles[0].url;
+      }
+
+      if (initialUrl) {
+        const firstItem = listEl.querySelector(`[data-url="${initialUrl}"]`);
+        loadArticle(initialUrl, firstItem);
+      }
+    }
+
+    init();
   </script>
 
+  <script type="module" src="../assets/js/estn-auth.js"></script>
 </body>
 </html>

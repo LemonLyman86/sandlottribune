@@ -3,41 +3,403 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>League Records — The Sandlot Tribune</title>
+  <title>League Records — ESTN</title>
+  <meta name="description" content="All-time records, champion history, and award winners for The Sandlot Dynasty League.">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Marcellus&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Marcellus&family=Oswald:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="../assets/css/main.css">
+  <style>
+    body { background: #0D1117; color: #E2E8F0; }
+
+    /* ── Page Hero ── */
+    .records-hero {
+      background: linear-gradient(135deg, #0D1117 0%, #161B22 60%, #0a0a1a 100%);
+      border-bottom: 1px solid #2D3748;
+      padding: 48px 24px 36px; text-align: center;
+    }
+    .records-hero-eyebrow {
+      font-family: 'Oswald', sans-serif; font-size: 0.62rem; font-weight: 600;
+      letter-spacing: 0.18em; text-transform: uppercase; color: #C8102E;
+      margin-bottom: 10px; display: block;
+    }
+    .records-hero-title {
+      font-family: 'Oswald', sans-serif;
+      font-size: clamp(1.6rem, 4vw, 2.8rem); font-weight: 700;
+      letter-spacing: 0.04em; text-transform: uppercase; color: #F0F4F8;
+    }
+
+    /* ── Page layout ── */
+    .records-page-inner { max-width: 1100px; margin: 0 auto; padding: 48px 24px 80px; }
+
+    /* ── Section header ── */
+    .records-section-header {
+      display: flex; align-items: center; gap: 14px; margin-bottom: 28px; margin-top: 52px;
+    }
+    .records-section-header:first-child { margin-top: 0; }
+    .records-section-title {
+      font-family: 'Oswald', sans-serif; font-size: 0.72rem; font-weight: 600;
+      letter-spacing: 0.16em; text-transform: uppercase; color: #718096; white-space: nowrap;
+    }
+    .records-section-rule { flex: 1; height: 1px; background: #2D3748; }
+
+    /* ── Champions Gallery ── */
+    .champions-grid {
+      display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; margin-bottom: 8px;
+    }
+    .champion-card {
+      background: #161B22; border: 1px solid #2D3748;
+      border-top: 3px solid #C8102E; border-radius: 6px;
+      padding: 20px 18px 22px; text-align: center;
+    }
+    .champion-year {
+      font-family: 'Oswald', sans-serif; font-size: 0.65rem; font-weight: 600;
+      letter-spacing: 0.16em; text-transform: uppercase;
+      color: #C8102E; margin-bottom: 10px; display: block;
+    }
+    .champion-trophy {
+      font-size: 1.8rem; display: block; margin-bottom: 10px; line-height: 1;
+    }
+    .champion-team {
+      font-family: 'Oswald', sans-serif; font-size: 1.5rem; font-weight: 700;
+      color: #F0F4F8; letter-spacing: 0.04em; margin-bottom: 3px;
+    }
+    .champion-full-name {
+      font-family: 'Marcellus', serif; font-size: 0.8rem; color: #718096;
+      margin-bottom: 10px; line-height: 1.3;
+    }
+    .champion-divider { height: 1px; background: #2D3748; margin: 10px 0; }
+    .champion-owner {
+      font-family: 'Oswald', sans-serif; font-size: 0.7rem; letter-spacing: 0.06em;
+      text-transform: uppercase; color: #4A5568; margin-bottom: 2px;
+    }
+    .champion-owner-name {
+      font-family: 'Marcellus', serif; font-size: 0.88rem; color: #A0AEC0;
+    }
+    .champion-note {
+      font-family: 'Oswald', sans-serif; font-size: 0.62rem; letter-spacing: 0.08em;
+      text-transform: uppercase; margin-top: 8px;
+      padding: 3px 8px; border-radius: 3px; display: inline-block;
+    }
+    .champion-note.cinderella { background: #5B1A1A; color: #F87171; }
+    .champion-note.dominant   { background: #1E3A5F; color: #60A5FA; }
+
+    /* ── Records Table ── */
+    .records-table-wrap { overflow-x: auto; margin-bottom: 8px; }
+    .records-table {
+      width: 100%; border-collapse: collapse;
+      font-family: 'Marcellus', serif; font-size: 0.88rem;
+    }
+    .records-table th {
+      font-family: 'Oswald', sans-serif; font-size: 0.6rem; font-weight: 600;
+      letter-spacing: 0.12em; text-transform: uppercase; color: #4A5568;
+      padding: 10px 14px; text-align: left; border-bottom: 1px solid #2D3748;
+      background: #161B22;
+    }
+    .records-table td {
+      padding: 11px 14px; border-bottom: 1px solid #1A1F2E; color: #A0AEC0; line-height: 1.4;
+    }
+    .records-table tr:last-child td { border-bottom: none; }
+    .records-table tr:hover td { background: rgba(200,16,46,0.04); }
+    .records-table td.record-value {
+      font-family: 'Oswald', sans-serif; font-size: 1.1rem; font-weight: 600;
+      color: #F0F4F8; letter-spacing: 0.02em;
+    }
+    .records-table td.record-team {
+      font-family: 'Oswald', sans-serif; font-size: 0.8rem; font-weight: 600;
+      letter-spacing: 0.06em; color: #C8102E;
+    }
+
+    /* ── Awards grid ── */
+    .awards-seasons-grid {
+      display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px;
+    }
+    .award-season-col {
+      background: #161B22; border: 1px solid #2D3748; border-radius: 6px;
+      overflow: hidden;
+    }
+    .award-season-header {
+      background: #1A1F2E; padding: 10px 14px; border-bottom: 1px solid #2D3748;
+      font-family: 'Oswald', sans-serif; font-size: 0.72rem; font-weight: 600;
+      letter-spacing: 0.12em; text-transform: uppercase; color: #718096;
+    }
+    .award-row {
+      padding: 12px 14px; border-bottom: 1px solid #1A1F2E;
+    }
+    .award-row:last-child { border-bottom: none; }
+    .award-type {
+      font-family: 'Oswald', sans-serif; font-size: 0.6rem; letter-spacing: 0.1em;
+      text-transform: uppercase; color: #4A5568; display: block; margin-bottom: 3px;
+    }
+    .award-winner {
+      font-family: 'Marcellus', serif; font-size: 0.88rem; color: #A0AEC0;
+    }
+    .award-team-tag {
+      font-family: 'Oswald', sans-serif; font-size: 0.6rem; font-weight: 600;
+      letter-spacing: 0.08em; color: #C8102E; margin-left: 6px;
+    }
+
+    /* ── Playoff Formats ── */
+    .formats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+    .format-card {
+      background: #161B22; border: 1px solid #2D3748; border-radius: 6px;
+      padding: 18px 20px;
+    }
+    .format-era {
+      font-family: 'Oswald', sans-serif; font-size: 0.72rem; font-weight: 600;
+      letter-spacing: 0.12em; text-transform: uppercase; color: #C8102E;
+      margin-bottom: 6px; display: block;
+    }
+    .format-name {
+      font-family: 'Oswald', sans-serif; font-size: 1.1rem; font-weight: 600;
+      color: #F0F4F8; margin-bottom: 8px;
+    }
+    .format-detail {
+      font-family: 'Marcellus', serif; font-size: 0.83rem; color: #718096; line-height: 1.6;
+    }
+
+    @media (max-width: 900px) {
+      .champions-grid { grid-template-columns: repeat(2, 1fr); }
+      .awards-seasons-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+    @media (max-width: 600px) {
+      .champions-grid { grid-template-columns: 1fr 1fr; }
+      .formats-grid { grid-template-columns: 1fr; }
+      .awards-seasons-grid { grid-template-columns: 1fr 1fr; }
+    }
+  </style>
 </head>
 <body>
-  <header class="site-header">
+
+  <!-- ESTN Portal Nav -->
+  <header class="estn-portal-nav">
     <nav class="nav-inner">
-      <a class="nav-logo" href="../index.html" aria-label="The Sandlot Tribune — Home">
-        <img src="../assets/images/logo.png" alt="The Sandlot Tribune">
+      <a class="nav-logo" href="../index.html">
+        <img src="../assets/images/estn-logo-full.png" alt="ESTN">
       </a>
       <ul class="nav-links">
         <li><a href="../index.html">Home</a></li>
-        <li><a href="../between-the-chalk/index.html">Between The Chalk</a></li>
-        <li><a href="../season-deadlines/index.html">Season Deadlines &amp; Events</a></li>
-        <li><a href="../league-records/index.html" class="active">League Records</a></li>
-        <li><a href="../rumblr/index.html">Rumblr</a></li>
-        <li><a href="../about/index.html" aria-label="ESTN Network">
-          <img class="nav-estn-logo" src="../assets/images/estn-logo.png" alt="ESTN">
-        </a></li>
+        <li><a href="../tribune/">The Sandlot Tribune</a></li>
+        <li><a href="../rumblr/">Rumblr</a></li>
+        <li><a href="../league-records/" class="active">League Records</a></li>
+        <li><a href="../season-deadlines/">Season Events</a></li>
+        <li><a href="../about/">About</a></li>
       </ul>
+      <div id="estn-auth-widget"></div>
     </nav>
   </header>
-  <main class="page-wrapper">
-    <div class="under-construction">
-      <h1>League Records</h1>
-      <hr class="section-rule">
-      <span class="badge-coming-soon">Coming Soon</span>
-      <p>All-time records, champion history, individual season bests, and dynasty rankings. The full story of The Sandlot Dynasty League, by the numbers.</p>
-      <a class="back-link" href="../index.html">&larr; Back to Home</a>
+
+  <!-- Hero -->
+  <div class="records-hero">
+    <span class="records-hero-eyebrow">The Sandlot Dynasty League</span>
+    <div class="records-hero-title">League Records &amp; History</div>
+  </div>
+
+  <!-- Page Content -->
+  <div class="records-page-inner">
+
+    <!-- ── CHAMPIONSHIP HISTORY ── -->
+    <div class="records-section-header">
+      <span class="records-section-title">Championship History</span>
+      <div class="records-section-rule"></div>
     </div>
-  </main>
-  <footer class="site-footer">
-    <p>&copy; 2026 The Sandlot Tribune &nbsp;&middot;&nbsp; The Sandlot Dynasty League</p>
-  </footer>
+
+    <div class="champions-grid" id="champions-grid">
+      <!-- 2022 -->
+      <div class="champion-card">
+        <span class="champion-year">2022 &middot; Season 1</span>
+        <span class="champion-trophy">🏆</span>
+        <div class="champion-team">ATL</div>
+        <div class="champion-full-name">Atlanta Braves</div>
+        <div class="champion-divider"></div>
+        <div class="champion-owner">Owner</div>
+        <div class="champion-owner-name">Justin Winward</div>
+        <span class="champion-note dominant">#1 Seed</span>
+      </div>
+      <!-- 2023 -->
+      <div class="champion-card">
+        <span class="champion-year">2023 &middot; Season 2</span>
+        <span class="champion-trophy">🏆</span>
+        <div class="champion-team">MIL</div>
+        <div class="champion-full-name">Milwaukee Brewers</div>
+        <div class="champion-divider"></div>
+        <div class="champion-owner">Owner</div>
+        <div class="champion-owner-name">&mdash;</div>
+      </div>
+      <!-- 2024 -->
+      <div class="champion-card">
+        <span class="champion-year">2024 &middot; Season 3</span>
+        <span class="champion-trophy">🏆</span>
+        <div class="champion-team">LVA</div>
+        <div class="champion-full-name">Las Vegas Athletics</div>
+        <div class="champion-divider"></div>
+        <div class="champion-owner">Owner</div>
+        <div class="champion-owner-name">Mike DiMauro</div>
+      </div>
+      <!-- 2025 -->
+      <div class="champion-card">
+        <span class="champion-year">2025 &middot; Season 4</span>
+        <span class="champion-trophy">🏆</span>
+        <div class="champion-team">ARI</div>
+        <div class="champion-full-name">Arizona Diamondbacks</div>
+        <div class="champion-divider"></div>
+        <div class="champion-owner">Owner</div>
+        <div class="champion-owner-name">Cote Nichols</div>
+        <span class="champion-note cinderella">#8 Seed</span>
+      </div>
+    </div>
+
+    <!-- ── PLAYOFF FORMATS ── -->
+    <div class="records-section-header">
+      <span class="records-section-title">Playoff Formats by Era</span>
+      <div class="records-section-rule"></div>
+    </div>
+    <div class="formats-grid">
+      <div class="format-card">
+        <span class="format-era">2022&ndash;2023 &middot; Seasons 1&ndash;2</span>
+        <div class="format-name">6-Team Bracket</div>
+        <div class="format-detail">
+          Quarterfinals &rarr; Semifinals &rarr; Championship Finals.
+          2-week matchup rounds. Top 6 teams qualify from a 14-team league.
+          Consolation bracket determines MiLB draft order.
+        </div>
+      </div>
+      <div class="format-card">
+        <span class="format-era">2024&ndash;Present &middot; Seasons 3+</span>
+        <div class="format-name">8-Team Bracket</div>
+        <div class="format-detail">
+          Divisional Series &rarr; Conference Series &rarr; World Series.
+          2-week matchup rounds. Plus a separate 5th–8th place bracket.
+          Consolation bracket winner earns the 1st MiLB draft pick.
+        </div>
+      </div>
+    </div>
+
+    <!-- ── SEASON RECORDS ── -->
+    <div class="records-section-header">
+      <span class="records-section-title">Season Records</span>
+      <div class="records-section-rule"></div>
+    </div>
+    <div class="records-table-wrap">
+      <table class="records-table" id="records-table">
+        <thead>
+          <tr>
+            <th>Category</th>
+            <th>Record</th>
+            <th>Team</th>
+            <th>Season</th>
+            <th>Notes</th>
+          </tr>
+        </thead>
+        <tbody id="records-tbody">
+          <!-- Populated by JS / Firestore; hardcoded fallback below -->
+        </tbody>
+      </table>
+    </div>
+
+    <!-- ── AWARDS ── -->
+    <div class="records-section-header">
+      <span class="records-section-title">Season Awards</span>
+      <div class="records-section-rule"></div>
+    </div>
+    <div class="awards-seasons-grid" id="awards-grid">
+      <!-- Populated by JS / Firestore -->
+    </div>
+
+  </div><!-- /.records-page-inner -->
+
+  <script type="module">
+    import { firestore } from '../assets/js/firebase-config.js';
+    import { doc, getDoc } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js';
+
+    // ── Fallback data ──
+    const FALLBACK_CHAMPIONS = [
+      { year: 2022, team: 'Atlanta Braves', abbrev: 'ATL', owner: 'Justin Winward', seed: 1, note: 'Season 1' },
+      { year: 2023, team: 'Milwaukee Brewers', abbrev: 'MIL', owner: null, seed: null, note: 'Season 2' },
+      { year: 2024, team: 'Las Vegas Athletics', abbrev: 'LVA', owner: 'Mike DiMauro', seed: null, note: 'Season 3' },
+      { year: 2025, team: 'Arizona Diamondbacks', abbrev: 'ARI', owner: 'Cote Nichols', seed: 8, note: 'Cinderella Run' }
+    ];
+
+    const FALLBACK_RECORDS = [
+      { category: 'Best Regular Season Record', stat: '17-2', team: 'MIL', season: 2023, notes: 'Best W% in league history' },
+      { category: 'Regular Season Wins', stat: '17', team: 'MIL', season: 2023, notes: 'Single season' },
+      { category: 'Most Fantasy Points (Season)', stat: '7,986.5', team: 'ARI', season: 2025, notes: 'Including playoffs' },
+      { category: 'Lowest Playoff Seed to Win', stat: '#8 Seed', team: 'ARI', season: 2025, notes: 'Beat #1, #2, #4 seeds' },
+      { category: 'Longest Playoff Run', stat: '3 Rounds', team: 'ARI', season: 2025, notes: 'DS → CS → WS, all wins' }
+    ];
+
+    const FALLBACK_AWARDS = {
+      2022: { silverSlugger: '—', cyYoung: '—' },
+      2023: { silverSlugger: '—', cyYoung: '—' },
+      2024: { silverSlugger: '—', cyYoung: '—' },
+      2025: { silverSlugger: '—', cyYoung: '—' }
+    };
+
+    // ── Render records table ──
+    function renderRecords(records) {
+      const tbody = document.getElementById('records-tbody');
+      tbody.innerHTML = '';
+      if (!records.length) {
+        tbody.innerHTML = '<tr><td colspan="5" style="color:#4A5568;font-style:italic;">No records loaded yet.</td></tr>';
+        return;
+      }
+      records.forEach(r => {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td>${r.category || ''}</td>
+          <td class="record-value">${r.stat || r.value || '—'}</td>
+          <td class="record-team">${r.team || '—'}</td>
+          <td>${r.season || '—'}</td>
+          <td>${r.notes || ''}</td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
+
+    // ── Render awards ──
+    function renderAwards(awardsData) {
+      const grid = document.getElementById('awards-grid');
+      grid.innerHTML = '';
+      [2022, 2023, 2024, 2025].forEach(year => {
+        const data = awardsData[year] || {};
+        const col = document.createElement('div');
+        col.className = 'award-season-col';
+        col.innerHTML = `
+          <div class="award-season-header">${year} Season</div>
+          <div class="award-row">
+            <span class="award-type">Silver Slugger (Hitting)</span>
+            <div class="award-winner">${data.silverSlugger || '—'}${data.silverSluggerTeam ? `<span class="award-team-tag">${data.silverSluggerTeam}</span>` : ''}</div>
+          </div>
+          <div class="award-row">
+            <span class="award-type">Cy Young (Pitching)</span>
+            <div class="award-winner">${data.cyYoung || '—'}${data.cyYoungTeam ? `<span class="award-team-tag">${data.cyYoungTeam}</span>` : ''}</div>
+          </div>
+        `;
+        grid.appendChild(col);
+      });
+    }
+
+    // ── Init ──
+    async function init() {
+      let records = FALLBACK_RECORDS;
+      let awards = FALLBACK_AWARDS;
+
+      try {
+        const snap = await getDoc(doc(firestore, 'settings', 'league-records'));
+        if (snap.exists()) {
+          const data = snap.data();
+          if (Array.isArray(data.records) && data.records.length) records = data.records;
+          if (data.awards) awards = data.awards;
+        }
+      } catch { /* use fallback */ }
+
+      renderRecords(records);
+      renderAwards(awards);
+    }
+
+    init();
+  </script>
+
+  <script type="module" src="../assets/js/estn-auth.js"></script>
 </body>
 </html>

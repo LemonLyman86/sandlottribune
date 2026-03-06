@@ -4,40 +4,45 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>2026 TSDL Season Preview: Seattle Mariners</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Marcellus&family=Oswald:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../assets/css/main.css">
   <style>
     /* ── Reset & Base ── */
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    body { font-family: 'Georgia', serif; font-size: 17px; line-height: 1.75; color: #1a1a1a; background: #fff; max-width: 800px; margin: 0 auto; padding: 40px 24px 80px; }
-    .article-header { border-top: 4px solid #005C5C; padding-top: 28px; margin-bottom: 36px; }
-    .article-header h1 { font-family: 'Georgia', serif; font-size: 2.2em; font-weight: bold; line-height: 1.2; color: #0C2C56; margin-bottom: 10px; }
+    body { font-family: 'Georgia', serif; font-size: 17px; line-height: 1.75; color: #1a1a1a; background: #F6F3EC; }
+    .estn-article-wrapper { max-width: 800px; margin: 0 auto; padding: 40px 24px 80px; }
+    .article-header { border-top: 4px solid #BA2B2B; padding-top: 28px; margin-bottom: 36px; }
+    .article-header h1 { font-family: 'Georgia', serif; font-size: 2.2em; font-weight: bold; line-height: 1.2; color: #36302A; margin-bottom: 10px; }
     .byline { font-family: 'Arial', sans-serif; font-size: 0.85em; color: #777; font-style: italic; letter-spacing: 0.02em; }
-    h2 { font-family: 'Georgia', serif; font-size: 1.45em; color: #0C2C56; border-bottom: 2px solid #005C5C; padding-bottom: 6px; margin: 44px 0 18px; }
+    h2 { font-family: 'Georgia', serif; font-size: 1.45em; color: #36302A; border-bottom: 2px solid #BA2B2B; padding-bottom: 6px; margin: 44px 0 18px; }
     p { margin-bottom: 1.2em; color: #222; }
-    strong { color: #0C2C56; }
+    strong { color: #36302A; }
     hr { border: none; border-top: 1px solid #ddd; margin: 48px 0 32px; }
-    .drop-item { background: #f7f7f7; border-left: 4px solid #005C5C; padding: 10px 16px; margin-bottom: 12px; border-radius: 0 4px 4px 0; }
+    .drop-item { background: #f7f7f7; border-left: 4px solid #BA2B2B; padding: 10px 16px; margin-bottom: 12px; border-radius: 0 4px 4px 0; }
     .drop-item p { margin: 0; }
-    .prediction-box { background: #0C2C56; color: #fff; border-radius: 6px; padding: 20px 24px; margin: 28px 0; }
+    .prediction-box { background: #36302A; color: #fff; border-radius: 6px; padding: 20px 24px; margin: 28px 0; }
     .prediction-box p { color: #e8ecf4; margin-bottom: 0.6em; }
     .prediction-box p:last-child { margin-bottom: 0; }
     .prediction-box strong { color: #f5c842; }
-    .grade { display: inline-block; background: #005C5C; color: #fff; font-weight: bold; font-family: 'Arial', sans-serif; font-size: 0.9em; padding: 2px 10px; border-radius: 3px; margin-left: 6px; vertical-align: middle; }
+    .grade { display: inline-block; background: #BA2B2B; color: #fff; font-weight: bold; font-family: 'Arial', sans-serif; font-size: 0.9em; padding: 2px 10px; border-radius: 3px; margin-left: 6px; vertical-align: middle; }
     .article-footer { margin-top: 56px; font-family: 'Arial', sans-serif; font-size: 0.8em; color: #aaa; text-align: center; font-style: italic; }
     .article-chart { text-align: center; margin: 28px 0; }
     .article-chart figcaption { font-family: 'Arial', sans-serif; font-size: 0.8em; color: #888; margin-top: 6px; font-style: italic; }
     /* ── Quick Stats Bar ── */
-    .quick-stats { display: flex; flex-wrap: wrap; gap: 20px; background: #f7f7f7; border-left: 4px solid #005C5C; padding: 16px 22px; margin: 24px 0 32px; border-radius: 0 4px 4px 0; }
+    .quick-stats { display: flex; flex-wrap: wrap; gap: 20px; background: #f7f7f7; border-left: 4px solid #BA2B2B; padding: 16px 22px; margin: 24px 0 32px; border-radius: 0 4px 4px 0; }
     .stat-item { text-align: center; min-width: 80px; }
     .stat-label { font-family: 'Arial', sans-serif; font-size: 0.68em; text-transform: uppercase; letter-spacing: 0.09em; color: #999; display: block; margin-bottom: 2px; }
-    .stat-value { font-size: 1.5em; font-weight: bold; color: #0C2C56; font-family: 'Arial', sans-serif; }
+    .stat-value { font-size: 1.5em; font-weight: bold; color: #36302A; font-family: 'Arial', sans-serif; }
     /* ── Pull Quote ── */
-    .pull-quote { border-left: 5px solid #005C5C; padding: 14px 22px; margin: 32px 0; font-size: 1.12em; font-style: italic; color: #0C2C56; background: #fafafa; border-radius: 0 3px 3px 0; }
+    .pull-quote { border-left: 5px solid #BA2B2B; padding: 14px 22px; margin: 32px 0; font-size: 1.12em; font-style: italic; color: #36302A; background: #fafafa; border-radius: 0 3px 3px 0; }
     /* ── Player Spotlight Card ── */
-    .player-card { background: #fff; border: 1px solid #e8e8e8; border-top: 3px solid #005C5C; border-radius: 0 0 4px 4px; padding: 14px 18px; margin: 14px 0; }
-    .player-card .player-name { font-weight: bold; font-size: 1.04em; color: #0C2C56; }
+    .player-card { background: #fff; border: 1px solid #e8e8e8; border-top: 3px solid #BA2B2B; border-radius: 0 0 4px 4px; padding: 14px 18px; margin: 14px 0; }
+    .player-card .player-name { font-weight: bold; font-size: 1.04em; color: #36302A; }
     .player-card .player-meta { font-family: 'Arial', sans-serif; font-size: 0.79em; color: #777; margin-top: 3px; margin-bottom: 8px; }
     /* ── Section Kicker ── */
-    .section-kicker { font-family: 'Arial', sans-serif; font-size: 0.71em; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: #005C5C; display: block; margin-bottom: 2px; margin-top: 44px; }
+    .section-kicker { font-family: 'Arial', sans-serif; font-size: 0.71em; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: #BA2B2B; display: block; margin-bottom: 2px; margin-top: 44px; }
     /* ── Two-Column Stat Grid ── */
     .stat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin: 20px 0; }
     .stat-grid-item { background: #f9f9f9; padding: 12px 16px; border-radius: 4px; font-family: 'Arial', sans-serif; font-size: 0.88em; }
@@ -45,6 +50,34 @@
   </style>
 </head>
 <body>
+
+  <!-- ESTN Portal Nav -->
+  <header class="estn-portal-nav">
+    <nav class="nav-inner">
+      <a class="nav-logo" href="../index.html">
+        <img src="../assets/images/estn-logo-full.png" alt="ESTN">
+      </a>
+      <ul class="nav-links">
+        <li><a href="../index.html">Home</a></li>
+        <li><a href="../tribune/">The Sandlot Tribune</a></li>
+        <li><a href="../rumblr/">Rumblr</a></li>
+        <li><a href="../league-records/">League Records</a></li>
+        <li><a href="../season-deadlines/">Season Events</a></li>
+        <li><a href="../about/">About</a></li>
+      </ul>
+      <div id="estn-auth-widget"></div>
+    </nav>
+  </header>
+
+  <!-- Breadcrumb -->
+  <div class="estn-article-breadcrumb">
+    <a href="../index.html">ESTN</a> &rsaquo;
+    <a href="../between-the-chalk/">Between The Chalk</a> &rsaquo;
+    Season Preview
+  </div>
+
+  <!-- Article Content -->
+  <div class="estn-article-wrapper">
   <div class="article-header">
     <h1>2026 TSDL Season Preview: Seattle Mariners</h1>
     <p class="byline">By Ken Rosenthal &mdash; 2026-02-28 &mdash; 12 min read</p>
@@ -277,6 +310,8 @@
     <p>The 2026 Mariners will be defined not by what happens in the regular season — they're too well-constructed to miss the playoffs — but by what Jordan Britton does in the next three weeks. Drop the deadweight. Free the dollars. Spend them with precision on March 22. There is no championship ceiling on a team with Yamamoto at $5, Abbott at $4, and Webb anchoring the top of the rotation. But there is absolutely a title floor if the man building this roster lets the fear of losing known commodities prevent him from acquiring the unknown ones that could make the difference.</p>
     <p><strong>The bottom line: Jordan Britton has assembled one of the best rotations in TSDL history. Now he has to be willing to use a scalpel on the rest of the roster to give that staff a lineup worth pitching for.</strong></p>
   </div>
+  </div><!-- /.estn-article-wrapper -->
 
+  <script type="module" src="../assets/js/estn-auth.js"></script>
 </body>
 </html>
