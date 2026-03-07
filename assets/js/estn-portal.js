@@ -413,10 +413,8 @@ async function loadTicker() {
     if (tickerSnap.exists()) {
       const td = tickerSnap.data();
 
-      // Hide ticker if globally disabled or 'home' excluded from pages
-      const allowedPages = td.ticker_pages;
-      const homeAllowed  = !allowedPages || allowedPages.length === 0 || allowedPages.includes('home');
-      if (td.enabled === false || !homeAllowed) {
+      // Hide ticker only if globally disabled — ticker_pages controls non-home injected tickers
+      if (td.enabled === false) {
         if (tickerBar) tickerBar.style.display = 'none';
         return;
       }

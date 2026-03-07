@@ -2992,7 +2992,8 @@ select.estn-admin-input:focus {
 .btc-page-body {
   background: #0D1117;
   color: #E2E8F0;
-  min-height: 100vh;
+  height: 100vh;
+  overflow: hidden;
   display: flex;
   flex-direction: column;
 }
@@ -3000,7 +3001,7 @@ select.estn-admin-input:focus {
 .btc-layout {
   display: flex;
   flex: 1;
-  height: calc(100vh - 48px - 36px); /* subtract nav + ticker */
+  min-height: 0; /* lets flex children shrink below content size */
   overflow: hidden;
 }
 
@@ -3208,9 +3209,10 @@ select.estn-admin-input:focus {
 .btc-reader-pane {
   flex: 1;
   position: relative;
-  background: #161B22;
+  background: #F0EBE2;  /* warm cream — matches Tribune article tone */
   display: flex;
   flex-direction: column;
+  border-left: 3px solid #B9A590;  /* Tribune border color */
 }
 
 .btc-reader-loading {
@@ -3249,7 +3251,8 @@ select.estn-admin-input:focus {
 
 /* ── Responsive ── */
 @media (max-width: 900px) {
-  .btc-layout { flex-direction: column; height: auto; }
+  .btc-page-body { height: auto; overflow: auto; }
+  .btc-layout { flex-direction: column; min-height: auto; }
   .btc-left-nav { width: 100%; height: auto; max-height: 240px; border-right: none; border-bottom: 1px solid #2D3748; }
   .btc-article-frame { height: 70vh; }
 }
