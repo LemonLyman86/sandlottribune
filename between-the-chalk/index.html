@@ -172,7 +172,16 @@
       history.replaceState({}, '', '?' + params.toString());
     }
 
-    frame.addEventListener('load', () => { spinner.style.display = 'none'; });
+    frame.addEventListener('load', () => {
+      spinner.style.display = 'none';
+      // Hide the article's own nav when displayed inside the BTC iframe (same-origin)
+      try {
+        const iDoc = frame.contentDocument || frame.contentWindow.document;
+        const s = iDoc.createElement('style');
+        s.textContent = '.estn-portal-nav { display: none !important; } body { padding-top: 0 !important; }';
+        iDoc.head.appendChild(s);
+      } catch(e) {}
+    });
 
     // ── Render article list ──
     function renderList(articles) {

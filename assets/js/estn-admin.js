@@ -59,7 +59,15 @@ async function getSettings() {
 }
 
 async function saveSettings(data) {
-  await setDoc(doc(firestore, 'settings', 'estn'), data, { merge: true });
+  try {
+    await setDoc(doc(firestore, 'settings', 'estn'), data, { merge: true });
+  } catch (err) {
+    const msg = err.code === 'permission-denied'
+      ? 'Permission denied — update Firestore rules (see FIRESTORE_RULES.txt)'
+      : (err.message || 'Unknown error');
+    showToast('Save failed: ' + msg, true);
+    throw err;
+  }
 }
 
 // ── Static JSON data status ────────────────────────────────────────────────────
@@ -111,22 +119,24 @@ function initFeatured(settings) {
   setVal('sub-story-img',         fa.sub_story_img);
 
   document.getElementById('save-featured-btn')?.addEventListener('click', async () => {
-    const pinned = document.getElementById('featured-pinned')?.checked ?? false;
-    const getV = id => document.getElementById(id)?.value.trim() || '';
-    await saveSettings({
-      featured_article: {
-        pinned,
-        url:            getV('featured-url'),
-        title:          getV('featured-title-input'),
-        byline:         getV('featured-byline'),
-        excerpt:        getV('featured-excerpt-input'),
-        image_url:      getV('featured-image-url'),
-        sub_story_url:  getV('sub-story-url'),
-        sub_story_title:getV('sub-story-title'),
-        sub_story_img:  getV('sub-story-img'),
-      }
-    });
-    showToast('Featured article saved.');
+    try {
+      const pinned = document.getElementById('featured-pinned')?.checked ?? false;
+      const getV = id => document.getElementById(id)?.value.trim() || '';
+      await saveSettings({
+        featured_article: {
+          pinned,
+          url:            getV('featured-url'),
+          title:          getV('featured-title-input'),
+          byline:         getV('featured-byline'),
+          excerpt:        getV('featured-excerpt-input'),
+          image_url:      getV('featured-image-url'),
+          sub_story_url:  getV('sub-story-url'),
+          sub_story_title:getV('sub-story-title'),
+          sub_story_img:  getV('sub-story-img'),
+        }
+      });
+      showToast('Featured article saved.');
+    } catch { /* error shown by saveSettings */ }
   });
 }
 
@@ -185,22 +195,29 @@ async function initTicker() {
   }
 
   document.getElementById('save-ticker-btn')?.addEventListener('click', async () => {
-    const enabled = document.getElementById('ticker-enabled')?.checked ?? true;
-    const raw = document.getElementById('ticker-items')?.value || '';
-    const items = raw.split('\n').map(s => s.trim()).filter(Boolean);
+    try {
+      const enabled = document.getElementById('ticker-enabled')?.checked ?? true;
+      const raw = document.getElementById('ticker-items')?.value || '';
+      const items = raw.split('\n').map(s => s.trim()).filter(Boolean);
 
-    // Collect checked pages — if all checked, save empty array (means "all pages")
-    const allCbs    = Array.from(document.querySelectorAll('.ticker-page-cb'));
-    const checked   = allCbs.filter(cb => cb.checked).map(cb => cb.dataset.page);
-    const tickerPages = checked.length === allCbs.length ? [] : checked;
+      // Collect checked pages — if all checked, save empty array (means "all pages")
+      const allCbs    = Array.from(document.querySelectorAll('.ticker-page-cb'));
+      const checked   = allCbs.filter(cb => cb.checked).map(cb => cb.dataset.page);
+      const tickerPages = checked.length === allCbs.length ? [] : checked;
 
-    await setDoc(doc(firestore, 'settings', 'ticker'), {
-      enabled,
-      items,
-      ticker_pages: tickerPages,
-      updated_at: serverTimestamp()
-    }, { merge: true });
-    showToast('Ticker saved.');
+      await setDoc(doc(firestore, 'settings', 'ticker'), {
+        enabled,
+        items,
+        ticker_pages: tickerPages,
+        updated_at: serverTimestamp()
+      }, { merge: true });
+      showToast('Ticker saved.');
+    } catch (err) {
+      const msg = err.code === 'permission-denied'
+        ? 'Permission denied — update Firestore rules (see FIRESTORE_RULES.txt)'
+        : (err.message || 'Unknown error');
+      showToast('Save failed: ' + msg, true);
+    }
   });
 }
 
@@ -238,10 +255,12 @@ function initHeadlines(settings) {
   });
 
   document.getElementById('save-headlines-btn')?.addEventListener('click', async () => {
-    const inputs = document.querySelectorAll('#headlines-list .estn-admin-input');
-    const headlines = Array.from(inputs).map(i => i.value.trim()).filter(Boolean);
-    await saveSettings({ custom_headlines: headlines });
-    showToast('Headlines saved.');
+    try {
+      const inputs = document.querySelectorAll('#headlines-list .estn-admin-input');
+      const headlines = Array.from(inputs).map(i => i.value.trim()).filter(Boolean);
+      await saveSettings({ custom_headlines: headlines });
+      showToast('Headlines saved.');
+    } catch { /* error shown by saveSettings */ }
   });
 }
 
@@ -290,16 +309,18 @@ function initAds(settings) {
   }
 
   document.getElementById('save-ads-btn')?.addEventListener('click', async () => {
-    const disabledAds = ALL_ADS
-      .filter(ad => !document.getElementById(`ad-${ad.id}`)?.checked)
-      .map(ad => ad.id);
-    const adSlots = {};
-    for (const slot of AD_SLOTS) {
-      const val = document.getElementById(`slot-${slot.id}`)?.value || '';
-      if (val) adSlots[slot.id] = val;
-    }
-    await saveSettings({ disabled_ads: disabledAds, ad_slots: adSlots });
-    showToast('Ad settings saved.');
+    try {
+      const disabledAds = ALL_ADS
+        .filter(ad => !document.getElementById(`ad-${ad.id}`)?.checked)
+        .map(ad => ad.id);
+      const adSlots = {};
+      for (const slot of AD_SLOTS) {
+        const val = document.getElementById(`slot-${slot.id}`)?.value || '';
+        if (val) adSlots[slot.id] = val;
+      }
+      await saveSettings({ disabled_ads: disabledAds, ad_slots: adSlots });
+      showToast('Ad settings saved.');
+    } catch { /* error shown by saveSettings */ }
   });
 }
 
@@ -344,19 +365,23 @@ function initQuickLinks(settings) {
   });
 
   document.getElementById('save-links-btn')?.addEventListener('click', async () => {
-    const rows = document.querySelectorAll('#quick-links-list .estn-admin-link-row');
-    const links = Array.from(rows).map(r => ({
-      label: r.querySelector('.link-label')?.value.trim() || '',
-      url:   r.querySelector('.link-url')?.value.trim()   || '',
-    })).filter(l => l.label && l.url);
-    await saveSettings({ quick_links: links });
-    showToast('Quick links saved.');
+    try {
+      const rows = document.querySelectorAll('#quick-links-list .estn-admin-link-row');
+      const links = Array.from(rows).map(r => ({
+        label: r.querySelector('.link-label')?.value.trim() || '',
+        url:   r.querySelector('.link-url')?.value.trim()   || '',
+      })).filter(l => l.label && l.url);
+      await saveSettings({ quick_links: links });
+      showToast('Quick links saved.');
+    } catch { /* error shown by saveSettings */ }
   });
 
   document.getElementById('reset-links-btn')?.addEventListener('click', async () => {
-    renderLinksList(DEFAULT_LINKS);
-    await saveSettings({ quick_links: null });
-    showToast('Quick links reset to defaults.');
+    try {
+      renderLinksList(DEFAULT_LINKS);
+      await saveSettings({ quick_links: null });
+      showToast('Quick links reset to defaults.');
+    } catch { /* error shown by saveSettings */ }
   });
 }
 
@@ -372,13 +397,15 @@ function initPrograms(settings) {
   setCb('prog-podcast', 'podcast');
 
   document.getElementById('save-programs-btn')?.addEventListener('click', async () => {
-    const hiddenPrograms = [];
-    const check = (id, progId) => { if (!document.getElementById(id)?.checked) hiddenPrograms.push(progId); };
-    check('prog-rumblr',  'rumblr');
-    check('prog-tribune', 'tribune');
-    check('prog-podcast', 'podcast');
-    await saveSettings({ hidden_programs: hiddenPrograms });
-    showToast('Programs visibility saved.');
+    try {
+      const hiddenPrograms = [];
+      const check = (id, progId) => { if (!document.getElementById(id)?.checked) hiddenPrograms.push(progId); };
+      check('prog-rumblr',  'rumblr');
+      check('prog-tribune', 'tribune');
+      check('prog-podcast', 'podcast');
+      await saveSettings({ hidden_programs: hiddenPrograms });
+      showToast('Programs visibility saved.');
+    } catch { /* error shown by saveSettings */ }
   });
 }
 
@@ -512,9 +539,16 @@ async function initBTC() {
   });
 
   document.getElementById('save-btc-btn')?.addEventListener('click', async () => {
-    const articles = readBTCArticles();
-    await setDoc(doc(firestore, 'settings', 'btc'), { articles });
-    showToast('BTC article list saved.');
+    try {
+      const articles = readBTCArticles();
+      await setDoc(doc(firestore, 'settings', 'btc'), { articles });
+      showToast('BTC article list saved.');
+    } catch (err) {
+      const msg = err.code === 'permission-denied'
+        ? 'Permission denied — update Firestore rules (see FIRESTORE_RULES.txt)'
+        : (err.message || 'Unknown error');
+      showToast('Save failed: ' + msg, true);
+    }
   });
 }
 
@@ -613,9 +647,16 @@ async function initEvents() {
   });
 
   document.getElementById('save-events-btn')?.addEventListener('click', async () => {
-    const events = readEvents();
-    await setDoc(doc(firestore, 'settings', 'events'), { events });
-    showToast('Events saved.');
+    try {
+      const events = readEvents();
+      await setDoc(doc(firestore, 'settings', 'events'), { events });
+      showToast('Events saved.');
+    } catch (err) {
+      const msg = err.code === 'permission-denied'
+        ? 'Permission denied — update Firestore rules (see FIRESTORE_RULES.txt)'
+        : (err.message || 'Unknown error');
+      showToast('Save failed: ' + msg, true);
+    }
   });
 }
 
@@ -716,10 +757,17 @@ async function initRecords() {
   });
 
   document.getElementById('save-records-btn')?.addEventListener('click', async () => {
-    const champions = readChampions();
-    const records   = readRecords();
-    await setDoc(doc(firestore, 'settings', 'league-records'), { champions, records });
-    showToast('League records saved.');
+    try {
+      const champions = readChampions();
+      const records   = readRecords();
+      await setDoc(doc(firestore, 'settings', 'league-records'), { champions, records });
+      showToast('League records saved.');
+    } catch (err) {
+      const msg = err.code === 'permission-denied'
+        ? 'Permission denied — update Firestore rules (see FIRESTORE_RULES.txt)'
+        : (err.message || 'Unknown error');
+      showToast('Save failed: ' + msg, true);
+    }
   });
 }
 

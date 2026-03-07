@@ -421,7 +421,7 @@
         el.innerHTML = sorted.map(([tag, count], i) => `
           <div style="display:flex;align-items:center;gap:8px;padding:6px 0;border-bottom:1px solid rgba(45,55,72,0.5);${i === sorted.length-1?'border:none;':''}">
             <span style="font-size:0.72rem;color:#4A5568;width:16px;text-align:right;">${i+1}</span>
-            <a href="rumblr/?tag=${encodeURIComponent(tag)}" style="color:#C8102E;text-decoration:none;font-family:'Oswald',sans-serif;font-size:0.82rem;font-weight:600;">#${tag}</a>
+            <a href="rumblr/?tag=${encodeURIComponent(tag.replace(/^#/, ''))}" style="color:#C8102E;text-decoration:none;font-family:'Oswald',sans-serif;font-size:0.82rem;font-weight:600;">${tag}</a>
             <span style="margin-left:auto;font-size:0.68rem;color:#718096;">${count} post${count!==1?'s':''}</span>
           </div>`).join('');
       } catch {
