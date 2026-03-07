@@ -76,36 +76,64 @@
     where, orderBy, getDocs, updateDoc, increment, serverTimestamp
   } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js';
   import { onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js';
-  import { renderPost, showToast, notifyFollowers } from '../assets/js/rumblr-app.js';
+  import {
+    renderPost, showToast, notifyFollowers,
+    setCurrentUser, initMentionAutocomplete
+  } from '../assets/js/rumblr-app.js';
   import { initInteractions } from '../assets/js/rumblr-interactions.js';
 
-  const postId = new URLSearchParams(location.search).get('id');
+  const postId    = new URLSearchParams(location.search).get('id');
   const openReply = new URLSearchParams(location.search).get('reply') === '1';
   let currentUser = null, currentUserDoc = null;
+  let postLoaded  = false;
 
   onAuthStateChanged(auth, async user => {
     currentUser = user;
     if (user) {
       const snap = await getDoc(doc(firestore, 'users', user.uid));
       currentUserDoc = snap.exists() ? snap.data() : null;
+
+      // Inject auth into rumblr-app module so renderPost() can show edit/delete menus
+      setCurrentUser(user, currentUserDoc);
+
       document.getElementById('rb-reply-compose').style.display = 'block';
       document.getElementById('rb-reply-login-prompt').style.display = 'none';
-      if (currentUserDoc) {
-        const av = document.getElementById('rb-reply-avatar');
-        av.style.background = currentUserDoc.team_color || '#555';
-        av.textContent = currentUserDoc.team_abbrev || '?';
+
+      // Set compose avatar (show profile picture if available)
+      const av = document.getElementById('rb-reply-avatar');
+      if (av && currentUserDoc) {
+        if (currentUserDoc.avatar_url) {
+          av.innerHTML = `<img src="${currentUserDoc.avatar_url}" alt="Avatar"
+            style="width:100%;height:100%;object-fit:cover;border-radius:50%;"
+            onerror="this.style.display='none';">`;
+          av.style.background = 'transparent';
+        } else {
+          av.style.background = currentUserDoc.team_color || '#555';
+          av.textContent = currentUserDoc.team_abbrev || '?';
+        }
       }
+
+      // Wire up @ mention autocomplete on the reply textarea
+      const replyInput = document.getElementById('rb-reply-input');
+      if (replyInput) initMentionAutocomplete(replyInput);
+
       if (openReply) document.getElementById('rb-reply-input')?.focus();
     } else {
+      setCurrentUser(null, null);
       document.getElementById('rb-reply-compose').style.display = 'none';
       document.getElementById('rb-reply-login-prompt').style.display = 'block';
+    }
+
+    // Load post once auth is known (so edit/delete buttons render correctly)
+    if (!postLoaded) {
+      postLoaded = true;
+      loadPost();
     }
   });
 
   async function loadPost() {
     if (!postId) return;
     const spinner = document.getElementById('rb-spinner');
-
     try {
       const snap = await getDoc(doc(firestore, 'posts', postId));
       spinner.style.display = 'none';
@@ -119,12 +147,9 @@
       document.title = `${data.author_name} on Rumblr`;
 
       const postEl = renderPost(postId, data);
-      // Remove click-to-navigate behaviour on the detail page card
       postEl.style.cursor = 'default';
       document.getElementById('rb-main-post').appendChild(postEl);
-      initInteractions(postEl, postId, data, currentUser);
 
-      // Load replies
       loadReplies();
     } catch (err) {
       spinner.style.display = 'none';
@@ -134,26 +159,40 @@
 
   async function loadReplies() {
     const feed = document.getElementById('rb-replies-feed');
-    const q = query(
-      collection(firestore, 'posts'),
-      where('parent_post_id', '==', postId),
-      orderBy('timestamp', 'asc')
-    );
-    const snap = await getDocs(q);
-    if (snap.empty) {
+    feed.innerHTML = '';
+    try {
+      // No orderBy here — avoids composite index requirement; sort client-side
+      const snap = await getDocs(query(
+        collection(firestore, 'posts'),
+        where('parent_post_id', '==', postId)
+      ));
+      if (snap.empty) {
+        feed.innerHTML = '<div class="rb-empty" style="padding:30px 20px;">' +
+          '<div class="rb-empty-sub">No replies yet. Be the first.</div></div>';
+        return;
+      }
+      // Sort by timestamp ascending client-side
+      const replies = snap.docs
+        .map(d => ({ id: d.id, data: d.data() }))
+        .sort((a, b) => {
+          const ta = a.data.timestamp?.toMillis?.() ?? 0;
+          const tb = b.data.timestamp?.toMillis?.() ?? 0;
+          return ta - tb;
+        });
+      replies.forEach(({ id, data }) => {
+        const el = renderPost(id, data, true);
+        el.style.cursor = 'default';
+        feed.appendChild(el);
+      });
+    } catch (err) {
+      console.error('loadReplies error:', err);
       feed.innerHTML = '<div class="rb-empty" style="padding:30px 20px;">' +
-        '<div class="rb-empty-sub">No replies yet. Be the first.</div></div>';
-      return;
+        '<div class="rb-empty-sub">Could not load replies.</div></div>';
     }
-    snap.forEach(d => {
-      const el = renderPost(d.id, d.data(), true);
-      el.style.cursor = 'default';
-      feed.appendChild(el);
-    });
   }
 
   // Reply submit
-  const MAX_CHARS = 280;
+  const MAX_CHARS   = 280;
   const replyInput  = document.getElementById('rb-reply-input');
   const replyCounter = document.getElementById('rb-reply-counter');
   const replyBtn    = document.getElementById('rb-reply-submit');
@@ -169,7 +208,10 @@
     if (!currentUser || !currentUserDoc) return;
     const content = replyInput.value.trim();
     if (!content) return;
-    const hashtags = [...content.matchAll(/#(\w+)/g)].map(m => '#' + m[1]);
+    const hashtags = [
+      ...[...content.matchAll(/#(\w+)/g)].map(m => '#' + m[1]),
+    ];
+    const mentions = [...content.matchAll(/@(\w+)/g)].map(m => '@' + m[1]);
 
     replyBtn.disabled = true;
     try {
@@ -181,9 +223,11 @@
         author_uid:          currentUser.uid,
         author_team_id:      currentUserDoc.team_id,
         author_verified:     currentUserDoc.verified || false,
+        author_image:        currentUserDoc.avatar_url || null,
         author_avatar_color: currentUserDoc.team_color,
         author_initials:     currentUserDoc.team_abbrev,
         hashtags,
+        mentions,
         timestamp:           serverTimestamp(),
         like_count:          0, reply_count: 0, repost_count: 0,
         parent_post_id:      postId,
@@ -191,14 +235,11 @@
       });
       await updateDoc(doc(firestore, 'posts', postId), { reply_count: increment(1) });
 
-      // Notify followers who opted in for replies
       notifyFollowers(currentUserDoc.handle, currentUserDoc.display_name, replyRef.id, content, 'new_reply');
 
       replyInput.value = '';
       replyCounter.textContent = MAX_CHARS;
       showToast('Reply posted!');
-      // Reload replies section
-      document.getElementById('rb-replies-feed').innerHTML = '';
       loadReplies();
     } catch (err) {
       console.error(err);
@@ -207,8 +248,6 @@
       replyBtn.disabled = false;
     }
   });
-
-  document.addEventListener('DOMContentLoaded', loadPost);
 </script>
 </body>
 </html>

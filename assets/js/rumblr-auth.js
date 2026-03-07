@@ -16,7 +16,7 @@ import {
   doc, setDoc, addDoc, collection,
   serverTimestamp, increment, updateDoc
 } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js';
-import { showToast, notifyFollowers } from './rumblr-app.js';
+import { showToast, notifyFollowers, initMentionAutocomplete } from './rumblr-app.js';
 
 // ── Team data (color_1 from team_season_branding) ─────────
 // image: path relative to /rumblr/ pages (GitHub Pages URL)
@@ -76,11 +76,24 @@ export function initCompose(user, userDoc, onPosted) {
 
   if (!textarea) return;
 
-  // Set avatar
+  // Set avatar: profile picture > team logo image > team color + initials
   if (avatarEl && userDoc) {
-    avatarEl.style.background = userDoc.team_color || '#555';
-    avatarEl.textContent = userDoc.team_abbrev || '?';
+    const imgSrc = userDoc.avatar_url
+      || TEAM_DATA[userDoc.team_abbrev]?.image
+      || null;
+    if (imgSrc) {
+      avatarEl.innerHTML = `<img src="${imgSrc}" alt="Avatar"
+        style="width:100%;height:100%;object-fit:cover;border-radius:50%;"
+        onerror="this.outerHTML='<span style=&quot;color:#fff&quot;>${userDoc.team_abbrev || '?'}</span>';">`;
+      avatarEl.style.background = userDoc.team_color || '#555';
+    } else {
+      avatarEl.style.background = userDoc.team_color || '#555';
+      avatarEl.textContent = userDoc.team_abbrev || '?';
+    }
   }
+
+  // @ mention autocomplete
+  initMentionAutocomplete(textarea);
 
   // Char counter
   textarea.addEventListener('input', () => {
@@ -113,6 +126,7 @@ async function submitPost(textarea, user, userDoc, onPosted) {
   if (!content || content.length > MAX_CHARS) return;
 
   const hashtags = [...content.matchAll(/#(\w+)/g)].map(m => '#' + m[1]);
+  const mentions = [...content.matchAll(/@(\w+)/g)].map(m => '@' + m[1]);
 
   try {
     const postRef = await addDoc(collection(firestore, 'posts'), {
@@ -127,6 +141,7 @@ async function submitPost(textarea, user, userDoc, onPosted) {
       author_avatar_color: userDoc.team_color,
       author_initials:     userDoc.team_abbrev,
       hashtags,
+      mentions,
       timestamp:           serverTimestamp(),
       like_count:          0,
       reply_count:         0,

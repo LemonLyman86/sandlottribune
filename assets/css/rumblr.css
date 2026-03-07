@@ -28,7 +28,18 @@
 html { font-size: 16px; }
 
 body.rumblr-page {
-  background: var(--rb-bg);
+  background:
+    radial-gradient(
+      ellipse 130% 90% at 50% 0%,
+      #04090F 0%,
+      #06101E 15%,
+      #091B35 35%,
+      #0E2445 55%,
+      #163260 75%,
+      #1B3C70 90%,
+      #1F4278 100%
+    );
+  background-attachment: fixed;
   color: var(--rb-text);
   font-family: 'Marcellus', 'Palatino Linotype', Georgia, serif;
   min-height: 100vh;
@@ -60,7 +71,9 @@ input::placeholder, textarea::placeholder { color: var(--rb-subtle); }
   position: sticky;
   top: 0;
   z-index: 100;
-  background: var(--rb-bg);
+  background: rgba(4, 9, 15, 0.88);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
   border-bottom: 2px solid var(--rb-red);
   padding: 0 24px;
   height: 58px;
@@ -167,6 +180,7 @@ input::placeholder, textarea::placeholder { color: var(--rb-subtle); }
 
 /* ── Left Sidebar ────────────────────────────────────────── */
 .rb-left-sidebar {
+  background: rgba(6, 14, 26, 0.7);
   border-right: 1px solid var(--rb-border);
   padding: 20px 0;
   position: sticky;
@@ -323,6 +337,7 @@ input::placeholder, textarea::placeholder { color: var(--rb-subtle); }
 
 /* ── Main Feed Column ────────────────────────────────────── */
 .rb-feed-column {
+  background: rgba(6, 14, 26, 0.75);
   border-right: 1px solid var(--rb-border);
   min-height: calc(100vh - 58px);
 }
@@ -495,6 +510,50 @@ input::placeholder, textarea::placeholder { color: var(--rb-subtle); }
 }
 .rb-hashtag:hover { text-decoration: underline; }
 
+.rb-mention {
+  color: #5B9BD5;
+  text-decoration: none;
+  font-weight: 500;
+}
+.rb-mention:hover { text-decoration: underline; }
+
+/* ── @ mention autocomplete dropdown ─────────────────────── */
+.rb-mention-dropdown {
+  display: none;
+  position: absolute;
+  bottom: calc(100% + 4px);
+  left: 0;
+  right: 0;
+  background: var(--rb-surface);
+  border: 1px solid var(--rb-border);
+  border-radius: 8px;
+  box-shadow: 0 -4px 16px rgba(0,0,0,0.4);
+  z-index: 200;
+  overflow: hidden;
+  max-height: 220px;
+  overflow-y: auto;
+}
+.rb-mention-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  cursor: pointer;
+  transition: background 0.12s;
+}
+.rb-mention-item:hover { background: var(--rb-surface-2); }
+.rb-mention-name {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--rb-text);
+  font-family: 'Oswald', sans-serif;
+}
+.rb-mention-handle {
+  font-size: 0.78rem;
+  color: var(--rb-muted);
+  margin-left: auto;
+}
+
 /* ── Post more menu (edit / delete) ──────────────────────── */
 .rb-post-more-wrap {
   position: relative;
@@ -615,6 +674,7 @@ input::placeholder, textarea::placeholder { color: var(--rb-subtle); }
 
 /* ── Right Sidebar ───────────────────────────────────────── */
 .rb-right-sidebar {
+  background: rgba(6, 14, 26, 0.7);
   padding: 20px 16px;
   position: sticky;
   top: 58px;
@@ -1543,6 +1603,60 @@ input::placeholder, textarea::placeholder { color: var(--rb-subtle); }
   gap: 8px;
   height: 58px;
   width: 100%;
+}
+
+/* ── Rumblr main page: 3-column header grid ─────────────── */
+.rb-nav-rumblr {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  gap: 0;
+}
+.rb-header-center {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.rb-header-center .rb-header-logo img { height: 38px; }
+.rb-header-center .rb-header-logo-text { font-size: 1.35rem; }
+.rb-header-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  justify-content: flex-end;
+}
+
+/* ── Return to ESTN link ─────────────────────────────────── */
+.rb-estn-back {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  text-decoration: none;
+  color: var(--rb-muted);
+  font-family: 'Oswald', sans-serif;
+  font-size: 0.75rem;
+  font-weight: 500;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  transition: color 0.15s;
+  white-space: nowrap;
+  padding: 6px 0;
+}
+.rb-estn-back:hover { color: var(--rb-text); text-decoration: none; }
+.rb-estn-back img {
+  height: 28px;
+  width: auto;
+  opacity: 0.75;
+  transition: opacity 0.15s;
+}
+.rb-estn-back:hover img { opacity: 1; }
+.rb-estn-back-arrow {
+  font-size: 1.1rem;
+  line-height: 1;
+}
+@media (max-width: 600px) {
+  .rb-estn-back-text { display: none; }
+  .rb-nav-rumblr { grid-template-columns: auto 1fr auto; }
 }
 
 .rb-nav-links {

@@ -52,6 +52,13 @@ let currentUserDoc = null;
 let loadingMore    = false;
 let followedHandles = [];  // handles the current user follows
 
+// Called by post.html (and any page that doesn't run initFeed) to inject auth context
+// so that renderPost() can correctly show edit/delete menus on own posts.
+export function setCurrentUser(user, userDoc) {
+  currentUser    = user;
+  currentUserDoc = userDoc || null;
+}
+
 // ── DOM refs (set after DOMContentLoaded) ─────────────────
 let feedEl, filterBannerEl, loadMoreBtn, spinnerEl;
 
@@ -672,9 +679,11 @@ function renderAuthUI() {
 // Helpers
 // ══════════════════════════════════════════════════════════
 export function linkifyContent(text) {
-  return escHtml(text).replace(/#(\w+)/g,
-    (_, tag) => `<span class="rb-hashtag" data-tag="${tag}" onclick="window.__rumblrHashtag('${tag}')">#${tag}</span>`
-  );
+  return escHtml(text)
+    .replace(/#(\w+)/g,
+      (_, tag) => `<span class="rb-hashtag" data-tag="${tag}" onclick="window.__rumblrHashtag('${tag}')">#${tag}</span>`)
+    .replace(/@(\w+)/g,
+      (_, handle) => `<a class="rb-mention" href="profile.html?handle=@${handle}" onclick="event.stopPropagation()">@${handle}</a>`);
 }
 
 export function escHtml(str) {
@@ -886,6 +895,98 @@ export async function initNotificationBell(uid) {
       if (badge) badge.style.display = 'none';
     });
   }
+}
+
+// ══════════════════════════════════════════════════════════
+// @ mention autocomplete
+// ══════════════════════════════════════════════════════════
+let mentionUserCache = null;  // loaded once per session
+
+async function fetchMentionUsers() {
+  if (mentionUserCache) return mentionUserCache;
+  const snap = await getDocs(collection(firestore, 'users'));
+  const realUsers = snap.docs.map(d => ({
+    handle:   d.data().handle || '',
+    name:     d.data().display_name || '',
+    color:    d.data().team_color || '#555',
+    initials: (d.data().team_abbrev || '?').slice(0, 3),
+    avatar:   d.data().avatar_url || null,
+  }));
+  const aiUsers = AI_WRITERS.map(w => ({
+    handle:   w.handle,
+    name:     w.name,
+    color:    w.color,
+    initials: w.initials,
+    avatar:   w.image || null,
+  }));
+  mentionUserCache = [...realUsers, ...aiUsers];
+  return mentionUserCache;
+}
+
+export function initMentionAutocomplete(textarea) {
+  // Create the dropdown and anchor it to the textarea's parent
+  const dropdown = document.createElement('div');
+  dropdown.className = 'rb-mention-dropdown';
+  const wrap = textarea.parentNode;
+  if (wrap && getComputedStyle(wrap).position === 'static') {
+    wrap.style.position = 'relative';
+  }
+  (wrap || document.body).appendChild(dropdown);
+
+  function getMentionQuery(value, cursorPos) {
+    const before = value.slice(0, cursorPos);
+    const match  = before.match(/@(\w*)$/);
+    return match ? match[1] : null;
+  }
+
+  function closeDrop() { dropdown.innerHTML = ''; dropdown.style.display = 'none'; }
+
+  textarea.addEventListener('input', async () => {
+    const q = getMentionQuery(textarea.value, textarea.selectionStart);
+    if (q === null) { closeDrop(); return; }
+
+    const users = await fetchMentionUsers();
+    const ql = q.toLowerCase();
+    const matches = users.filter(u =>
+      u.handle.toLowerCase().replace('@', '').startsWith(ql) ||
+      u.name.toLowerCase().startsWith(ql)
+    ).slice(0, 6);
+
+    if (!matches.length) { closeDrop(); return; }
+
+    dropdown.innerHTML = matches.map(u => {
+      const avatarHtml = u.avatar
+        ? `<img src="${escHtml(u.avatar)}" alt="" style="width:28px;height:28px;border-radius:50%;object-fit:cover;" onerror="this.style.display='none';">`
+        : `<div style="width:28px;height:28px;border-radius:50%;background:${u.color};display:flex;align-items:center;justify-content:center;font-size:0.65rem;font-weight:700;color:#fff;font-family:'Oswald',sans-serif;">${u.initials}</div>`;
+      return `<div class="rb-mention-item" data-handle="${escHtml(u.handle)}">
+        ${avatarHtml}
+        <span class="rb-mention-name">${escHtml(u.name)}</span>
+        <span class="rb-mention-handle">${escHtml(u.handle)}</span>
+      </div>`;
+    }).join('');
+    dropdown.style.display = 'block';
+
+    dropdown.querySelectorAll('.rb-mention-item').forEach(item => {
+      item.addEventListener('mousedown', e => {
+        e.preventDefault(); // prevent blur before click
+        const handle = item.dataset.handle;
+        const cur    = textarea.selectionStart;
+        const before = textarea.value.slice(0, cur);
+        const after  = textarea.value.slice(cur);
+        const newBefore = before.replace(/@(\w*)$/, handle + ' ');
+        textarea.value = newBefore + after;
+        textarea.selectionStart = textarea.selectionEnd = newBefore.length;
+        closeDrop();
+        textarea.dispatchEvent(new Event('input'));
+        textarea.focus();
+      });
+    });
+  });
+
+  textarea.addEventListener('blur', () => setTimeout(closeDrop, 150));
+  textarea.addEventListener('keydown', e => {
+    if (e.key === 'Escape') closeDrop();
+  });
 }
 
 export function showToast(msg) {

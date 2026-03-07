@@ -12,25 +12,27 @@
 
 <!-- ── Header ──────────────────────────────────────────────── -->
 <header class="rb-header">
-  <nav class="rb-nav-inner">
-    <a class="rb-header-logo" href="index.html">
-      <img src="../assets/images/rumblr-logo.png" alt="Rumblr">
-      <span class="rb-header-logo-text">Rumb<span>lr</span></span>
+  <nav class="rb-nav-inner rb-nav-rumblr">
+
+    <!-- LEFT: Return to ESTN -->
+    <a class="rb-estn-back" href="../">
+      <span class="rb-estn-back-arrow">&#8592;</span>
+      <img src="../assets/images/estn-logo.png" alt="ESTN">
+      <span class="rb-estn-back-text">Return To ESTN</span>
     </a>
-    <ul class="rb-nav-links">
-      <li><a href="../">Home</a></li>
-      <li><a href="../between-the-chalk/">Between The Chalk</a></li>
-      <li><a href="../season-deadlines/">Season Deadlines</a></li>
-      <li><a href="../league-records/">League Records</a></li>
-      <li><a href="index.html" class="active"><img class="rb-nav-rumblr-logo" src="../assets/images/rumblr-logo.png" alt="Rumblr"></a></li>
-      <li><a href="../about/"><img class="rb-nav-estn" src="../assets/images/estn-logo.png" alt="ESTN"></a></li>
-    </ul>
+
+    <!-- CENTER: Rumblr branding -->
+    <div class="rb-header-center">
+      <a class="rb-header-logo" href="index.html">
+        <img src="../assets/images/rumblr-logo.png" alt="Rumblr">
+        <span class="rb-header-logo-text">Rumb<span>lr</span></span>
+      </a>
+    </div>
+
+    <!-- RIGHT: User actions -->
     <div class="rb-header-actions">
-      <!-- Shown when logged out -->
       <a id="rb-signin-btn" href="login.html" class="rb-btn rb-btn-outline">Sign In</a>
-      <!-- Shown when logged in -->
       <div id="rb-user-menu" style="display:none; align-items:center; gap:10px;">
-        <!-- Notification bell -->
         <div class="rb-notif-wrap">
           <button id="rb-notif-btn" class="rb-notif-btn" style="display:none;" title="Notifications"
                   aria-label="Notifications">
@@ -41,7 +43,6 @@
             </svg>
             <span id="rb-notif-badge" class="rb-notif-badge" style="display:none;">0</span>
           </button>
-          <!-- Notification panel dropdown -->
           <div id="rb-notif-panel" class="rb-notif-panel hidden">
             <div class="rb-notif-panel-header">
               <span class="rb-notif-panel-title">Notifications</span>
@@ -55,6 +56,7 @@
         <button id="rb-signout-btn" class="rb-btn rb-btn-ghost" style="display:none;">Sign Out</button>
       </div>
     </div>
+
   </nav>
 </header>
 
