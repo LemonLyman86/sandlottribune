@@ -58,6 +58,7 @@
         <button class="btc-filter-btn" data-filter="season_preview">Previews</button>
         <button class="btc-filter-btn" data-filter="power_rankings">Rankings</button>
         <button class="btc-filter-btn" data-filter="weekly_recap">Recaps</button>
+        <button class="btc-filter-btn" data-filter="general_analysis">Analysis</button>
       </div>
 
       <!-- Article List (populated by JS) -->
@@ -95,6 +96,17 @@
 
     // ── Fallback article list (used if Firestore settings/btc not set) ──
     const FALLBACK_ARTICLES = [
+      {
+        id: 'lad_expansion_draft_2026',
+        title: 'Gone West: The Rangers Are Sold, the Dodgers Are Born, and the Entire League Just Got More Interesting',
+        author: 'Peter Gammons',
+        date: 'Mar 7, 2026',
+        type: 'general_analysis',
+        typeLabel: 'Ownership & Transactions',
+        url: '../between-the-chalk/lad_expansion_draft_2026.html',
+        thumbnail: '../assets/images/Team Logos/26 Hats/LADhat2026.jpg',
+        enabled: true
+      },
       {
         id: 'season_preview_2026_sea',
         title: '2026 TSDL Season Preview: Seattle Mariners',

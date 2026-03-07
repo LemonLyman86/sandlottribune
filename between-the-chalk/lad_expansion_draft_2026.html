@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Gone West: The Rangers Are Sold, the Dodgers Are Born — ESTN Tribune</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Marcellus&family=Oswald:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../assets/css/main.css">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Georgia', serif; font-size: 17px; line-height: 1.75; color: #1a1a1a; background: #F6F3EC; }
+    .estn-article-wrapper { max-width: 800px; margin: 0 auto; padding: 40px 24px 80px; }
+
+    /* ── Header ── */
+    .article-header { border-top: 4px solid #BA2B2B; padding-top: 28px; margin-bottom: 36px; }
+    .article-header h1 { font-family: 'Georgia', serif; font-size: 2.15em; font-weight: bold; line-height: 1.18; color: #36302A; margin-bottom: 10px; }
+    .article-header .deck { font-family: 'Georgia', serif; font-size: 1.08em; color: #555; font-style: italic; margin-bottom: 14px; line-height: 1.5; }
+    .byline { font-family: 'Arial', sans-serif; font-size: 0.85em; color: #777; font-style: italic; letter-spacing: 0.02em; }
+
+    /* ── Body ── */
+    p { margin-bottom: 1.25em; color: #222; }
+    strong { color: #36302A; }
+    hr { border: none; border-top: 1px solid #ddd; margin: 48px 0 32px; }
+
+    /* ── Headings ── */
+    h2 { font-family: 'Georgia', serif; font-size: 1.42em; color: #36302A; border-bottom: 2px solid #BA2B2B; padding-bottom: 6px; margin: 44px 0 18px; }
+    .section-kicker { font-family: 'Arial', sans-serif; font-size: 0.71em; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: #BA2B2B; display: block; margin-bottom: 2px; margin-top: 44px; }
+
+    /* ── Pull Quote ── */
+    .pull-quote {
+      border-left: 5px solid #BA2B2B;
+      padding: 16px 24px;
+      margin: 36px 0;
+      font-size: 1.13em;
+      font-style: italic;
+      color: #36302A;
+      background: #fafaf7;
+      border-radius: 0 4px 4px 0;
+    }
+    .pull-quote cite {
+      display: block;
+      margin-top: 10px;
+      font-family: 'Arial', sans-serif;
+      font-size: 0.72em;
+      font-style: normal;
+      color: #999;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+
+    /* ── Block Quote / Sourced Quote ── */
+    .sourced-quote {
+      background: #36302A;
+      color: #e8e8e0;
+      border-radius: 5px;
+      padding: 20px 26px;
+      margin: 32px 0;
+      font-style: italic;
+      font-size: 1.0em;
+    }
+    .sourced-quote p { color: #e8e8e0; margin-bottom: 0.5em; }
+    .sourced-quote p:last-child { margin-bottom: 0; }
+    .sourced-quote .quote-attribution {
+      margin-top: 12px;
+      font-family: 'Arial', sans-serif;
+      font-size: 0.75em;
+      font-style: normal;
+      color: #aaa;
+      letter-spacing: 0.04em;
+    }
+
+    /* ── Images ── */
+    .article-image { margin: 36px 0; }
+    .article-image img { width: 100%; max-width: 100%; display: block; border-radius: 3px; }
+    .article-image figcaption {
+      font-family: 'Arial', sans-serif;
+      font-size: 0.78em;
+      color: #888;
+      margin-top: 7px;
+      font-style: italic;
+    }
+
+    /* ── Hat + Logo inline image ── */
+    .team-logo-row {
+      display: flex;
+      align-items: center;
+      gap: 24px;
+      margin: 28px 0;
+    }
+    .team-logo-row img { height: 90px; width: auto; }
+
+    /* ── Stats / Data Bar ── */
+    .quick-stats {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 20px;
+      background: #f7f7f4;
+      border-left: 4px solid #BA2B2B;
+      padding: 16px 22px;
+      margin: 24px 0 32px;
+      border-radius: 0 4px 4px 0;
+    }
+    .stat-item { text-align: center; min-width: 80px; }
+    .stat-label { font-family: 'Arial', sans-serif; font-size: 0.68em; text-transform: uppercase; letter-spacing: 0.09em; color: #999; display: block; margin-bottom: 2px; }
+    .stat-value { font-size: 1.48em; font-weight: bold; color: #36302A; font-family: 'Arial', sans-serif; }
+
+    /* ── Strategy Cards ── */
+    .strategy-card {
+      background: #fff;
+      border: 1px solid #e2ddd5;
+      border-top: 3px solid #BA2B2B;
+      border-radius: 0 0 5px 5px;
+      padding: 18px 22px;
+      margin: 20px 0;
+    }
+    .strategy-card .strat-label {
+      font-family: 'Arial', sans-serif;
+      font-size: 0.68em;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: #BA2B2B;
+      font-weight: 700;
+      margin-bottom: 4px;
+    }
+    .strategy-card .strat-name {
+      font-family: 'Georgia', serif;
+      font-size: 1.08em;
+      font-weight: bold;
+      color: #36302A;
+      margin-bottom: 8px;
+    }
+    .strategy-card p { margin-bottom: 0; font-size: 0.94em; }
+
+    /* ── Player Keeper Table ── */
+    .keeper-table { width: 100%; border-collapse: collapse; margin: 24px 0; font-size: 0.88em; font-family: 'Arial', sans-serif; }
+    .keeper-table th { background: #36302A; color: #F6F3EC; padding: 8px 12px; text-align: left; font-size: 0.72em; letter-spacing: 0.07em; text-transform: uppercase; }
+    .keeper-table td { padding: 8px 12px; border-bottom: 1px solid #e8e3db; color: #333; }
+    .keeper-table tr:last-child td { border-bottom: none; }
+    .keeper-table tr:nth-child(even) td { background: #f9f7f4; }
+    .keeper-table .highlight-row td { background: #fff8f0; font-weight: bold; color: #36302A; }
+
+    /* ── Footer ── */
+    .article-footer { margin-top: 60px; font-family: 'Arial', sans-serif; font-size: 0.8em; color: #aaa; text-align: center; font-style: italic; border-top: 1px solid #e0dbd2; padding-top: 24px; }
+
+    /* ── Separator Star ── */
+    .section-divider { text-align: center; margin: 36px 0 20px; color: #BA2B2B; letter-spacing: 0.3em; font-size: 0.8em; }
+
+    @media (max-width: 600px) {
+      body { font-size: 15px; }
+      .article-header h1 { font-size: 1.65em; }
+      h2 { font-size: 1.18em; }
+      .quick-stats { gap: 12px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ESTN Portal Nav -->
+  <header class="estn-portal-nav">
+    <nav class="nav-inner">
+      <a class="nav-logo" href="../index.html">
+        <img src="../assets/images/estn-logo-full.png" alt="ESTN">
+      </a>
+      <ul class="nav-links">
+        <li><a href="../index.html">Home</a></li>
+        <li><a href="../tribune/">The Sandlot Tribune</a></li>
+        <li><a href="../between-the-chalk/" class="active">Between The Chalk</a></li>
+        <li><a href="../rumblr/">Rumblr</a></li>
+        <li><a href="../league-records/">League Records</a></li>
+        <li><a href="../season-deadlines/">Season Events</a></li>
+        <li><a href="../about/">About</a></li>
+      </ul>
+      <div id="estn-auth-widget"></div>
+    </nav>
+  </header>
+
+  <!-- Breadcrumb -->
+  <div class="estn-article-breadcrumb">
+    <a href="../index.html">ESTN</a> &rsaquo;
+    <a href="../between-the-chalk/">Between The Chalk</a> &rsaquo;
+    Ownership &amp; Transactions
+  </div>
+
+  <!-- Article -->
+  <div class="estn-article-wrapper">
+
+    <div class="article-header">
+      <h1>Gone West: The Rangers Are Sold, the Dodgers Are Born, and the Entire League Just Got More Interesting</h1>
+      <p class="deck">A franchise exits Texas, a mysterious owner arrives from California, and 189 players wait to be claimed. Peter Gammons has the story.</p>
+      <p class="byline">By Peter Gammons (@pgammo) &mdash; March 7, 2026 &mdash; 7 min read</p>
+    </div>
+
+    <!-- Hero image: Dodger Stadium -->
+    <figure class="article-image">
+      <img src="../assets/images/Stadiums/lad_stadium_panorama.jpg" alt="Dodger Stadium — the new home of Jacob's franchise">
+      <figcaption>Dodger Stadium, Chavez Ravine, Los Angeles. The new home of the TSDL's newest franchise.</figcaption>
+    </figure>
+
+    <p>There is something almost liturgical about an ownership change in a dynasty league. The roster stays. The contracts stay. The history stays — the wins and losses and the slow accumulating weight of decisions made by someone who is no longer in the room. What changes is the name above the door and the vision behind the eyes, and sometimes that is enough to change everything.</p>
+
+    <p>The Texas Rangers have been sold.</p>
+
+    <p>The paperwork cleared on a cold February morning, and just like that, a franchise born into the TSDL's expansion class of 2024 — with high hopes, a reasonable budget, and the optimism that comes with starting something new — was someone else's problem and someone else's dream. The outgoing ownership group, which had steered the Rangers through two increasingly frustrating campaigns, chose not to comment publicly. People close to the situation described a transaction that was less a sale and more a surrender — a quiet acknowledgment, delivered in the form of signed documents, that this particular ownership group had taken the franchise as far as it was going to go.</p>
+
+    <div class="sourced-quote">
+      <p>"The financial picture had become complicated. There were partners who wanted out, and when partners want out, the math rarely works in the remaining owner's favor. The sale was the cleanest option."</p>
+      <div class="quote-attribution">— A person with knowledge of the transaction, speaking on condition of anonymity</div>
+    </div>
+
+    <p>Eight wins in 2024. Seven in 2025. A 16th-place consolation bracket finish last October, dropping them second-from-last in a league of 19. The Rangers were not a team in outright collapse; they were a team that had never quite found altitude. The roster had talent — <em>real</em> talent, buried in Year 3 contracts and MiLB slots — but management of it, sources suggest carefully, was not always as focused as a league this competitive demands. The window between competing and drifting is thinner in dynasty baseball than almost anywhere in sports, and the Rangers spent two seasons on the wrong side of it.</p>
+
+    <div class="quick-stats">
+      <div class="stat-item"><span class="stat-label">2024 Record</span><span class="stat-value">8–11</span></div>
+      <div class="stat-item"><span class="stat-label">2025 Record</span><span class="stat-value">7–12</span></div>
+      <div class="stat-item"><span class="stat-label">2025 Finish</span><span class="stat-value">16th</span></div>
+      <div class="stat-item"><span class="stat-label">Seasons in TSDL</span><span class="stat-value">2</span></div>
+      <div class="stat-item"><span class="stat-label">Playoff Apps</span><span class="stat-value">0</span></div>
+    </div>
+
+    <span class="section-kicker">New Ownership</span>
+    <h2>The Man From the Pacific</h2>
+
+    <!-- LAD Hat image -->
+    <figure class="article-image" style="max-width:420px; margin: 28px auto 36px;">
+      <img src="../assets/images/Team Logos/26 Hats/LADhat2026.jpg" alt="Los Angeles Dodgers — 2026 TSDL cap">
+      <figcaption>The Los Angeles Dodgers' 2026 cap. A new identity for a franchise in search of one.</figcaption>
+    </figure>
+
+    <p>The California-based group that purchased the Rangers is led by a man who identifies himself in league communications only as Jacob. His surname, by now-familiar arrangement, does not appear in this publication — and those who have pressed him on the matter have received, at best, a warm deflection, and, at worst, a look that quietly ends the conversation.</p>
+
+    <p>What is known about Jacob is this: he relocated to the West Coast from the East at some point in the recent past, under circumstances that one acquaintance described only as "a career change that came rather suddenly." He is, by all available measures, well-capitalized. He has studied this league with the kind of intensity that usually precedes either a championship or a spectacular public unraveling. He is ambitious without being reckless, patient without being passive — or so his early communications suggest, though one is always more impressive in theory than in practice.</p>
+
+    <div class="sourced-quote">
+      <p>"I've been wanting to do something like this my whole life. I'm not here to maintain anything. I'm here to build."</p>
+      <div class="quote-attribution">— Jacob [REDACTED], in a written statement to the ESTN Tribune (his preferred form of communication)</div>
+    </div>
+
+    <p>He has chosen to rename the franchise the <strong>Los Angeles Dodgers</strong>, a choice that carries its own considerable freight. Dodger Stadium. Sandy Koufax and Don Drysdale. Kirk Gibson and the one-legged home run. Fernando Valenzuela and the summer of Fernandomania. Whether Jacob is invoking that tradition or simply reaching for its glamour remains an open question. But the name hangs in the air now, in a league that once had a Texas Ranger, and now has something else entirely.</p>
+
+    <p>One veteran league source — someone who has watched ownership transitions in this league before — offered this assessment: <em>"Every new owner says they're building something different. Most of them mean it. What separates the ones who actually do it is whether they're willing to make the uncomfortable picks on Expansion Draft day. The obvious choices are obvious for a reason. The good ones see past them."</em></p>
+
+    <span class="section-kicker">How It Works</span>
+    <h2>The Rules of Engagement</h2>
+
+    <p>Under Article IV of the TSDL Constitution — specifically the provisions covering replacement ownership — Jacob has elected to trigger an Expansion Draft. The structure is straightforward in principle and complicated in execution.</p>
+
+    <p>Jacob may keep up to four players from the Rangers' existing roster at their current salaries. The most important word in that sentence is not <em>four</em> — it is <em>reset</em>. Every player he chooses to keep will have their contract year reset to Year 1, regardless of where they currently sit on the salary progression scale. A pitcher in Year 3 earning $20 becomes a Year 1 pitcher earning $20 — the salary does not change, but the clock starts over, buying the franchise years of controlled cost before the $5-per-year escalation begins to bite.</p>
+
+    <p>The seventeen holdover franchises each protected twenty players from their combined major and minor league rosters as of October 1st. Everything left unprotected went into the pool. Jacob may select from it freely, constrained only by the salary cap: his total roster salary cannot exceed $260, minus $1 for each unfilled active roster spot. There is no Redistribution of Wealth Draft, because only one new owner is involved. The pool belongs entirely to Jacob.</p>
+
+    <p>One hundred and eighty-nine players. Both the quantity and the quality of what's available are, to put it plainly, extraordinary.</p>
+
+    <span class="section-kicker">The Inheritance</span>
+    <h2>What Texas Left Behind</h2>
+
+    <p>The Rangers left Jacob something more interesting than their win-loss record suggests. The roster has dead weight, certainly — veterans at salaries that reflect past optimism rather than present value — but buried inside it are pieces that, in a better-managed context, could anchor a contending franchise for years.</p>
+
+    <table class="keeper-table">
+      <thead>
+        <tr>
+          <th>Player</th>
+          <th>Pos</th>
+          <th>Salary</th>
+          <th>Curr. Year</th>
+          <th>Resets To</th>
+          <th>MLB Org</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr class="highlight-row">
+          <td>Cristopher Sanchez</td>
+          <td>SP</td>
+          <td>$20</td>
+          <td>Year 3</td>
+          <td>Year 1</td>
+          <td>PHI</td>
+        </tr>
+        <tr class="highlight-row">
+          <td>Kristian Campbell</td>
+          <td>2B</td>
+          <td>$2</td>
+          <td>Year 2</td>
+          <td>Year 1</td>
+          <td>BOS</td>
+        </tr>
+        <tr class="highlight-row">
+          <td>Bryce Rainer</td>
+          <td>SP (MiLB)</td>
+          <td>$0</td>
+          <td>Rookie</td>
+          <td>Year 1</td>
+          <td>DET</td>
+        </tr>
+        <tr class="highlight-row">
+          <td>Hunter Goodman</td>
+          <td>C</td>
+          <td>$2</td>
+          <td>Year 2</td>
+          <td>Year 1</td>
+          <td>COL</td>
+        </tr>
+        <tr>
+          <td>Freddie Freeman</td>
+          <td>1B</td>
+          <td>$42</td>
+          <td>Year 2</td>
+          <td>Year 1</td>
+          <td>LAD</td>
+        </tr>
+        <tr>
+          <td>Cade Smith</td>
+          <td>RP</td>
+          <td>$5</td>
+          <td>Year 3</td>
+          <td>Year 1</td>
+          <td>CLE</td>
+        </tr>
+        <tr>
+          <td>Harry Ford</td>
+          <td>C (MiLB)</td>
+          <td>$0</td>
+          <td>Rookie</td>
+          <td>Year 1</td>
+          <td>WSH</td>
+        </tr>
+        <tr>
+          <td>Willson Contreras</td>
+          <td>C</td>
+          <td>$13</td>
+          <td>Year 3</td>
+          <td>Year 1</td>
+          <td>BOS</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <p>There is a phrase scouts use when they watch a young pitcher and something just clicks — some combination of arm angle and movement and compete — and they say: <em>this one is different</em>. <strong>Cristopher Sanchez</strong>, the Phillies' left-handed starter, inspires exactly that kind of assessment from people who watch pitching for a living. He induces weak contact at elite rates. He commands both sides of the plate. He is 27 years old in one of baseball's best rotations, getting better, and will be 28 by Opening Day. At $20 with his contract year resetting to Year 1, he is the easy centerpiece of any expansion keeper decision Jacob makes.</p>
+
+    <p><strong>Kristian Campbell</strong> at $2 is, by itself, almost too good to be true. The Red Sox second baseman projects as a multi-year All-Star candidate; the fact that he carries a $2 salary into a Year 1 reset is the kind of value that, a decade from now, dynasty historians will point to as a franchise-defining pick. <strong>Bryce Rainer</strong>, the Detroit pitching prospect, occupies a minor league roster spot at zero cost and projects as a legitimate front-of-rotation arm two or three years from now. And <strong>Hunter Goodman</strong> — the Rockies' catching prospect with raw power that registers on radar guns that measure exit velocity — at $2 rounds out a four-keeper package that costs Jacob $24 in combined salary and gives him four genuine building blocks.</p>
+
+    <div class="pull-quote">
+      "Twenty-four dollars for four players who could anchor a dynasty contender for the next eight years. That's not a keeper decision. That's a foundation."
+      <cite>— A veteran dynasty analyst, speaking on condition of anonymity</cite>
+    </div>
+
+    <span class="section-kicker">The Expansion Pool</span>
+    <h2>What the Other 17 Teams Left Behind</h2>
+
+    <!-- Stadium image 2 for visual break -->
+    <figure class="article-image">
+      <img src="../assets/images/Stadiums/lad_stadium2.jpg" alt="Dodger Stadium — the infield at Chavez Ravine">
+      <figcaption>The view from the press box. From here, the pool of available talent looks even more extraordinary.</figcaption>
+    </figure>
+
+    <p>One hundred and eighty-nine players. Both the breadth of that number and the names within it require a moment of quiet contemplation before the analysis begins. Peter Gammons has been covering this league since its founding, and he has never seen a pool quite like this one — not in depth, not in dollar value, not in the sheer volume of players who, on any other team, would be considered untouchable.</p>
+
+    <p>Begin with the most astonishing single fact in the entire exercise: the <strong>Las Vegas Aces exposed Juan Soto</strong>.</p>
+
+    <p>Soto. $95. Year 4, resetting to Year 1 upon selection. The New York Mets outfielder, who has been one of the three or four best offensive players in baseball for half a decade, was left unprotected by the reigning 2024 TSDL champions — a franchise so loaded with talent that a $95-salary superstar did not crack their top twenty protected players. That sentence is worth reading twice. The Las Vegas roster, which also chose not to protect Yordan Alvarez ($66), Bryan Reynolds ($31), Jacob deGrom ($31), Carlos Rodon ($21), and Raisel Iglesias ($24), is either a monument to roster construction or the most expensive roster management mistake in league history. The available evidence suggests the former.</p>
+
+    <div class="sourced-quote">
+      <p>"When Las Vegas has to let go of Juan Soto — <em>Juan Soto</em> — you don't feel sorry for Jacob. You feel sorry for everyone else in this league who doesn't get to pick first."</p>
+      <div class="quote-attribution">— A league front office source, speaking candidly</div>
+    </div>
+
+    <p>The Atlanta Braves exposed <strong>Zack Wheeler</strong> at $48 — a Year 5 pitcher whose salary was climbing toward unaffordable, a legitimate ace who at 35 has begun his long negotiation with the calendar. The Toronto Blue Jays exposed <strong>Nathaniel Lowe</strong> ($14), <strong>Matt Chapman</strong> ($19), <strong>Josh Lowe</strong> ($31), and <strong>Nick Castellanos</strong> ($24) — an entire infield's worth of veterans, a clear signal of a franchise that has made its bet on youth and is prepared to live with it. Colorado exposed <strong>Aaron Nola</strong> ($36) — a future Hall of Famer now in the final chapters of his usefulness as a dynasty asset.</p>
+
+    <p>And then there is the minor league layer, which may ultimately be where Jacob does his most important work. <strong>Ricky Tiedemann</strong>, the Toronto pitching phenom — exposed by Colorado. <strong>Tink Hence</strong>, the Cardinals' electric right-hander, exposed by New York. <strong>Chase Petty</strong>, a legitimate power arm from the Reds system, exposed by Toronto. <strong>Zac Veen</strong>, one of the better outfield prospects in the game, exposed by Houston. Any one of these players, selected at $0 into a minor league roster spot, could be the most valuable pick Jacob makes in this entire draft. All four would constitute a minor league system built overnight from scratch.</p>
+
+    <p>"The MiLB layer of that pool," said one league analyst, "is better than some teams' actual minor league systems. Jacob walked into a situation that takes most expansion franchises three years to build."</p>
+
+    <span class="section-kicker">The Decision</span>
+    <h2>Three Paths Through the Pool</h2>
+
+    <p>Given the depth of what's available and the flexibility of a $24 keeper salary, Jacob faces something rare in dynasty baseball: genuine optionality. He can go big, go deep, or go long. None of the three is wrong. All three carry real risk.</p>
+
+    <div class="strategy-card">
+      <div class="strat-label">Strategy One</div>
+      <div class="strat-name">"Go Big or Go to Chavez Ravine"</div>
+      <p>Keep the four from Texas ($24 total). Enter the pool and take <strong>Juan Soto at $95</strong> as the franchise cornerstone. Yes, $95 is a real salary constraint — but with the Year 1 reset, Jacob controls the best player available in this pool for the foreseeable future before the escalation ladder kicks in. The remaining roster spots get filled at the Free Agent Auction, where Jacob still has over $140 of working budget after accounting for empty-spot minimums. You build around Soto at every position. Some teams are built around transcendent talent. Soto is that.</p>
+    </div>
+
+    <div class="strategy-card">
+      <div class="strat-label">Strategy Two</div>
+      <div class="strat-name">"The Value Arbitrage"</div>
+      <p>Skip the blockbuster. Keep the four. Then hunt the Year 4 and Year 5 players whose contracts reset to Year 1 upon selection — the conversion arbitrage play. <strong>Triston Casas at $15/Year 1</strong>. <strong>Tanner Scott at $21/Year 1</strong>. <strong>Matt Chapman at $19/Year 1</strong>. Each of these players buys back years of controllable cost at a price that was set when someone else was paying. Layer in four or five MiLB names from the deep prospect pool. Arrive at the auction with $100 or more and spend into depth. You build a balanced roster with a controlled cost structure that doesn't blow up in three years.</p>
+    </div>
+
+    <div class="strategy-card">
+      <div class="strat-label">Strategy Three</div>
+      <div class="strat-name">"The Farm System Foundation"</div>
+      <p>The dynasty purist's play. Keep all four from Texas. Take a modest selection of proven major leaguers from the pool — enough to be immediately competitive, not enough to strain the budget. Then select every elite MiLB prospect available at zero cost: Hence, Tiedemann, Petty, Veen, Honeycutt, and as many more as the ten minor league spots can hold. Enter the Free Agent Auction with $200 or more — among the highest budgets in the league — and spend aggressively into positions of need. Year one may be rough. Year three, you're in the playoff conversation. Year five, this roster looks like Las Vegas does today: so good you're exposing Soto.</p>
+    </div>
+
+    <hr>
+
+    <span class="section-kicker">The Long View</span>
+    <h2>A New Chapter at the Edge of the Pacific</h2>
+
+    <!-- LAD Logo -->
+    <figure class="article-image" style="max-width:340px; margin: 28px auto 36px;">
+      <img src="../assets/images/Team Logos/26 Logos (Solid Background)/LADlogo26solid.jpg" alt="Los Angeles Dodgers — 2026 TSDL logo">
+      <figcaption>The logo of the new Los Angeles Dodgers. Blue in Chavez Ravine. Blue in the standings, for now.</figcaption>
+    </figure>
+
+    <p>Peter Gammons has been writing about baseball, in one form or another, for longer than most of this league's owners have been alive. He has covered trades that changed franchises and trades that merely changed rosters. He has watched ownership groups arrive with money and ambition and leave with neither. He has learned to be skeptical of clean slates, because clean slates are only clean until the first decision, and the first decision is usually the most revealing.</p>
+
+    <p>The Texas Rangers are gone. The Los Angeles Dodgers are here. Jacob [REDACTED] — whose name, as he has made clear, is a matter of personal discretion rather than public record, and whose willingness to relocate suddenly and completely should perhaps be seen as a feature rather than a mystery — has inherited one of the most favorable expansion situations this league has ever produced. The pool is historic. The keeper options are legitimate. The budget is flexible. The competition, formidable as it is, has gifted Jacob something most expansion owners wait years for: a chance to be <em>good</em>, immediately, if he simply makes the right choices on draft day.</p>
+
+    <p>None of this guarantees anything. Expansion franchises fail at roughly the same rate as expansion franchises succeed. Optionality is not a strategy; it is a prerequisite for one. Jacob will have to make actual decisions, some of which will be wrong, and he will have to live with them in the way that all dynasty owners live with their mistakes — publicly, at length, in the standings.</p>
+
+    <p>But if you are sitting in Chavez Ravine today, looking out at a league full of teams that have been building for years, and you are Jacob [REDACTED], who moved west under circumstances he prefers not to discuss, and you have 189 players to choose from and four cornerstones already in hand — you have to feel, at minimum, like the first chapter of this story is going to be very good reading.</p>
+
+    <p>The Dodgers are born. The work begins.</p>
+
+    <hr>
+
+    <div class="article-footer">
+      <p><em>Peter Gammons covers The Sandlot Dynasty League for the ESTN Tribune. He has been reporting on this league since its founding, and remains firmly convinced that the best dynasty baseball is played somewhere between the tenth and fourteenth pick of the expansion draft. He has no opinion on Jacob's surname, and respects the arrangement.</em></p>
+    </div>
+
+  </div><!-- /.estn-article-wrapper -->
+
+  <script type="module" src="../assets/js/estn-auth.js"></script>
+  <script type="module" src="../assets/js/estn-ticker.js"></script>
+
+</body>
+</html>
