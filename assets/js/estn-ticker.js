@@ -26,15 +26,27 @@ function detectPageKey() {
   return 'home';
 }
 
-function buildTickerHTML(items) {
-  const text = items.join('  &nbsp;&bull;&nbsp;  ') + '&nbsp;&nbsp;&nbsp;';
+function buildTickerHTML(firstItem) {
   return `
-<div class="estn-ticker" id="estn-ticker-bar" role="marquee" aria-label="ESTN Breaking News">
+<div class="estn-ticker" id="estn-ticker-bar" role="status" aria-label="ESTN Ticker">
   <span class="estn-ticker-label">ESTN</span>
   <div class="estn-ticker-track">
-    <span class="estn-ticker-text" id="estn-ticker-text">${text + text}</span>
+    <span class="estn-ticker-text" id="estn-ticker-text">${firstItem}</span>
   </div>
 </div>`;
+}
+
+function startTickerCycle(items, textEl) {
+  if (!textEl || items.length <= 1) return;
+  let idx = 0;
+  setInterval(() => {
+    textEl.style.opacity = '0';
+    setTimeout(() => {
+      idx = (idx + 1) % items.length;
+      textEl.textContent = items[idx];
+      textEl.style.opacity = '1';
+    }, 500);
+  }, 10000);
 }
 
 async function loadAndInjectTicker() {
@@ -60,8 +72,11 @@ async function loadAndInjectTicker() {
     if (!header) return;
 
     const wrapper = document.createElement('div');
-    wrapper.innerHTML = buildTickerHTML(td.items);
+    wrapper.innerHTML = buildTickerHTML(td.items[0]);
     header.insertAdjacentElement('afterend', wrapper.firstElementChild);
+
+    const textEl = document.getElementById('estn-ticker-text');
+    startTickerCycle(td.items, textEl);
   } catch { /* silently fail */ }
 }
 

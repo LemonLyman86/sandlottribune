@@ -267,7 +267,17 @@ function renderHeadlines(txnData, customHeadlines) {
 
   // Custom admin-defined headlines go first
   if (customHeadlines && customHeadlines.length) {
-    customHeadlines.forEach(h => items.push({ text: h, date: '' }));
+    customHeadlines.forEach(h => {
+      const text = typeof h === 'string' ? h : (h.text || '');
+      const rawDate = typeof h === 'string' ? '' : (h.date || '');
+      let date = '';
+      if (rawDate) {
+        try {
+          date = new Date(rawDate).toLocaleString('en-US', { month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' });
+        } catch { date = ''; }
+      }
+      items.push({ text, date });
+    });
   }
 
   // Auto-generate from transactions
@@ -404,6 +414,20 @@ async function renderRumblrPreview() {
   }
 }
 
+// ── Ticker cycling (fade in/out per item) ──────────────────────────────────────
+function startTickerCycle(items, textEl) {
+  if (!textEl || items.length <= 1) return;
+  let idx = 0;
+  setInterval(() => {
+    textEl.style.opacity = '0';
+    setTimeout(() => {
+      idx = (idx + 1) % items.length;
+      textEl.textContent = items[idx];
+      textEl.style.opacity = '1';
+    }, 500);
+  }, 10000);
+}
+
 // ── Render ticker ──────────────────────────────────────────────────────────────
 async function loadTicker() {
   const tickerBar = document.querySelector('.estn-ticker');
@@ -413,14 +437,14 @@ async function loadTicker() {
     if (tickerSnap.exists()) {
       const td = tickerSnap.data();
 
-      // Hide ticker only if globally disabled — ticker_pages controls non-home injected tickers
+      // Hide ticker only if globally disabled
       if (td.enabled === false) {
         if (tickerBar) tickerBar.style.display = 'none';
         return;
       }
       if (tickerEl && td.items && td.items.length) {
-        const text = td.items.join('  &nbsp;&bull;&nbsp;  ') + '&nbsp;&nbsp;&nbsp;';
-        tickerEl.innerHTML = text + text;
+        tickerEl.textContent = td.items[0];
+        startTickerCycle(td.items, tickerEl);
       }
     }
   } catch { /* use default */ }

@@ -1623,9 +1623,10 @@ img { max-width: 100%; display: block; }
 }
 
 .estn-ticker-track {
-  display: inline-flex;
-  animation: estn-scroll 44s linear infinite;
-  flex-shrink: 0;
+  flex: 1;
+  display: flex;
+  align-items: center;
+  overflow: hidden;
 }
 
 .estn-ticker-text {
@@ -1635,13 +1636,10 @@ img { max-width: 100%; display: block; }
   letter-spacing: 0.07em;
   color: #FFFFFF;
   text-transform: uppercase;
-  padding: 0 60px 0 40px;
+  padding: 0 40px;
   white-space: nowrap;
-}
-
-@keyframes estn-scroll {
-  from { transform: translateX(0); }
-  to   { transform: translateX(-50%); }
+  opacity: 1;
+  transition: opacity 0.5s ease;
 }
 
 /* --- Hero v2 (full-bleed stadium image) --- */

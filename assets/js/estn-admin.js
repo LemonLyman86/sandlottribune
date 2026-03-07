@@ -227,10 +227,13 @@ function renderHeadlinesList(headlines) {
   if (!container) return;
   container.innerHTML = '';
   (headlines || []).forEach((h, i) => {
+    const text = typeof h === 'string' ? h : (h.text || '');
+    const date = typeof h === 'string' ? '' : (h.date || '');
     const row = document.createElement('div');
     row.className = 'estn-admin-link-row';
+    row.dataset.date = date;
     row.innerHTML = `
-      <input class="estn-admin-input" type="text" value="${h.replace(/"/g, '&quot;')}" data-idx="${i}" placeholder="Headline text">
+      <input class="estn-admin-input headline-text" type="text" value="${text.replace(/"/g, '&quot;')}" data-idx="${i}" placeholder="Headline text">
       <button class="estn-admin-remove-btn" data-idx="${i}">Remove</button>`;
     container.appendChild(row);
   });
@@ -247,8 +250,9 @@ function initHeadlines(settings) {
     if (!container) return;
     const row = document.createElement('div');
     row.className = 'estn-admin-link-row';
+    row.dataset.date = new Date().toISOString();
     row.innerHTML = `
-      <input class="estn-admin-input" type="text" placeholder="Headline text">
+      <input class="estn-admin-input headline-text" type="text" placeholder="Headline text">
       <button class="estn-admin-remove-btn">Remove</button>`;
     row.querySelector('.estn-admin-remove-btn').addEventListener('click', () => row.remove());
     container.appendChild(row);
@@ -256,8 +260,11 @@ function initHeadlines(settings) {
 
   document.getElementById('save-headlines-btn')?.addEventListener('click', async () => {
     try {
-      const inputs = document.querySelectorAll('#headlines-list .estn-admin-input');
-      const headlines = Array.from(inputs).map(i => i.value.trim()).filter(Boolean);
+      const rows = document.querySelectorAll('#headlines-list .estn-admin-link-row');
+      const headlines = Array.from(rows).map(r => ({
+        text: r.querySelector('.headline-text')?.value.trim() || '',
+        date: r.dataset.date || new Date().toISOString(),
+      })).filter(h => h.text);
       await saveSettings({ custom_headlines: headlines });
       showToast('Headlines saved.');
     } catch { /* error shown by saveSettings */ }
