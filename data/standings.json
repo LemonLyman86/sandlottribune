@@ -1,5 +1,5 @@
 {
-  "updated": "2026-03-06T00:32:42",
+  "updated": "2026-03-08T16:26:49",
   "season": 2026,
   "period": 0,
   "period_label": "Pre-Season",
@@ -97,6 +97,16 @@
     },
     {
       "rank": 10,
+      "team_name": "Los Angeles Dodgers",
+      "abbrev": "LAD",
+      "wins": 0,
+      "losses": 0,
+      "ties": 0,
+      "points_for": 0.0,
+      "rank_change": 0
+    },
+    {
+      "rank": 11,
       "team_name": "Miami Marlins",
       "abbrev": "MIA",
       "wins": 0,
@@ -106,7 +116,7 @@
       "rank_change": 0
     },
     {
-      "rank": 11,
+      "rank": 12,
       "team_name": "Milwaukee Brewers",
       "abbrev": "MIL",
       "wins": 0,
@@ -116,7 +126,7 @@
       "rank_change": 0
     },
     {
-      "rank": 12,
+      "rank": 13,
       "team_name": "New York Yankees",
       "abbrev": "NYY",
       "wins": 0,
@@ -126,7 +136,7 @@
       "rank_change": 0
     },
     {
-      "rank": 13,
+      "rank": 14,
       "team_name": "Philadelphia Phillies",
       "abbrev": "PHI",
       "wins": 0,
@@ -136,7 +146,7 @@
       "rank_change": 0
     },
     {
-      "rank": 14,
+      "rank": 15,
       "team_name": "San Diego Padres",
       "abbrev": "SDP",
       "wins": 0,
@@ -146,7 +156,7 @@
       "rank_change": 0
     },
     {
-      "rank": 15,
+      "rank": 16,
       "team_name": "Seattle Mariners",
       "abbrev": "SEA",
       "wins": 0,
@@ -156,19 +166,9 @@
       "rank_change": 0
     },
     {
-      "rank": 16,
+      "rank": 17,
       "team_name": "St. Louis Cardinals",
       "abbrev": "STL",
-      "wins": 0,
-      "losses": 0,
-      "ties": 0,
-      "points_for": 0.0,
-      "rank_change": 0
-    },
-    {
-      "rank": 17,
-      "team_name": "Texas Rangers",
-      "abbrev": "TEX",
       "wins": 0,
       "losses": 0,
       "ties": 0,
