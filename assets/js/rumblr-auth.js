@@ -37,7 +37,7 @@ export const TEAM_DATA = {
   SAN: { name: 'San Diego Padres',        color: '#3E342F', abbrev: 'SAN', image: TEAM_IMG_BASE + 'SD%202026.jpg' },
   SEA: { name: 'Seattle Mariners',        color: '#0C2340', abbrev: 'SEA', image: TEAM_IMG_BASE + 'SEA%202026.jpg' },
   STL: { name: 'St. Louis Cardinals',     color: '#0C2340', abbrev: 'STL', image: TEAM_IMG_BASE + 'STL%202026.jpg' },
-  TEX: { name: 'Texas Rangers',           color: '#6CACE4', abbrev: 'TEX', image: TEAM_IMG_BASE + 'TEX%202026.jpg' },
+  LAD: { name: 'Los Angeles Dodgers',     color: '#002F6C', abbrev: 'LAD', image: TEAM_IMG_BASE + 'LAD%202026.jpg' },
   TOR: { name: 'Toronto Blue Jays',       color: '#041E42', abbrev: 'TOR', image: TEAM_IMG_BASE + 'TOR%202026.jpg' },
   WSH: { name: 'Washington Nationals',    color: '#BA0C2F', abbrev: 'WSH', image: TEAM_IMG_BASE + 'WSH%202026.jpg' },
 };
