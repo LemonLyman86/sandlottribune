@@ -11,28 +11,35 @@
 </head>
 <body class="rumblr-page">
 
-<!-- ── Header (Tribune-style nav) ─────────────────────── -->
+<!-- ── Header ──────────────────────────────────────────────── -->
 <header class="rb-header">
-  <nav class="rb-nav-inner">
-    <a href="./" class="rb-header-logo">
-      <img src="../assets/images/rumblr-logo.png" alt="Rumblr">
-      <span class="rb-header-logo-text">Rumb<span>lr</span></span>
+  <nav class="rb-nav-inner rb-nav-rumblr">
+
+    <!-- LEFT: Return to ESTN -->
+    <a class="rb-estn-back" href="../">
+      <span class="rb-estn-back-arrow">&#8592;</span>
+      <img src="../assets/images/estn-logo.png" alt="ESTN">
+      <span class="rb-estn-back-text">Return To ESTN</span>
     </a>
-    <ul class="rb-nav-links">
-      <li><a href="../">Home</a></li>
-      <li><a href="../between-the-chalk/">Between The Chalk</a></li>
-      <li><a href="../season-deadlines/">Season Deadlines</a></li>
-      <li><a href="../league-records/">League Records</a></li>
-      <li><a href="./" class="active"><img class="rb-nav-rumblr-logo" src="../assets/images/rumblr-logo.png" alt="Rumblr"></a></li>
-      <li><a href="../about/"><img class="rb-nav-estn" src="../assets/images/estn-logo.png" alt="ESTN"></a></li>
-    </ul>
+
+    <!-- CENTER: Rumblr branding -->
+    <div class="rb-header-center">
+      <a class="rb-header-logo" href="index.html">
+        <img src="../assets/images/rumblr-logo.png" alt="Rumblr">
+        <span class="rb-header-logo-text">Rumb<span>lr</span></span>
+      </a>
+    </div>
+
+    <!-- RIGHT: User actions -->
     <div class="rb-header-actions">
-      <a id="rb-signin-btn"  href="login.html"  class="rb-btn rb-btn-ghost"   style="display:none;font-size:0.78rem;">Sign In</a>
-      <button id="rb-signout-btn" class="rb-btn rb-btn-ghost" style="display:none;font-size:0.78rem;">Sign Out</button>
-      <div id="rb-user-menu" style="display:none;align-items:center;gap:8px;">
-        <a id="rb-profile-link" href="profile.html" class="rb-header-avatar" style="width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:#555;font-size:0.72rem;font-weight:700;color:#fff;text-decoration:none;overflow:hidden;flex-shrink:0;font-family:'Oswald',sans-serif;"></a>
+      <a id="rb-signin-btn" href="login.html" class="rb-btn rb-btn-outline">Sign In</a>
+      <button id="rb-signout-btn" class="rb-btn rb-btn-ghost" style="display:none;">Sign Out</button>
+      <div id="rb-user-menu" style="display:none; align-items:center; gap:10px;">
+        <a id="rb-profile-link" href="profile.html" class="rb-header-avatar rb-post-avatar"
+           style="width:34px;height:34px;font-size:0.72rem;text-decoration:none;">?</a>
       </div>
     </div>
+
   </nav>
 </header>
 
