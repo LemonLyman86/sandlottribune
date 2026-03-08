@@ -9,6 +9,24 @@ import {
   collection, query, orderBy, limit, getDocs, doc, getDoc
 } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js';
 
+// ── Route article URLs through Between The Chalk reader ───────────────────────
+// Converts a direct article URL (e.g. "season-previews/foo.html" or
+// "between-the-chalk/bar.html") to a BTC deep-link (?article=...).
+// Already-correct BTC deep-links are returned unchanged.
+function toBtcUrl(url) {
+  if (!url) return url;
+  // Already a BTC deep-link
+  if (url.includes('between-the-chalk/') && url.includes('?article=')) return url;
+  // between-the-chalk article — pass just filename
+  const btcMatch = url.match(/between-the-chalk\/([^/?#]+\.html)/);
+  if (btcMatch) return `between-the-chalk/?article=${btcMatch[1]}`;
+  // season-previews article — pass relative path from BTC dir
+  const spMatch = url.match(/(season-previews\/[^?#]+\.html)/);
+  if (spMatch) return `between-the-chalk/?article=../${spMatch[1]}`;
+  // Fallback: send as-is
+  return url;
+}
+
 // ── Ad pool ────────────────────────────────────────────────────────────────────
 const PARODY_ADS = [
   { id: 'gif',             file: 'gif.jpg'             },
@@ -596,7 +614,7 @@ function applyFeaturedOverride(settings) {
 
   if (titleEl && fa.title)   titleEl.textContent = fa.title;
   if (metaEl && fa.byline)   metaEl.textContent  = fa.byline;
-  if (linkEl && fa.url)      linkEl.href         = fa.url;
+  if (linkEl && fa.url)      linkEl.href         = toBtcUrl(fa.url);
   if (excerptEl && fa.excerpt) excerptEl.textContent = fa.excerpt;
   if (imgEl && fa.image_url) {
     imgEl.src = fa.image_url;
@@ -611,7 +629,7 @@ function applyFeaturedOverride(settings) {
     if (subEl) {
       const subTitle = subEl.querySelector('.estn-sub-story-title');
       if (subTitle && fa.sub_story_title) subTitle.textContent = fa.sub_story_title;
-      if (fa.sub_story_url) subEl.href = fa.sub_story_url;
+      if (fa.sub_story_url) subEl.href = toBtcUrl(fa.sub_story_url);
       if (fa.sub_story_img) {
         const subImg = subEl.querySelector('.estn-sub-story-img');
         if (subImg) subImg.src = fa.sub_story_img;

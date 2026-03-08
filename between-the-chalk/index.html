@@ -272,7 +272,13 @@
 
       if (articleParam) {
         const match = allArticles.find(a => a.url.split('/').pop() === articleParam || a.url.includes(articleParam));
-        if (match) initialUrl = match.url;
+        if (match) {
+          initialUrl = match.url;
+        } else {
+          // Direct load: articleParam is a relative URL (e.g. ../season-previews/foo.html)
+          // or just a filename in this directory — load it straight into the iframe.
+          initialUrl = decodeURIComponent(articleParam);
+        }
       }
 
       if (!initialUrl && allArticles.length > 0) {
