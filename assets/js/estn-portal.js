@@ -212,19 +212,36 @@ function renderScoreboard(data) {
     return;
   }
 
-  if (labelEl) labelEl.textContent = `${data.season} — ${data.period_label}`;
+  if (labelEl) {
+    const liveTag = data.is_live ? ' <span style="color:#C8102E;font-size:0.68rem;font-weight:700;letter-spacing:0.1em;vertical-align:middle;">● LIVE</span>' : '';
+    labelEl.innerHTML = `${data.season} &mdash; ${esc(data.period_label)}${liveTag}`;
+  }
 
-  const statusText = data.matchups[0]?.status === 'final' ? 'Final' : 'In Progress';
+  // Format date range for card footers (e.g. "Mar 25 – Apr 5")
+  function fmtDate(iso) {
+    if (!iso) return '';
+    try {
+      const d = new Date(iso + 'T12:00:00');
+      return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+    } catch { return iso; }
+  }
+  const periodDates = (data.period_start && data.period_end)
+    ? `${fmtDate(data.period_start)} \u2013 ${fmtDate(data.period_end)}`
+    : '';
+
   el.innerHTML = `
-    <div class="estn-scoreboard-status">${statusText}</div>
     <div class="estn-scoreboard-grid">
       ${data.matchups.map(m => {
         const t1win = m.winner === 'team1';
         const t2win = m.winner === 'team2';
         const hasFinal = m.status === 'final';
+        const isLive = data.is_live && m.status === 'in_progress';
         const t1cls = hasFinal ? (t1win ? 'winner' : 'loser') : '';
         const t2cls = hasFinal ? (t2win ? 'winner' : 'loser') : '';
-        const barCls = hasFinal ? 'final' : m.status === 'in_progress' ? 'live' : 'preview';
+        const barCls = hasFinal ? 'final' : isLive ? 'live' : 'preview';
+        const footerLabel = hasFinal ? 'Final'
+          : isLive ? '<span style="color:#C8102E;font-weight:700;">&#x25CF; LIVE</span>'
+          : (periodDates || 'Upcoming');
         return `
           <div class="estn-matchup-card">
             <div class="estn-matchup-status-bar ${barCls}"></div>
@@ -240,7 +257,7 @@ function renderScoreboard(data) {
               </div>
               <div class="estn-matchup-score ${t2cls}">${m.team2_score > 0 ? m.team2_score : '—'}</div>
             </div>
-            <div class="estn-matchup-card-footer">${hasFinal ? 'Final' : m.status === 'in_progress' ? 'Live' : 'Upcoming'}</div>
+            <div class="estn-matchup-card-footer">${footerLabel}</div>
           </div>`;
       }).join('')}
     </div>`;

@@ -271,13 +271,21 @@
       let initialUrl = null;
 
       if (articleParam) {
-        const match = allArticles.find(a => a.url.split('/').pop() === articleParam || a.url.includes(articleParam));
+        const decoded = decodeURIComponent(articleParam);
+        const match = allArticles.find(a =>
+          a.url.split('/').pop() === decoded || a.url.includes(decoded)
+        );
         if (match) {
           initialUrl = match.url;
+        } else if (decoded.includes('/')) {
+          // Already a relative path (e.g. ../season-previews/foo.html)
+          initialUrl = decoded;
+        } else if (decoded.startsWith('season_preview_')) {
+          // Season preview article — resolve to the season-previews directory
+          initialUrl = `../season-previews/${decoded}`;
         } else {
-          // Direct load: articleParam is a relative URL (e.g. ../season-previews/foo.html)
-          // or just a filename in this directory — load it straight into the iframe.
-          initialUrl = decodeURIComponent(articleParam);
+          // Assume it's in the between-the-chalk directory
+          initialUrl = decoded;
         }
       }
 
