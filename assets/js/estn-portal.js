@@ -452,6 +452,7 @@ async function renderRumblrPreview() {
 // ── Ticker cycling (fade in/out per item) ──────────────────────────────────────
 function startTickerCycle(items, textEl) {
   if (!textEl || items.length <= 1) return;
+  textEl.style.transition = 'opacity 0.4s ease';
   let idx = 0;
   setInterval(() => {
     textEl.style.opacity = '0';
@@ -459,8 +460,8 @@ function startTickerCycle(items, textEl) {
       idx = (idx + 1) % items.length;
       textEl.textContent = items[idx];
       textEl.style.opacity = '1';
-    }, 500);
-  }, 10000);
+    }, 400);
+  }, 5000);
 }
 
 // ── Render ticker ──────────────────────────────────────────────────────────────
