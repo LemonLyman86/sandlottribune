@@ -79,6 +79,17 @@
 
     <!-- ── Right: Article Reader ── -->
     <main class="btc-reader-pane">
+      <!-- Reader toolbar: share button sits here, hidden until an article loads -->
+      <div id="btc-reader-toolbar" style="display:none;align-items:center;justify-content:flex-end;padding:6px 12px;border-bottom:1px solid #2D3748;background:#0D1117;gap:8px;">
+        <span id="btc-article-title" style="flex:1;font-family:'Oswald',sans-serif;font-size:0.72rem;color:#718096;letter-spacing:0.04em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;"></span>
+        <button id="btc-share-btn" title="Copy shareable link for Discord / social media"
+          style="display:flex;align-items:center;gap:5px;background:transparent;border:1px solid #2D3748;border-radius:3px;color:#A0AEC0;font-family:'Oswald',sans-serif;font-size:0.68rem;letter-spacing:0.08em;text-transform:uppercase;padding:4px 10px;cursor:pointer;transition:border-color 0.15s,color 0.15s;"
+          onmouseover="this.style.borderColor='#C8102E';this.style.color='#C8102E'"
+          onmouseout="this.style.borderColor='#2D3748';this.style.color='#A0AEC0'">
+          &#x1F517; Copy Link
+        </button>
+        <span id="btc-share-toast" style="font-size:0.68rem;color:#48BB78;display:none;">Copied!</span>
+      </div>
       <div class="btc-reader-spinner" id="btc-spinner"></div>
       <iframe
         id="btc-article-frame"
@@ -184,6 +195,11 @@
     const spinner = document.getElementById('btc-spinner');
     const listEl  = document.getElementById('btc-article-list');
 
+    const toolbar   = document.getElementById('btc-reader-toolbar');
+    const titleEl   = document.getElementById('btc-article-title');
+    const shareBtn  = document.getElementById('btc-share-btn');
+    const shareToast = document.getElementById('btc-share-toast');
+
     function loadArticle(url, itemEl) {
       spinner.style.display = 'block';
       frame.src = url;
@@ -195,6 +211,25 @@
       history.replaceState({}, '', '?' + params.toString());
     }
 
+    // Share button: copies the direct article URL (resolves frame.src absolute URL)
+    shareBtn.addEventListener('click', () => {
+      const directUrl = frame.src; // full absolute URL of the article itself
+      navigator.clipboard.writeText(directUrl).then(() => {
+        shareToast.style.display = 'inline';
+        setTimeout(() => { shareToast.style.display = 'none'; }, 2000);
+      }).catch(() => {
+        // Fallback: select a temporary input
+        const inp = document.createElement('input');
+        inp.value = directUrl;
+        document.body.appendChild(inp);
+        inp.select();
+        document.execCommand('copy');
+        document.body.removeChild(inp);
+        shareToast.style.display = 'inline';
+        setTimeout(() => { shareToast.style.display = 'none'; }, 2000);
+      });
+    });
+
     frame.addEventListener('load', () => {
       spinner.style.display = 'none';
       // Hide the article's own nav when displayed inside the BTC iframe (same-origin)
@@ -203,7 +238,15 @@
         const s = iDoc.createElement('style');
         s.textContent = '.estn-portal-nav { display: none !important; } body { padding-top: 0 !important; }';
         iDoc.head.appendChild(s);
+        // Update toolbar with article title
+        const articleTitle = iDoc.title || '';
+        if (titleEl) titleEl.textContent = articleTitle;
+        document.title = articleTitle ? `${articleTitle} — Between The Chalk` : 'Between The Chalk — ESTN';
       } catch(e) {}
+      // Show toolbar once an article is loaded
+      if (toolbar && frame.src && frame.src !== window.location.href) {
+        toolbar.style.display = 'flex';
+      }
     });
 
     // ── Render article list ──
