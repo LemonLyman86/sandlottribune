@@ -803,6 +803,78 @@ async function initRecords() {
   });
 }
 
+// ── Tribune editions manager ───────────────────────────────────────────────────
+async function initTribune() {
+  // Hardcoded fallback list for existing static editions
+  const STATIC_EDITIONS = [
+    { slug:'lad-milb', vol:'Vol. 5, No. 2', date:'March 10, 2026', dateIso:'2026-03-10', year:2026, headline:'Dodgers Make MiLB Selections', section:'Transactions & Moves', firestoreContent:false },
+    { slug:'tex-sale', vol:'Vol. 5, No. 1', date:'March 7, 2026',  dateIso:'2026-03-07', year:2026, headline:'TEX Cleared For Sale',          section:'Ownership & League News', firestoreContent:false },
+  ];
+
+  let firestoreEditions = [];
+  try {
+    const snap = await getDoc(doc(firestore, 'settings', 'tribune'));
+    if (snap.exists() && Array.isArray(snap.data().editions)) {
+      firestoreEditions = snap.data().editions;
+    }
+  } catch { /* Firestore unavailable, use static list */ }
+
+  // Merge: Firestore first (newest), then static ones not in Firestore
+  const slugsInFirestore = new Set(firestoreEditions.map(e => e.slug));
+  const allEditions = [
+    ...firestoreEditions,
+    ...STATIC_EDITIONS.filter(e => !slugsInFirestore.has(e.slug)),
+  ];
+
+  const container = document.getElementById('tribune-edition-rows');
+  if (!container) return;
+
+  if (!allEditions.length) {
+    container.innerHTML = '<p class="estn-admin-hint">No editions yet. Click New Edition to create the first one.</p>';
+  } else {
+    container.innerHTML = '';
+    allEditions.forEach(ed => {
+      const row = document.createElement('div');
+      row.className = 'tribune-edition-row';
+      row.dataset.slug = ed.slug;
+      row.innerHTML = `
+        <div class="trib-ed-row-meta">
+          <div class="trib-ed-row-vol">${esc(ed.vol)}</div>
+          <div class="trib-ed-row-hed">${esc(ed.headline)}</div>
+          <div class="trib-ed-row-date">${esc(ed.date)}${ed.section ? ' &middot; ' + esc(ed.section) : ''}</div>
+        </div>
+        <span class="trib-ed-source-chip ${ed.firestoreContent ? 'live' : 'static'}">${ed.firestoreContent ? 'Live' : 'Static'}</span>
+        <a href="tribune-editor.html?slug=${encodeURIComponent(ed.slug)}" class="estn-admin-btn secondary" style="text-decoration:none;font-size:0.7rem;padding:5px 12px;">Edit</a>
+        <button class="admin-delete-btn trib-ed-delete" data-slug="${esc(ed.slug)}" title="Remove from index">&times;</button>
+      `;
+      row.querySelector('.trib-ed-delete').addEventListener('click', () => {
+        if (confirm(`Remove "${ed.headline}" from the Tribune index?\n\nThe Firestore content will remain and can be restored.`)) {
+          row.remove();
+        }
+      });
+      container.appendChild(row);
+    });
+  }
+
+  // Save index order
+  document.getElementById('save-tribune-btn')?.addEventListener('click', async () => {
+    try {
+      const rows = Array.from(document.querySelectorAll('#tribune-edition-rows .tribune-edition-row'));
+      const slugOrder = rows.map(r => r.dataset.slug).filter(Boolean);
+      // Build ordered edition list from known data
+      const orderedEditions = slugOrder.map(slug => {
+        return firestoreEditions.find(e => e.slug === slug)
+            || STATIC_EDITIONS.find(e => e.slug === slug)
+            || { slug };
+      });
+      await setDoc(doc(firestore, 'settings', 'tribune'), { editions: orderedEditions }, { merge: true });
+      showToast('Tribune index saved.');
+    } catch (err) {
+      showToast('Save failed: ' + (err.message || 'Unknown error'), true);
+    }
+  });
+}
+
 // ── Main init ──────────────────────────────────────────────────────────────────
 onAuthStateChanged(auth, async user => {
   const gateEl = document.getElementById('estn-admin-gate');
@@ -835,4 +907,5 @@ onAuthStateChanged(auth, async user => {
   initBTC();
   initEvents();
   initRecords();
+  initTribune();
 });

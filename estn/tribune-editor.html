@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tribune Editor — ESTN Admin</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Marcellus&family=Oswald:wght@400;600;700&family=UnifrakturMaguntia&family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=PT+Serif:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../assets/css/main.css">
+  <style>
+    body {
+      background: #0D1117;
+      color: #CBD5E0;
+      min-height: 100vh;
+    }
+    #ed-access-denied {
+      display: none;
+      max-width: 480px;
+      margin: 80px auto;
+      text-align: center;
+      padding: 40px;
+      background: #161B22;
+      border: 1px solid #2D3748;
+      border-radius: 8px;
+    }
+    #ed-access-denied h2 {
+      font-family: 'Oswald', sans-serif;
+      color: #F87171;
+      margin-bottom: 12px;
+      font-size: 1.1rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+    #ed-access-denied p {
+      font-family: 'Marcellus', serif;
+      color: #718096;
+      font-size: 0.9rem;
+      line-height: 1.6;
+    }
+    #ed-access-denied a { color: #C8102E; }
+    #ed-main { display: none; }
+  </style>
+</head>
+<body>
+
+  <!-- Access denied state -->
+  <div id="ed-access-denied">
+    <h2>Access Denied</h2>
+    <p>You must be signed in as the ESTN administrator to use the Tribune Editor.<br><br>
+      <a href="../rumblr/login.html?redirect=estn/tribune-editor.html">Sign In &rarr;</a>
+    </p>
+  </div>
+
+  <!-- Main editor (shown after auth) -->
+  <div id="ed-main">
+
+    <!-- ── Sticky admin bar ── -->
+    <div class="trib-editor-bar">
+      <a href="admin.html#tribune" class="back-link">&larr; Admin</a>
+
+      <div class="trib-editor-meta">
+        <input type="text" id="ed-slug"       placeholder="slug (e.g. power-rankings-wk01)" style="width:220px;" title="URL slug">
+        <input type="text" id="ed-vol"        placeholder="Vol. 5, No. 3" style="width:140px;" title="Volume / Issue">
+        <input type="text" id="ed-date"       placeholder="March 10, 2026" style="width:140px;" title="Display date">
+        <input type="text" id="ed-date-iso"   placeholder="2026-03-10" style="width:110px;" title="ISO date (YYYY-MM-DD)">
+        <input type="number" id="ed-year"     placeholder="Year" style="width:70px;" title="Season year" value="2026">
+        <input type="text" id="ed-hero-url"   placeholder="Hero image URL (leave blank for placeholder)" style="width:260px;" title="Hero image URL">
+      </div>
+
+      <div class="trib-editor-actions">
+        <button id="ed-insert-img">Insert Image</button>
+        <button id="ed-save">Save Edition</button>
+        <span class="ed-status" id="ed-status"></span>
+      </div>
+    </div>
+
+    <!-- ── Tribune masthead (same as reader) ── -->
+    <div class="trib-masthead-banner">
+      <div class="trib-masthead-rule-top"></div>
+      <h1 class="trib-masthead-title">The Sandlot Tribune</h1>
+      <div class="trib-masthead-rule-bottom"></div>
+      <div class="trib-masthead-dateline">
+        <span class="trib-dateline-vol" id="ed-pm-vol-display">Vol. 5 &nbsp;&bull;&nbsp; The Sandlot Dynasty League</span>
+        <span class="trib-dateline-sep">|</span>
+        <span class="trib-dateline-date" id="ed-masthead-date"></span>
+        <span class="trib-dateline-sep">|</span>
+        <span class="trib-dateline-est">Est. 2022</span>
+      </div>
+      <p class="trib-masthead-motto">&ldquo;Where Legends Never Die&rdquo;</p>
+    </div>
+
+    <!-- ── Article editor ── -->
+    <div class="trib-editor-wrap">
+      <div class="trib-paper">
+
+        <!-- Per-article paper masthead -->
+        <div class="trib-paper-masthead">
+          <div class="trib-pm-vol" id="ed-pm-vol">Select an edition from the archive</div>
+        </div>
+
+        <div class="trib-paper-content">
+          <div class="trib-body trib-drop-cap">
+
+            <!-- Hero image area -->
+            <div class="trib-hero-wrap" id="ed-hero-wrap">
+              <!-- Filled by JS: either img or placeholder -->
+            </div>
+            <div class="trib-caption" id="ed-hero-caption-el" contenteditable="true" data-placeholder="Caption text&hellip;"></div>
+
+            <!-- Article metadata fields -->
+            <div class="trib-section-label" id="ed-section" contenteditable="true" data-placeholder="Section Label">Transactions &amp; Moves</div>
+            <h2 class="trib-headline" id="ed-headline" contenteditable="true" data-placeholder="Article Headline Goes Here">Article Headline Goes Here</h2>
+            <p class="trib-deck" id="ed-deck" contenteditable="true" data-placeholder="A brief deck / subheadline providing context for the story below.">A brief deck / subheadline providing context for the story below.</p>
+            <div class="trib-byline" id="ed-byline" contenteditable="true" data-placeholder="By [Author] &middot; [Date]">By Staff Reporter &middot; March 10, 2026</div>
+
+            <hr class="trib-rule trib-rule--thick">
+
+            <!-- Body content -->
+            <div class="trib-col-layout-2" id="ed-body" contenteditable="true">
+              <p><span class="trib-dateline">THE SANDLOT DYNASTY LEAGUE &mdash;</span> Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua, et sic transit gloria mundi per aspera ad astra.</p>
+
+              <p>Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Vestibulum tortor quam, feugiat vitae, ultricies eget, tempor sit amet, ante. Donec eu libero sit amet quam egestas semper.</p>
+
+              <div class="trib-pull-quote">&ldquo;This is a pull quote that highlights a key moment or statement from the article. It draws the reader&rsquo;s eye and breaks up the body copy.&rdquo;</div>
+
+              <div class="trib-sidebar">
+                <div class="trib-sidebar-hed">At a Glance</div>
+                <p>A sidebar with supplemental information, stats, or quick facts relevant to the main article.</p>
+              </div>
+
+              <p>Aenean ultricies mi vitae est. Mauris placerat eleifend leo. Quisque sit amet est et sapien ullamcorper pharetra. Vestibulum erat wisi, condimentum sed, commodo vitae, ornare sit amet, wisi.</p>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /#ed-main -->
+
+  <script type="module">
+    import { firestore, auth } from '../assets/js/firebase-config.js';
+    import {
+      doc, getDoc, setDoc, serverTimestamp
+    } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js';
+    import { onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js';
+
+    const ADMIN_UID = 'xNRN4Ae3VTeYqXB4XvcsDMXVABZ2';
+
+    function esc(s) {
+      return String(s ?? '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+    }
+
+    // ── Live preview updates ────────────────────────────────────────────────
+    function updateVolDisplay() {
+      const vol  = document.getElementById('ed-vol')?.value  || '';
+      const date = document.getElementById('ed-date')?.value || '';
+      const pmVol = document.getElementById('ed-pm-vol');
+      if (pmVol) {
+        const parts = [vol, date, 'Est. 2022'].filter(Boolean);
+        pmVol.textContent = parts.join(' \u2022 ');
+      }
+    }
+
+    function updateHero() {
+      const url = document.getElementById('ed-hero-url')?.value?.trim() || '';
+      const heroWrap = document.getElementById('ed-hero-wrap');
+      if (!heroWrap) return;
+      if (url) {
+        heroWrap.innerHTML = `<img src="${esc(url)}" alt="Hero image" style="width:100%;display:block;">`;
+      } else {
+        heroWrap.innerHTML = `
+          <div class="trib-hero-placeholder">
+            <span class="trib-hero-ph-label">[ Photo / Illustration &mdash; The Sandlot Tribune ]</span>
+          </div>`;
+      }
+    }
+
+    // ── Insert Image ────────────────────────────────────────────────────────
+    document.getElementById('ed-insert-img')?.addEventListener('click', () => {
+      const url     = prompt('Image URL (leave blank for placeholder):') ?? '';
+      const caption = prompt('Caption:') ?? '';
+      const bodyEl  = document.getElementById('ed-body');
+      if (!bodyEl) return;
+      bodyEl.focus();
+
+      let html;
+      if (url.trim()) {
+        html = `<img src="${esc(url.trim())}" class="trib-photo" alt="${esc(caption)}">`;
+        if (caption.trim()) {
+          html += `<div class="trib-caption">${esc(caption.trim())}</div>`;
+        }
+      } else {
+        html = `<div class="trib-inline-placeholder">[ Photo / Illustration &mdash; The Sandlot Tribune ]</div>`;
+        if (caption.trim()) {
+          html += `<div class="trib-caption" contenteditable="true">${esc(caption.trim())}</div>`;
+        }
+      }
+
+      document.execCommand('insertHTML', false, html);
+    });
+
+    // ── Wire up live-update inputs ──────────────────────────────────────────
+    ['ed-vol', 'ed-date'].forEach(id => {
+      document.getElementById(id)?.addEventListener('input', updateVolDisplay);
+    });
+    document.getElementById('ed-hero-url')?.addEventListener('input', updateHero);
+
+    // ── Save ────────────────────────────────────────────────────────────────
+    document.getElementById('ed-save')?.addEventListener('click', async () => {
+      const slug = document.getElementById('ed-slug')?.value?.trim();
+      if (!slug) { showStatus('Slug is required.', true); return; }
+
+      const statusEl = document.getElementById('ed-status');
+      if (statusEl) { statusEl.textContent = 'Saving\u2026'; statusEl.className = 'ed-status'; }
+
+      const vol      = document.getElementById('ed-vol')?.value?.trim()      || '';
+      const date     = document.getElementById('ed-date')?.value?.trim()     || '';
+      const dateIso  = document.getElementById('ed-date-iso')?.value?.trim() || '';
+      const year     = parseInt(document.getElementById('ed-year')?.value)   || 2026;
+      const heroImg  = document.getElementById('ed-hero-url')?.value?.trim() || '';
+
+      const heroCaptionEl = document.getElementById('ed-hero-caption-el');
+      const heroCaption   = heroCaptionEl?.textContent?.trim() || '';
+
+      const section  = document.getElementById('ed-section')?.textContent?.trim()  || '';
+      const headline = document.getElementById('ed-headline')?.textContent?.trim() || '';
+      const deck     = document.getElementById('ed-deck')?.textContent?.trim()     || '';
+      const byline   = document.getElementById('ed-byline')?.textContent?.trim()   || '';
+      const bodyHtml = document.getElementById('ed-body')?.innerHTML || '';
+
+      try {
+        // Check if document already exists (to preserve created_at)
+        const existingSnap = await getDoc(doc(firestore, 'tribune_editions', slug));
+        const isNew = !existingSnap.exists();
+
+        const editionData = {
+          slug, vol, date, dateIso, year,
+          hero_image:   heroImg,
+          hero_caption: heroCaption,
+          section, headline, deck, byline,
+          body_html:    bodyHtml,
+          updated_at:   serverTimestamp(),
+        };
+        if (isNew) {
+          editionData.created_at = serverTimestamp();
+        }
+
+        await setDoc(doc(firestore, 'tribune_editions', slug), editionData, { merge: true });
+
+        // Update settings/tribune editions index
+        const settingsSnap = await getDoc(doc(firestore, 'settings', 'tribune'));
+        let editions = [];
+        if (settingsSnap.exists() && Array.isArray(settingsSnap.data().editions)) {
+          editions = settingsSnap.data().editions;
+        }
+
+        const indexEntry = {
+          slug, vol, date, dateIso, year,
+          headline, section,
+          firestoreContent: true,
+        };
+
+        const existingIdx = editions.findIndex(e => e.slug === slug);
+        if (existingIdx >= 0) {
+          editions[existingIdx] = indexEntry;
+        } else {
+          editions.unshift(indexEntry); // newest first
+        }
+
+        await setDoc(doc(firestore, 'settings', 'tribune'), { editions }, { merge: true });
+
+        showStatus('Saved!', false);
+        setTimeout(() => showStatus('', false), 3000);
+      } catch (err) {
+        showStatus('Error: ' + (err.message || 'Unknown error'), true);
+      }
+    });
+
+    function showStatus(msg, isError) {
+      const el = document.getElementById('ed-status');
+      if (!el) return;
+      el.textContent = msg;
+      el.className = 'ed-status' + (isError ? ' err' : (msg ? ' ok' : ''));
+    }
+
+    // ── Load existing edition ───────────────────────────────────────────────
+    async function loadEdition(slug) {
+      // Try Firestore first
+      try {
+        const snap = await getDoc(doc(firestore, 'tribune_editions', slug));
+        if (snap.exists()) {
+          const d = snap.data();
+          setField('ed-slug',      d.slug);
+          setField('ed-vol',       d.vol);
+          setField('ed-date',      d.date);
+          setField('ed-date-iso',  d.dateIso);
+          setField('ed-year',      d.year);
+          setField('ed-hero-url',  d.hero_image);
+
+          const captionEl = document.getElementById('ed-hero-caption-el');
+          if (captionEl) captionEl.textContent = d.hero_caption || '';
+
+          setCE('ed-section',  d.section);
+          setCE('ed-headline', d.headline);
+          setCE('ed-deck',     d.deck);
+          setCE('ed-byline',   d.byline);
+          setInner('ed-body',  d.body_html);
+
+          updateVolDisplay();
+          updateHero();
+          return;
+        }
+      } catch { /* fall through to static */ }
+
+      // Fall back to static HTML file
+      try {
+        const res  = await fetch(`../tribune/editions/${slug}.html?v=${Date.now()}`);
+        if (!res.ok) throw new Error('not found');
+        const html = await res.text();
+        const parser = new DOMParser();
+        const parsed = parser.parseFromString(html, 'text/html');
+
+        setField('ed-slug', slug);
+        setCE('ed-section',  parsed.querySelector('.trib-section-label')?.textContent?.trim() || '');
+        setCE('ed-headline', parsed.querySelector('.trib-headline')?.textContent?.trim() || '');
+        setCE('ed-deck',     parsed.querySelector('.trib-deck')?.textContent?.trim() || '');
+        setCE('ed-byline',   parsed.querySelector('.trib-byline')?.textContent?.trim() || '');
+        const bodyEl = parsed.querySelector('.trib-col-layout-2') || parsed.querySelector('.trib-body');
+        setInner('ed-body', bodyEl?.innerHTML || html);
+
+        updateVolDisplay();
+        updateHero();
+      } catch {
+        // Leave default template
+      }
+    }
+
+    function setField(id, val) {
+      const el = document.getElementById(id);
+      if (el && val !== undefined && val !== null) el.value = String(val);
+    }
+    function setCE(id, val) {
+      const el = document.getElementById(id);
+      if (el && val !== undefined) el.textContent = String(val);
+    }
+    function setInner(id, val) {
+      const el = document.getElementById(id);
+      if (el && val !== undefined) el.innerHTML = String(val);
+    }
+
+    // ── Auth gate ───────────────────────────────────────────────────────────
+    onAuthStateChanged(auth, async user => {
+      const mainEl   = document.getElementById('ed-main');
+      const deniedEl = document.getElementById('ed-access-denied');
+
+      if (!user) {
+        window.location.href = '../rumblr/login.html?redirect=estn/tribune-editor.html' + window.location.search;
+        return;
+      }
+      if (user.uid !== ADMIN_UID) {
+        if (deniedEl) deniedEl.style.display = 'block';
+        return;
+      }
+
+      // Authorized
+      if (mainEl) mainEl.style.display = 'block';
+
+      // Fill masthead date
+      const dateEl = document.getElementById('ed-masthead-date');
+      if (dateEl) {
+        dateEl.textContent = new Date().toLocaleDateString('en-US', {
+          weekday: 'long', year: 'numeric', month: 'long', day: 'numeric'
+        });
+      }
+
+      // Initialize hero placeholder
+      updateHero();
+      updateVolDisplay();
+
+      // Load from URL params
+      const params = new URLSearchParams(window.location.search);
+      const slug   = params.get('slug');
+      if (slug && slug !== 'new') {
+        await loadEdition(slug);
+      }
+    });
+  </script>
+
+</body>
+</html>

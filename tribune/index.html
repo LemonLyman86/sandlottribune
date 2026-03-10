@@ -77,6 +77,9 @@
   </div><!-- /.trib-layout -->
 
   <script type="module">
+    import { firestore } from '../assets/js/firebase-config.js';
+    import { doc, getDoc } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js';
+
     // ── Edition registry ─────────────────────────────────────────────────────
     // To add a new edition: insert an entry at the top of the correct year group
     // See tribune/TRIBUNE-ARTICLE-INSTRUCTIONS.md for the full field spec
@@ -188,6 +191,8 @@
       },
     ];
 
+    let allEditions = [...EDITIONS];  // will be merged with Firestore editions
+
     // ── State ────────────────────────────────────────────────────────────────
     let activeSlug = null;
 
@@ -199,7 +204,7 @@
 
     // ── Render edition list grouped by year ──────────────────────────────────
     function renderEditionList() {
-      const years = [...new Set(EDITIONS.map(e => e.year))].sort((a, b) => b - a);
+      const years = [...new Set(allEditions.map(e => e.year))].sort((a, b) => b - a);
       const listEl = document.getElementById('trib-edition-list');
       listEl.innerHTML = '';
 
@@ -212,7 +217,7 @@
         label.textContent = year === 2022 ? '2022 — Print Edition' : String(year);
         group.appendChild(label);
 
-        EDITIONS.filter(e => e.year === year).forEach(ed => {
+        allEditions.filter(e => e.year === year).forEach(ed => {
           const item = document.createElement('button');
           item.className = 'trib-edition-item';
           item.dataset.slug = ed.slug;
@@ -230,7 +235,7 @@
 
     // ── Load an edition into the reader pane ─────────────────────────────────
     async function loadEdition(slug, itemEl) {
-      const ed = EDITIONS.find(e => e.slug === slug);
+      const ed = allEditions.find(e => e.slug === slug);
       if (!ed) return;
       activeSlug = slug;
 
@@ -260,6 +265,32 @@
             <span class="trib-archive-label">${esc(ed.vol)} &mdash; ${esc(ed.date)}</span>
           </div>`;
         spinner.style.display = 'none';
+      } else if (ed.firestoreContent) {
+        // Load full content from Firestore
+        try {
+          const edSnap = await getDoc(doc(firestore, 'tribune_editions', ed.slug));
+          if (edSnap.exists()) {
+            const d = edSnap.data();
+            const heroHTML = d.hero_image
+              ? `<img src="${esc(d.hero_image)}" alt="${esc(d.hero_caption || '')}" class="trib-photo">${d.hero_caption ? `<div class="trib-caption">${esc(d.hero_caption)}</div>` : ''}`
+              : `<div style="width:100%;height:220px;background:#d8d0c4;background-image:repeating-linear-gradient(45deg,transparent,transparent 12px,rgba(0,0,0,0.06) 12px,rgba(0,0,0,0.06) 13px),repeating-linear-gradient(-45deg,transparent,transparent 12px,rgba(0,0,0,0.06) 12px,rgba(0,0,0,0.06) 13px);border:1px solid #b8b0a0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;margin-bottom:4px;"><span style="font-family:'Oswald',sans-serif;font-size:0.68rem;letter-spacing:0.14em;text-transform:uppercase;color:#7a7060;border:1px solid #a0988a;padding:4px 12px;">Photo / Illustration &mdash; The Sandlot Tribune</span>${d.hero_caption ? `<span style="font-family:'PT Serif',Georgia,serif;font-style:italic;font-size:0.78rem;color:#6a6058;">${esc(d.hero_caption)}</span>` : ''}</div>`;
+            contentEl.innerHTML = `
+              <div class="trib-body trib-drop-cap">
+                ${heroHTML}
+                <div class="trib-section-label">${esc(d.section || '')}</div>
+                <h2 class="trib-headline">${esc(d.headline || '')}</h2>
+                ${d.deck ? `<p class="trib-deck">${esc(d.deck)}</p>` : ''}
+                ${d.byline ? `<div class="trib-byline">${esc(d.byline)}</div>` : ''}
+                <hr class="trib-rule trib-rule--thick">
+                <div class="trib-col-layout-2">${d.body_html || ''}</div>
+              </div>`;
+          } else {
+            contentEl.innerHTML = '<p style="color:#888;font-style:italic;text-align:center;padding:48px;">Edition content not found.</p>';
+          }
+        } catch {
+          contentEl.innerHTML = '<p style="color:#888;font-style:italic;text-align:center;padding:48px;">Could not load edition content.</p>';
+        }
+        spinner.style.display = 'none';
       } else {
         try {
           const res  = await fetch(ed.src + '?v=' + Date.now());
@@ -276,7 +307,6 @@
     }
 
     // ── Init ─────────────────────────────────────────────────────────────────
-    renderEditionList();
 
     // Fill today's date in masthead banner
     const dateEl = document.getElementById('trib-today-date');
@@ -286,11 +316,29 @@
       });
     }
 
-    // Deep-link or default to most recent edition
-    const initSlug  = new URLSearchParams(window.location.search).get('edition');
-    const startSlug = initSlug || EDITIONS[0].slug;
-    const startItem = document.querySelector(`.trib-edition-item[data-slug="${startSlug}"]`);
-    loadEdition(startSlug, startItem);
+    // Load Firestore editions and merge, then render
+    async function initTribune() {
+      try {
+        const snap = await getDoc(doc(firestore, 'settings', 'tribune'));
+        if (snap.exists() && Array.isArray(snap.data().editions)) {
+          const ftEditions = snap.data().editions;
+          // Firestore editions first (newest), then EDITIONS not already covered
+          const ftSlugs = new Set(ftEditions.map(e => e.slug));
+          allEditions = [...ftEditions, ...EDITIONS.filter(e => !ftSlugs.has(e.slug))];
+        }
+      } catch { /* Firestore unavailable, use static list */ }
+
+      renderEditionList();
+
+      // Deep-link or default to most recent edition
+      const initSlug  = new URLSearchParams(window.location.search).get('edition');
+      const startSlug = initSlug || allEditions[0]?.slug;
+      if (startSlug) {
+        const startItem = document.querySelector(`.trib-edition-item[data-slug="${startSlug}"]`);
+        loadEdition(startSlug, startItem);
+      }
+    }
+    initTribune();
   </script>
 
   <script type="module" src="../assets/js/estn-auth.js"></script>

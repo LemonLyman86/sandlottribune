@@ -66,6 +66,12 @@ service cloud.firestore {
       allow write: if isVerifiedAdmin();
     }
 
+    // Tribune editions: anyone can read; only admin can write
+    match /tribune_editions/{slug} {
+      allow read: if true;
+      allow write: if isVerifiedAdmin();
+    }
+
     // Admin collection: managed via Firebase Console only — no client access
     match /admin/{docId} {
       allow read, write: if false;

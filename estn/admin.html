@@ -85,6 +85,21 @@
     }
     .admin-delete-btn:hover { background: #7B2020; }
 
+    /* ── Tribune edition rows ── */
+    .tribune-edition-row {
+      display: grid; grid-template-columns: 1fr auto auto auto;
+      gap: 10px; align-items: center; padding: 8px 10px;
+      border: 1px solid #2D3748; border-radius: 6px; margin-bottom: 5px; background: #0D1117;
+    }
+    .tribune-edition-row:hover { border-color: #4A5568; }
+    .trib-ed-row-meta { min-width: 0; }
+    .trib-ed-row-vol { font-family: 'Oswald',sans-serif; font-size: 0.62rem; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: #718096; }
+    .trib-ed-row-hed { font-family: 'Oswald',sans-serif; font-size: 0.8rem; color: #E2E8F0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .trib-ed-row-date { font-family: 'Marcellus',serif; font-size: 0.7rem; color: #718096; }
+    .trib-ed-source-chip { font-family: 'Oswald',sans-serif; font-size: 0.6rem; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; padding: 2px 7px; border-radius: 3px; white-space: nowrap; }
+    .trib-ed-source-chip.live { background: rgba(52,211,153,0.15); color: #34D399; }
+    .trib-ed-source-chip.static { background: rgba(74,85,104,0.3); color: #718096; }
+
     /* ── Shared admin helpers ── */
     .estn-admin-hint { font-size: 0.78rem; color: #718096; margin-bottom: 12px; font-family: 'Marcellus',serif; }
     .estn-admin-field-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
@@ -133,6 +148,7 @@
         <button class="estn-admin-tab" data-tab="btc">Between the Chalk</button>
         <button class="estn-admin-tab" data-tab="events">Season Events</button>
         <button class="estn-admin-tab" data-tab="records">League Records</button>
+        <button class="estn-admin-tab" data-tab="tribune">The Tribune</button>
       </div>
 
       <!-- ════════════════════════════════════════════════
@@ -498,6 +514,23 @@
         </div>
 
       </div><!-- /#tab-records -->
+
+      <!-- ══ TAB: THE TRIBUNE ══ -->
+      <div id="tab-tribune" class="estn-tab-panel">
+        <div class="estn-admin-section">
+          <div class="estn-admin-section-header">
+            <h2>The Sandlot Tribune — Editions</h2>
+          </div>
+          <div class="estn-admin-section-body">
+            <p class="estn-admin-hint">Manage Tribune editions. Click Edit to open the live article editor. Static editions are loaded from HTML files; Live editions are stored in Firestore and editable without a deploy.</p>
+            <div id="tribune-edition-rows"></div>
+            <div style="margin-top:14px;display:flex;gap:8px;align-items:center;">
+              <a href="tribune-editor.html?slug=new" class="estn-admin-btn" style="text-decoration:none;">+ New Edition</a>
+              <button class="estn-admin-btn secondary" id="save-tribune-btn">Save Index Order</button>
+            </div>
+          </div>
+        </div>
+      </div><!-- /#tab-tribune -->
 
     </div><!-- /estn-admin-wrap -->
   </div><!-- /estn-admin-dash -->
