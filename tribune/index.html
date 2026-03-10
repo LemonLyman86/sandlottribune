@@ -3,168 +3,297 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>The Sandlot Tribune — TSDL's Official Publication</title>
-  <meta name="description" content="The official publication of The Sandlot Dynasty League — season previews, power rankings, trade analysis, and more.">
+  <title>The Sandlot Tribune</title>
+  <meta name="description" content="The official newspaper of The Sandlot Dynasty League. Archive editions, league news, and in-depth coverage.">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Marcellus&family=Oswald:wght@400;700&display=swap" rel="stylesheet">
+  <!-- ESTN nav fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Marcellus&family=Oswald:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <!-- Newspaper-specific fonts (Tribune only) -->
+  <link href="https://fonts.googleapis.com/css2?family=UnifrakturMaguntia&family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=PT+Serif:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="../assets/css/main.css">
 </head>
-<body>
+<body class="tribune-reader-body">
 
-  <!-- ===== SITE HEADER / NAV ===== -->
-  <header class="site-header">
+  <!-- ESTN Portal Nav -->
+  <header class="estn-portal-nav">
     <nav class="nav-inner">
-      <a class="nav-logo" href="../index.html" aria-label="ESTN Home">
-        <img src="../assets/images/logo.png" alt="The Sandlot Tribune">
+      <a class="nav-logo" href="../index.html">
+        <img src="../assets/images/estn-logo-full.png" alt="ESTN">
       </a>
       <ul class="nav-links">
-        <li><a href="../index.html">ESTN Home</a></li>
-        <li><a href="index.html" class="active">The Tribune</a></li>
-        <li><a href="../between-the-chalk/index.html">Between The Chalk</a></li>
-        <li><a href="../season-deadlines/index.html">Season Deadlines &amp; Events</a></li>
-        <li><a href="../league-records/index.html">League Records</a></li>
-        <li><a href="../rumblr/index.html">Rumblr</a></li>
-        <li><a href="../about/index.html" aria-label="ESTN Network">
-          <img class="nav-estn-logo" src="../assets/images/estn-logo.png" alt="ESTN">
-        </a></li>
+        <li><a href="../index.html">Home</a></li>
+        <li><a href="../tribune/" class="active">The Sandlot Tribune</a></li>
+        <li><a href="../between-the-chalk/">Between The Chalk</a></li>
+        <li><a href="../rumblr/">Rumblr</a></li>
+        <li><a href="../league-records/">League Records</a></li>
+        <li><a href="../season-deadlines/">Season Events</a></li>
+        <li><a href="../about/">About</a></li>
       </ul>
+      <div id="estn-auth-widget"></div>
     </nav>
   </header>
 
-  <!-- ===== HERO ===== -->
-  <section class="site-hero">
-    <h1>The Sandlot Tribune</h1>
-    <p class="tagline">The Official Publication of The Sandlot Dynasty League</p>
-    <p class="hero-subtagline">Where Legends Never Die</p>
-    <hr class="hero-rule">
-  </section>
-
-  <!-- ===== MAIN CONTENT ===== -->
-  <main class="page-wrapper">
-
-    <!-- Under Construction Notice -->
-    <div class="under-construction-banner" style="font-family:'Oswald',sans-serif;">
-      <div class="uc-title">&#x26A0;&#xFE0F; &nbsp; Under Construction</div>
-      <div class="uc-sub">
-        The Sandlot Tribune is being redesigned as a full newspaper-style section.
-        Articles are still available below &mdash; the new layout is coming soon.
-      </div>
+  <!-- Newspaper Masthead Banner -->
+  <div class="trib-masthead-banner">
+    <div class="trib-masthead-rule-top"></div>
+    <h1 class="trib-masthead-title">The Sandlot Tribune</h1>
+    <div class="trib-masthead-rule-bottom"></div>
+    <div class="trib-masthead-dateline">
+      <span class="trib-dateline-vol">Vol. 5 &nbsp;&bull;&nbsp; The Sandlot Dynasty League</span>
+      <span class="trib-dateline-sep">|</span>
+      <span class="trib-dateline-date" id="trib-today-date"></span>
+      <span class="trib-dateline-sep">|</span>
+      <span class="trib-dateline-est">Est. 2022</span>
     </div>
+    <p class="trib-masthead-motto">&ldquo;Where Legends Never Die&rdquo;</p>
+  </div>
 
-    <!-- ===== LATEST NEWS ===== -->
-    <section aria-label="Latest News">
-      <h2 class="section-label">Latest</h2>
-      <div class="articles-grid">
+  <!-- Two-Column Layout -->
+  <div class="trib-layout">
 
-        <!-- Featured Article — SEA Season Preview (most recent) -->
-        <article class="article-card article-card--featured">
-          <img class="card-image" src="../assets/images/sea-preview.png" alt="2026 TSDL Season Preview: Seattle Mariners">
-          <div class="card-body">
-            <span class="card-badge">Season Preview</span>
-            <h3 class="card-title">2026 TSDL Season Preview: Seattle Mariners</h3>
-            <p class="card-meta">By Ken Rosenthal &nbsp;&middot;&nbsp; February 28, 2026</p>
-            <div class="card-rating-row" id="card-rating-season_preview_2026_sea"></div>
-            <p class="card-excerpt">
-              Jordan Britton's Seattle Mariners have been one of the TSDL's most compelling teams for four seasons — consistently competitive, occasionally brilliant, and perpetually on the edge of something great without quite reaching the mountaintop. The 2025&hellip;
-            </p>
-            <a class="card-link" href="../season-previews/season_preview_2026_sea.html">Read Article &rarr;</a>
-          </div>
-        </article>
+    <!-- LEFT PANE: Edition Navigator -->
+    <aside class="trib-left-nav">
+      <div class="trib-nav-header">The Archive</div>
+      <div id="trib-edition-list"></div>
+    </aside>
 
-        <!-- ATL Season Preview -->
-        <article class="article-card">
-          <img class="card-image" src="../assets/images/atl-preview.png" alt="2026 TSDL Season Preview: Atlanta Braves">
-          <div class="card-body">
-            <span class="card-badge">Season Preview</span>
-            <h3 class="card-title">2026 TSDL Season Preview: Atlanta Braves</h3>
-            <p class="card-meta">By Tim Kurkjian &nbsp;&middot;&nbsp; February 28, 2026</p>
-            <div class="card-rating-row" id="card-rating-season_preview_2026_atl"></div>
-            <p class="card-excerpt">
-              In four seasons of Sandlot Dynasty League existence, the Atlanta Braves have swung from champion to rubble and back again — twice. Owner Justin Winward won it all in 2022, went 16-3 the following year only to flame out in the playoffs, cratered to a&hellip;
-            </p>
-            <a class="card-link" href="../season-previews/season_preview_2026_atl.html">Read Article &rarr;</a>
-          </div>
-        </article>
+    <!-- RIGHT PANE: Newspaper Reader -->
+    <main class="trib-reader-pane">
+      <div class="trib-reader-spinner" id="trib-spinner"></div>
 
-        <!-- LVA Season Preview -->
-        <article class="article-card">
-          <img class="card-image" src="../assets/images/lva-preview.png" alt="2026 TSDL Season Preview: Las Vegas Athletics">
-          <div class="card-body">
-            <span class="card-badge">Season Preview</span>
-            <h3 class="card-title">2026 TSDL Season Preview: Las Vegas Athletics</h3>
-            <p class="card-meta">By Keith Law &nbsp;&middot;&nbsp; February 27, 2026</p>
-            <div class="card-rating-row" id="card-rating-season_preview_2026_lva"></div>
-            <p class="card-excerpt">
-              The Las Vegas Athletics arrived in The Sandlot Dynasty League two years ago and promptly decided to skip the learning curve entirely. In 2024, Mike DiMauro won the championship. In 2025, he went 15-4 in the regular season, earned the #2 seed, and&hellip;
-            </p>
-            <a class="card-link" href="../season-previews/season_preview_2026_lva.html">Read Article &rarr;</a>
-          </div>
-        </article>
-
-        <!-- STL Season Preview -->
-        <article class="article-card">
-          <img class="card-image" src="../assets/images/stl-preview.png" alt="2026 TSDL Season Preview: St. Louis Cardinals">
-          <div class="card-body">
-            <span class="card-badge">Season Preview</span>
-            <h3 class="card-title">2026 TSDL Season Preview: St. Louis Cardinals</h3>
-            <p class="card-meta">By Buster Olney &nbsp;&middot;&nbsp; February 27, 2026</p>
-            <div class="card-rating-row" id="card-rating-season_preview_2026_stl"></div>
-            <p class="card-excerpt">
-              Forty-one and a half points. That is the margin separating Sam Crotto &amp; Brian Baker and the St. Louis Cardinals from a TSDL championship banner. In the 2025 title game, Arizona rolled in as the tournament's Cinderella — an eighth seed who had no&hellip;
-            </p>
-            <a class="card-link" href="../season-previews/season_preview_2026_stl.html">Read Article &rarr;</a>
-          </div>
-        </article>
-
-      </div>
-    </section>
-
-    <!-- ===== EXPLORE ===== -->
-    <section aria-label="Browse by Section">
-      <h2 class="section-label">Explore</h2>
-      <div class="explore-grid">
-
-        <a class="explore-card" href="../season-previews/index.html">
-          <span class="explore-card-title">Season Previews</span>
-        </a>
-
-        <a class="explore-card" href="../between-the-chalk/index.html">
-          <span class="explore-card-title">Between The Chalk</span>
-        </a>
-
-        <div class="explore-card" style="cursor:default;">
-          <span class="explore-card-title">Power Rankings</span>
-          <span class="badge-coming-soon">Coming Soon</span>
+      <div class="trib-paper" id="trib-paper">
+        <div class="trib-paper-masthead" id="trib-paper-masthead">
+          <div class="trib-pm-vol">Select an edition from the archive</div>
         </div>
-
-        <div class="explore-card" style="cursor:default;">
-          <span class="explore-card-title">Trade Analysis</span>
-          <span class="badge-coming-soon">Coming Soon</span>
+        <div class="trib-paper-content" id="trib-paper-content">
+          <div class="trib-welcome-state">
+            <p>Select an edition from the archive to begin reading.</p>
+          </div>
         </div>
-
       </div>
-    </section>
+    </main>
 
-  </main>
+  </div><!-- /.trib-layout -->
 
-  <!-- ===== FOOTER ===== -->
-  <footer class="site-footer">
-    <p>&copy; 2026 The Sandlot Tribune &nbsp;&middot;&nbsp; The Sandlot Dynasty League &nbsp;&middot;&nbsp;
-      <a href="../index.html" style="color:inherit;">ESTN Home</a>
-    </p>
-  </footer>
-
-  <!-- Firebase: load card ratings -->
   <script type="module">
-    import { fetchCardRatings } from '../assets/js/article-engagement.js';
-    fetchCardRatings([
-      'season_preview_2026_sea',
-      'season_preview_2026_atl',
-      'season_preview_2026_lva',
-      'season_preview_2026_stl',
-    ]);
+    // ── Edition registry ─────────────────────────────────────────────────────
+    // To add a new edition: insert an entry at the top of the correct year group
+    // See tribune/TRIBUNE-ARTICLE-INSTRUCTIONS.md for the full field spec
+    const EDITIONS = [
+      // ── 2026 HTML editions (most recent first) ──────────────────────────
+      {
+        slug:     'lad-milb',
+        vol:      'Vol. 5, No. 2',
+        date:     'March 10, 2026',
+        dateIso:  '2026-03-10',
+        year:     2026,
+        headline: 'Dodgers Make MiLB Selections',
+        type:     'html',
+        src:      'editions/lad-milb.html',
+        section:  'Transactions & Moves',
+      },
+      {
+        slug:     'tex-sale',
+        vol:      'Vol. 5, No. 1',
+        date:     'March 7, 2026',
+        dateIso:  '2026-03-07',
+        year:     2026,
+        headline: 'TEX Cleared For Sale',
+        type:     'html',
+        src:      'editions/tex-sale.html',
+        section:  'Ownership & League News',
+      },
+
+      // ── 2022 Print Archive (scanned originals) ───────────────────────────
+      {
+        slug:     'vol1-no9',
+        vol:      'Vol. 1, No. 9',
+        date:     'October 2022',
+        dateIso:  '2022-10-01',
+        year:     2022,
+        headline: 'Postseason Edition',
+        type:     'image',
+        src:      '../assets/images/articles/tribune-pages/tribune9.jpg',
+      },
+      {
+        slug:     'vol1-no8',
+        vol:      'Vol. 1, No. 8',
+        date:     'September 2022',
+        dateIso:  '2022-09-01',
+        year:     2022,
+        headline: 'Late-Season Power Rankings',
+        type:     'image',
+        src:      '../assets/images/articles/tribune-pages/tribune8.jpg',
+      },
+      {
+        slug:     'vol1-no7',
+        vol:      'Vol. 1, No. 7',
+        date:     'August 2022',
+        dateIso:  '2022-08-01',
+        year:     2022,
+        headline: 'Trade Deadline Roundup',
+        type:     'image',
+        src:      '../assets/images/articles/tribune-pages/tribune7.jpg',
+      },
+      {
+        slug:     'vol1-no6',
+        vol:      'Vol. 1, No. 6',
+        date:     'July 2022',
+        dateIso:  '2022-07-01',
+        year:     2022,
+        headline: 'Midsummer Classic Edition',
+        type:     'image',
+        src:      '../assets/images/articles/tribune-pages/tribune6.jpg',
+      },
+      {
+        slug:     'vol1-no5',
+        vol:      'Vol. 1, No. 5',
+        date:     'June 2022',
+        dateIso:  '2022-06-01',
+        year:     2022,
+        headline: 'First-Half Standings Report',
+        type:     'image',
+        src:      '../assets/images/articles/tribune-pages/tribune5.jpg',
+      },
+      {
+        slug:     'vol1-no4',
+        vol:      'Vol. 1, No. 4',
+        date:     'May 2022',
+        dateIso:  '2022-05-01',
+        year:     2022,
+        headline: 'Early Season Report',
+        type:     'image',
+        src:      '../assets/images/articles/tribune-pages/tribune4.jpg',
+      },
+      {
+        slug:     'vol1-no3',
+        vol:      'Vol. 1, No. 3',
+        date:     'April 2022',
+        dateIso:  '2022-04-01',
+        year:     2022,
+        headline: 'Opening Month Recap',
+        type:     'image',
+        src:      '../assets/images/articles/tribune-pages/tribune3.jpg',
+      },
+      {
+        slug:     'vol1-no2',
+        vol:      'Vol. 1, No. 2',
+        date:     'March 2022',
+        dateIso:  '2022-03-01',
+        year:     2022,
+        headline: 'Opening Day Rosters',
+        type:     'image',
+        src:      '../assets/images/articles/tribune-pages/tribune2.jpg',
+      },
+    ];
+
+    // ── State ────────────────────────────────────────────────────────────────
+    let activeSlug = null;
+
+    function esc(s) {
+      return String(s ?? '')
+        .replace(/&/g, '&amp;').replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+    }
+
+    // ── Render edition list grouped by year ──────────────────────────────────
+    function renderEditionList() {
+      const years = [...new Set(EDITIONS.map(e => e.year))].sort((a, b) => b - a);
+      const listEl = document.getElementById('trib-edition-list');
+      listEl.innerHTML = '';
+
+      years.forEach(year => {
+        const group = document.createElement('div');
+        group.className = 'trib-year-group';
+
+        const label = document.createElement('div');
+        label.className = 'trib-year-label';
+        label.textContent = year === 2022 ? '2022 — Print Edition' : String(year);
+        group.appendChild(label);
+
+        EDITIONS.filter(e => e.year === year).forEach(ed => {
+          const item = document.createElement('button');
+          item.className = 'trib-edition-item';
+          item.dataset.slug = ed.slug;
+          item.innerHTML = `
+            <div class="trib-edition-vol">${esc(ed.vol)}</div>
+            <div class="trib-edition-headline">${esc(ed.headline)}</div>
+            <div class="trib-edition-date">${esc(ed.date)}</div>`;
+          item.addEventListener('click', () => loadEdition(ed.slug, item));
+          group.appendChild(item);
+        });
+
+        listEl.appendChild(group);
+      });
+    }
+
+    // ── Load an edition into the reader pane ─────────────────────────────────
+    async function loadEdition(slug, itemEl) {
+      const ed = EDITIONS.find(e => e.slug === slug);
+      if (!ed) return;
+      activeSlug = slug;
+
+      // Update URL without reload
+      const p = new URLSearchParams(window.location.search);
+      p.set('edition', slug);
+      history.replaceState({}, '', '?' + p.toString());
+
+      // Mark active in nav
+      document.querySelectorAll('.trib-edition-item').forEach(el => el.classList.remove('active'));
+      if (itemEl) itemEl.classList.add('active');
+
+      // Update per-edition paper masthead
+      document.getElementById('trib-paper-masthead').innerHTML =
+        `<div class="trib-pm-vol">${esc(ed.vol)} &nbsp;&bull;&nbsp; ${esc(ed.date)} &nbsp;&bull;&nbsp; Est. 2022</div>`;
+
+      const spinner   = document.getElementById('trib-spinner');
+      const contentEl = document.getElementById('trib-paper-content');
+
+      spinner.style.display = 'block';
+      contentEl.innerHTML = '';
+
+      if (ed.type === 'image') {
+        contentEl.innerHTML = `
+          <div class="trib-archive-viewer">
+            <img class="trib-archive-img" src="${esc(ed.src)}" alt="${esc(ed.headline)}" loading="lazy">
+            <span class="trib-archive-label">${esc(ed.vol)} &mdash; ${esc(ed.date)}</span>
+          </div>`;
+        spinner.style.display = 'none';
+      } else {
+        try {
+          const res  = await fetch(ed.src + '?v=' + Date.now());
+          const html = await res.text();
+          contentEl.innerHTML = html;
+        } catch {
+          contentEl.innerHTML = '<p style="color:#888;font-style:italic;text-align:center;padding:48px;">Edition content could not be loaded.</p>';
+        }
+        spinner.style.display = 'none';
+      }
+
+      // Scroll reader pane to top
+      document.querySelector('.trib-reader-pane').scrollTop = 0;
+    }
+
+    // ── Init ─────────────────────────────────────────────────────────────────
+    renderEditionList();
+
+    // Fill today's date in masthead banner
+    const dateEl = document.getElementById('trib-today-date');
+    if (dateEl) {
+      dateEl.textContent = new Date().toLocaleDateString('en-US', {
+        weekday: 'long', year: 'numeric', month: 'long', day: 'numeric'
+      });
+    }
+
+    // Deep-link or default to most recent edition
+    const initSlug  = new URLSearchParams(window.location.search).get('edition');
+    const startSlug = initSlug || EDITIONS[0].slug;
+    const startItem = document.querySelector(`.trib-edition-item[data-slug="${startSlug}"]`);
+    loadEdition(startSlug, startItem);
   </script>
+
+  <script type="module" src="../assets/js/estn-auth.js"></script>
   <script type="module" src="../assets/js/estn-ticker.js"></script>
 
 </body>

@@ -293,58 +293,43 @@ function renderTransactions(data) {
   }).join('');
 }
 
-// ── Render right-pillar headlines ──────────────────────────────────────────────
+// ── Render right-pillar Tribune Headlines ──────────────────────────────────────
 function renderHeadlines(txnData, customHeadlines) {
   const el = document.getElementById('portal-headlines');
   if (!el) return;
 
-  const items = [];
-
-  // Custom admin-defined headlines go first
-  if (customHeadlines && customHeadlines.length) {
-    customHeadlines.forEach(h => {
-      const text = typeof h === 'string' ? h : (h.text || '');
-      const rawDate = typeof h === 'string' ? '' : (h.date || '');
-      let date = '';
-      if (rawDate) {
-        try {
-          date = new Date(rawDate).toLocaleString('en-US', { month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' });
-        } catch { date = ''; }
-      }
-      items.push({ text, date });
-    });
-  }
-
-  // Auto-generate from transactions
-  if (txnData && txnData.transactions) {
-    txnData.transactions.slice(0, 8 - items.length).forEach(t => {
-      let text = '';
-      if (t.type === 'faab_pickup') {
-        text = `${t.team} claims ${t.player}${t.details ? ` (${t.details})` : ''}`;
-      } else if (t.type === 'drop') {
-        text = `${t.team} releases ${t.player}`;
-      } else if (t.type === 'trade') {
-        text = `Trade: ${t.player} goes to ${t.team}`;
-      } else {
-        text = `${t.team}: ${t.player}`;
-      }
-      items.push({ text, date: t.date_display || t.date });
-    });
-  }
-
-  if (!items.length) {
-    el.innerHTML = '<p class="estn-pre-season-label">League activity will appear here once the season begins.</p>';
+  // Only show admin-defined headlines — no transaction auto-fill
+  if (!customHeadlines || !customHeadlines.length) {
+    el.innerHTML = '<p class="estn-pre-season-label">No headlines at this time.</p>';
     return;
   }
 
-  el.innerHTML = items.map(item => `
-    <div class="estn-headline-item">
-      <span class="estn-headline-bullet">&#x25CF;</span>
-      <div class="estn-headline-text">
-        ${esc(item.text)}
-        ${item.date ? `<span class="estn-headline-date">${esc(item.date)}</span>` : ''}
-      </div>
-    </div>`).join('');
+  el.innerHTML = customHeadlines.map(h => {
+    const text    = typeof h === 'string' ? h : (h.text || '');
+    const rawDate = typeof h === 'string' ? '' : (h.date || '');
+    const url     = typeof h === 'string' ? null : (h.url || null);
+
+    let date = '';
+    if (rawDate) {
+      try {
+        date = new Date(rawDate).toLocaleString('en-US', { month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' });
+      } catch { date = ''; }
+    }
+
+    // Link to specific Tribune edition if a slug is provided, otherwise to Tribune root
+    const href = url
+      ? `tribune/?edition=${encodeURIComponent(url)}`
+      : 'tribune/';
+
+    return `
+      <a class="estn-headline-item" href="${href}" style="text-decoration:none;display:flex;gap:10px;align-items:flex-start;">
+        <span class="estn-headline-bullet">&#x25CF;</span>
+        <div class="estn-headline-text">
+          ${esc(text)}
+          ${date ? `<span class="estn-headline-date">${esc(date)}</span>` : ''}
+        </div>
+      </a>`;
+  }).join('');
 }
 
 // ── Render Rumblr preview ──────────────────────────────────────────────────────

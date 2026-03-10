@@ -239,6 +239,7 @@ function renderHeadlinesList(headlines) {
   (headlines || []).forEach((h, i) => {
     const text = typeof h === 'string' ? h : (h.text || '');
     const date = typeof h === 'string' ? '' : (h.date || '');
+    const url  = typeof h === 'string' ? '' : (h.url  || '');
     const row = document.createElement('div');
     row.className = 'estn-admin-link-row';
     row.style.flexDirection = 'column';
@@ -247,7 +248,8 @@ function renderHeadlinesList(headlines) {
     row.dataset.date = date;
     row.innerHTML = `
       <div style="display:flex;gap:8px;align-items:center;">
-        <input class="estn-admin-input headline-text" type="text" value="${text.replace(/"/g, '&quot;')}" data-idx="${i}" placeholder="Headline text" style="flex:1;">
+        <input class="estn-admin-input headline-text" type="text" value="${text.replace(/"/g, '&quot;')}" data-idx="${i}" placeholder="Headline text" style="flex:2;">
+        <input class="estn-admin-input headline-url" type="text" value="${url.replace(/"/g, '&quot;')}" data-idx="${i}" placeholder="Edition slug (e.g. tex-sale)" style="flex:1;">
         <button class="estn-admin-remove-btn" data-idx="${i}">Remove</button>
       </div>
       ${date ? `<div style="font-size:0.7rem;color:#4A5568;font-family:'Oswald',sans-serif;letter-spacing:0.04em;">Added: ${formatHeadlineDate(date)}</div>` : ''}`;
@@ -266,10 +268,16 @@ function initHeadlines(settings) {
     if (!container) return;
     const row = document.createElement('div');
     row.className = 'estn-admin-link-row';
+    row.style.flexDirection = 'column';
+    row.style.alignItems = 'stretch';
+    row.style.gap = '4px';
     row.dataset.date = new Date().toISOString();
     row.innerHTML = `
-      <input class="estn-admin-input headline-text" type="text" placeholder="Headline text">
-      <button class="estn-admin-remove-btn">Remove</button>`;
+      <div style="display:flex;gap:8px;align-items:center;">
+        <input class="estn-admin-input headline-text" type="text" placeholder="Headline text" style="flex:2;">
+        <input class="estn-admin-input headline-url" type="text" placeholder="Edition slug (e.g. tex-sale)" style="flex:1;">
+        <button class="estn-admin-remove-btn">Remove</button>
+      </div>`;
     row.querySelector('.estn-admin-remove-btn').addEventListener('click', () => row.remove());
     container.appendChild(row);
   });
@@ -279,7 +287,8 @@ function initHeadlines(settings) {
       const rows = document.querySelectorAll('#headlines-list .estn-admin-link-row');
       const headlines = Array.from(rows).map(r => ({
         text: r.querySelector('.headline-text')?.value.trim() || '',
-        date: r.dataset.date || '',   // preserve existing date; new rows get date set at add-time
+        url:  r.querySelector('.headline-url')?.value.trim()  || '',
+        date: r.dataset.date || '',
       })).filter(h => h.text);
       await saveSettings({ custom_headlines: headlines });
       showToast('Headlines saved.');
