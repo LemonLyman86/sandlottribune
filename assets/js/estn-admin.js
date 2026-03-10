@@ -248,11 +248,13 @@ function renderHeadlinesList(headlines) {
     row.dataset.date = date;
     row.innerHTML = `
       <div style="display:flex;gap:8px;align-items:center;">
+        ${MOVE_BTNS_HTML}
         <input class="estn-admin-input headline-text" type="text" value="${text.replace(/"/g, '&quot;')}" data-idx="${i}" placeholder="Headline text" style="flex:2;">
         <input class="estn-admin-input headline-url" type="text" value="${url.replace(/"/g, '&quot;')}" data-idx="${i}" placeholder="Edition slug (e.g. tex-sale)" style="flex:1;">
         <button class="estn-admin-remove-btn" data-idx="${i}">Remove</button>
       </div>
       ${date ? `<div style="font-size:0.7rem;color:#4A5568;font-family:'Oswald',sans-serif;letter-spacing:0.04em;">Added: ${formatHeadlineDate(date)}</div>` : ''}`;
+    addMoveListeners(row);
     container.appendChild(row);
   });
   container.querySelectorAll('.estn-admin-remove-btn').forEach(btn => {
@@ -274,11 +276,13 @@ function initHeadlines(settings) {
     row.dataset.date = new Date().toISOString();
     row.innerHTML = `
       <div style="display:flex;gap:8px;align-items:center;">
+        ${MOVE_BTNS_HTML}
         <input class="estn-admin-input headline-text" type="text" placeholder="Headline text" style="flex:2;">
         <input class="estn-admin-input headline-url" type="text" placeholder="Edition slug (e.g. tex-sale)" style="flex:1;">
         <button class="estn-admin-remove-btn">Remove</button>
       </div>`;
     row.querySelector('.estn-admin-remove-btn').addEventListener('click', () => row.remove());
+    addMoveListeners(row);
     container.appendChild(row);
   });
 
@@ -372,10 +376,12 @@ function renderLinksList(links) {
     const row = document.createElement('div');
     row.className = 'estn-admin-link-row';
     row.innerHTML = `
+      ${MOVE_BTNS_HTML}
       <input class="estn-admin-input link-label" type="text" value="${(link.label||'').replace(/"/g,'&quot;')}" placeholder="Link label">
       <input class="estn-admin-input link-url"   type="text" value="${(link.url  ||'').replace(/"/g,'&quot;')}" placeholder="URL (e.g. league-records/)">
       <button class="estn-admin-remove-btn">Remove</button>`;
     row.querySelector('.estn-admin-remove-btn').addEventListener('click', () => row.remove());
+    addMoveListeners(row);
     container.appendChild(row);
   });
 }
@@ -389,10 +395,12 @@ function initQuickLinks(settings) {
     const row = document.createElement('div');
     row.className = 'estn-admin-link-row';
     row.innerHTML = `
+      ${MOVE_BTNS_HTML}
       <input class="estn-admin-input link-label" type="text" placeholder="Link label">
       <input class="estn-admin-input link-url"   type="text" placeholder="URL">
       <button class="estn-admin-remove-btn">Remove</button>`;
     row.querySelector('.estn-admin-remove-btn').addEventListener('click', () => row.remove());
+    addMoveListeners(row);
     container.appendChild(row);
   });
 
@@ -454,6 +462,19 @@ function setupTabs() {
   });
 }
 
+// ── Up / down move buttons ─────────────────────────────────────────────────────
+const MOVE_BTNS_HTML = `<div class="row-move-btns"><button class="row-move-btn move-up" title="Move up">&#9650;</button><button class="row-move-btn move-dn" title="Move down">&#9660;</button></div>`;
+function addMoveListeners(row) {
+  row.querySelector('.move-up')?.addEventListener('click', () => {
+    const prev = row.previousElementSibling;
+    if (prev && !prev.classList.contains('header-row')) row.parentNode.insertBefore(row, prev);
+  });
+  row.querySelector('.move-dn')?.addEventListener('click', () => {
+    const next = row.nextElementSibling;
+    if (next) row.parentNode.insertBefore(next, row);
+  });
+}
+
 // ── Drag-to-reorder ────────────────────────────────────────────────────────────
 function makeDraggable(container) {
   let dragSrc = null;
@@ -505,7 +526,7 @@ function createBTCRow(article) {
   row.dataset.url      = article.url      || '';
   row.dataset.thumb    = article.thumbnail|| '';
   row.innerHTML = `
-    <span class="drag-handle" title="Drag to reorder">&#8942;</span>
+    ${MOVE_BTNS_HTML}
     <img class="btc-row-thumb" src="${esc(article.thumbnail)}" alt="" onerror="this.style.opacity='0.15'">
     <div class="btc-row-meta">
       <div class="btc-row-title">${esc(article.title)}</div>
@@ -519,6 +540,7 @@ function createBTCRow(article) {
     <button class="admin-delete-btn" title="Remove">&times;</button>
   `;
   row.querySelector('.admin-delete-btn').addEventListener('click', () => row.remove());
+  addMoveListeners(row);
   return row;
 }
 
@@ -607,7 +629,7 @@ function createEventRow(ev) {
   row.dataset.id   = ev.id   || `ev_${Date.now()}`;
   row.dataset.desc = ev.description || '';
   row.innerHTML = `
-    <span class="drag-handle" title="Drag to reorder">&#8942;</span>
+    ${MOVE_BTNS_HTML}
     <div class="event-row-meta">
       <div class="event-row-name">${esc(ev.name)}</div>
       <div class="event-row-dates">${esc(ev.startDate)}${ev.endDate ? ' – ' + esc(ev.endDate) : ''}</div>
@@ -631,6 +653,7 @@ function createEventRow(ev) {
   row.dataset.startDate = ev.startDate || '';
   row.dataset.endDate   = ev.endDate   || '';
   row.querySelector('.admin-delete-btn').addEventListener('click', () => row.remove());
+  addMoveListeners(row);
   return row;
 }
 
@@ -717,9 +740,11 @@ function createChampRow(champ, isNew) {
     <input class="estn-admin-input champ-owner"  type="text" value="${esc(champ.owner)}"  placeholder="Owner name" style="font-size:0.8rem;padding:5px 8px;">
     <input class="estn-admin-input champ-seed"   type="text" value="${esc(champ.seed)}"   placeholder="1"   style="font-size:0.8rem;padding:5px 8px;">
     <input class="estn-admin-input champ-note"   type="text" value="${esc(champ.note)}"   placeholder="Notable achievement" style="font-size:0.8rem;padding:5px 8px;">
+    ${MOVE_BTNS_HTML}
     <button class="admin-delete-btn" title="Remove">&times;</button>
   `;
   row.querySelector('.admin-delete-btn').addEventListener('click', () => row.remove());
+  addMoveListeners(row);
   return row;
 }
 
@@ -733,9 +758,11 @@ function createRecordRow(rec) {
     <input class="estn-admin-input rec-team"     type="text" value="${esc(rec.team)}"     placeholder="MIL"            style="font-size:0.8rem;padding:5px 8px;text-transform:uppercase;">
     <input class="estn-admin-input rec-season"   type="text" value="${esc(rec.season)}"   placeholder="2023"           style="font-size:0.8rem;padding:5px 8px;">
     <input class="estn-admin-input rec-notes"    type="text" value="${esc(rec.notes)}"    placeholder="Notes"          style="font-size:0.8rem;padding:5px 8px;">
+    ${MOVE_BTNS_HTML}
     <button class="admin-delete-btn" title="Remove">&times;</button>
   `;
   row.querySelector('.admin-delete-btn').addEventListener('click', () => row.remove());
+  addMoveListeners(row);
   return row;
 }
 
@@ -845,6 +872,7 @@ async function initTribune() {
         </div>
         <span class="trib-ed-source-chip ${ed.firestoreContent ? 'live' : 'static'}">${ed.firestoreContent ? 'Live' : 'Static'}</span>
         <a href="tribune-editor.html?slug=${encodeURIComponent(ed.slug)}" class="estn-admin-btn secondary" style="text-decoration:none;font-size:0.7rem;padding:5px 12px;">Edit</a>
+        ${MOVE_BTNS_HTML}
         <button class="admin-delete-btn trib-ed-delete" data-slug="${esc(ed.slug)}" title="Remove from index">&times;</button>
       `;
       row.querySelector('.trib-ed-delete').addEventListener('click', () => {
@@ -852,6 +880,7 @@ async function initTribune() {
           row.remove();
         }
       });
+      addMoveListeners(row);
       container.appendChild(row);
     });
   }

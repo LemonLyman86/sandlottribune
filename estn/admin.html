@@ -27,7 +27,7 @@
 
     /* ── BTC article rows ── */
     .btc-article-row {
-      display: grid; grid-template-columns: 18px 56px 1fr auto auto auto;
+      display: grid; grid-template-columns: 26px 56px 1fr auto auto auto;
       gap: 10px; align-items: center; padding: 8px 10px;
       border: 1px solid #2D3748; border-radius: 6px; margin-bottom: 5px;
       background: #0D1117; cursor: default;
@@ -35,6 +35,15 @@
     .btc-article-row:hover { border-color: #4A5568; }
     .btc-article-row.dragging { opacity: 0.35; }
     .drag-handle { color: #4A5568; font-size: 1rem; cursor: grab; user-select: none; }
+    /* ── Up / down move buttons ── */
+    .row-move-btns { display: flex; flex-direction: column; gap: 2px; flex-shrink: 0; }
+    .row-move-btn {
+      background: #1A2030; color: #718096; border: 1px solid #2D3748;
+      border-radius: 3px; width: 22px; height: 17px; font-size: 0.55rem;
+      cursor: pointer; display: flex; align-items: center; justify-content: center;
+      padding: 0; line-height: 1;
+    }
+    .row-move-btn:hover { background: #2D3748; color: #E2E8F0; border-color: #4A5568; }
     .btc-row-thumb { width: 56px; height: 38px; object-fit: cover; border-radius: 3px; background: #1A202C; }
     .btc-row-meta { min-width: 0; }
     .btc-row-title { font-family: 'Oswald',sans-serif; font-size: 0.8rem; color: #E2E8F0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
@@ -43,7 +52,7 @@
 
     /* ── Event rows ── */
     .event-row {
-      display: grid; grid-template-columns: 18px 1fr auto auto auto auto;
+      display: grid; grid-template-columns: 26px 1fr auto auto auto auto;
       gap: 10px; align-items: center; padding: 8px 10px;
       border: 1px solid #2D3748; border-radius: 6px; margin-bottom: 5px; background: #0D1117;
     }
@@ -63,13 +72,13 @@
 
     /* ── Champion / record rows ── */
     .champion-row {
-      display: grid; grid-template-columns: 56px 56px 1fr 1fr 56px 1fr 30px;
+      display: grid; grid-template-columns: 56px 56px 1fr 1fr 56px 1fr 26px 30px;
       gap: 8px; align-items: center; padding: 8px 10px;
       border: 1px solid #2D3748; border-radius: 6px; margin-bottom: 5px; background: #0D1117;
     }
     .champion-row.header-row { background: #161B22; cursor: default; }
     .record-row {
-      display: grid; grid-template-columns: 1fr 1fr 80px 60px 60px 1fr 30px;
+      display: grid; grid-template-columns: 1fr 1fr 80px 60px 60px 1fr 26px 30px;
       gap: 8px; align-items: center; padding: 8px 10px;
       border: 1px solid #2D3748; border-radius: 6px; margin-bottom: 5px; background: #0D1117;
     }
@@ -87,7 +96,7 @@
 
     /* ── Tribune edition rows ── */
     .tribune-edition-row {
-      display: grid; grid-template-columns: 1fr auto auto auto;
+      display: grid; grid-template-columns: 1fr auto auto auto auto;
       gap: 10px; align-items: center; padding: 8px 10px;
       border: 1px solid #2D3748; border-radius: 6px; margin-bottom: 5px; background: #0D1117;
     }
