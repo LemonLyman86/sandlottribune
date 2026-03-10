@@ -236,7 +236,7 @@
       try {
         const iDoc = frame.contentDocument || frame.contentWindow.document;
         const s = iDoc.createElement('style');
-        s.textContent = '.estn-portal-nav { display: none !important; } body { padding-top: 0 !important; }';
+        s.textContent = '.estn-portal-nav { display: none !important; } .estn-ticker, #estn-ticker-bar { display: none !important; } body { padding-top: 0 !important; }';
         iDoc.head.appendChild(s);
         // Update toolbar with article title
         const articleTitle = iDoc.title || '';

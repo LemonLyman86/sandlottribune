@@ -1968,11 +1968,11 @@ img { max-width: 100%; display: block; }
   gap: 0;
 }
 .estn-portal-nav .nav-logo {
-  margin-right: 28px;
+  margin-right: 24px;
   flex-shrink: 0;
 }
 .estn-portal-nav .nav-logo img {
-  height: 32px;
+  height: 36px;
   width: auto;
 }
 .estn-portal-nav .nav-links {
@@ -1982,17 +1982,19 @@ img { max-width: 100%; display: block; }
   padding: 0;
   gap: 0;
   flex: 1;
+  flex-wrap: nowrap;
+  overflow: hidden;
 }
 .estn-portal-nav .nav-links li a {
   display: block;
-  padding: 0 16px;
+  padding: 0 13px;
   height: 56px;
   line-height: 56px;
   color: #CBD5E0;
   font-family: 'Oswald', sans-serif;
-  font-size: 0.82rem;
+  font-size: 0.8rem;
   font-weight: 600;
-  letter-spacing: 0.08em;
+  letter-spacing: 0.07em;
   text-transform: uppercase;
   text-decoration: none;
   transition: color 0.15s, background 0.15s;

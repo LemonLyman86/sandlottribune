@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>ESTN — Expanded Sandlot Tribune Network</title>
+  <title>About ESTN — The Expanded Sandlot Tribune Network</title>
   <meta name="description" content="ESTN — The Expanded Sandlot Tribune Network. Home of Rumblr and The Babe Ruth Podcast.">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -31,14 +31,6 @@
     </nav>
   </header>
 
-  <!-- ===== BREAKING TICKER ===== -->
-  <div class="estn-ticker" aria-hidden="true">
-    <span class="estn-ticker-label">ESTN</span>
-    <div class="estn-ticker-track">
-      <span class="estn-ticker-text">RUMBLR IS LIVE &mdash; POST YOUR TAKES NOW AT SANDLOTTRIBUNE.GITHUB.IO/RUMBLR &nbsp;&bull;&nbsp; THE BABE RUTH PODCAST DROPS IN 2026 &nbsp;&bull;&nbsp; ESTN &mdash; MORE THAN A LEAGUE. MORE THAN A PAPER. &nbsp;&bull;&nbsp; RUMBLR IS LIVE &mdash; POST YOUR TAKES NOW AT SANDLOTTRIBUNE.GITHUB.IO/RUMBLR &nbsp;&bull;&nbsp; THE BABE RUTH PODCAST DROPS IN 2026 &nbsp;&bull;&nbsp; ESTN &mdash; MORE THAN A LEAGUE. MORE THAN A PAPER. &nbsp;&bull;&nbsp;</span>
-    </div>
-  </div>
-
   <!-- ===== ESTN HERO v2 ===== -->
   <section class="estn-hero-v2">
     <div class="estn-hero-bg"></div>
@@ -58,19 +50,6 @@
   <!-- ===== ESTN BODY v2 ===== -->
   <div class="estn-body-v2">
     <div class="estn-inner-v2">
-
-      <!-- About Block -->
-      <div class="estn-about-v2" id="about">
-        <p>
-          The Sandlot Tribune started as a place to tell the story of The Sandlot Dynasty League.
-          ESTN is what comes next &mdash; a full media network built around the game we love,
-          the league that brings us together, and the writers who make it worth reading.
-        </p>
-        <p>
-          From long-form previews to real-time reactions to in-depth audio, ESTN is expanding
-          the Tribune into something bigger. Stay tuned.
-        </p>
-      </div>
 
       <!-- On ESTN -->
       <div class="estn-label-v2"><span>On ESTN</span></div>
@@ -125,20 +104,94 @@
 
       </div>
 
-      <!-- Rumblr Feed -->
-      <div class="estn-rumblr-v2 estn-rumblr-section">
-        <div class="estn-label-v2"><span>Latest Rumbl&rsquo;ings</span></div>
-        <div id="estn-rumblr-feed" style="background:#0D1117;border-radius:8px;border:1px solid #2D3748;overflow:hidden;min-height:80px;">
-          <div id="estn-rumblr-spinner" style="text-align:center;padding:32px;color:#A0AEC0;font-family:'Oswald',sans-serif;font-size:0.85rem;">
-            Loading Rumbl&rsquo;ings&hellip;
-          </div>
-        </div>
-        <div style="text-align:center;margin-top:16px;">
-          <a href="../rumblr/" style="font-family:'Oswald',sans-serif;font-weight:600;font-size:0.85rem;
-             letter-spacing:0.06em;text-transform:uppercase;color:#C8102E;text-decoration:none;">
-            See all Rumbl&rsquo;ings &rarr;
-          </a>
-        </div>
+      <!-- About Block -->
+      <div class="estn-label-v2" style="margin-top:48px;"><span>About ESTN</span></div>
+      <div class="estn-about-v2" id="about" style="max-width:820px;margin:0 auto 48px;">
+
+        <h2 style="font-family:'Oswald',sans-serif;font-size:1.35rem;font-weight:700;
+                   letter-spacing:0.06em;text-transform:uppercase;color:#fff;margin:0 0 20px;">
+          From a Google Sheet to a Media Network
+        </h2>
+
+        <p>
+          The Sandlot Dynasty League began in 2022 as a 14-team fantasy baseball dynasty league
+          built on a deep love for the game and an obsession with the data behind it. In the beginning,
+          tracking the league meant maintaining sprawling Google Sheets &mdash; roster snapshots,
+          transaction logs, trade histories, salary tracking, and keeper calculations all living in
+          tab after tab of manually-updated cells.
+        </p>
+        <p>
+          It worked. For a while.
+        </p>
+        <p>
+          As the league grew &mdash; from 14 teams in its inaugural 2022 season to 20 franchises today,
+          18 of which are active &mdash; the manual process became unsustainable. Tracking keeper salaries
+          required knowing every transaction going back years. Understanding trade history meant digging
+          through folders and screenshots. Writing a season preview meant three hours of research before
+          a single word was typed. Every Monday morning update was a small project in itself.
+        </p>
+
+        <h3 style="font-family:'Oswald',sans-serif;font-size:1rem;font-weight:700;
+                   letter-spacing:0.06em;text-transform:uppercase;color:#C8102E;margin:28px 0 12px;">
+          So We Automated It
+        </h3>
+
+        <p>
+          The first step was building a proper database. Using Python and SQLite, we imported every
+          transaction, trade, lineup change, roster move, and matchup score from 2022 through the
+          present &mdash; over 50,000 records across four full seasons. We connected to the FanTrax API
+          to pull live data: current rosters, weekly scores, standings, and real-time transactions.
+          What once took hours to compile now takes seconds to query.
+        </p>
+        <p>
+          That database became the foundation for everything. Salary escalation rules, keeper
+          projections, FAAB tracking, contract history, dynasty value rankings, player injury logs &mdash;
+          all of it lives in a single, queryable system. The same infrastructure powers both the
+          commissioner&rsquo;s weekly workflow and the articles you read here.
+        </p>
+
+        <h3 style="font-family:'Oswald',sans-serif;font-size:1rem;font-weight:700;
+                   letter-spacing:0.06em;text-transform:uppercase;color:#C8102E;margin:28px 0 12px;">
+          Then Came the Tribune
+        </h3>
+
+        <p>
+          The Sandlot Tribune was the league&rsquo;s first attempt at a real publication. Season previews,
+          analysis pieces, league records &mdash; all written and published as standalone articles with
+          real bylines, real stats, and genuine craft. A place to tell the story of the league the way
+          it deserved to be told.
+        </p>
+        <p>
+          It was a start. But a publication without a home isn&rsquo;t a publication &mdash; it&rsquo;s just
+          a folder of HTML files.
+        </p>
+
+        <h3 style="font-family:'Oswald',sans-serif;font-size:1rem;font-weight:700;
+                   letter-spacing:0.06em;text-transform:uppercase;color:#C8102E;margin:28px 0 12px;">
+          That&rsquo;s Where ESTN Came In
+        </h3>
+
+        <p>
+          The Expanded Sandlot Tribune Network was built to give the Tribune the infrastructure it
+          deserved. An ESPN-style portal with live standings, weekly scoreboards, transaction feeds,
+          and admin-controlled content. A proper article reader &mdash; Between The Chalk &mdash; for the
+          long-form analysis the league earns. A social platform, Rumblr, for the takes and reactions
+          that don&rsquo;t need 1,000 words. A season events calendar. League records going back to 2022.
+        </p>
+        <p>
+          Everything you see here &mdash; the articles, the standings, the transactions, the social feed &mdash;
+          is powered by a data pipeline that updates in a handful of clicks each week. The same system
+          that once required a Sunday afternoon in a spreadsheet now runs in minutes, leaving more time
+          for the thing that matters: actually covering the league.
+        </p>
+
+        <p style="margin-top:28px;font-family:'Oswald',sans-serif;font-size:0.95rem;font-weight:600;
+                  letter-spacing:0.06em;text-transform:uppercase;color:#fff;border-top:1px solid #2D3748;
+                  padding-top:20px;">
+          We&rsquo;re a fake league with a real infrastructure.<br>
+          <span style="color:#C8102E;">ESTN. More than a league. More than a paper.</span>
+        </p>
+
       </div>
 
     </div>
@@ -168,104 +221,7 @@
     <p>&copy; 2026 The Sandlot Tribune &nbsp;&middot;&nbsp; ESTN &nbsp;&middot;&nbsp; The Sandlot Dynasty League</p>
   </footer>
 
-
-<script type="module">
-  import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js';
-  import { getFirestore, collection, query, orderBy, limit, getDocs, getDoc, doc }
-    from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js';
-
-  const app = initializeApp({
-    apiKey:            'AIzaSyDpPG4MfoP7YjUzU7N5vh6TPdv_I0S6pgI',
-    authDomain:        'sandlottribune.firebaseapp.com',
-    projectId:         'sandlottribune',
-    storageBucket:     'sandlottribune.firebasestorage.app',
-    messagingSenderId: '746621553651',
-    appId:             '1:746621553651:web:7b8633ac1ae9c30f0c6086'
-  });
-  const db = getFirestore(app);
-
-  function esc(s) {
-    return String(s || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
-  }
-  function timeAgo(ts) {
-    const diff = Math.floor((Date.now() - ts) / 1000);
-    if (diff < 60) return `${diff}s`;
-    if (diff < 3600) return `${Math.floor(diff/60)}m`;
-    if (diff < 86400) return `${Math.floor(diff/3600)}h`;
-    return `${Math.floor(diff/86400)}d`;
-  }
-  function linkify(text) {
-    return esc(text).replace(/#(\w+)/g, '<span style="color:#C8102E;">#$1</span>');
-  }
-
-  async function loadRumblrFeed() {
-    const container = document.getElementById('estn-rumblr-feed');
-    const spinner   = document.getElementById('estn-rumblr-spinner');
-    try {
-      const q = query(
-        collection(db, 'posts'),
-        orderBy('timestamp', 'desc'),
-        limit(5)
-      );
-      const snap = await getDocs(q);
-      if (spinner) spinner.remove();
-      if (snap.empty) {
-        container.innerHTML = '<div style="text-align:center;padding:24px;color:#718096;font-family:\'Oswald\',sans-serif;font-size:0.85rem;">No Rumbl\'ings yet. Be the first.</div>';
-        return;
-      }
-      snap.forEach(d => {
-        const p = d.data();
-        const ts = p.timestamp?.toDate ? p.timestamp.toDate().getTime() : Date.now();
-        const row = document.createElement('div');
-        row.style.cssText = 'display:flex;gap:12px;padding:14px 16px;border-bottom:1px solid #2D3748;';
-        row.innerHTML = `
-          <div style="width:36px;height:36px;border-radius:50%;background:${esc(p.author_avatar_color||'#555')};
-               display:flex;align-items:center;justify-content:center;flex-shrink:0;
-               font-family:'Oswald',sans-serif;font-weight:700;font-size:0.72rem;color:#fff;">
-            ${esc(p.author_initials||'??')}
-          </div>
-          <div style="flex:1;min-width:0;">
-            <div style="font-family:'Oswald',sans-serif;font-size:0.85rem;color:#fff;margin-bottom:4px;">
-              <strong>${esc(p.author_name)}</strong>
-              ${p.author_verified ? '<span style="color:#C8102E;margin:0 4px;">⚾</span>' : ''}
-              <span style="color:#718096;">${esc(p.author_handle)}</span>
-              <span style="color:#4A5568;margin-left:8px;font-size:0.78rem;">${timeAgo(ts)}</span>
-            </div>
-            <div style="font-family:'Marcellus',serif;font-size:0.85rem;color:#CBD5E0;line-height:1.55;">
-              ${linkify(p.content)}
-            </div>
-          </div>
-        `;
-        container.appendChild(row);
-      });
-    } catch (err) {
-      if (spinner) spinner.textContent = 'Could not load feed.';
-      console.error('Rumblr feed error:', err);
-    }
-  }
-
-  async function loadTickerText() {
-    const trackEl = document.querySelector('.estn-ticker-track');
-    if (!trackEl) return;
-    try {
-      const snap = await getDoc(doc(db, 'settings', 'ticker'));
-      if (!snap.exists()) return;
-      const data = snap.data();
-      if (data.enabled === false || !data.items?.length) return;
-      const sep    = ' \u00a0\u2022\u00a0 ';
-      const joined = data.items.map(s => String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;')).join(sep) + sep;
-      // Duplicate for seamless infinite scroll
-      trackEl.innerHTML = `<span class="estn-ticker-text">${joined}${joined}</span>`;
-    } catch (e) {
-      // Keep hardcoded fallback on any error
-    }
-  }
-
-  document.addEventListener('DOMContentLoaded', () => {
-    loadRumblrFeed();
-    loadTickerText();
-  });
-</script>
   <script type="module" src="../assets/js/estn-auth.js"></script>
+  <script type="module" src="../assets/js/estn-ticker.js"></script>
 </body>
 </html>

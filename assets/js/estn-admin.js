@@ -222,6 +222,16 @@ async function initTicker() {
 }
 
 // ── Custom headlines ───────────────────────────────────────────────────────────
+function formatHeadlineDate(isoStr) {
+  if (!isoStr) return '';
+  try {
+    return new Date(isoStr).toLocaleString('en-US', {
+      month: 'short', day: 'numeric', year: 'numeric',
+      hour: 'numeric', minute: '2-digit'
+    });
+  } catch { return isoStr; }
+}
+
 function renderHeadlinesList(headlines) {
   const container = document.getElementById('headlines-list');
   if (!container) return;
@@ -231,10 +241,16 @@ function renderHeadlinesList(headlines) {
     const date = typeof h === 'string' ? '' : (h.date || '');
     const row = document.createElement('div');
     row.className = 'estn-admin-link-row';
+    row.style.flexDirection = 'column';
+    row.style.alignItems = 'stretch';
+    row.style.gap = '4px';
     row.dataset.date = date;
     row.innerHTML = `
-      <input class="estn-admin-input headline-text" type="text" value="${text.replace(/"/g, '&quot;')}" data-idx="${i}" placeholder="Headline text">
-      <button class="estn-admin-remove-btn" data-idx="${i}">Remove</button>`;
+      <div style="display:flex;gap:8px;align-items:center;">
+        <input class="estn-admin-input headline-text" type="text" value="${text.replace(/"/g, '&quot;')}" data-idx="${i}" placeholder="Headline text" style="flex:1;">
+        <button class="estn-admin-remove-btn" data-idx="${i}">Remove</button>
+      </div>
+      ${date ? `<div style="font-size:0.7rem;color:#4A5568;font-family:'Oswald',sans-serif;letter-spacing:0.04em;">Added: ${formatHeadlineDate(date)}</div>` : ''}`;
     container.appendChild(row);
   });
   container.querySelectorAll('.estn-admin-remove-btn').forEach(btn => {
@@ -263,7 +279,7 @@ function initHeadlines(settings) {
       const rows = document.querySelectorAll('#headlines-list .estn-admin-link-row');
       const headlines = Array.from(rows).map(r => ({
         text: r.querySelector('.headline-text')?.value.trim() || '',
-        date: r.dataset.date || new Date().toISOString(),
+        date: r.dataset.date || '',   // preserve existing date; new rows get date set at add-time
       })).filter(h => h.text);
       await saveSettings({ custom_headlines: headlines });
       showToast('Headlines saved.');
