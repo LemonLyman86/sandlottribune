@@ -217,7 +217,7 @@
         label.textContent = year === 2022 ? '2022 — Print Edition' : String(year);
         group.appendChild(label);
 
-        allEditions.filter(e => e.year === year).forEach(ed => {
+        allEditions.filter(e => e.year === year).sort((a, b) => (b.dateIso || '').localeCompare(a.dateIso || '')).forEach(ed => {
           const item = document.createElement('button');
           item.className = 'trib-edition-item';
           item.dataset.slug = ed.slug;

@@ -271,6 +271,17 @@
 
         await setDoc(doc(firestore, 'settings', 'tribune'), { editions }, { merge: true });
 
+        // Auto-add to ESTN portal headlines when a NEW article is published
+        if (isNew) {
+          try {
+            const esnSnap = await getDoc(doc(firestore, 'settings', 'estn'));
+            const headlines = (esnSnap.exists() && Array.isArray(esnSnap.data().custom_headlines))
+              ? esnSnap.data().custom_headlines : [];
+            headlines.unshift({ text: headline, url: slug, date: new Date().toISOString() });
+            await setDoc(doc(firestore, 'settings', 'estn'), { custom_headlines: headlines }, { merge: true });
+          } catch { /* non-critical — headline auto-add failed silently */ }
+        }
+
         showStatus('Saved!', false);
         setTimeout(() => showStatus('', false), 3000);
       } catch (err) {
