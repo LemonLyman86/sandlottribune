@@ -1,7 +1,77 @@
 {
-  "updated": "2026-03-10T11:40:51",
+  "updated": "2026-03-10T11:44:45",
   "season": 2026,
   "transactions": [
+    {
+      "date": "2026-03-09",
+      "date_display": "2026-03-09",
+      "type": "drop",
+      "type_label": "Released",
+      "team": "Seattle Mariners",
+      "team_abbrev": "SEA",
+      "player": "Andrew Kittredge",
+      "details": "Period 1"
+    },
+    {
+      "date": "2026-03-09",
+      "date_display": "2026-03-09",
+      "type": "drop",
+      "type_label": "Released",
+      "team": "Seattle Mariners",
+      "team_abbrev": "SEA",
+      "player": "Trevor Story",
+      "details": "Period 1"
+    },
+    {
+      "date": "2026-03-09",
+      "date_display": "2026-03-09",
+      "type": "drop",
+      "type_label": "Released",
+      "team": "Seattle Mariners",
+      "team_abbrev": "SEA",
+      "player": "Andrew Kittredge",
+      "details": "Period 1"
+    },
+    {
+      "date": "2026-03-04",
+      "date_display": "2026-03-04",
+      "type": "drop",
+      "type_label": "Released",
+      "team": "St. Louis Cardinals",
+      "team_abbrev": "STL",
+      "player": "Lucas Giolito",
+      "details": "Period 1"
+    },
+    {
+      "date": "2026-03-01",
+      "date_display": "2026-03-01",
+      "type": "drop",
+      "type_label": "Released",
+      "team": "Arizona Diamondbacks",
+      "team_abbrev": "ARI",
+      "player": "Ben Joyce",
+      "details": "Period 1"
+    },
+    {
+      "date": "2026-03-01",
+      "date_display": "2026-03-01",
+      "type": "drop",
+      "type_label": "Released",
+      "team": "Arizona Diamondbacks",
+      "team_abbrev": "ARI",
+      "player": "Alex Freeland",
+      "details": "Period 1"
+    },
+    {
+      "date": "2026-03-01",
+      "date_display": "2026-03-01",
+      "type": "drop",
+      "type_label": "Released",
+      "team": "Arizona Diamondbacks",
+      "team_abbrev": "ARI",
+      "player": "Colton Cowser",
+      "details": "Period 1"
+    },
     {
       "date": "2026-02-28",
       "date_display": "2026-02-28",
@@ -230,76 +300,6 @@
       "team": "Colorado Rockies",
       "team_abbrev": "COL",
       "player": "Will Vest",
-      "details": "Period 1"
-    },
-    {
-      "date": "2026-02-23",
-      "date_display": "2026-02-23",
-      "type": "drop",
-      "type_label": "Released",
-      "team": "Seattle Mariners",
-      "team_abbrev": "SEA",
-      "player": "Ichiro Cano",
-      "details": "Period 1"
-    },
-    {
-      "date": "2026-02-21",
-      "date_display": "2026-02-21",
-      "type": "drop",
-      "type_label": "Released",
-      "team": "Colorado Rockies",
-      "team_abbrev": "COL",
-      "player": "Conrad Cason",
-      "details": "Period 1"
-    },
-    {
-      "date": "2026-02-20",
-      "date_display": "2026-02-20",
-      "type": "drop",
-      "type_label": "Released",
-      "team": "Milwaukee Brewers",
-      "team_abbrev": "MIL",
-      "player": "Spencer Horwitz",
-      "details": "Period 1"
-    },
-    {
-      "date": "2026-02-20",
-      "date_display": "2026-02-20",
-      "type": "drop",
-      "type_label": "Released",
-      "team": "Seattle Mariners",
-      "team_abbrev": "SEA",
-      "player": "Pablo Lopez",
-      "details": "Period 1"
-    },
-    {
-      "date": "2026-02-18",
-      "date_display": "2026-02-18",
-      "type": "drop",
-      "type_label": "Released",
-      "team": "Colorado Rockies",
-      "team_abbrev": "COL",
-      "player": "Romy Gonzalez",
-      "details": "Period 1"
-    },
-    {
-      "date": "2026-02-17",
-      "date_display": "2026-02-17",
-      "type": "drop",
-      "type_label": "Released",
-      "team": "Miami Marlins",
-      "team_abbrev": "MIA",
-      "player": "Tyler Black",
-      "details": "Period 1"
-    },
-    {
-      "date": "2026-02-16",
-      "date_display": "2026-02-16",
-      "type": "drop",
-      "type_label": "Released",
-      "team": "Colorado Rockies",
-      "team_abbrev": "COL",
-      "player": "Wenceel Perez",
       "details": "Period 1"
     }
   ]
