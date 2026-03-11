@@ -25,13 +25,13 @@
     .estn-tab-panel { display: none; }
     .estn-tab-panel.active { display: block; }
 
-    /* ── BTC article rows ── */
+    /* ── BTC article rows (inline-editable) ── */
     .btc-article-row {
-      display: grid; grid-template-columns: 26px 56px 1fr auto auto auto;
-      gap: 10px; align-items: center; padding: 8px 10px;
+      display: flex; gap: 8px; align-items: flex-start; padding: 8px 10px;
       border: 1px solid #2D3748; border-radius: 6px; margin-bottom: 5px;
-      background: #0D1117; cursor: default;
+      background: #0D1117; cursor: default; flex-wrap: nowrap;
     }
+    .btc-article-row--edit { align-items: center; flex-wrap: wrap; }
     .btc-article-row:hover { border-color: #4A5568; }
     .btc-article-row.dragging { opacity: 0.35; }
     .drag-handle { color: #4A5568; font-size: 1rem; cursor: grab; user-select: none; }

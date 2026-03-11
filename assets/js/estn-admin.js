@@ -574,6 +574,8 @@ const BTC_TYPE_LABELS = {
 };
 
 const FALLBACK_BTC_ARTICLES = [
+  { id:'custom_lad_2026',           title:'Los Angeles Dodgers Join the TSDL',        author:'Staff',         date:'Mar 10, 2026', type:'general_analysis', typeLabel:'General Analysis', url:'custom-lad_2026.html',            thumbnail:'../assets/images/lad-preview.png',  enabled:true },
+  { id:'lad_expansion_draft_2026',  title:'LAD Expansion Draft: Full Results',        author:'Staff',         date:'Mar 10, 2026', type:'general_analysis', typeLabel:'General Analysis', url:'lad_expansion_draft_2026.html',   thumbnail:'../assets/images/lad-preview.png',  enabled:true },
   { id:'season_preview_2026_sea', title:'2026 TSDL Season Preview: Seattle Mariners',   author:'Ken Rosenthal', date:'Feb 28, 2026', type:'season_preview', typeLabel:'Season Preview', url:'../season-previews/season_preview_2026_sea.html', thumbnail:'../assets/images/sea-preview.png', enabled:true },
   { id:'season_preview_2026_atl', title:'2026 TSDL Season Preview: Atlanta Braves',     author:'Tim Kurkjian',  date:'Feb 28, 2026', type:'season_preview', typeLabel:'Season Preview', url:'../season-previews/season_preview_2026_atl.html', thumbnail:'../assets/images/atl-preview.png', enabled:true },
   { id:'season_preview_2026_lva', title:'2026 TSDL Season Preview: Las Vegas Athletics',author:'Keith Law',     date:'Feb 27, 2026', type:'season_preview', typeLabel:'Season Preview', url:'../season-previews/season_preview_2026_lva.html', thumbnail:'../assets/images/lva-preview.png', enabled:true },
@@ -583,54 +585,72 @@ const FALLBACK_BTC_ARTICLES = [
 
 function createBTCRow(article) {
   const row = document.createElement('div');
-  row.className = 'btc-article-row';
+  row.className = 'btc-article-row btc-article-row--edit';
   row.setAttribute('draggable', 'true');
-  row.dataset.id       = article.id || `a_${Date.now()}`;
-  row.dataset.author   = article.author   || '';
-  row.dataset.date     = article.date     || '';
-  row.dataset.type     = article.type     || '';
-  row.dataset.typeLabel= article.typeLabel|| '';
-  row.dataset.url      = article.url      || '';
-  row.dataset.thumb    = article.thumbnail|| '';
-  // Show Edit link for Firestore-based articles (url contains view.html?slug=)
+  row.dataset.id = article.id || `a_${Date.now()}`;
+
+  // Build type options
+  const typeOpts = Object.entries(BTC_TYPE_LABELS).map(([v, l]) =>
+    `<option value="${v}" ${article.type === v ? 'selected' : ''}>${l}</option>`
+  ).join('');
+
+  // Edit link for Firestore-based articles
   const isFirestore = (article.url || '').includes('view.html?slug=');
   const slugMatch   = isFirestore ? (article.url.match(/slug=([^&]+)/) || [])[1] : null;
-  const editBtnHtml = isFirestore && slugMatch
-    ? `<a href="btc-editor.html?slug=${esc(slugMatch)}" class="rb-admin-btn-edit" style="text-decoration:none;white-space:nowrap;" title="Edit article">&#9998; Edit</a>`
+  const editLinkHtml = isFirestore && slugMatch
+    ? `<a href="btc-editor.html?slug=${esc(slugMatch)}" class="rb-admin-btn-edit" style="text-decoration:none;white-space:nowrap;flex-shrink:0;" title="Open full editor">&#9998; Editor</a>`
     : '';
 
   row.innerHTML = `
     ${MOVE_BTNS_HTML}
-    <img class="btc-row-thumb" src="${esc(article.thumbnail)}" alt="" onerror="this.style.opacity='0.15'">
-    <div class="btc-row-meta">
-      <div class="btc-row-title">${esc(article.title)}</div>
-      <div class="btc-row-sub">${esc(article.author)} &middot; ${esc(article.date)}</div>
+    <div style="display:flex;flex-direction:column;gap:3px;align-items:center;flex-shrink:0;">
+      <img class="btc-row-thumb btc-thumb-preview" src="${esc(article.thumbnail)}" alt="" onerror="this.style.opacity='0.15'" style="width:56px;height:38px;object-fit:cover;border-radius:3px;background:#1A202C;">
+      <input class="estn-admin-input btc-row-thumb-input" type="text" value="${esc(article.thumbnail)}" placeholder="Thumb URL" style="width:80px;font-size:0.6rem;padding:2px 4px;" title="Thumbnail image URL">
     </div>
-    <span class="btc-row-type">${esc(article.typeLabel || article.type)}</span>
-    ${editBtnHtml}
-    <label class="estn-admin-toggle" title="Enabled in nav">
+    <div class="btc-row-meta" style="min-width:0;display:flex;flex-direction:column;gap:3px;">
+      <input class="estn-admin-input btc-row-title-input" type="text" value="${esc(article.title)}" placeholder="Article title" style="width:100%;font-size:0.8rem;font-family:'Oswald',sans-serif;">
+      <div style="display:flex;gap:5px;">
+        <input class="estn-admin-input btc-row-author-input" type="text" value="${esc(article.author)}" placeholder="Author" style="flex:1;font-size:0.7rem;padding:3px 6px;">
+        <input class="estn-admin-input btc-row-date-input"   type="text" value="${esc(article.date)}"   placeholder="Date" style="width:100px;font-size:0.7rem;padding:3px 6px;">
+      </div>
+      <input class="estn-admin-input btc-row-url-input" type="text" value="${esc(article.url)}" placeholder="Article URL (e.g. ../season-previews/...html or view.html?slug=...)" style="width:100%;font-size:0.65rem;padding:2px 6px;color:#A0AEC0;" title="URL of the article file">
+    </div>
+    <select class="estn-admin-input btc-row-type-select" style="font-size:0.65rem;padding:3px 6px;width:auto;flex-shrink:0;" title="Article category">${typeOpts}</select>
+    ${editLinkHtml}
+    <label class="estn-admin-toggle" title="Enabled in nav" style="flex-shrink:0;">
       <input type="checkbox" class="btc-enabled-toggle" ${article.enabled !== false ? 'checked' : ''}>
       <span class="estn-admin-toggle-slider"></span>
     </label>
-    <button class="admin-delete-btn" title="Remove">&times;</button>
+    <button class="admin-delete-btn" title="Remove" style="flex-shrink:0;">&times;</button>
   `;
+
+  // Live-update thumbnail preview when URL changes
+  const thumbInput   = row.querySelector('.btc-row-thumb-input');
+  const thumbPreview = row.querySelector('.btc-thumb-preview');
+  thumbInput?.addEventListener('input', () => {
+    thumbPreview.src = thumbInput.value.trim() || '';
+  });
+
   row.querySelector('.admin-delete-btn').addEventListener('click', () => row.remove());
   addMoveListeners(row);
   return row;
 }
 
 function readBTCArticles() {
-  return Array.from(document.querySelectorAll('#btc-article-rows .btc-article-row')).map(row => ({
-    id:        row.dataset.id,
-    title:     row.querySelector('.btc-row-title')?.textContent || '',
-    author:    row.dataset.author,
-    date:      row.dataset.date,
-    type:      row.dataset.type,
-    typeLabel: row.dataset.typeLabel,
-    url:       row.dataset.url,
-    thumbnail: row.dataset.thumb,
-    enabled:   row.querySelector('.btc-enabled-toggle')?.checked !== false,
-  }));
+  return Array.from(document.querySelectorAll('#btc-article-rows .btc-article-row')).map(row => {
+    const type = row.querySelector('.btc-row-type-select')?.value || '';
+    return {
+      id:        row.dataset.id,
+      title:     row.querySelector('.btc-row-title-input')?.value?.trim()  || '',
+      author:    row.querySelector('.btc-row-author-input')?.value?.trim() || '',
+      date:      row.querySelector('.btc-row-date-input')?.value?.trim()   || '',
+      type,
+      typeLabel: BTC_TYPE_LABELS[type] || type,
+      url:       row.querySelector('.btc-row-url-input')?.value?.trim()    || '',
+      thumbnail: row.querySelector('.btc-row-thumb-input')?.value?.trim()  || '',
+      enabled:   row.querySelector('.btc-enabled-toggle')?.checked !== false,
+    };
+  });
 }
 
 async function initBTC() {
