@@ -1,7 +1,17 @@
 {
-  "updated": "2026-03-10T14:21:25",
+  "updated": "2026-03-11T07:23:55",
   "season": 2026,
   "transactions": [
+    {
+      "date": "2026-03-09",
+      "date_display": "Mar 9",
+      "type": "drop",
+      "type_label": "Released",
+      "team": "Seattle Mariners",
+      "team_abbrev": "SEA",
+      "player": "Andrew Kittredge",
+      "details": "Period 1"
+    },
     {
       "date": "2026-03-09",
       "date_display": "Mar 9",
@@ -290,16 +300,6 @@
       "team": "Colorado Rockies",
       "team_abbrev": "COL",
       "player": "Will Vest",
-      "details": "Period 1"
-    },
-    {
-      "date": "2026-02-23",
-      "date_display": "Feb 23",
-      "type": "drop",
-      "type_label": "Released",
-      "team": "Seattle Mariners",
-      "team_abbrev": "SEA",
-      "player": "Ichiro Cano",
       "details": "Period 1"
     }
   ]
