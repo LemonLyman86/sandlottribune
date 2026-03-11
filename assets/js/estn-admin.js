@@ -815,10 +815,10 @@ function createEventRow(ev) {
   });
 
   row.querySelector('.admin-delete-btn').addEventListener('click', () => wrap.remove());
-  addMoveListeners(wrap);  // move the whole wrap
 
   wrap.appendChild(row);
   wrap.appendChild(editArea);
+  addMoveListeners(wrap);  // must be after children are appended so querySelector finds the buttons
   return wrap;
 }
 
