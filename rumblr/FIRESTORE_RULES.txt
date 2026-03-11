@@ -72,6 +72,12 @@ service cloud.firestore {
       allow write: if isVerifiedAdmin();
     }
 
+    // BTC (Between The Chalk) editions: anyone can read; only admin can write
+    match /btc_editions/{slug} {
+      allow read: if true;
+      allow write: if isVerifiedAdmin();
+    }
+
     // Admin collection: managed via Firebase Console only — no client access
     match /admin/{docId} {
       allow read, write: if false;

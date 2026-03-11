@@ -1,0 +1,529 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BTC Article Editor — ESTN Admin</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Marcellus&family=Oswald:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../assets/css/main.css">
+  <style>
+    body { background: #0D1117; color: #CBD5E0; min-height: 100vh; }
+
+    #ed-access-denied {
+      display: none; max-width: 480px; margin: 80px auto; text-align: center;
+      padding: 40px; background: #161B22; border: 1px solid #2D3748; border-radius: 8px;
+    }
+    #ed-access-denied h2 {
+      font-family: 'Oswald', sans-serif; color: #F87171; margin-bottom: 12px;
+      font-size: 1.1rem; letter-spacing: 0.08em; text-transform: uppercase;
+    }
+    #ed-access-denied p { font-family: 'Marcellus', serif; color: #718096; font-size: 0.9rem; line-height: 1.6; }
+    #ed-access-denied a { color: #C8102E; }
+    #ed-main { display: none; }
+
+    /* ── Admin bar ── */
+    .btc-editor-bar {
+      position: sticky; top: 0; z-index: 200;
+      background: #161B22; border-bottom: 1px solid #2D3748;
+      padding: 10px 20px; display: flex; align-items: center; gap: 12px; flex-wrap: wrap;
+    }
+    .btc-editor-bar .back-link {
+      font-family: 'Oswald', sans-serif; font-size: 0.75rem; letter-spacing: 0.08em;
+      text-transform: uppercase; color: #718096; text-decoration: none; flex-shrink: 0;
+    }
+    .btc-editor-bar .back-link:hover { color: #E2E8F0; }
+    .btc-editor-meta { display: flex; gap: 8px; flex-wrap: wrap; flex: 1; }
+    .btc-editor-meta input,
+    .btc-editor-meta select {
+      background: #0D1117; border: 1px solid #2D3748; color: #E2E8F0;
+      padding: 5px 8px; border-radius: 4px;
+      font-family: 'Marcellus', serif; font-size: 0.82rem;
+    }
+    .btc-editor-actions { display: flex; gap: 8px; align-items: center; flex-shrink: 0; }
+    .btc-editor-actions button {
+      background: #C8102E; color: #fff; border: none; border-radius: 4px;
+      padding: 6px 14px; font-family: 'Oswald', sans-serif; font-size: 0.75rem;
+      letter-spacing: 0.06em; text-transform: uppercase; cursor: pointer;
+    }
+    .btc-editor-actions button.secondary { background: #1A2030; color: #A0AEC0; }
+    .btc-editor-actions button.secondary:hover { background: #2D3748; }
+    .ed-status { font-family: 'Marcellus', serif; font-size: 0.8rem; color: #718096; }
+    .ed-status.ok  { color: #48BB78; }
+    .ed-status.err { color: #F87171; }
+
+    /* ── BTC article preview wrapper ── */
+    .btc-editor-wrap {
+      max-width: 780px; margin: 0 auto; padding: 40px 24px 80px;
+    }
+
+    /* ── Article preview (matches view.html styling) ── */
+    .btc-article-preview {
+      background: #F6F3EC; border-radius: 6px; overflow: hidden;
+      box-shadow: 0 4px 24px rgba(0,0,0,0.4);
+    }
+    .btc-article-hero { width: 100%; aspect-ratio: 1200/630; object-fit: cover; display: block; }
+    .btc-article-hero-placeholder {
+      width: 100%; aspect-ratio: 1200/630;
+      background: #d8d0c4;
+      background-image: repeating-linear-gradient(45deg,transparent,transparent 12px,rgba(0,0,0,0.05) 12px,rgba(0,0,0,0.05) 13px),
+                        repeating-linear-gradient(-45deg,transparent,transparent 12px,rgba(0,0,0,0.05) 12px,rgba(0,0,0,0.05) 13px);
+      display: flex; align-items: center; justify-content: center;
+      font-family: 'Oswald', sans-serif; font-size: 0.68rem; letter-spacing: 0.14em;
+      text-transform: uppercase; color: #7a7060;
+      border-bottom: 1px solid #c0b8a8;
+    }
+    .btc-article-body { padding: 32px 36px 48px; }
+    .btc-article-eyebrow {
+      font-family: 'Oswald', sans-serif; font-size: 0.62rem; font-weight: 600;
+      letter-spacing: 0.16em; text-transform: uppercase; color: #BA2B2B; margin-bottom: 10px;
+    }
+    .btc-article-headline {
+      font-family: 'Oswald', sans-serif; font-size: 2rem; font-weight: 700;
+      color: #1a1410; line-height: 1.15; margin-bottom: 12px;
+    }
+    .btc-article-deck {
+      font-family: 'Marcellus', serif; font-size: 1.05rem; color: #5a5248;
+      line-height: 1.55; margin-bottom: 14px;
+    }
+    .btc-article-byline {
+      font-family: 'Marcellus', serif; font-size: 0.8rem; color: #888278;
+      border-top: 1px solid #c8beb0; border-bottom: 1px solid #c8beb0;
+      padding: 8px 0; margin-bottom: 24px;
+    }
+    .btc-article-content {
+      font-family: 'Marcellus', serif; font-size: 0.95rem; color: #36302A;
+      line-height: 1.8;
+    }
+    .btc-article-content p { margin-bottom: 1em; }
+    .btc-article-content [contenteditable]:empty::before {
+      content: attr(data-placeholder);
+      color: #B9A590;
+      pointer-events: none;
+    }
+
+    /* ── Contenteditable fields ── */
+    [contenteditable] {
+      outline: none;
+      transition: box-shadow 0.15s;
+    }
+    [contenteditable]:hover {
+      box-shadow: inset 0 0 0 1px rgba(200,16,46,0.15);
+    }
+    [contenteditable]:focus {
+      box-shadow: inset 0 0 0 2px rgba(200,16,46,0.35);
+    }
+
+    /* ── Image modal ── */
+    .btc-img-modal-overlay {
+      display: none; position: fixed; inset: 0; z-index: 9999;
+      background: rgba(0,0,0,0.7); align-items: center; justify-content: center;
+    }
+    .btc-img-modal-overlay.open { display: flex; }
+    .btc-img-modal {
+      background: #161B22; border: 1px solid #2D3748; border-radius: 8px;
+      padding: 24px; width: 480px; max-width: calc(100vw - 32px);
+    }
+    .btc-img-modal h3 {
+      font-family: 'Oswald', sans-serif; font-size: 0.9rem; letter-spacing: 0.1em;
+      text-transform: uppercase; color: #E2E8F0; margin: 0 0 16px;
+    }
+    .btc-img-modal label {
+      display: block; font-family: 'Oswald', sans-serif; font-size: 0.7rem;
+      letter-spacing: 0.1em; text-transform: uppercase; color: #718096; margin-bottom: 4px;
+    }
+    .btc-img-modal input[type="text"],
+    .btc-img-modal input[type="number"] {
+      width: 100%; background: #0D1117; border: 1px solid #2D3748; color: #E2E8F0;
+      padding: 7px 10px; border-radius: 4px; font-family: 'Marcellus', serif;
+      font-size: 0.88rem; box-sizing: border-box; margin-bottom: 12px;
+    }
+    .btc-img-modal-layout { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-bottom: 14px; }
+    .btc-img-modal-layout label {
+      display: flex; flex-direction: column; align-items: center; gap: 5px;
+      background: #0D1117; border: 1px solid #2D3748; border-radius: 4px;
+      padding: 8px 6px; cursor: pointer; font-size: 0.65rem; letter-spacing: 0.08em;
+      text-transform: uppercase; color: #718096; text-align: center; transition: border-color 0.15s;
+    }
+    .btc-img-modal-layout input[type="radio"] { accent-color: #C8102E; }
+    .btc-img-modal-layout label:has(input:checked) { border-color: #C8102E; color: #E2E8F0; }
+    .btc-img-modal-actions { display: flex; gap: 8px; justify-content: flex-end; margin-top: 4px; }
+  </style>
+</head>
+<body>
+
+  <!-- Access denied state -->
+  <div id="ed-access-denied">
+    <h2>Access Denied</h2>
+    <p>You must be signed in as the ESTN administrator to use the BTC Editor.<br><br>
+      <a href="../rumblr/login.html?redirect=estn/btc-editor.html">Sign In &rarr;</a>
+    </p>
+  </div>
+
+  <!-- Main editor (shown after auth) -->
+  <div id="ed-main">
+
+    <!-- ── Sticky admin bar ── -->
+    <div class="btc-editor-bar">
+      <a href="admin.html#btc" class="back-link">&larr; Admin</a>
+
+      <div class="btc-editor-meta">
+        <input type="text" id="ed-slug"     placeholder="slug (e.g. power-rankings-wk01)" style="width:220px;" title="URL slug — used as Firestore doc ID">
+        <select id="ed-section" title="Article type / category">
+          <option value="season_preview">Season Preview</option>
+          <option value="power_rankings">Power Rankings</option>
+          <option value="weekly_recap">Weekly Recap</option>
+          <option value="matchup_preview">Matchup Preview</option>
+          <option value="trade_analysis">Trade Analysis</option>
+          <option value="general_analysis">General Analysis</option>
+        </select>
+        <input type="text" id="ed-date"     placeholder="March 10, 2026" style="width:140px;" title="Display date">
+        <input type="text" id="ed-hero-url" placeholder="Hero image URL" style="width:260px;" title="Hero image URL">
+        <input type="text" id="ed-thumb-url" placeholder="Card thumbnail URL" style="width:200px;" title="Thumbnail for BTC article list card">
+      </div>
+
+      <div class="btc-editor-actions">
+        <button id="ed-insert-img">Insert Image</button>
+        <button id="ed-clear-float" class="secondary" title="Insert a clear:both break to stop text wrapping">Clear Float</button>
+        <button id="ed-save">Save Article</button>
+        <span class="ed-status" id="ed-status"></span>
+      </div>
+    </div>
+
+    <!-- ── Article preview ── -->
+    <div class="btc-editor-wrap">
+
+      <!-- Between The Chalk eyebrow -->
+      <div style="font-family:'Oswald',sans-serif;font-size:0.62rem;letter-spacing:0.16em;text-transform:uppercase;color:#718096;margin-bottom:12px;padding-left:2px;">
+        Between The Chalk &mdash; Article Preview
+      </div>
+
+      <div class="btc-article-preview">
+
+        <!-- Hero image -->
+        <div id="ed-hero-wrap">
+          <div class="btc-article-hero-placeholder">[ Hero Image &mdash; Between The Chalk ]</div>
+        </div>
+
+        <div class="btc-article-body">
+          <!-- Category eyebrow -->
+          <div class="btc-article-eyebrow" id="ed-eyebrow">Season Preview</div>
+
+          <!-- Headline -->
+          <div class="btc-article-headline" id="ed-headline"
+               contenteditable="true"
+               data-placeholder="Article Headline Goes Here">
+            Article Headline Goes Here
+          </div>
+
+          <!-- Deck / subheadline -->
+          <div class="btc-article-deck" id="ed-deck"
+               contenteditable="true"
+               data-placeholder="A brief subheadline providing context for the story.">
+            A brief subheadline providing context for the story.
+          </div>
+
+          <!-- Byline -->
+          <div class="btc-article-byline" id="ed-byline"
+               contenteditable="true"
+               data-placeholder="By [Author] &middot; [Date]">
+            By Staff Reporter &middot; March 2026
+          </div>
+
+          <!-- Hero caption -->
+          <div id="ed-hero-caption" contenteditable="true"
+               data-placeholder="Photo caption (optional)&hellip;"
+               style="font-family:'Marcellus',serif;font-size:0.78rem;color:#888278;font-style:italic;margin-bottom:20px;"></div>
+
+          <!-- Body content -->
+          <div class="btc-article-content" id="ed-body" contenteditable="true">
+            <p>Begin writing your article here. Click to edit. Use the <strong>Insert Image</strong> button above to add photos with text wrap.</p>
+            <p>Add as many paragraphs as needed. Pull quotes, callout boxes, and images can all be inserted inline.</p>
+          </div>
+
+        </div><!-- /.btc-article-body -->
+      </div><!-- /.btc-article-preview -->
+
+    </div><!-- /.btc-editor-wrap -->
+
+  </div><!-- /#ed-main -->
+
+  <!-- ── Image Insert Modal ── -->
+  <div class="btc-img-modal-overlay" id="img-modal-overlay">
+    <div class="btc-img-modal">
+      <h3>Insert Image</h3>
+      <label>Image URL</label>
+      <input type="text" id="modal-img-url" placeholder="https://… or leave blank for placeholder">
+      <label>Caption (optional)</label>
+      <input type="text" id="modal-img-caption" placeholder="Photo / Illustration caption">
+      <label style="margin-bottom:8px;">Layout</label>
+      <div class="btc-img-modal-layout">
+        <label><input type="radio" name="img-layout" value="full" checked> Full Width</label>
+        <label><input type="radio" name="img-layout" value="float-left"> Float Left</label>
+        <label><input type="radio" name="img-layout" value="float-right"> Float Right</label>
+        <label><input type="radio" name="img-layout" value="center"> Center</label>
+      </div>
+      <label>Max Width (float/center only, px)</label>
+      <input type="number" id="modal-img-width" value="280" min="80" max="600" style="width:100px;">
+      <div class="btc-img-modal-actions">
+        <button class="estn-admin-btn secondary" id="modal-cancel" style="font-size:0.78rem;padding:6px 14px;">Cancel</button>
+        <button class="estn-admin-btn" id="modal-insert" style="font-size:0.78rem;padding:6px 14px;">Insert Image</button>
+      </div>
+    </div>
+  </div>
+
+  <script type="module">
+    import { firestore, auth } from '../assets/js/firebase-config.js';
+    import {
+      doc, getDoc, setDoc, serverTimestamp, arrayUnion
+    } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js';
+    import { onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js';
+
+    const ADMIN_UID = 'xNRN4Ae3VTeYqXB4XvcsDMXVABZ2';
+
+    const SECTION_LABELS = {
+      season_preview:   'Season Preview',
+      power_rankings:   'Power Rankings',
+      weekly_recap:     'Weekly Recap',
+      matchup_preview:  'Matchup Preview',
+      trade_analysis:   'Trade Analysis',
+      general_analysis: 'General Analysis',
+    };
+
+    function esc(s) {
+      return String(s ?? '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+    }
+
+    // ── Live preview updates ────────────────────────────────────────────────
+    function updateHero() {
+      const url  = document.getElementById('ed-hero-url')?.value?.trim() || '';
+      const wrap = document.getElementById('ed-hero-wrap');
+      if (!wrap) return;
+      if (url) {
+        wrap.innerHTML = `<img class="btc-article-hero" src="${esc(url)}" alt="Hero image">`;
+      } else {
+        wrap.innerHTML = `<div class="btc-article-hero-placeholder">[ Hero Image &mdash; Between The Chalk ]</div>`;
+      }
+    }
+
+    function updateEyebrow() {
+      const sel = document.getElementById('ed-section')?.value || 'season_preview';
+      const el  = document.getElementById('ed-eyebrow');
+      if (el) el.textContent = SECTION_LABELS[sel] || sel;
+    }
+
+    // ── Image Insert Modal ──────────────────────────────────────────────────
+    const overlay     = document.getElementById('img-modal-overlay');
+    const modalUrl    = document.getElementById('modal-img-url');
+    const modalCap    = document.getElementById('modal-img-caption');
+    const modalWidth  = document.getElementById('modal-img-width');
+
+    document.getElementById('ed-insert-img')?.addEventListener('click', () => {
+      if (modalUrl) modalUrl.value = '';
+      if (modalCap) modalCap.value = '';
+      if (modalWidth) modalWidth.value = '280';
+      overlay?.classList.add('open');
+      modalUrl?.focus();
+    });
+
+    document.getElementById('modal-cancel')?.addEventListener('click', () => {
+      overlay?.classList.remove('open');
+    });
+
+    overlay?.addEventListener('click', e => {
+      if (e.target === overlay) overlay.classList.remove('open');
+    });
+
+    document.getElementById('modal-insert')?.addEventListener('click', () => {
+      const url     = modalUrl?.value?.trim() || '';
+      const caption = modalCap?.value?.trim() || '';
+      const layout  = document.querySelector('input[name="img-layout"]:checked')?.value || 'full';
+      const maxW    = parseInt(modalWidth?.value) || 280;
+      const bodyEl  = document.getElementById('ed-body');
+      if (!bodyEl) return;
+
+      bodyEl.focus();
+
+      let cls  = 'btc-photo';
+      let style = '';
+      if (layout === 'float-left') {
+        cls = 'btc-photo btc-photo--float-left';
+        style = `style="max-width:${maxW}px;"`;
+      } else if (layout === 'float-right') {
+        cls = 'btc-photo btc-photo--float-right';
+        style = `style="max-width:${maxW}px;"`;
+      } else if (layout === 'center') {
+        cls = 'btc-photo btc-photo--center';
+        style = `style="max-width:${maxW}px;"`;
+      }
+
+      let html;
+      if (url) {
+        html = `<img class="${cls}" ${style} src="${esc(url)}" alt="${esc(caption)}">`;
+      } else {
+        html = `<div class="btc-inline-placeholder">[ Photo / Illustration &mdash; Between The Chalk ]</div>`;
+      }
+      if (caption) html += `<div class="btc-caption">${esc(caption)}</div>`;
+
+      document.execCommand('insertHTML', false, html);
+      overlay?.classList.remove('open');
+    });
+
+    // Clear float button
+    document.getElementById('ed-clear-float')?.addEventListener('click', () => {
+      const bodyEl = document.getElementById('ed-body');
+      if (!bodyEl) return;
+      bodyEl.focus();
+      document.execCommand('insertHTML', false, '<div style="clear:both;"></div>');
+    });
+
+    // ── Wire up live-update inputs ──────────────────────────────────────────
+    document.getElementById('ed-hero-url')?.addEventListener('input', updateHero);
+    document.getElementById('ed-section')?.addEventListener('change', updateEyebrow);
+
+    // ── Save ────────────────────────────────────────────────────────────────
+    document.getElementById('ed-save')?.addEventListener('click', async () => {
+      const slug = document.getElementById('ed-slug')?.value?.trim();
+      if (!slug) { showStatus('Slug is required.', true); return; }
+
+      showStatus('Saving\u2026', false);
+
+      const section   = document.getElementById('ed-section')?.value    || 'general_analysis';
+      const date      = document.getElementById('ed-date')?.value?.trim()     || '';
+      const heroImg   = document.getElementById('ed-hero-url')?.value?.trim() || '';
+      const thumbUrl  = document.getElementById('ed-thumb-url')?.value?.trim() || '';
+      const headline  = document.getElementById('ed-headline')?.textContent?.trim() || '';
+      const deck      = document.getElementById('ed-deck')?.textContent?.trim()     || '';
+      const byline    = document.getElementById('ed-byline')?.textContent?.trim()   || '';
+      const heroCap   = document.getElementById('ed-hero-caption')?.textContent?.trim() || '';
+      const bodyHtml  = document.getElementById('ed-body')?.innerHTML || '';
+
+      try {
+        const existingSnap = await getDoc(doc(firestore, 'btc_editions', slug));
+        const isNew = !existingSnap.exists();
+
+        const articleData = {
+          slug, section, date,
+          hero_image:   heroImg,
+          hero_caption: heroCap,
+          thumbnail:    thumbUrl,
+          headline, deck, byline,
+          body_html:    bodyHtml,
+          updated_at:   serverTimestamp(),
+        };
+        if (isNew) articleData.created_at = serverTimestamp();
+
+        await setDoc(doc(firestore, 'btc_editions', slug), articleData, { merge: true });
+
+        // Update settings/btc.articles array entry
+        const btcSnap = await getDoc(doc(firestore, 'settings', 'btc'));
+        let articles = [];
+        if (btcSnap.exists() && Array.isArray(btcSnap.data().articles)) {
+          articles = btcSnap.data().articles;
+        }
+
+        const articleEntry = {
+          id:        slug,
+          title:     headline,
+          author:    byline.replace(/^By\s*/i, '').split('·')[0].trim(),
+          date,
+          type:      section,
+          typeLabel: SECTION_LABELS[section] || section,
+          url:       `view.html?slug=${encodeURIComponent(slug)}`,
+          thumbnail: thumbUrl,
+          enabled:   true,
+        };
+
+        const existingIdx = articles.findIndex(a => a.id === slug);
+        if (existingIdx >= 0) {
+          articles[existingIdx] = articleEntry;
+        } else {
+          articles.unshift(articleEntry);
+        }
+
+        await setDoc(doc(firestore, 'settings', 'btc'), { articles }, { merge: true });
+
+        showStatus('Saved!', false);
+        setTimeout(() => showStatus('', false), 3000);
+      } catch (err) {
+        showStatus('Error: ' + (err.message || 'Unknown error'), true);
+        console.error('BTC Editor save error:', err);
+      }
+    });
+
+    function showStatus(msg, isError) {
+      const el = document.getElementById('ed-status');
+      if (!el) return;
+      el.textContent = msg;
+      el.className = 'ed-status' + (isError ? ' err' : (msg ? ' ok' : ''));
+    }
+
+    // ── Load existing article ───────────────────────────────────────────────
+    async function loadArticle(slug) {
+      try {
+        const snap = await getDoc(doc(firestore, 'btc_editions', slug));
+        if (!snap.exists()) return;
+        const d = snap.data();
+
+        setField('ed-slug',      d.slug);
+        setField('ed-section',   d.section);
+        setField('ed-date',      d.date);
+        setField('ed-hero-url',  d.hero_image);
+        setField('ed-thumb-url', d.thumbnail);
+
+        setCE('ed-headline',     d.headline);
+        setCE('ed-deck',         d.deck);
+        setCE('ed-byline',       d.byline);
+        setCE('ed-hero-caption', d.hero_caption);
+        setInner('ed-body',      d.body_html);
+
+        updateHero();
+        updateEyebrow();
+      } catch (e) {
+        console.error('BTC Editor loadArticle:', e);
+      }
+    }
+
+    function setField(id, val) {
+      const el = document.getElementById(id);
+      if (el && val !== undefined && val !== null) el.value = String(val);
+    }
+    function setCE(id, val) {
+      const el = document.getElementById(id);
+      if (el && val !== undefined) el.textContent = String(val);
+    }
+    function setInner(id, val) {
+      const el = document.getElementById(id);
+      if (el && val !== undefined) el.innerHTML = String(val);
+    }
+
+    // ── Auth gate ───────────────────────────────────────────────────────────
+    onAuthStateChanged(auth, async user => {
+      const mainEl   = document.getElementById('ed-main');
+      const deniedEl = document.getElementById('ed-access-denied');
+
+      if (!user) {
+        window.location.href = '../rumblr/login.html?redirect=estn/btc-editor.html' + window.location.search;
+        return;
+      }
+      if (user.uid !== ADMIN_UID) {
+        if (deniedEl) deniedEl.style.display = 'block';
+        return;
+      }
+
+      // Authorized
+      if (mainEl) mainEl.style.display = 'block';
+      updateHero();
+      updateEyebrow();
+
+      const params = new URLSearchParams(window.location.search);
+      const slug   = params.get('slug');
+      if (slug && slug !== 'new') {
+        await loadArticle(slug);
+      }
+    });
+  </script>
+
+</body>
+</html>

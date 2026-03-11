@@ -109,6 +109,73 @@
     .trib-ed-source-chip.live { background: rgba(52,211,153,0.15); color: #34D399; }
     .trib-ed-source-chip.static { background: rgba(74,85,104,0.3); color: #718096; }
 
+    /* ── Rumblr tab: user / post row styles ── */
+    .rb-admin-user-row {
+      display: flex; align-items: center; gap: 10px;
+      padding: 8px 10px; border: 1px solid #2D3748; border-radius: 6px;
+      margin-bottom: 5px; background: #0D1117;
+    }
+    .rb-admin-user-info { flex: 1; min-width: 0; }
+    .rb-admin-user-name { font-family: 'Oswald',sans-serif; font-size: 0.82rem; color: #E2E8F0; }
+    .rb-admin-user-detail { font-family: 'Marcellus',serif; font-size: 0.72rem; color: #718096; }
+    .rb-post-avatar {
+      width: 32px; height: 32px; border-radius: 50%; background: #555;
+      display: flex; align-items: center; justify-content: center;
+      font-family: 'Oswald',sans-serif; font-size: 0.7rem; color: #fff;
+      flex-shrink: 0; overflow: hidden;
+    }
+    .rb-post-avatar img { width: 100%; height: 100%; object-fit: cover; }
+    .rb-admin-btn-approve {
+      background: #1B4D3E; color: #4ADE80; border: none; border-radius: 4px;
+      padding: 4px 10px; font-family: 'Oswald',sans-serif; font-size: 0.72rem; cursor: pointer;
+    }
+    .rb-admin-btn-reject {
+      background: #5B1A1A; color: #F87171; border: none; border-radius: 4px;
+      padding: 4px 10px; font-family: 'Oswald',sans-serif; font-size: 0.72rem; cursor: pointer;
+    }
+    .rb-admin-post-row {
+      border: 1px solid #2D3748; border-radius: 6px; padding: 10px 12px;
+      margin-bottom: 6px; background: #0D1117;
+    }
+    .rb-admin-post-header { display: flex; align-items: center; gap: 8px; margin-bottom: 6px; flex-wrap: wrap; }
+    .rb-admin-post-name { font-family: 'Oswald',sans-serif; font-size: 0.78rem; color: #E2E8F0; }
+    .rb-admin-post-handle { font-family: 'Marcellus',serif; font-size: 0.72rem; color: #718096; }
+    .rb-admin-post-content { font-family: 'Marcellus',serif; font-size: 0.82rem; color: #A0AEC0; margin-bottom: 8px; }
+    .rb-admin-post-actions { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+    .rb-admin-btn-edit {
+      background: #1E3A5F; color: #60A5FA; border: none; border-radius: 4px;
+      padding: 3px 10px; font-size: 0.72rem; font-family: 'Oswald',sans-serif; cursor: pointer;
+    }
+    .rb-admin-type-badge {
+      font-size: 0.6rem; font-family: 'Oswald',sans-serif; font-weight: 600;
+      letter-spacing: 0.08em; text-transform: uppercase; padding: 2px 6px;
+      border-radius: 3px; color: #fff; background: #2D3748;
+    }
+    .rb-admin-post-ts { font-size: 0.68rem; color: #718096; margin-left: auto; }
+    .rb-admin-post-stats { font-size: 0.72rem; color: #4A5568; }
+    .rb-admin-edit-area { display: none; margin-top: 8px; }
+    .rb-admin-edit-textarea {
+      width: 100%; background: #161B22; border: 1px solid #2D3748; color: #E2E8F0;
+      padding: 8px 10px; border-radius: 4px; font-family: 'Marcellus',serif;
+      font-size: 0.85rem; resize: vertical; box-sizing: border-box;
+    }
+    .rb-admin-edit-btns { display: flex; gap: 8px; margin-top: 6px; }
+    .rb-admin-filter-bar { display: flex; gap: 6px; margin-bottom: 12px; flex-wrap: wrap; }
+    .rb-admin-filter-btn {
+      background: #1A2030; color: #718096; border: 1px solid #2D3748;
+      border-radius: 4px; padding: 4px 12px; font-family: 'Oswald',sans-serif;
+      font-size: 0.72rem; cursor: pointer; letter-spacing: 0.06em;
+    }
+    .rb-admin-filter-btn.active { background: #161B22; color: #E2E8F0; border-color: #4A5568; }
+    .rb-verified { color: #C8102E; font-size: 0.75rem; margin-left: 3px; }
+    .rb-admin-ai-row {
+      display: flex; align-items: center; gap: 10px; padding: 8px 10px;
+      border: 1px solid #2D3748; border-radius: 6px; margin-bottom: 5px; background: #0D1117;
+    }
+    .rb-admin-ai-info { flex: 1; }
+    .rb-admin-ai-name { font-family: 'Oswald',sans-serif; font-size: 0.82rem; color: #E2E8F0; }
+    .rb-admin-ai-handle { font-family: 'Marcellus',serif; font-size: 0.72rem; color: #718096; }
+
     /* ── Shared admin helpers ── */
     .estn-admin-hint { font-size: 0.78rem; color: #718096; margin-bottom: 12px; font-family: 'Marcellus',serif; }
     .estn-admin-field-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
@@ -158,6 +225,7 @@
         <button class="estn-admin-tab" data-tab="events">Season Events</button>
         <button class="estn-admin-tab" data-tab="records">League Records</button>
         <button class="estn-admin-tab" data-tab="tribune">The Tribune</button>
+        <button class="estn-admin-tab" data-tab="rumblr">Rumblr</button>
       </div>
 
       <!-- ════════════════════════════════════════════════
@@ -322,36 +390,15 @@
           </div>
         </div>
 
-        <!-- §7 Programs Visibility -->
+        <!-- §7 Programs Manager -->
         <div class="estn-admin-section">
           <div class="estn-admin-section-header">
-            <h2>Programs Visibility (Left Pillar)</h2>
+            <h2>Programs (Left Pillar)</h2>
           </div>
           <div class="estn-admin-section-body">
-            <div id="programs-toggles">
-              <div class="estn-admin-toggle-row" style="margin-bottom:10px;">
-                <label class="estn-admin-toggle">
-                  <input type="checkbox" id="prog-rumblr" checked>
-                  <span class="estn-admin-toggle-slider"></span>
-                </label>
-                <span class="estn-admin-toggle-label">Show Rumblr</span>
-              </div>
-              <div class="estn-admin-toggle-row" style="margin-bottom:10px;">
-                <label class="estn-admin-toggle">
-                  <input type="checkbox" id="prog-tribune" checked>
-                  <span class="estn-admin-toggle-slider"></span>
-                </label>
-                <span class="estn-admin-toggle-label">Show The Sandlot Tribune</span>
-              </div>
-              <div class="estn-admin-toggle-row" style="margin-bottom:10px;">
-                <label class="estn-admin-toggle">
-                  <input type="checkbox" id="prog-podcast" checked>
-                  <span class="estn-admin-toggle-slider"></span>
-                </label>
-                <span class="estn-admin-toggle-label">Show Babe Ruth Podcast</span>
-              </div>
-            </div>
-            <button class="estn-admin-btn" id="save-programs-btn" style="margin-top:10px;">Save Programs</button>
+            <p class="estn-admin-hint">Edit program names, status badges, subtitles, and links. Changes are saved to Firestore and reflected on the portal immediately. Toggle the switch to show/hide a program.</p>
+            <div id="programs-toggles"></div>
+            <button class="estn-admin-btn" id="save-programs-btn" style="margin-top:4px;">Save Programs</button>
           </div>
         </div>
 
@@ -409,8 +456,9 @@
               <button class="estn-admin-add-btn" id="btc-add-btn" style="margin-top:8px;">+ Add Article</button>
             </div>
 
-            <div style="margin-top:16px;">
+            <div style="margin-top:16px;display:flex;gap:8px;align-items:center;">
               <button class="estn-admin-btn" id="save-btc-btn">Save Article List</button>
+              <a href="btc-editor.html?slug=new" class="estn-admin-btn" style="text-decoration:none;">+ New BTC Article</a>
             </div>
           </div>
         </div>
@@ -540,6 +588,125 @@
           </div>
         </div>
       </div><!-- /#tab-tribune -->
+
+      <!-- ════════════════════════════════════════════════
+           TAB: RUMBLR
+      ════════════════════════════════════════════════ -->
+      <div id="tab-rumblr" class="estn-tab-panel">
+
+        <!-- §1 Pending Verifications -->
+        <div class="estn-admin-section">
+          <div class="estn-admin-section-header">
+            <h2>Pending Verifications
+              <span id="rb-pending-badge" style="background:#C8102E;color:#fff;font-size:0.65rem;padding:1px 8px;border-radius:20px;margin-left:8px;vertical-align:middle;display:none;">0</span>
+            </h2>
+          </div>
+          <div class="estn-admin-section-body">
+            <p class="estn-admin-hint">Accounts awaiting commissioner verification. Approve to grant the verified badge (&nbsp;&#9978;&nbsp;), Reject to delete the profile.</p>
+            <div id="rb-pending-list"><p style="color:#4A5568;font-family:'Marcellus',serif;font-size:0.82rem;">Loading&hellip;</p></div>
+          </div>
+        </div>
+
+        <!-- §2 All Accounts -->
+        <div class="estn-admin-section">
+          <div class="estn-admin-section-header">
+            <h2>All Accounts <span style="font-size:0.68rem;color:#718096;font-weight:400;font-family:'Marcellus',serif;">(last 50)</span></h2>
+          </div>
+          <div class="estn-admin-section-body">
+            <p class="estn-admin-hint">View registered users. Edit avatar URL or delete a profile. Deletion removes the Firestore document only — Firebase Auth account is unaffected.</p>
+            <div id="rb-all-users-list"><p style="color:#4A5568;font-family:'Marcellus',serif;font-size:0.82rem;">Loading&hellip;</p></div>
+          </div>
+        </div>
+
+        <!-- §3 ESTN AI Writers -->
+        <div class="estn-admin-section">
+          <div class="estn-admin-section-header">
+            <h2>ESTN AI Writers</h2>
+          </div>
+          <div class="estn-admin-section-body">
+            <p class="estn-admin-hint">Configured AI writer accounts. Use the Writer Reply and Writer Follow panels below to post on their behalf.</p>
+            <div id="rb-ai-writers-list"></div>
+          </div>
+        </div>
+
+        <!-- §4 Recent Posts -->
+        <div class="estn-admin-section">
+          <div class="estn-admin-section-header">
+            <h2>Recent Posts <span style="font-size:0.68rem;color:#718096;font-weight:400;font-family:'Marcellus',serif;">(last 100)</span></h2>
+          </div>
+          <div class="estn-admin-section-body">
+            <p class="estn-admin-hint">Delete or edit inappropriate content. Deletion is permanent.</p>
+            <div class="rb-admin-filter-bar" id="rb-post-filter-bar">
+              <button class="rb-admin-filter-btn active" data-filter="all">All</button>
+              <button class="rb-admin-filter-btn" data-filter="ai">AI Writers</button>
+              <button class="rb-admin-filter-btn" data-filter="user">Users</button>
+              <button class="rb-admin-filter-btn" data-filter="reply">Replies</button>
+            </div>
+            <div id="rb-recent-posts-list"><p style="color:#4A5568;font-family:'Marcellus',serif;font-size:0.82rem;">Loading&hellip;</p></div>
+          </div>
+        </div>
+
+        <!-- §5 Writer Reply Panel -->
+        <div class="estn-admin-section">
+          <div class="estn-admin-section-header">
+            <h2>Post Writer Reply</h2>
+          </div>
+          <div class="estn-admin-section-body">
+            <p class="estn-admin-hint">Post a reply to an existing Rumbl&rsquo;ing as an ESTN writer. Find the Post ID in the post URL: <code style="background:#0D1117;padding:2px 5px;border-radius:3px;color:#A0AEC0;">post.html?id=abc123</code></p>
+            <div class="estn-admin-field-grid" style="max-width:560px;">
+              <div class="estn-admin-field">
+                <label class="estn-admin-label">Writer</label>
+                <select class="estn-admin-input" id="rb-reply-writer">
+                  <option value="">— Select a writer —</option>
+                </select>
+              </div>
+              <div class="estn-admin-field">
+                <label class="estn-admin-label">Target Post ID</label>
+                <input class="estn-admin-input" type="text" id="rb-reply-post-id" placeholder="e.g. Kj2mNpQrXvLw">
+              </div>
+              <div class="estn-admin-field" style="grid-column:span 2;">
+                <label class="estn-admin-label">Reply Content</label>
+                <textarea class="estn-admin-textarea" id="rb-reply-content" maxlength="280" rows="3" placeholder="Writer reply text (max 280 chars)…"></textarea>
+                <div id="rb-reply-char" style="text-align:right;font-size:0.72rem;color:#718096;margin-top:4px;">280 remaining</div>
+              </div>
+            </div>
+            <button class="estn-admin-btn" id="rb-reply-submit-btn" style="margin-top:8px;">Post Reply as Writer</button>
+            <div id="rb-reply-result" style="display:none;font-size:0.82rem;margin-top:8px;"></div>
+          </div>
+        </div>
+
+        <!-- §6 Writer Follow Panel -->
+        <div class="estn-admin-section">
+          <div class="estn-admin-section-header">
+            <h2>Writer Follows User</h2>
+          </div>
+          <div class="estn-admin-section-body">
+            <p class="estn-admin-hint">Record that an ESTN writer is following a Rumblr user. This adds an entry to the <code style="background:#0D1117;padding:2px 5px;border-radius:3px;color:#A0AEC0;">ai_follows</code> collection.</p>
+            <div class="estn-admin-field-grid" style="max-width:400px;">
+              <div class="estn-admin-field">
+                <label class="estn-admin-label">Writer</label>
+                <select class="estn-admin-input" id="rb-follow-writer">
+                  <option value="">— Select a writer —</option>
+                </select>
+              </div>
+              <div class="estn-admin-field">
+                <label class="estn-admin-label">User Handle to Follow</label>
+                <input class="estn-admin-input" type="text" id="rb-follow-handle" placeholder="@PHIOfficial">
+              </div>
+            </div>
+            <button class="estn-admin-btn" id="rb-follow-submit-btn" style="margin-top:8px;">Record Writer Follow</button>
+            <div id="rb-follow-result" style="display:none;font-size:0.82rem;margin-top:8px;"></div>
+          </div>
+        </div>
+
+        <!-- Ticker note -->
+        <div class="estn-admin-section" style="border:none;background:none;box-shadow:none;">
+          <div class="estn-admin-section-body" style="padding-top:0;">
+            <p class="estn-admin-hint" style="margin:0;">&#9432; To manage the ESTN ticker (shared by Rumblr and the portal), use the <strong style="color:#A0AEC0;">Portal tab &rarr; ESTN Ticker</strong> section.</p>
+          </div>
+        </div>
+
+      </div><!-- /#tab-rumblr -->
 
     </div><!-- /estn-admin-wrap -->
   </div><!-- /estn-admin-dash -->

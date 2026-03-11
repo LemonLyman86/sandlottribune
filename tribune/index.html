@@ -12,6 +12,88 @@
   <!-- Newspaper-specific fonts (Tribune only) -->
   <link href="https://fonts.googleapis.com/css2?family=UnifrakturMaguntia&family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=PT+Serif:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="../assets/css/main.css">
+  <style>
+    /* ── Season Previews Strip ───────────────────────────────────────────── */
+    .trib-previews-strip {
+      background: #161B22;
+      border-bottom: 1px solid #2D3748;
+      padding: 14px 24px 16px;
+    }
+    .trib-previews-strip-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+    }
+    .trib-previews-eyebrow {
+      font-family: 'Oswald', sans-serif;
+      font-size: 0.6rem;
+      font-weight: 600;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: #718096;
+    }
+    .trib-previews-all-link {
+      font-family: 'Oswald', sans-serif;
+      font-size: 0.62rem;
+      color: #718096;
+      text-decoration: none;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      transition: color 0.15s;
+    }
+    .trib-previews-all-link:hover { color: #A0AEC0; }
+    .trib-previews-grid {
+      display: flex;
+      gap: 10px;
+      overflow-x: auto;
+      padding-bottom: 4px;
+      scrollbar-width: thin;
+      scrollbar-color: #2D3748 transparent;
+    }
+    .trib-preview-card {
+      flex: 0 0 120px;
+      border-radius: 4px;
+      overflow: hidden;
+      background: #0D1117;
+      border: 1px solid #2D3748;
+      text-decoration: none;
+      display: block;
+      transition: border-color 0.15s;
+    }
+    .trib-preview-card:hover { border-color: #4A5568; }
+    .trib-preview-card img {
+      width: 100%;
+      aspect-ratio: 3 / 2;
+      object-fit: cover;
+      display: block;
+    }
+    .trib-preview-card-label {
+      font-family: 'Oswald', sans-serif;
+      font-size: 0.6rem;
+      color: #718096;
+      padding: 5px 7px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .trib-preview-card--more {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 90px;
+      border-style: dashed;
+    }
+    .trib-preview-more-label {
+      font-family: 'Oswald', sans-serif;
+      font-size: 0.72rem;
+      color: #C8102E;
+      text-align: center;
+      line-height: 1.5;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+  </style>
 </head>
 <body class="tribune-reader-body">
 
@@ -48,6 +130,42 @@
     </div>
     <p class="trib-masthead-motto">&ldquo;Where Legends Never Die&rdquo;</p>
   </div>
+
+  <!-- ══════════════════════════════════════════════════ -->
+  <!-- TRIBUNE-PREVIEW-STRIP-START -->
+  <div class="trib-previews-strip">
+    <div class="trib-previews-strip-header">
+      <span class="trib-previews-eyebrow">2026 Season Previews</span>
+      <a href="../season-previews/" class="trib-previews-all-link">All Previews &rarr;</a>
+    </div>
+    <div class="trib-previews-grid">
+      <a href="../season-previews/season_preview_2026_atl.html" class="trib-preview-card">
+        <img src="../assets/images/atl-preview.png" alt="Atlanta Braves" onerror="this.style.display='none'">
+        <div class="trib-preview-card-label">ATL &middot; Tim Kurkjian</div>
+      </a>
+      <a href="../season-previews/season_preview_2026_lva.html" class="trib-preview-card">
+        <img src="../assets/images/lva-preview.png" alt="Las Vegas Athletics" onerror="this.style.display='none'">
+        <div class="trib-preview-card-label">LVA &middot; Keith Law</div>
+      </a>
+      <a href="../season-previews/season_preview_2026_sea.html" class="trib-preview-card">
+        <img src="../assets/images/sea-preview.png" alt="Seattle Mariners" onerror="this.style.display='none'">
+        <div class="trib-preview-card-label">SEA &middot; Ken Rosenthal</div>
+      </a>
+      <a href="../season-previews/season_preview_2026_stl.html" class="trib-preview-card">
+        <img src="../assets/images/stl-preview.png" alt="St. Louis Cardinals" onerror="this.style.display='none'">
+        <div class="trib-preview-card-label">STL &middot; Buster Olney</div>
+      </a>
+      <a href="../season-previews/season_preview_2026_ari.html" class="trib-preview-card">
+        <img src="../assets/images/ari-preview.png" alt="Arizona Diamondbacks" onerror="this.style.display='none'">
+        <div class="trib-preview-card-label">ARI &middot; Jeff Passan</div>
+      </a>
+      <a href="../season-previews/" class="trib-preview-card trib-preview-card--more">
+        <div class="trib-preview-more-label">View All<br>Previews</div>
+      </a>
+    </div>
+  </div>
+  <!-- TRIBUNE-PREVIEW-STRIP-END -->
+  <!-- ══════════════════════════════════════════════════ -->
 
   <!-- Two-Column Layout -->
   <div class="trib-layout">

@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Between The Chalk</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Marcellus&family=Oswald:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    /* ── Reset / base ── */
+    *, *::before, *::after { box-sizing: border-box; }
+    body {
+      margin: 0; padding: 0;
+      background: #F6F3EC;
+      font-family: 'Marcellus', serif;
+      color: #36302A;
+      font-size: 0.95rem;
+      line-height: 1.75;
+    }
+
+    /* ── Article layout ── */
+    .btc-view-hero { width: 100%; aspect-ratio: 1200/630; object-fit: cover; display: block; }
+    .btc-view-hero-placeholder {
+      width: 100%; aspect-ratio: 1200/630;
+      background: #d8d0c4;
+      background-image: repeating-linear-gradient(45deg,transparent,transparent 12px,rgba(0,0,0,0.05) 12px,rgba(0,0,0,0.05) 13px);
+      display: flex; align-items: center; justify-content: center;
+      font-family: 'Oswald', sans-serif; font-size: 0.68rem; letter-spacing: 0.14em;
+      text-transform: uppercase; color: #7a7060; border-bottom: 1px solid #c0b8a8;
+    }
+    .btc-view-body { padding: 28px 28px 56px; max-width: 760px; margin: 0 auto; }
+
+    .btc-view-eyebrow {
+      font-family: 'Oswald', sans-serif; font-size: 0.62rem; font-weight: 600;
+      letter-spacing: 0.16em; text-transform: uppercase; color: #BA2B2B; margin-bottom: 10px;
+    }
+    .btc-view-headline {
+      font-family: 'Oswald', sans-serif; font-size: 2rem; font-weight: 700;
+      color: #1a1410; line-height: 1.15; margin: 0 0 12px;
+    }
+    .btc-view-deck {
+      font-size: 1.05rem; color: #5a5248; line-height: 1.55; margin-bottom: 14px;
+    }
+    .btc-view-byline {
+      font-size: 0.8rem; color: #888278;
+      border-top: 1px solid #c8beb0; border-bottom: 1px solid #c8beb0;
+      padding: 8px 0; margin-bottom: 20px;
+    }
+    .btc-view-hero-caption { font-size: 0.78rem; color: #888278; font-style: italic; margin-bottom: 20px; }
+    .btc-view-content { font-size: 0.95rem; color: #36302A; line-height: 1.8; }
+    .btc-view-content p { margin-bottom: 1em; }
+    .btc-view-content a { color: #BA2B2B; }
+
+    /* ── Inline image styles (matching btc-editor.html insert options) ── */
+    .btc-photo { width: 100%; height: auto; display: block; margin: 1em 0; }
+    .btc-photo--float-left  { float: left;  margin: 0.2em 1.2em 0.8em 0; height: auto; }
+    .btc-photo--float-right { float: right; margin: 0.2em 0 0.8em 1.2em; height: auto; }
+    .btc-photo--center      { display: block; margin: 1em auto; height: auto; }
+    .btc-caption { font-size: 0.78rem; color: #888278; font-style: italic; margin-bottom: 1em; }
+    .btc-inline-placeholder {
+      background: #e8e0d4; border: 1px dashed #b0a898; padding: 20px;
+      text-align: center; font-size: 0.72rem; letter-spacing: 0.1em;
+      text-transform: uppercase; color: #7a7060; margin: 1em 0;
+    }
+
+    /* ── Loading / error states ── */
+    .btc-view-loading {
+      padding: 80px 28px; text-align: center;
+      font-family: 'Oswald', sans-serif; font-size: 0.78rem; letter-spacing: 0.12em;
+      text-transform: uppercase; color: #B9A590;
+    }
+    .btc-view-error {
+      padding: 48px 28px; text-align: center;
+      font-family: 'Marcellus', serif; font-size: 0.88rem; color: #BA2B2B;
+    }
+  </style>
+</head>
+<body>
+
+  <div id="btc-view-root">
+    <div class="btc-view-loading">Loading article&hellip;</div>
+  </div>
+
+  <script type="module">
+    import { firestore } from '../assets/js/firebase-config.js';
+    import {
+      doc, getDoc
+    } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js';
+
+    const SECTION_LABELS = {
+      season_preview:   'Season Preview',
+      power_rankings:   'Power Rankings',
+      weekly_recap:     'Weekly Recap',
+      matchup_preview:  'Matchup Preview',
+      trade_analysis:   'Trade Analysis',
+      general_analysis: 'General Analysis',
+    };
+
+    function esc(s) {
+      return String(s ?? '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+    }
+
+    const root = document.getElementById('btc-view-root');
+
+    async function loadArticle() {
+      const slug = new URLSearchParams(window.location.search).get('slug');
+      if (!slug) {
+        root.innerHTML = '<div class="btc-view-error">No article specified.</div>';
+        return;
+      }
+
+      try {
+        const snap = await getDoc(doc(firestore, 'btc_editions', slug));
+        if (!snap.exists()) {
+          root.innerHTML = '<div class="btc-view-error">Article not found.</div>';
+          return;
+        }
+
+        const d = snap.data();
+
+        // Update page title for the parent BTC reader toolbar
+        if (d.headline) {
+          document.title = d.headline + ' — Between The Chalk';
+          // Notify parent frame of the title (used by BTC reader toolbar)
+          try {
+            window.parent.postMessage({ type: 'btc-title', title: d.headline }, '*');
+          } catch { /* cross-origin, silently ignore */ }
+        }
+
+        const heroHtml = d.hero_image
+          ? `<img class="btc-view-hero" src="${esc(d.hero_image)}" alt="${esc(d.headline || '')}" onerror="this.style.display='none'">`
+          : `<div class="btc-view-hero-placeholder">[ Photo / Illustration &mdash; Between The Chalk ]</div>`;
+
+        const eyebrow = SECTION_LABELS[d.section] || (d.section || 'Article');
+
+        root.innerHTML = `
+          ${heroHtml}
+          <div class="btc-view-body">
+            <div class="btc-view-eyebrow">${esc(eyebrow)}</div>
+            <h1 class="btc-view-headline">${esc(d.headline || '')}</h1>
+            ${d.deck    ? `<div class="btc-view-deck">${esc(d.deck)}</div>` : ''}
+            ${d.byline  ? `<div class="btc-view-byline">${esc(d.byline)}</div>` : ''}
+            ${d.hero_caption ? `<div class="btc-view-hero-caption">${esc(d.hero_caption)}</div>` : ''}
+            <div class="btc-view-content">${d.body_html || ''}</div>
+          </div>
+        `;
+
+      } catch (err) {
+        console.error('btc view.html error:', err);
+        root.innerHTML = `<div class="btc-view-error">Could not load article. Please try again.</div>`;
+      }
+    }
+
+    loadArticle();
+  </script>
+
+</body>
+</html>

@@ -537,48 +537,66 @@ function renderAds(disabledAds, adSlots) {
 }
 
 // ── Render programs (left pillar) ──────────────────────────────────────────────
-function renderPrograms(hiddenPrograms) {
-  const hidden = new Set(hiddenPrograms || []);
+// Accepts full settings object. Uses settings.programs array from Firestore if present;
+// falls back to hardcoded defaults (preserving hidden_programs for migration).
+const DEFAULT_PROGRAMS = [
+  {
+    id: 'rumblr',
+    name: 'Rumblr',
+    subtitle: '',
+    status: 'Now Live',
+    statusCls: 'live',
+    href: 'rumblr/',
+    logo: 'assets/images/rumblr-logo.png',
+    enabled: true,
+  },
+  {
+    id: 'tribune',
+    name: 'The Sandlot Tribune',
+    subtitle: '',
+    status: 'Now Live',
+    statusCls: 'live',
+    href: 'tribune/',
+    logo: 'assets/images/logo.png',
+    enabled: true,
+  },
+  {
+    id: 'podcast',
+    name: 'Babe Ruth Podcast',
+    subtitle: '',
+    status: 'Coming in 2026',
+    statusCls: 'coming-soon',
+    href: 'about/',
+    logo: 'assets/images/baberuth-podcast-logo.png',
+    enabled: true,
+  },
+];
+
+function renderPrograms(settings) {
   const el = document.getElementById('portal-programs');
   if (!el) return;
 
-  const programs = [
-    {
-      id: 'rumblr',
-      name: 'Rumblr',
-      status: 'Now Live',
-      statusCls: 'live',
-      href: 'rumblr/',
-      logo: 'assets/images/rumblr-logo.png'
-    },
-    {
-      id: 'tribune',
-      name: 'The Sandlot Tribune',
-      status: 'Under Construction',
-      statusCls: 'coming-soon',
-      href: 'tribune/',
-      logo: 'assets/images/logo.png'
-    },
-    {
-      id: 'podcast',
-      name: 'Babe Ruth Podcast',
-      status: 'Coming 2026',
-      statusCls: 'coming-soon',
-      href: 'about/',
-      logo: 'assets/images/baberuth-podcast-logo.png'
-    }
-  ];
+  // Use Firestore programs array if available, otherwise fall back to hardcoded defaults
+  let programs;
+  if (settings && Array.isArray(settings.programs) && settings.programs.length > 0) {
+    programs = settings.programs;
+  } else {
+    // Fallback: use defaults, applying legacy hidden_programs if present
+    const hidden = new Set((settings && settings.hidden_programs) || []);
+    programs = DEFAULT_PROGRAMS.map(p => ({ ...p, enabled: !hidden.has(p.id) }));
+  }
 
   el.innerHTML = programs
-    .filter(p => !hidden.has(p.id))
+    .filter(p => p.enabled !== false)
     .map(p => `
-      <a href="${p.href}" class="estn-program-pill">
+      <a href="${esc(p.href)}" class="estn-program-pill">
         <div class="estn-program-pill-icon">
-          <img src="${p.logo}" alt="${esc(p.name)}" onerror="this.parentElement.textContent='${p.name[0]}'">
+          <img src="${esc(p.logo)}" alt="${esc(p.name)}" onerror="this.parentElement.textContent='${esc(p.name[0])}'">
         </div>
         <div class="estn-program-pill-info">
           <span class="estn-program-pill-name">${esc(p.name)}</span>
-          <span class="estn-program-pill-status ${p.statusCls}">${esc(p.status)}</span>
+          ${p.subtitle ? `<span class="estn-program-pill-sub">${esc(p.subtitle)}</span>` : ''}
+          <span class="estn-program-pill-status ${esc(p.statusCls)}">${esc(p.status)}</span>
         </div>
       </a>`).join('');
 }
@@ -653,7 +671,7 @@ async function init() {
 
   // Apply Firestore overrides
   applyFeaturedOverride(settings);
-  renderPrograms(settings.hidden_programs);
+  renderPrograms(settings);
   renderQuickLinks(settings.quick_links);
   renderAds(settings.disabled_ads, settings.ad_slots);
   renderHeadlines(txnData, settings.custom_headlines);

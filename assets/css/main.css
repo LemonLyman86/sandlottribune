@@ -4543,6 +4543,49 @@ select.estn-admin-input:focus {
   width: 100%;
   margin-bottom: 4px;
   display: block;
+  height: auto;
+}
+/* Float layouts — used by Tribune editor and BTC editor insert modal */
+.trib-photo--float-left {
+  float: left;
+  margin: 0.2em 1.2em 0.8em 0;
+  width: auto;
+  height: auto;
+}
+.trib-photo--float-right {
+  float: right;
+  margin: 0.2em 0 0.8em 1.2em;
+  width: auto;
+  height: auto;
+}
+.trib-photo--center {
+  display: block;
+  margin: 0.8em auto;
+  width: auto;
+  height: auto;
+}
+/* BTC-specific photo classes (same behavior, different prefix for btc-editor/view.html) */
+.btc-photo { width: 100%; height: auto; display: block; margin: 1em 0; }
+.btc-photo--float-left  { float: left;  margin: 0.2em 1.2em 0.8em 0; width: auto; height: auto; }
+.btc-photo--float-right { float: right; margin: 0.2em 0 0.8em 1.2em; width: auto; height: auto; }
+.btc-photo--center      { display: block; margin: 0.8em auto; width: auto; height: auto; }
+.btc-caption {
+  font-family: 'Marcellus', serif;
+  font-style: italic;
+  font-size: 0.78rem;
+  color: #888278;
+  margin-bottom: 1em;
+}
+.btc-inline-placeholder {
+  background: #e8e0d4;
+  border: 1px dashed #b0a898;
+  padding: 20px;
+  text-align: center;
+  font-size: 0.72rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #7a7060;
+  margin: 1em 0;
 }
 .trib-caption {
   font-family: 'PT Serif', Georgia, serif;

@@ -1,6 +1,6 @@
 THE SANDLOT TRIBUNE — HOW TO UPDATE THE SITE
 =============================================
-Last updated: 2026-02-28
+Last updated: 2026-03-11
 
 This guide explains how to publish articles, maintain Firebase engagement
 features, and push changes to GitHub Pages. No deep coding knowledge required.
@@ -12,26 +12,36 @@ FOLDER STRUCTURE OVERVIEW
 --------------------------
 
 sandlottribune/
-├── index.html                  ← Home page (hero + countdown + latest articles)
+├── index.html                  ← Home page (ESTN portal — hero + standings + articles)
 ├── between-the-chalk/
-│   └── index.html              ← Article hub: Latest + Team Previews + categories
+│   ├── index.html              ← Article hub: 2-column reader with left nav
+│   └── view.html               ← Renders Firestore-based BTC articles (NEW)
 ├── season-previews/
 │   ├── index.html              ← Season previews hub (sortable, filterable)
-│   ├── season_preview_2026_ari.html
-│   ├── season_preview_2026_lva.html
-│   ├── season_preview_2026_stl.html
+│   ├── season_preview_2026_[TEAM].html  ← Article files (DO NOT MOVE)
 │   └── charts/                 ← PNG charts referenced by article files
+├── tribune/
+│   ├── index.html              ← Tribune landing page (with Season Previews strip)
+│   └── editions/               ← Static HTML Tribune editions
 ├── season-deadlines/
 │   └── index.html              ← Full season calendar + scoring awards
 ├── league-records/
-│   └── index.html              ← Under construction
+│   └── index.html              ← Champions + season records
 ├── about/
-│   └── index.html              ← Under construction
+│   └── index.html              ← About the league and ESTN network
+├── rumblr/
+│   ├── index.html              ← Rumblr social platform
+│   └── admin.html              ← Redirects to estn/admin.html#rumblr (do not edit)
+├── estn/
+│   ├── admin.html              ← UNIFIED ESTN + Rumblr admin panel (6 tabs)
+│   ├── btc-editor.html         ← WYSIWYG editor for BTC articles (NEW)
+│   └── tribune-editor.html     ← WYSIWYG editor for Tribune editions
 ├── assets/
 │   ├── css/main.css            ← Shared stylesheet
-│   ├── images/                 ← Logo + team thumbnail images
+│   ├── images/                 ← Logo + team thumbnail images (auto-fetched by NB44/NB63)
 │   └── js/
 │       ├── firebase-config.js  ← Firebase connection (do NOT share publicly)
+│       ├── estn-admin.js       ← ESTN + Rumblr admin logic (unified)
 │       └── article-engagement.js ← Read counters, star ratings, comments logic
 ├── HOWTO-UPDATE-ARTICLES.txt   ← This file
 └── SITE-PLAN.md                ← Design and architecture reference
@@ -72,8 +82,13 @@ Step 2 — Copy the article file to sandlottribune
   NOTE: Article HTML references charts as "charts/filename.png".
         Keep them in season-previews/charts/ so links work.
 
-Step 3 — Prepare a thumbnail image
-  Crop the team's preview image (remove watermark) and save as:
+Step 3 — Prepare a thumbnail image (auto-fetched by NB44/NB63)
+  NB44 (season preview generator) and NB63 (publish notebook) will
+  automatically try to download a 600x400 stadium image from
+  Wikimedia Commons if the thumbnail doesn't already exist.
+
+  If auto-fetch succeeds: image saved to sandlottribune/assets/images/[team]-preview.png
+  If auto-fetch fails: add manually:
     sandlottribune/assets/images/[team]-preview.png
   Team codes: ari, atl, bos, chc, cin, col, hou, las, mia, mil,
               nyy, phi, san, sea, stl, tex, tor, wsh
@@ -321,6 +336,64 @@ PUSHING CHANGES TO GITHUB PAGES
   git push origin main
 
 The site at your GitHub Pages URL updates within 1-2 minutes of pushing.
+
+
+---
+
+---
+
+ADMIN PORTAL
+-------------
+
+The unified admin portal is at: estn/admin.html
+Direct URL: https://lemonlyman86.github.io/sandlottribune/estn/admin.html
+
+Sign in with your ESTN administrator account. Tabs:
+
+  Portal          — Featured article, ticker, headlines, ads, quick links, programs
+  Between the Chalk — Article list manager + "New BTC Article" button
+  Season Events   — Season calendar events
+  League Records  — Championship history, season records
+  The Tribune     — Tribune edition management + "New Edition" button
+  Rumblr          — User verifications, post moderation, AI writer tools
+
+The old Rumblr admin page (rumblr/admin.html) now redirects to the ESTN admin
+Rumblr tab automatically. Do not link to rumblr/admin.html in new documentation.
+
+
+---
+
+BETWEEN THE CHALK — WRITING NEW ARTICLES VIA ADMIN
+-----------------------------------------------------
+
+New BTC articles can be written directly in the browser using the BTC editor:
+
+  1. Go to: estn/admin.html → Between the Chalk tab → click "+ New BTC Article"
+  2. Enter a slug (URL key, e.g. power-rankings-wk01-2026)
+  3. Select article type, add a date, hero image URL, thumbnail URL
+  4. Write the article in the body editor. Use "Insert Image" to add photos
+     with text wrap options (full width / float left / float right / center).
+     Click "Clear Float" to stop text wrapping after a floated image.
+  5. Click "Save Article" — saves to Firestore and adds to the BTC article list.
+
+The article is immediately accessible at:
+  between-the-chalk/view.html?slug=[your-slug]
+
+Existing static BTC articles (custom-lad_2026.html etc.) continue to work unchanged.
+
+
+---
+
+PROGRAMS (LEFT PILLAR ON HOME PAGE)
+--------------------------------------
+
+The three program cards on the ESTN home page (Rumblr, The Sandlot Tribune,
+Babe Ruth Podcast) are now fully editable via the admin portal:
+
+  estn/admin.html → Portal tab → Programs (Left Pillar) section
+
+Edit: name, subtitle, status badge text, badge style, link URL, and show/hide.
+Changes save to Firestore and take effect on the portal immediately.
 
 
 ---

@@ -8,9 +8,12 @@
 
 import { firestore, auth } from './firebase-config.js';
 import {
-  doc, getDoc, setDoc, updateDoc, serverTimestamp
+  doc, getDoc, setDoc, updateDoc, serverTimestamp,
+  collection, query, where, orderBy, limit,
+  getDocs, addDoc, deleteDoc, increment
 } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js';
 import { onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js';
+import { AI_WRITERS } from './rumblr-app.js';
 
 // ── Set this to your Firebase Auth UID ───────────────────
 const ADMIN_UID = 'xNRN4Ae3VTeYqXB4XvcsDMXVABZ2';
@@ -425,26 +428,84 @@ function initQuickLinks(settings) {
   });
 }
 
-// ── Programs visibility ────────────────────────────────────────────────────────
-function initPrograms(settings) {
-  const hidden = new Set(settings.hidden_programs || []);
-  const setCb = (id, programId) => {
-    const el = document.getElementById(id);
-    if (el) el.checked = !hidden.has(programId);
-  };
-  setCb('prog-rumblr',  'rumblr');
-  setCb('prog-tribune', 'tribune');
-  setCb('prog-podcast', 'podcast');
+// ── Programs Manager (full edit: name, subtitle, status, URL, enabled) ─────────
+const DEFAULT_PROGRAMS_SEED = [
+  { id: 'rumblr',   name: 'Rumblr',                subtitle: '', status: 'Now Live',      statusCls: 'live',        href: 'rumblr/',  logo: 'assets/images/rumblr-logo.png',          enabled: true },
+  { id: 'tribune',  name: 'The Sandlot Tribune',   subtitle: '', status: 'Now Live',      statusCls: 'live',        href: 'tribune/', logo: 'assets/images/logo.png',                 enabled: true },
+  { id: 'podcast',  name: 'Babe Ruth Podcast',     subtitle: '', status: 'Coming in 2026', statusCls: 'coming-soon', href: 'about/',   logo: 'assets/images/baberuth-podcast-logo.png', enabled: true },
+];
 
-  document.getElementById('save-programs-btn')?.addEventListener('click', async () => {
+function initPrograms(settings) {
+  const container = document.getElementById('programs-toggles');
+  const saveBtn   = document.getElementById('save-programs-btn');
+  if (!container) return;
+
+  // Use Firestore programs array or seed from defaults (migrate hidden_programs)
+  let programs;
+  if (Array.isArray(settings.programs) && settings.programs.length > 0) {
+    programs = settings.programs.map(p => ({ ...p }));
+  } else {
+    const hidden = new Set(settings.hidden_programs || []);
+    programs = DEFAULT_PROGRAMS_SEED.map(p => ({ ...p, enabled: !hidden.has(p.id) }));
+  }
+
+  function renderProgramRows() {
+    container.innerHTML = '';
+    programs.forEach((p, i) => {
+      const row = document.createElement('div');
+      row.style.cssText = 'border:1px solid #2D3748;border-radius:6px;padding:12px;margin-bottom:10px;background:#0D1117;';
+      row.innerHTML = `
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;">
+          <label class="estn-admin-toggle" style="flex-shrink:0;">
+            <input type="checkbox" class="prog-enabled" ${p.enabled !== false ? 'checked' : ''}>
+            <span class="estn-admin-toggle-slider"></span>
+          </label>
+          <span style="font-family:'Oswald',sans-serif;font-size:0.8rem;color:#E2E8F0;">${esc(p.name || p.id)}</span>
+        </div>
+        <div class="estn-admin-field-grid">
+          <div class="estn-admin-field">
+            <label class="estn-admin-label">Program Name</label>
+            <input class="estn-admin-input prog-name" type="text" value="${esc(p.name || '')}" placeholder="Program name">
+          </div>
+          <div class="estn-admin-field">
+            <label class="estn-admin-label">Subtitle (optional)</label>
+            <input class="estn-admin-input prog-subtitle" type="text" value="${esc(p.subtitle || '')}" placeholder="Tagline under the name">
+          </div>
+          <div class="estn-admin-field">
+            <label class="estn-admin-label">Status Badge Text</label>
+            <input class="estn-admin-input prog-status" type="text" value="${esc(p.status || '')}" placeholder="e.g. Now Live, Coming in 2026">
+          </div>
+          <div class="estn-admin-field">
+            <label class="estn-admin-label">Badge Style</label>
+            <select class="estn-admin-input prog-status-cls">
+              <option value="live" ${p.statusCls === 'live' ? 'selected' : ''}>Live (red)</option>
+              <option value="coming-soon" ${p.statusCls === 'coming-soon' ? 'selected' : ''}>Coming Soon (grey)</option>
+              <option value="beta" ${p.statusCls === 'beta' ? 'selected' : ''}>Beta (blue)</option>
+            </select>
+          </div>
+          <div class="estn-admin-field" style="grid-column:span 2;">
+            <label class="estn-admin-label">Link URL (relative to site root)</label>
+            <input class="estn-admin-input prog-href" type="text" value="${esc(p.href || '')}" placeholder="e.g. rumblr/">
+          </div>
+        </div>
+      `;
+      // Keep programs array in sync with inputs
+      row.querySelector('.prog-enabled').addEventListener('change',    e => { programs[i].enabled   = e.target.checked; });
+      row.querySelector('.prog-name').addEventListener('input',        e => { programs[i].name      = e.target.value; });
+      row.querySelector('.prog-subtitle').addEventListener('input',    e => { programs[i].subtitle  = e.target.value; });
+      row.querySelector('.prog-status').addEventListener('input',      e => { programs[i].status    = e.target.value; });
+      row.querySelector('.prog-status-cls').addEventListener('change', e => { programs[i].statusCls = e.target.value; });
+      row.querySelector('.prog-href').addEventListener('input',        e => { programs[i].href      = e.target.value; });
+      container.appendChild(row);
+    });
+  }
+
+  renderProgramRows();
+
+  saveBtn?.addEventListener('click', async () => {
     try {
-      const hiddenPrograms = [];
-      const check = (id, progId) => { if (!document.getElementById(id)?.checked) hiddenPrograms.push(progId); };
-      check('prog-rumblr',  'rumblr');
-      check('prog-tribune', 'tribune');
-      check('prog-podcast', 'podcast');
-      await saveSettings({ hidden_programs: hiddenPrograms });
-      showToast('Programs visibility saved.');
+      await saveSettings({ programs });
+      showToast('Programs saved.');
     } catch { /* error shown by saveSettings */ }
   });
 }
@@ -460,6 +521,12 @@ function setupTabs() {
       if (panel) panel.classList.add('active');
     });
   });
+  // Auto-activate tab from URL hash (e.g. #rumblr from redirect)
+  const hashTab = window.location.hash.replace('#', '');
+  if (hashTab) {
+    const t = document.querySelector(`.estn-admin-tab[data-tab="${hashTab}"]`);
+    if (t) t.click();
+  }
 }
 
 // ── Up / down move buttons ─────────────────────────────────────────────────────
@@ -525,6 +592,13 @@ function createBTCRow(article) {
   row.dataset.typeLabel= article.typeLabel|| '';
   row.dataset.url      = article.url      || '';
   row.dataset.thumb    = article.thumbnail|| '';
+  // Show Edit link for Firestore-based articles (url contains view.html?slug=)
+  const isFirestore = (article.url || '').includes('view.html?slug=');
+  const slugMatch   = isFirestore ? (article.url.match(/slug=([^&]+)/) || [])[1] : null;
+  const editBtnHtml = isFirestore && slugMatch
+    ? `<a href="btc-editor.html?slug=${esc(slugMatch)}" class="rb-admin-btn-edit" style="text-decoration:none;white-space:nowrap;" title="Edit article">&#9998; Edit</a>`
+    : '';
+
   row.innerHTML = `
     ${MOVE_BTNS_HTML}
     <img class="btc-row-thumb" src="${esc(article.thumbnail)}" alt="" onerror="this.style.opacity='0.15'">
@@ -533,6 +607,7 @@ function createBTCRow(article) {
       <div class="btc-row-sub">${esc(article.author)} &middot; ${esc(article.date)}</div>
     </div>
     <span class="btc-row-type">${esc(article.typeLabel || article.type)}</span>
+    ${editBtnHtml}
     <label class="estn-admin-toggle" title="Enabled in nav">
       <input type="checkbox" class="btc-enabled-toggle" ${article.enabled !== false ? 'checked' : ''}>
       <span class="estn-admin-toggle-slider"></span>
@@ -937,4 +1012,442 @@ onAuthStateChanged(auth, async user => {
   initEvents();
   initRecords();
   initTribune();
+  initRumblrTab();
 });
+
+// ══════════════════════════════════════════════════════════════════════════════
+// Rumblr Tab — ported from rumblr-admin.js
+// Uses existing esc(), showToast(), firestore, and AI_WRITERS from imports above.
+// ══════════════════════════════════════════════════════════════════════════════
+
+function initRumblrTab() {
+  loadPendingUsersRumblr();
+  loadAllUsersRumblr();
+  loadAIWritersRumblr();
+  loadRecentPostsRumblr();
+  initWriterPanelsRumblr();
+}
+
+// ── Pending Verifications ─────────────────────────────────────────────────────
+async function loadPendingUsersRumblr() {
+  const container = document.getElementById('rb-pending-list');
+  const badge     = document.getElementById('rb-pending-badge');
+  if (!container) return;
+
+  try {
+    const snap = await getDocs(query(
+      collection(firestore, 'users'),
+      where('verified', '==', false)
+    ));
+
+    if (badge) {
+      badge.textContent = snap.size;
+      badge.style.display = snap.size > 0 ? 'inline' : 'none';
+    }
+
+    if (snap.empty) {
+      container.innerHTML = '<p style="color:#4A5568;font-family:\'Marcellus\',serif;font-size:0.82rem;">No pending accounts.</p>';
+      return;
+    }
+
+    container.innerHTML = '';
+    snap.forEach(d => {
+      const u = d.data();
+      const avatarHtml = u.avatar_url
+        ? `<img src="${esc(u.avatar_url)}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;" onerror="this.style.display='none';">`
+        : esc((u.team_abbrev || '?').slice(0, 3));
+      const row = document.createElement('div');
+      row.className = 'rb-admin-user-row';
+      row.innerHTML = `
+        <div class="rb-post-avatar" style="background:${u.team_color || '#555'};width:36px;height:36px;font-size:0.72rem;overflow:hidden;">${avatarHtml}</div>
+        <div class="rb-admin-user-info">
+          <div class="rb-admin-user-name">${esc(u.display_name)} &nbsp;<span style="color:#718096;">${esc(u.handle)}</span></div>
+          <div class="rb-admin-user-detail">${esc(u.team_name)} &nbsp;&middot;&nbsp; ${esc(u.email)}</div>
+          <div class="rb-admin-user-detail" style="color:#4A5568;">Joined ${u.joined_at?.toDate ? u.joined_at.toDate().toLocaleDateString() : '—'}</div>
+        </div>
+        <button class="rb-admin-btn-approve" data-uid="${d.id}">Approve</button>
+        <button class="rb-admin-btn-reject"  data-uid="${d.id}">Reject</button>
+      `;
+      row.querySelector('.rb-admin-btn-approve').addEventListener('click', () => approveUserRumblr(d.id, row, badge));
+      row.querySelector('.rb-admin-btn-reject').addEventListener('click',  () => rejectUserRumblr(d.id, u.email, row, badge));
+      container.appendChild(row);
+    });
+  } catch (e) {
+    container.innerHTML = '<p style="color:#F87171;font-family:\'Marcellus\',serif;font-size:0.82rem;">Error loading pending users.</p>';
+    console.error('loadPendingUsersRumblr:', e);
+  }
+}
+
+async function approveUserRumblr(uid, rowEl, badgeEl) {
+  if (!confirm('Approve this account and grant the ⚾ verified badge?')) return;
+  await updateDoc(doc(firestore, 'users', uid), { verified: true });
+  rowEl.remove();
+  showToast('Account approved!');
+  if (badgeEl) {
+    const n = Math.max(0, parseInt(badgeEl.textContent) - 1);
+    badgeEl.textContent = n;
+    badgeEl.style.display = n > 0 ? 'inline' : 'none';
+  }
+}
+
+async function rejectUserRumblr(uid, email, rowEl, badgeEl) {
+  if (!confirm(`Reject and delete account for ${email}? This cannot be undone.`)) return;
+  await deleteDoc(doc(firestore, 'users', uid));
+  rowEl.remove();
+  showToast('Account rejected and profile deleted.');
+  if (badgeEl) {
+    const n = Math.max(0, parseInt(badgeEl.textContent) - 1);
+    badgeEl.textContent = n;
+    badgeEl.style.display = n > 0 ? 'inline' : 'none';
+  }
+}
+
+// ── All Accounts ──────────────────────────────────────────────────────────────
+async function loadAllUsersRumblr() {
+  const container = document.getElementById('rb-all-users-list');
+  if (!container) return;
+
+  try {
+    const snap = await getDocs(query(
+      collection(firestore, 'users'),
+      orderBy('joined_at', 'desc'),
+      limit(50)
+    ));
+
+    if (snap.empty) {
+      container.innerHTML = '<p style="color:#4A5568;font-family:\'Marcellus\',serif;font-size:0.82rem;">No accounts yet.</p>';
+      return;
+    }
+
+    container.innerHTML = '';
+    snap.forEach(d => {
+      const u = d.data();
+      const displayName = u.display_name || u.email || '(unknown)';
+      const avatarHtml = u.avatar_url
+        ? `<img src="${esc(u.avatar_url)}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;" onerror="this.style.display='none';">`
+        : esc((u.team_abbrev || '?').slice(0, 3));
+
+      const row = document.createElement('div');
+      row.className = 'rb-admin-user-row';
+      row.innerHTML = `
+        <div class="rb-post-avatar" style="background:${u.team_color || '#555'};width:36px;height:36px;font-size:0.72rem;overflow:hidden;">${avatarHtml}</div>
+        <div class="rb-admin-user-info">
+          <div class="rb-admin-user-name">${esc(displayName)} ${u.verified ? '<span class="rb-verified" title="Verified">⚾</span>' : ''}</div>
+          <div class="rb-admin-user-detail">${esc(u.handle || '')} &nbsp;&middot;&nbsp; ${esc(u.team_name || u.account_type || '')}</div>
+          <div class="rb-admin-user-detail" style="color:#4A5568;font-size:0.78rem;">${esc(u.email || '')}</div>
+        </div>
+        <span style="font-family:'Oswald',sans-serif;font-size:0.8rem;color:#718096;">${u.post_count || 0} posts</span>
+        ${!u.verified ? `<button class="rb-admin-btn-approve" data-uid="${d.id}">Verify</button>` : ''}
+        <button class="rb-admin-btn-edit-avatar-rumblr" title="Edit avatar URL"
+          style="font-size:0.72rem;padding:3px 8px;background:#1A2030;border:1px solid #2D3748;color:#E2E8F0;border-radius:4px;cursor:pointer;">&#9998;</button>
+        <button class="rb-admin-btn-reject rb-admin-btn-del-user-rumblr" data-uid="${d.id}"
+          style="font-size:0.72rem;padding:3px 8px;" title="Delete profile">&#128465;</button>
+      `;
+
+      const verifyBtn = row.querySelector('.rb-admin-btn-approve');
+      if (verifyBtn) verifyBtn.addEventListener('click', () => approveUserRumblr(d.id, verifyBtn.parentElement, null));
+
+      const avatarCircle = row.querySelector('.rb-post-avatar');
+      row.querySelector('.rb-admin-btn-edit-avatar-rumblr').addEventListener('click', async () => {
+        const newUrl = prompt(`Avatar URL for ${displayName}:\n(leave blank to remove)`, u.avatar_url || '');
+        if (newUrl === null) return;
+        const url = newUrl.trim() || null;
+        await updateDoc(doc(firestore, 'users', d.id), { avatar_url: url });
+        u.avatar_url = url;
+        avatarCircle.innerHTML = url
+          ? `<img src="${esc(url)}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;" onerror="this.style.display='none';">`
+          : esc((u.team_abbrev || '?').slice(0, 3));
+        showToast('Avatar updated!');
+      });
+
+      row.querySelector('.rb-admin-btn-del-user-rumblr').addEventListener('click', async () => {
+        if (!confirm(`Delete account for ${u.email || displayName}? Removes the Firestore profile but NOT their Firebase Auth login.`)) return;
+        await deleteDoc(doc(firestore, 'users', d.id));
+        row.remove();
+        showToast('Profile deleted.');
+      });
+
+      container.appendChild(row);
+    });
+  } catch (e) {
+    container.innerHTML = '<p style="color:#F87171;font-family:\'Marcellus\',serif;font-size:0.82rem;">Error loading accounts.</p>';
+    console.error('loadAllUsersRumblr:', e);
+  }
+}
+
+// ── AI Writers ────────────────────────────────────────────────────────────────
+function loadAIWritersRumblr() {
+  const container = document.getElementById('rb-ai-writers-list');
+  if (!container) return;
+
+  container.innerHTML = '';
+  AI_WRITERS.forEach(w => {
+    const row = document.createElement('div');
+    row.className = 'rb-admin-ai-row';
+    row.innerHTML = `
+      <div class="rb-post-avatar" style="background:${w.color};width:36px;height:36px;flex-shrink:0;overflow:hidden;">
+        <img src="${esc(w.image)}" alt="${esc(w.name)}" style="width:100%;height:100%;object-fit:cover;" onerror="this.style.display='none';">
+      </div>
+      <div class="rb-admin-ai-info">
+        <div class="rb-admin-ai-name">${esc(w.name)} <span class="rb-verified">⚾</span></div>
+        <div class="rb-admin-ai-handle">${esc(w.handle)} &nbsp;&middot;&nbsp; ${(w.stats?.followers || 0).toLocaleString()} followers &nbsp;&middot;&nbsp; ${(w.stats?.posts || 0).toLocaleString()} posts</div>
+      </div>
+    `;
+    container.appendChild(row);
+  });
+}
+
+// ── Recent Posts ──────────────────────────────────────────────────────────────
+async function loadRecentPostsRumblr() {
+  const container = document.getElementById('rb-recent-posts-list');
+  if (!container) return;
+
+  try {
+    const snap = await getDocs(query(
+      collection(firestore, 'posts'),
+      orderBy('timestamp', 'desc'),
+      limit(100)
+    ));
+
+    if (snap.empty) {
+      container.innerHTML = '<p style="color:#4A5568;font-family:\'Marcellus\',serif;font-size:0.82rem;">No posts yet.</p>';
+      return;
+    }
+
+    const allPosts = [];
+    snap.forEach(d => allPosts.push({ id: d.id, ...d.data() }));
+
+    // Wire up the static filter buttons already in HTML
+    let activeFilter = 'all';
+    const filterBar = document.getElementById('rb-post-filter-bar');
+    if (filterBar) {
+      filterBar.querySelectorAll('.rb-admin-filter-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          filterBar.querySelectorAll('.rb-admin-filter-btn').forEach(b => b.classList.remove('active'));
+          btn.classList.add('active');
+          activeFilter = btn.dataset.filter;
+          renderPostsRumblr();
+        });
+      });
+    }
+
+    function renderPostsRumblr() {
+      container.innerHTML = '';
+      const filtered = allPosts.filter(p => {
+        if (activeFilter === 'ai')      return p.author_type === 'ai' && !p.parent_post_id;
+        if (activeFilter === 'user')    return p.author_type !== 'ai' && !p.parent_post_id;
+        if (activeFilter === 'reply')   return !!p.parent_post_id;
+        return true;
+      });
+
+      if (!filtered.length) {
+        container.innerHTML = '<p style="color:#4A5568;font-family:\'Marcellus\',serif;font-size:0.82rem;">No posts in this category.</p>';
+        return;
+      }
+
+      filtered.forEach(p => {
+        const isAI    = p.author_type === 'ai';
+        const isReply = !!p.parent_post_id;
+        const typeLabel = isReply ? 'reply' : isAI ? 'ai' : 'user';
+        const typeColor = isReply ? '#4A5568' : isAI ? '#2E6B3E' : '#1E3A5F';
+
+        const row = document.createElement('div');
+        row.className = 'rb-admin-post-row';
+        row.innerHTML = `
+          <div class="rb-admin-post-header">
+            <div class="rb-post-avatar" style="background:${p.author_avatar_color || '#555'};width:28px;height:28px;font-size:0.65rem;flex-shrink:0;">
+              ${p.author_initials || '?'}
+            </div>
+            <span class="rb-admin-post-name">${esc(p.author_name)}</span>
+            <span class="rb-admin-post-handle">${esc(p.author_handle)}</span>
+            <span class="rb-admin-type-badge" style="background:${typeColor};">${typeLabel}</span>
+            <span class="rb-admin-post-ts">${p.timestamp?.toDate ? p.timestamp.toDate().toLocaleString() : ''}</span>
+          </div>
+          ${isReply ? `<div style="font-size:0.72rem;color:#4A5568;margin-bottom:5px;">&#8618; Reply to <code style="background:#0D1117;padding:1px 4px;border-radius:3px;font-size:0.7rem;">${p.parent_post_id}</code></div>` : ''}
+          <div class="rb-admin-post-content">${esc(p.content)}</div>
+          <div class="rb-admin-post-actions">
+            <button class="rb-admin-btn-edit">&#9998; Edit</button>
+            <button class="rb-admin-btn-reject">&#128465; Delete</button>
+            <span class="rb-admin-post-stats">&#9829; ${p.like_count || 0} &nbsp; &#128172; ${p.reply_count || 0} &nbsp; &#8635; ${p.repost_count || 0}</span>
+          </div>
+          <div class="rb-admin-edit-area">
+            <textarea class="rb-admin-edit-textarea" rows="3">${esc(p.content)}</textarea>
+            <div class="rb-admin-edit-btns">
+              <button class="estn-admin-btn rb-save-edit-btn" style="font-size:0.78rem;padding:4px 14px;">Save</button>
+              <button class="estn-admin-btn secondary rb-cancel-edit-btn" style="font-size:0.78rem;padding:4px 14px;">Cancel</button>
+            </div>
+          </div>
+        `;
+
+        const contentDiv   = row.querySelector('.rb-admin-post-content');
+        const editArea     = row.querySelector('.rb-admin-edit-area');
+        const editTextarea = row.querySelector('.rb-admin-edit-textarea');
+        const editBtn      = row.querySelector('.rb-admin-btn-edit');
+
+        row.querySelector('.rb-admin-btn-reject').addEventListener('click', async () => {
+          if (!confirm('Delete this post permanently?')) return;
+          await deleteDoc(doc(firestore, 'posts', p.id));
+          row.remove();
+          const idx = allPosts.findIndex(x => x.id === p.id);
+          if (idx !== -1) allPosts.splice(idx, 1);
+          showToast('Post deleted.');
+        });
+
+        editBtn.addEventListener('click', () => {
+          editArea.style.display = 'block';
+          editBtn.style.display = 'none';
+          editTextarea.focus();
+        });
+
+        row.querySelector('.rb-cancel-edit-btn').addEventListener('click', () => {
+          editArea.style.display = 'none';
+          editBtn.style.display = '';
+          editTextarea.value = p.content;
+        });
+
+        row.querySelector('.rb-save-edit-btn').addEventListener('click', async () => {
+          const newContent = editTextarea.value.trim();
+          if (!newContent) { showToast('Content cannot be empty.'); return; }
+          await updateDoc(doc(firestore, 'posts', p.id), { content: newContent });
+          p.content = newContent;
+          contentDiv.textContent = newContent;
+          editArea.style.display = 'none';
+          editBtn.style.display = '';
+          showToast('Post updated.');
+        });
+
+        container.appendChild(row);
+      });
+    }
+
+    renderPostsRumblr();
+  } catch (e) {
+    container.innerHTML = '<p style="color:#F87171;font-family:\'Marcellus\',serif;font-size:0.82rem;">Error loading posts.</p>';
+    console.error('loadRecentPostsRumblr:', e);
+  }
+}
+
+// ── Writer Reply + Follow Panels ──────────────────────────────────────────────
+function initWriterPanelsRumblr() {
+  // Populate writer dropdowns
+  ['rb-reply-writer', 'rb-follow-writer'].forEach(selectId => {
+    const sel = document.getElementById(selectId);
+    if (!sel) return;
+    AI_WRITERS.forEach((w, i) => {
+      const opt = document.createElement('option');
+      opt.value = i;
+      opt.textContent = `${w.name} (${w.handle})`;
+      sel.appendChild(opt);
+    });
+  });
+
+  // Char counter
+  const replyContent = document.getElementById('rb-reply-content');
+  const replyChar    = document.getElementById('rb-reply-char');
+  if (replyContent && replyChar) {
+    replyContent.addEventListener('input', () => {
+      replyChar.textContent = (280 - replyContent.value.length) + ' remaining';
+    });
+  }
+
+  // Writer Reply submit
+  const replyBtn = document.getElementById('rb-reply-submit-btn');
+  if (replyBtn) {
+    replyBtn.addEventListener('click', async () => {
+      const writerIdx = document.getElementById('rb-reply-writer')?.value;
+      const postId    = document.getElementById('rb-reply-post-id')?.value.trim();
+      const content   = replyContent?.value.trim();
+      const resultEl  = document.getElementById('rb-reply-result');
+
+      if (writerIdx === '' || !postId || !content) {
+        showToast('Fill in all fields before posting.');
+        return;
+      }
+      const writer = AI_WRITERS[parseInt(writerIdx)];
+      const hashtags = [...content.matchAll(/#(\w+)/g)].map(m => '#' + m[1]);
+
+      replyBtn.disabled = true;
+      try {
+        const parentSnap = await getDoc(doc(firestore, 'posts', postId));
+        if (!parentSnap.exists()) {
+          showToast('Post ID not found. Double-check and try again.');
+          replyBtn.disabled = false;
+          return;
+        }
+        await addDoc(collection(firestore, 'posts'), {
+          content,
+          parent_post_id:      postId,
+          author_type:         'ai',
+          author_name:         writer.name,
+          author_handle:       writer.handle,
+          author_uid:          null,
+          author_avatar_color: writer.color,
+          author_initials:     writer.initials,
+          author_image:        writer.image,
+          author_verified:     true,
+          hashtags,
+          is_ai_generated:     true,
+          like_count:          0,
+          reply_count:         0,
+          repost_count:        0,
+          timestamp:           serverTimestamp(),
+        });
+        await updateDoc(doc(firestore, 'posts', postId), { reply_count: increment(1) });
+        if (resultEl) {
+          resultEl.style.display = 'block';
+          resultEl.style.color = '#48BB78';
+          resultEl.textContent = `Reply posted as ${writer.name}!`;
+        }
+        if (replyContent) replyContent.value = '';
+        if (replyChar) replyChar.textContent = '280 remaining';
+        showToast(`Reply posted as ${writer.name}`);
+      } catch (err) {
+        console.error('Writer reply error:', err);
+        showToast('Error posting reply. Check console.', true);
+      } finally {
+        replyBtn.disabled = false;
+      }
+    });
+  }
+
+  // Writer Follow submit
+  const followBtn = document.getElementById('rb-follow-submit-btn');
+  if (followBtn) {
+    followBtn.addEventListener('click', async () => {
+      const writerIdx  = document.getElementById('rb-follow-writer')?.value;
+      const userHandle = document.getElementById('rb-follow-handle')?.value.trim();
+      const resultEl   = document.getElementById('rb-follow-result');
+
+      if (writerIdx === '' || !userHandle) {
+        showToast('Select a writer and enter a handle.');
+        return;
+      }
+      const writer = AI_WRITERS[parseInt(writerIdx)];
+      const handle = userHandle.startsWith('@') ? userHandle : '@' + userHandle;
+      const followId = `ai_${writer.handle.replace(/[^a-zA-Z0-9]/g, '_')}_${handle.replace(/[^a-zA-Z0-9]/g, '_')}`;
+
+      followBtn.disabled = true;
+      try {
+        await setDoc(doc(firestore, 'ai_follows', followId), {
+          follower_handle: writer.handle,
+          follower_type:   'ai',
+          followed_handle: handle,
+          timestamp:       serverTimestamp(),
+        });
+        if (resultEl) {
+          resultEl.style.display = 'block';
+          resultEl.style.color = '#48BB78';
+          resultEl.textContent = `${writer.name} is now following ${handle}`;
+        }
+        const handleInput = document.getElementById('rb-follow-handle');
+        if (handleInput) handleInput.value = '';
+        showToast(`${writer.name} now follows ${handle}`);
+      } catch (err) {
+        console.error('Writer follow error:', err);
+        showToast('Error recording follow. Check console.', true);
+      } finally {
+        followBtn.disabled = false;
+      }
+    });
+  }
+}
