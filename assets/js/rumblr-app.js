@@ -62,6 +62,17 @@ export function setCurrentUser(user, userDoc) {
 // ── DOM refs (set after DOMContentLoaded) ─────────────────
 let feedEl, filterBannerEl, loadMoreBtn, spinnerEl;
 
+// ── Load AI writers from Firestore (overrides hardcoded AI_WRITERS if present) ─
+(async () => {
+  try {
+    const snap = await getDoc(doc(firestore, 'settings', 'ai_writers'));
+    if (snap.exists() && Array.isArray(snap.data().writers) && snap.data().writers.length) {
+      // Splice in-place so existing references (exports) stay valid
+      AI_WRITERS.splice(0, AI_WRITERS.length, ...snap.data().writers);
+    }
+  } catch { /* non-critical — falls back to hardcoded */ }
+})();
+
 // ══════════════════════════════════════════════════════════
 // Initialise
 // ══════════════════════════════════════════════════════════
