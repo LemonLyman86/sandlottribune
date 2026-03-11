@@ -51,13 +51,16 @@
     .btc-row-type { font-family: 'Oswald',sans-serif; font-size: 0.62rem; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: #4299E1; background: #1E3A5F; padding: 2px 6px; border-radius: 3px; white-space: nowrap; }
 
     /* ── Event rows ── */
-    .event-row {
-      display: grid; grid-template-columns: 26px 1fr auto auto auto auto;
-      gap: 10px; align-items: center; padding: 8px 10px;
+    .event-row-wrap {
       border: 1px solid #2D3748; border-radius: 6px; margin-bottom: 5px; background: #0D1117;
     }
-    .event-row:hover { border-color: #4A5568; }
-    .event-row.dragging { opacity: 0.35; }
+    .event-row-wrap:hover { border-color: #4A5568; }
+    .event-row-wrap.dragging { opacity: 0.35; }
+    .event-row {
+      display: grid; grid-template-columns: 26px 1fr auto auto auto auto auto;
+      gap: 10px; align-items: center; padding: 8px 10px;
+    }
+    .ev-edit-area { padding: 0 10px 12px; border-top: 1px solid #2D3748; }
     .event-row-meta { min-width: 0; }
     .event-row-name { font-family: 'Oswald',sans-serif; font-size: 0.8rem; color: #E2E8F0; }
     .event-row-dates { font-family: 'Marcellus',serif; font-size: 0.7rem; color: #718096; }

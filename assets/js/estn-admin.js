@@ -718,18 +718,21 @@ const FALLBACK_EVENTS = [
 const CAT_LABELS = { preseason:'Pre-Season', inseason:'In-Season', playoffs:'Playoffs', offseason:'Off-Season' };
 
 function createEventRow(ev) {
+  const wrap = document.createElement('div');
+  wrap.className = 'event-row-wrap';
+  wrap.setAttribute('draggable', 'true');  // drag the whole wrap
+
+  // ── Summary row (always visible) ──
   const row = document.createElement('div');
   row.className = 'event-row';
-  row.setAttribute('draggable', 'true');
-  row.dataset.id   = ev.id   || `ev_${Date.now()}`;
-  row.dataset.desc = ev.description || '';
+  row.dataset.id = ev.id || `ev_${Date.now()}`;
   row.innerHTML = `
     ${MOVE_BTNS_HTML}
     <div class="event-row-meta">
-      <div class="event-row-name">${esc(ev.name)}</div>
-      <div class="event-row-dates">${esc(ev.startDate)}${ev.endDate ? ' – ' + esc(ev.endDate) : ''}</div>
+      <div class="event-row-name ev-display-name">${esc(ev.name)}</div>
+      <div class="event-row-dates ev-display-dates">${esc(ev.startDate)}${ev.endDate ? ' – ' + esc(ev.endDate) : ''}</div>
     </div>
-    <span class="event-cat-chip ${esc(ev.category)}">${esc(CAT_LABELS[ev.category] || ev.category)}</span>
+    <span class="event-cat-chip ev-display-cat ${esc(ev.category)}">${esc(CAT_LABELS[ev.category] || ev.category)}</span>
     <select class="estn-admin-input ev-status-override" style="font-size:0.72rem;padding:3px 6px;width:auto;">
       <option value="">Auto</option>
       <option value="upcoming"   ${ev.statusOverride==='upcoming'   ?'selected':''}>Force: Upcoming</option>
@@ -740,29 +743,105 @@ function createEventRow(ev) {
       <input type="checkbox" class="ev-enabled-toggle" ${ev.enabled !== false ? 'checked' : ''}>
       <span class="estn-admin-toggle-slider"></span>
     </label>
+    <button class="ev-edit-btn" title="Edit event" style="background:#1E3A5F;color:#60A5FA;border:none;border-radius:4px;padding:3px 10px;font-family:'Oswald',sans-serif;font-size:0.72rem;cursor:pointer;white-space:nowrap;">Edit &#9660;</button>
     <button class="admin-delete-btn" title="Remove">&times;</button>
   `;
-  // Store mutable fields as data attrs for read-back
-  row.dataset.name      = ev.name      || '';
-  row.dataset.category  = ev.category  || '';
-  row.dataset.startDate = ev.startDate || '';
-  row.dataset.endDate   = ev.endDate   || '';
-  row.querySelector('.admin-delete-btn').addEventListener('click', () => row.remove());
-  addMoveListeners(row);
-  return row;
+
+  // ── Expand-edit area (hidden by default) ──
+  const editArea = document.createElement('div');
+  editArea.className = 'ev-edit-area';
+  editArea.style.display = 'none';
+  editArea.innerHTML = `
+    <div class="estn-admin-field-grid" style="max-width:680px;margin-top:10px;">
+      <div class="estn-admin-field">
+        <label class="estn-admin-label">Event Name</label>
+        <input class="estn-admin-input ev-edit-name" type="text" value="${esc(ev.name)}" placeholder="Event name">
+      </div>
+      <div class="estn-admin-field">
+        <label class="estn-admin-label">Category</label>
+        <select class="estn-admin-input ev-edit-cat">
+          <option value="preseason"  ${ev.category==='preseason'  ?'selected':''}>Pre-Season</option>
+          <option value="inseason"   ${ev.category==='inseason'   ?'selected':''}>In-Season</option>
+          <option value="playoffs"   ${ev.category==='playoffs'   ?'selected':''}>Playoffs</option>
+          <option value="offseason"  ${ev.category==='offseason'  ?'selected':''}>Off-Season</option>
+        </select>
+      </div>
+      <div class="estn-admin-field">
+        <label class="estn-admin-label">Start Date</label>
+        <input class="estn-admin-input ev-edit-start" type="text" value="${esc(ev.startDate)}" placeholder="YYYY-MM-DD">
+      </div>
+      <div class="estn-admin-field">
+        <label class="estn-admin-label">End Date (optional)</label>
+        <input class="estn-admin-input ev-edit-end" type="text" value="${esc(ev.endDate || '')}" placeholder="YYYY-MM-DD">
+      </div>
+      <div class="estn-admin-field" style="grid-column:span 2;">
+        <label class="estn-admin-label">Description</label>
+        <textarea class="estn-admin-textarea ev-edit-desc" rows="2">${esc(ev.description || '')}</textarea>
+      </div>
+    </div>
+    <button class="ev-collapse-btn" style="margin-top:8px;background:#1A2030;color:#718096;border:1px solid #2D3748;border-radius:4px;padding:3px 10px;font-family:'Oswald',sans-serif;font-size:0.72rem;cursor:pointer;">Collapse &#9650;</button>
+  `;
+
+  // Toggle expand/collapse
+  row.querySelector('.ev-edit-btn').addEventListener('click', () => {
+    const open = editArea.style.display !== 'none';
+    editArea.style.display = open ? 'none' : 'block';
+    row.querySelector('.ev-edit-btn').textContent = open ? 'Edit ▼' : 'Collapse ▲';
+  });
+  editArea.querySelector('.ev-collapse-btn').addEventListener('click', () => {
+    editArea.style.display = 'none';
+    row.querySelector('.ev-edit-btn').textContent = 'Edit ▼';
+  });
+
+  // Keep summary display in sync as user edits
+  editArea.querySelector('.ev-edit-name').addEventListener('input', e => {
+    row.querySelector('.ev-display-name').textContent = e.target.value;
+  });
+  editArea.querySelector('.ev-edit-start').addEventListener('input', () => {
+    const s = editArea.querySelector('.ev-edit-start').value;
+    const e2 = editArea.querySelector('.ev-edit-end').value;
+    row.querySelector('.ev-display-dates').textContent = s + (e2 ? ' – ' + e2 : '');
+  });
+  editArea.querySelector('.ev-edit-end').addEventListener('input', () => {
+    const s = editArea.querySelector('.ev-edit-start').value;
+    const e2 = editArea.querySelector('.ev-edit-end').value;
+    row.querySelector('.ev-display-dates').textContent = s + (e2 ? ' – ' + e2 : '');
+  });
+  editArea.querySelector('.ev-edit-cat').addEventListener('change', e => {
+    const cat = e.target.value;
+    const chip = row.querySelector('.ev-display-cat');
+    chip.className = `event-cat-chip ev-display-cat ${cat}`;
+    chip.textContent = CAT_LABELS[cat] || cat;
+  });
+
+  row.querySelector('.admin-delete-btn').addEventListener('click', () => wrap.remove());
+  addMoveListeners(wrap);  // move the whole wrap
+
+  wrap.appendChild(row);
+  wrap.appendChild(editArea);
+  return wrap;
 }
 
 function readEvents() {
-  return Array.from(document.querySelectorAll('#events-rows .event-row')).map(row => ({
-    id:             row.dataset.id,
-    name:           row.dataset.name,
-    category:       row.dataset.category,
-    startDate:      row.dataset.startDate,
-    endDate:        row.dataset.endDate,
-    description:    row.dataset.desc,
-    statusOverride: row.querySelector('.ev-status-override')?.value || null,
-    enabled:        row.querySelector('.ev-enabled-toggle')?.checked !== false,
-  }));
+  return Array.from(document.querySelectorAll('#events-rows .event-row-wrap')).map(wrap => {
+    const row      = wrap.querySelector('.event-row');
+    const editArea = wrap.querySelector('.ev-edit-area');
+    const name     = editArea?.querySelector('.ev-edit-name')?.value?.trim()  || row?.querySelector('.ev-display-name')?.textContent || '';
+    const cat      = editArea?.querySelector('.ev-edit-cat')?.value           || '';
+    const start    = editArea?.querySelector('.ev-edit-start')?.value?.trim() || '';
+    const end      = editArea?.querySelector('.ev-edit-end')?.value?.trim()   || '';
+    const desc     = editArea?.querySelector('.ev-edit-desc')?.value?.trim()  || '';
+    return {
+      id:             row?.dataset.id           || '',
+      name,
+      category:       cat,
+      startDate:      start,
+      endDate:        end,
+      description:    desc,
+      statusOverride: row?.querySelector('.ev-status-override')?.value || null,
+      enabled:        row?.querySelector('.ev-enabled-toggle')?.checked !== false,
+    };
+  });
 }
 
 async function initEvents() {
