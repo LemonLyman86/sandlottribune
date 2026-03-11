@@ -1119,7 +1119,25 @@ onAuthStateChanged(auth, async user => {
 // Uses existing esc(), showToast(), firestore, and AI_WRITERS from imports above.
 // ══════════════════════════════════════════════════════════════════════════════
 
-function initRumblrTab() {
+// Working copy of AI writers (loaded from Firestore, falls back to hardcoded)
+let _rumblrWriters = [...AI_WRITERS];
+
+async function initRumblrTab() {
+  // 3A: Load writers from Firestore, or seed if first time
+  try {
+    const snap = await getDoc(doc(firestore, 'settings', 'ai_writers'));
+    if (snap.exists() && Array.isArray(snap.data().writers) && snap.data().writers.length) {
+      _rumblrWriters = snap.data().writers;
+    } else {
+      // Seed Firestore with hardcoded defaults on first use
+      await setDoc(doc(firestore, 'settings', 'ai_writers'), { writers: AI_WRITERS }, { merge: true });
+      _rumblrWriters = [...AI_WRITERS];
+    }
+  } catch (e) {
+    console.warn('Could not load AI writers from Firestore, using defaults:', e);
+    _rumblrWriters = [...AI_WRITERS];
+  }
+
   loadPendingUsersRumblr();
   loadAllUsersRumblr();
   loadAIWritersRumblr();
@@ -1279,20 +1297,131 @@ function loadAIWritersRumblr() {
   const container = document.getElementById('rb-ai-writers-list');
   if (!container) return;
 
-  container.innerHTML = '';
-  AI_WRITERS.forEach(w => {
-    const row = document.createElement('div');
-    row.className = 'rb-admin-ai-row';
-    row.innerHTML = `
-      <div class="rb-post-avatar" style="background:${w.color};width:36px;height:36px;flex-shrink:0;overflow:hidden;">
-        <img src="${esc(w.image)}" alt="${esc(w.name)}" style="width:100%;height:100%;object-fit:cover;" onerror="this.style.display='none';">
-      </div>
-      <div class="rb-admin-ai-info">
-        <div class="rb-admin-ai-name">${esc(w.name)} <span class="rb-verified">⚾</span></div>
-        <div class="rb-admin-ai-handle">${esc(w.handle)} &nbsp;&middot;&nbsp; ${(w.stats?.followers || 0).toLocaleString()} followers &nbsp;&middot;&nbsp; ${(w.stats?.posts || 0).toLocaleString()} posts</div>
-      </div>
-    `;
-    container.appendChild(row);
+  function renderWriterRows() {
+    container.innerHTML = '';
+    _rumblrWriters.forEach((w, i) => {
+      const row = document.createElement('div');
+      row.style.cssText = 'border:1px solid #2D3748;border-radius:6px;padding:10px 12px;margin-bottom:8px;background:#0D1117;';
+      row.innerHTML = `
+        <div style="display:flex;gap:10px;align-items:center;margin-bottom:8px;">
+          <div class="rb-post-avatar rw-avatar-preview" style="background:${esc(w.color||'#555')};width:40px;height:40px;flex-shrink:0;overflow:hidden;border-radius:50%;">
+            <img src="${esc(w.image||'')}" alt="" style="width:100%;height:100%;object-fit:cover;" onerror="this.style.display='none';">
+          </div>
+          <span style="font-family:'Oswald',sans-serif;font-size:0.85rem;color:#E2E8F0;flex:1;">${esc(w.name)}</span>
+          <button class="admin-delete-btn rw-delete" title="Remove writer" style="flex-shrink:0;">&times;</button>
+        </div>
+        <div class="estn-admin-field-grid" style="max-width:680px;">
+          <div class="estn-admin-field">
+            <label class="estn-admin-label">Display Name</label>
+            <input class="estn-admin-input rw-name" type="text" value="${esc(w.name||'')}" placeholder="e.g. Jeff Passan">
+          </div>
+          <div class="estn-admin-field">
+            <label class="estn-admin-label">Handle</label>
+            <input class="estn-admin-input rw-handle" type="text" value="${esc(w.handle||'')}" placeholder="@Handle">
+          </div>
+          <div class="estn-admin-field">
+            <label class="estn-admin-label">Avatar Image URL</label>
+            <input class="estn-admin-input rw-image" type="text" value="${esc(w.image||'')}" placeholder="https://…">
+          </div>
+          <div class="estn-admin-field">
+            <label class="estn-admin-label">Avatar Color (fallback)</label>
+            <input class="estn-admin-input rw-color" type="color" value="${esc(w.color||'#1E3A5F')}" style="height:32px;padding:2px 4px;width:80px;">
+          </div>
+          <div class="estn-admin-field" style="grid-column:span 2;">
+            <label class="estn-admin-label">Bio</label>
+            <input class="estn-admin-input rw-bio" type="text" value="${esc(w.bio||'')}" placeholder="Short bio text">
+          </div>
+          <div class="estn-admin-field">
+            <label class="estn-admin-label">Followers</label>
+            <input class="estn-admin-input rw-followers" type="number" value="${w.stats?.followers||0}" min="0">
+          </div>
+          <div class="estn-admin-field">
+            <label class="estn-admin-label">Following</label>
+            <input class="estn-admin-input rw-following" type="number" value="${w.stats?.following||0}" min="0">
+          </div>
+          <div class="estn-admin-field">
+            <label class="estn-admin-label">Posts</label>
+            <input class="estn-admin-input rw-posts" type="number" value="${w.stats?.posts||0}" min="0">
+          </div>
+          <div class="estn-admin-field">
+            <label class="estn-admin-label">Initials (avatar fallback)</label>
+            <input class="estn-admin-input rw-initials" type="text" value="${esc(w.initials||'')}" placeholder="JP" style="width:60px;">
+          </div>
+        </div>
+      `;
+      // Live update avatar preview when image/color changes
+      const imgInput   = row.querySelector('.rw-image');
+      const colInput   = row.querySelector('.rw-color');
+      const nameInput  = row.querySelector('.rw-name');
+      const avatarDiv  = row.querySelector('.rw-avatar-preview');
+      const imgEl      = avatarDiv.querySelector('img');
+      imgInput.addEventListener('input', () => { imgEl.src = imgInput.value.trim(); imgEl.style.display = ''; });
+      colInput.addEventListener('input', () => { avatarDiv.style.background = colInput.value; });
+      // Live update displayed name in header
+      nameInput.addEventListener('input', () => {
+        row.querySelector('span').textContent = nameInput.value;
+      });
+      // Delete
+      row.querySelector('.rw-delete').addEventListener('click', () => {
+        _rumblrWriters.splice(i, 1);
+        renderWriterRows();
+      });
+      container.appendChild(row);
+    });
+  }
+
+  renderWriterRows();
+
+  // "Add Writer" button
+  document.getElementById('rb-add-writer-btn')?.addEventListener('click', () => {
+    _rumblrWriters.push({ name:'New Writer', handle:'@NewWriter', color:'#2D3748', initials:'NW', image:'', bio:'', bannerColor:'#0D1117', stats:{ followers:0, following:0, posts:0 } });
+    renderWriterRows();
+    container.lastElementChild?.scrollIntoView({ behavior:'smooth' });
+  });
+
+  // "Save AI Writers" button
+  document.getElementById('rb-save-writers-btn')?.addEventListener('click', async () => {
+    // Read current values from inputs back into _rumblrWriters
+    const rows = container.querySelectorAll(':scope > div');
+    _rumblrWriters = Array.from(rows).map(row => ({
+      name:        row.querySelector('.rw-name')?.value?.trim()       || '',
+      handle:      row.querySelector('.rw-handle')?.value?.trim()     || '',
+      image:       row.querySelector('.rw-image')?.value?.trim()      || '',
+      color:       row.querySelector('.rw-color')?.value              || '#555',
+      bio:         row.querySelector('.rw-bio')?.value?.trim()        || '',
+      initials:    row.querySelector('.rw-initials')?.value?.trim()   || '',
+      bannerColor: '#0D1117',
+      stats: {
+        followers: parseInt(row.querySelector('.rw-followers')?.value) || 0,
+        following: parseInt(row.querySelector('.rw-following')?.value) || 0,
+        posts:     parseInt(row.querySelector('.rw-posts')?.value)     || 0,
+      },
+    }));
+    try {
+      await setDoc(doc(firestore, 'settings', 'ai_writers'), { writers: _rumblrWriters });
+      showToast('AI Writers saved.');
+      // Refresh dropdowns
+      _repopulateWriterDropdowns();
+    } catch (err) {
+      showToast('Error saving writers: ' + (err.message || 'unknown'), true);
+    }
+  });
+}
+
+function _repopulateWriterDropdowns() {
+  ['rb-new-post-writer', 'rb-reply-writer', 'rb-follow-writer'].forEach(id => {
+    const sel = document.getElementById(id);
+    if (!sel) return;
+    const cur = sel.value;
+    // Clear all but placeholder
+    while (sel.options.length > 1) sel.remove(1);
+    _rumblrWriters.forEach((w, i) => {
+      const opt = document.createElement('option');
+      opt.value = i;
+      opt.textContent = `${w.name} (${w.handle})`;
+      sel.appendChild(opt);
+    });
+    sel.value = cur;
   });
 }
 
@@ -1428,17 +1557,103 @@ async function loadRecentPostsRumblr() {
 
 // ── Writer Reply + Follow Panels ──────────────────────────────────────────────
 function initWriterPanelsRumblr() {
-  // Populate writer dropdowns
-  ['rb-reply-writer', 'rb-follow-writer'].forEach(selectId => {
+  // Populate all writer dropdowns from _rumblrWriters
+  ['rb-new-post-writer', 'rb-reply-writer', 'rb-follow-writer'].forEach(selectId => {
     const sel = document.getElementById(selectId);
     if (!sel) return;
-    AI_WRITERS.forEach((w, i) => {
+    _rumblrWriters.forEach((w, i) => {
       const opt = document.createElement('option');
       opt.value = i;
       opt.textContent = `${w.name} (${w.handle})`;
       sel.appendChild(opt);
     });
   });
+
+  // ── Handle autofill (Writer Follow) ─────────────────────────────────────
+  const followHandleInput = document.getElementById('rb-follow-handle');
+  const followHandleDL    = document.getElementById('rb-follow-handle-list');
+  let _handlesFetched = false;
+  followHandleInput?.addEventListener('focus', async () => {
+    if (_handlesFetched || !followHandleDL) return;
+    _handlesFetched = true;
+    try {
+      const snap = await getDocs(query(
+        collection(firestore, 'users'),
+        orderBy('handle'),
+        limit(50)
+      ));
+      snap.forEach(d => {
+        const handle = d.data().handle;
+        if (handle) {
+          const opt = document.createElement('option');
+          opt.value = handle;
+          followHandleDL.appendChild(opt);
+        }
+      });
+    } catch { /* autofill optional — silently ignore errors */ }
+  });
+
+  // ── Create New Writer Post ───────────────────────────────────────────────
+  const newPostContent = document.getElementById('rb-new-post-content');
+  const newPostChar    = document.getElementById('rb-new-post-char');
+  if (newPostContent && newPostChar) {
+    newPostContent.addEventListener('input', () => {
+      newPostChar.textContent = (280 - newPostContent.value.length) + ' remaining';
+    });
+  }
+
+  const newPostBtn = document.getElementById('rb-new-post-btn');
+  if (newPostBtn) {
+    newPostBtn.addEventListener('click', async () => {
+      const writerIdx = document.getElementById('rb-new-post-writer')?.value;
+      const content   = newPostContent?.value.trim();
+      const imageUrl  = document.getElementById('rb-new-post-image')?.value.trim() || null;
+      const resultEl  = document.getElementById('rb-new-post-result');
+
+      if (writerIdx === '' || !content) {
+        showToast('Select a writer and enter post content.');
+        return;
+      }
+      const writer   = _rumblrWriters[parseInt(writerIdx)];
+      const hashtags = [...content.matchAll(/#(\w+)/g)].map(m => '#' + m[1]);
+
+      newPostBtn.disabled = true;
+      try {
+        await addDoc(collection(firestore, 'posts'), {
+          content,
+          image_url:           imageUrl,
+          author_type:         'ai',
+          author_name:         writer.name,
+          author_handle:       writer.handle,
+          author_uid:          null,
+          author_avatar_color: writer.color,
+          author_initials:     writer.initials,
+          author_image:        writer.image,
+          author_verified:     true,
+          hashtags,
+          is_ai_generated:     true,
+          like_count:          0,
+          reply_count:         0,
+          repost_count:        0,
+          timestamp:           serverTimestamp(),
+        });
+        if (resultEl) {
+          resultEl.style.display = 'block';
+          resultEl.style.color   = '#48BB78';
+          resultEl.textContent   = `Post published as ${writer.name}!`;
+        }
+        if (newPostContent) newPostContent.value = '';
+        if (newPostChar)    newPostChar.textContent = '280 remaining';
+        if (document.getElementById('rb-new-post-image')) document.getElementById('rb-new-post-image').value = '';
+        showToast(`Post published as ${writer.name}`);
+      } catch (err) {
+        console.error('New writer post error:', err);
+        showToast('Error publishing post. Check console.', true);
+      } finally {
+        newPostBtn.disabled = false;
+      }
+    });
+  }
 
   // Char counter
   const replyContent = document.getElementById('rb-reply-content');
@@ -1462,7 +1677,7 @@ function initWriterPanelsRumblr() {
         showToast('Fill in all fields before posting.');
         return;
       }
-      const writer = AI_WRITERS[parseInt(writerIdx)];
+      const writer = _rumblrWriters[parseInt(writerIdx)];
       const hashtags = [...content.matchAll(/#(\w+)/g)].map(m => '#' + m[1]);
 
       replyBtn.disabled = true;
@@ -1521,7 +1736,7 @@ function initWriterPanelsRumblr() {
         showToast('Select a writer and enter a handle.');
         return;
       }
-      const writer = AI_WRITERS[parseInt(writerIdx)];
+      const writer = _rumblrWriters[parseInt(writerIdx)];
       const handle = userHandle.startsWith('@') ? userHandle : '@' + userHandle;
       const followId = `ai_${writer.handle.replace(/[^a-zA-Z0-9]/g, '_')}_${handle.replace(/[^a-zA-Z0-9]/g, '_')}`;
 

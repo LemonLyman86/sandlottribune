@@ -621,14 +621,47 @@
           </div>
         </div>
 
-        <!-- §3 ESTN AI Writers -->
+        <!-- §3 ESTN AI Writers (editable) -->
         <div class="estn-admin-section">
           <div class="estn-admin-section-header">
             <h2>ESTN AI Writers</h2>
           </div>
           <div class="estn-admin-section-body">
-            <p class="estn-admin-hint">Configured AI writer accounts. Use the Writer Reply and Writer Follow panels below to post on their behalf.</p>
+            <p class="estn-admin-hint">Edit writer profiles, reorder, add or remove writers. Changes are saved to Firestore and reflected in Rumblr immediately after saving.</p>
             <div id="rb-ai-writers-list"></div>
+            <div style="display:flex;gap:8px;margin-top:10px;">
+              <button class="estn-admin-add-btn" id="rb-add-writer-btn">+ Add Writer</button>
+              <button class="estn-admin-btn" id="rb-save-writers-btn">Save AI Writers</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- §3.5 Create New Writer Post -->
+        <div class="estn-admin-section">
+          <div class="estn-admin-section-header">
+            <h2>Create New Writer Post</h2>
+          </div>
+          <div class="estn-admin-section-body">
+            <p class="estn-admin-hint">Post a new top-level Rumbl&rsquo;ing as an ESTN writer (not a reply). Appears in the main feed.</p>
+            <div class="estn-admin-field-grid" style="max-width:560px;">
+              <div class="estn-admin-field">
+                <label class="estn-admin-label">Writer</label>
+                <select class="estn-admin-input" id="rb-new-post-writer">
+                  <option value="">— Select a writer —</option>
+                </select>
+              </div>
+              <div class="estn-admin-field">
+                <label class="estn-admin-label">Image URL (optional)</label>
+                <input class="estn-admin-input" type="text" id="rb-new-post-image" placeholder="https://… (leave blank for text-only post)">
+              </div>
+              <div class="estn-admin-field" style="grid-column:span 2;">
+                <label class="estn-admin-label">Post Content</label>
+                <textarea class="estn-admin-textarea" id="rb-new-post-content" maxlength="280" rows="3" placeholder="Write the post content… (max 280 chars)"></textarea>
+                <div id="rb-new-post-char" style="text-align:right;font-size:0.72rem;color:#718096;margin-top:4px;">280 remaining</div>
+              </div>
+            </div>
+            <button class="estn-admin-btn" id="rb-new-post-btn" style="margin-top:8px;">Post as Writer</button>
+            <div id="rb-new-post-result" style="display:none;font-size:0.82rem;margin-top:8px;"></div>
           </div>
         </div>
 
@@ -694,7 +727,8 @@
               </div>
               <div class="estn-admin-field">
                 <label class="estn-admin-label">User Handle to Follow</label>
-                <input class="estn-admin-input" type="text" id="rb-follow-handle" placeholder="@PHIOfficial">
+                <input class="estn-admin-input" type="text" id="rb-follow-handle" list="rb-follow-handle-list" placeholder="@PHIOfficial" autocomplete="off">
+                <datalist id="rb-follow-handle-list"></datalist>
               </div>
             </div>
             <button class="estn-admin-btn" id="rb-follow-submit-btn" style="margin-top:8px;">Record Writer Follow</button>
