@@ -1,7 +1,97 @@
 {
-  "updated": "2026-03-11T07:23:55",
+  "updated": "2026-03-12T08:27:52",
   "season": 2026,
   "transactions": [
+    {
+      "date": "2026-03-11",
+      "date_display": "Mar 11",
+      "type": "drop",
+      "type_label": "Released",
+      "team": "Las Vegas Athletics",
+      "team_abbrev": "LVA",
+      "player": "Carlos Rodon",
+      "details": "Period 1"
+    },
+    {
+      "date": "2026-03-11",
+      "date_display": "Mar 11",
+      "type": "drop",
+      "type_label": "Released",
+      "team": "San Diego Padres",
+      "team_abbrev": "SDP",
+      "player": "Jake Cronenworth",
+      "details": "Period 1"
+    },
+    {
+      "date": "2026-03-11",
+      "date_display": "Mar 11",
+      "type": "drop",
+      "type_label": "Released",
+      "team": "San Diego Padres",
+      "team_abbrev": "SDP",
+      "player": "Yordan Alvarez",
+      "details": "Period 1"
+    },
+    {
+      "date": "2026-03-11",
+      "date_display": "Mar 11",
+      "type": "drop",
+      "type_label": "Released",
+      "team": "Washington Nationals",
+      "team_abbrev": "WSH",
+      "player": "Tyler Stephenson",
+      "details": "Period 1"
+    },
+    {
+      "date": "2026-03-11",
+      "date_display": "Mar 11",
+      "type": "drop",
+      "type_label": "Released",
+      "team": "Washington Nationals",
+      "team_abbrev": "WSH",
+      "player": "Anthony Volpe",
+      "details": "Period 1"
+    },
+    {
+      "date": "2026-03-11",
+      "date_display": "Mar 11",
+      "type": "drop",
+      "type_label": "Released",
+      "team": "Washington Nationals",
+      "team_abbrev": "WSH",
+      "player": "Ben Casparius",
+      "details": "Period 1"
+    },
+    {
+      "date": "2026-03-11",
+      "date_display": "Mar 11",
+      "type": "drop",
+      "type_label": "Released",
+      "team": "Washington Nationals",
+      "team_abbrev": "WSH",
+      "player": "Bailey Falter",
+      "details": "Period 1"
+    },
+    {
+      "date": "2026-03-11",
+      "date_display": "Mar 11",
+      "type": "drop",
+      "type_label": "Released",
+      "team": "Washington Nationals",
+      "team_abbrev": "WSH",
+      "player": "Mike Vasil",
+      "details": "Period 1"
+    },
+    {
+      "date": "2026-03-11",
+      "date_display": "Mar 11",
+      "type": "drop",
+      "type_label": "Released",
+      "team": "Washington Nationals",
+      "team_abbrev": "WSH",
+      "player": "Josh Smith",
+      "details": "Period 1"
+    },
     {
       "date": "2026-03-09",
       "date_display": "Mar 9",
@@ -210,96 +300,6 @@
       "team": "Boston Red Sox",
       "team_abbrev": "BOS",
       "player": "Jonah Heim",
-      "details": "Period 1"
-    },
-    {
-      "date": "2026-02-27",
-      "date_display": "Feb 27",
-      "type": "drop",
-      "type_label": "Released",
-      "team": "Boston Red Sox",
-      "team_abbrev": "BOS",
-      "player": "Kyren Paris",
-      "details": "Period 1"
-    },
-    {
-      "date": "2026-02-27",
-      "date_display": "Feb 27",
-      "type": "drop",
-      "type_label": "Released",
-      "team": "Boston Red Sox",
-      "team_abbrev": "BOS",
-      "player": "Cade Cavalli",
-      "details": "Period 1"
-    },
-    {
-      "date": "2026-02-27",
-      "date_display": "Feb 27",
-      "type": "drop",
-      "type_label": "Released",
-      "team": "Boston Red Sox",
-      "team_abbrev": "BOS",
-      "player": "Luis Garcia",
-      "details": "Period 1"
-    },
-    {
-      "date": "2026-02-26",
-      "date_display": "Feb 26",
-      "type": "drop",
-      "type_label": "Released",
-      "team": "Arizona Diamondbacks",
-      "team_abbrev": "ARI",
-      "player": "Emiliano Teodo",
-      "details": "Period 1"
-    },
-    {
-      "date": "2026-02-25",
-      "date_display": "Feb 25",
-      "type": "drop",
-      "type_label": "Released",
-      "team": "Arizona Diamondbacks",
-      "team_abbrev": "ARI",
-      "player": "Kyle Manzardo",
-      "details": "Period 1"
-    },
-    {
-      "date": "2026-02-25",
-      "date_display": "Feb 25",
-      "type": "drop",
-      "type_label": "Released",
-      "team": "Miami Marlins",
-      "team_abbrev": "MIA",
-      "player": "Jared Triolo",
-      "details": "Period 1"
-    },
-    {
-      "date": "2026-02-23",
-      "date_display": "Feb 23",
-      "type": "drop",
-      "type_label": "Released",
-      "team": "Houston Astros",
-      "team_abbrev": "HOU",
-      "player": "Jose Ferrer",
-      "details": "Period 1"
-    },
-    {
-      "date": "2026-02-23",
-      "date_display": "Feb 23",
-      "type": "drop",
-      "type_label": "Released",
-      "team": "Colorado Rockies",
-      "team_abbrev": "COL",
-      "player": "Tomoyuki Sugano",
-      "details": "Period 1"
-    },
-    {
-      "date": "2026-02-23",
-      "date_display": "Feb 23",
-      "type": "drop",
-      "type_label": "Released",
-      "team": "Colorado Rockies",
-      "team_abbrev": "COL",
-      "player": "Will Vest",
       "details": "Period 1"
     }
   ]
