@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>2026 TSDL Season Preview: San Diego Padres</title>
+  <!-- Open Graph / Discord / Social Preview -->
+  <meta property="og:type"         content="article">
+  <meta property="og:site_name"    content="The Sandlot Tribune — ESTN">
+  <meta property="og:title"        content="2026 TSDL Season Preview: San Diego Padres">
+  <meta property="og:description"  content="The 2026 season preview for the San Diego Padres. Roster breakdown, farm system analysis, and predictions for the year ahead.">
+  <meta property="og:url"          content="https://lemonlyman86.github.io/sandlottribune/season-previews/season_preview_2026_sdp.html">
+  <meta property="og:image"        content="https://lemonlyman86.github.io/sandlottribune/assets/images/Stadiums/sdp_stadium_long.jpg">
+  <meta property="og:image:width"  content="1200">
+  <meta property="og:image:height" content="630">
+  <meta name="twitter:card"        content="summary_large_image">
+  <meta name="twitter:title"       content="2026 TSDL Season Preview: San Diego Padres">
+  <meta name="twitter:description" content="The 2026 season preview for the San Diego Padres. Roster breakdown, farm system analysis, and predictions for the year ahead.">
+  <meta name="twitter:image"       content="https://lemonlyman86.github.io/sandlottribune/assets/images/Stadiums/sdp_stadium_long.jpg">
+  <style>
+    /* ── Reset & Base ── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Georgia', serif; font-size: 17px; line-height: 1.75; color: #1a1a1a; background: #fff; max-width: 800px; margin: 0 auto; padding: 40px 24px 80px; }
+    .article-header { border-top: 4px solid #FFC425; padding-top: 28px; margin-bottom: 36px; }
+    .article-header h1 { font-family: 'Georgia', serif; font-size: 2.2em; font-weight: bold; line-height: 1.2; color: #002D62; margin-bottom: 10px; }
+    .byline { font-family: 'Arial', sans-serif; font-size: 0.85em; color: #777; font-style: italic; letter-spacing: 0.02em; }
+    h2 { font-family: 'Georgia', serif; font-size: 1.45em; color: #002D62; border-bottom: 2px solid #FFC425; padding-bottom: 6px; margin: 44px 0 18px; }
+    p { margin-bottom: 1.2em; color: #222; }
+    strong { color: #002D62; }
+    hr { border: none; border-top: 1px solid #ddd; margin: 48px 0 32px; }
+    .drop-item { background: #f7f7f7; border-left: 4px solid #FFC425; padding: 10px 16px; margin-bottom: 12px; border-radius: 0 4px 4px 0; }
+    .drop-item p { margin: 0; }
+    .prediction-box { background: #002D62; color: #fff; border-radius: 6px; padding: 20px 24px; margin: 28px 0; }
+    .prediction-box p { color: #e8ecf4; margin-bottom: 0.6em; }
+    .prediction-box p:last-child { margin-bottom: 0; }
+    .prediction-box strong { color: #f5c842; }
+    .grade { display: inline-block; background: #FFC425; color: #fff; font-weight: bold; font-family: 'Arial', sans-serif; font-size: 0.9em; padding: 2px 10px; border-radius: 3px; margin-left: 6px; vertical-align: middle; }
+    .article-footer { margin-top: 56px; font-family: 'Arial', sans-serif; font-size: 0.8em; color: #aaa; text-align: center; font-style: italic; }
+    .article-chart { text-align: center; margin: 28px 0; }
+    .article-chart figcaption { font-family: 'Arial', sans-serif; font-size: 0.8em; color: #888; margin-top: 6px; font-style: italic; }
+    /* ── Quick Stats Bar ── */
+    .quick-stats { display: flex; flex-wrap: wrap; gap: 20px; background: #f7f7f7; border-left: 4px solid #FFC425; padding: 16px 22px; margin: 24px 0 32px; border-radius: 0 4px 4px 0; }
+    .stat-item { text-align: center; min-width: 80px; }
+    .stat-label { font-family: 'Arial', sans-serif; font-size: 0.68em; text-transform: uppercase; letter-spacing: 0.09em; color: #999; display: block; margin-bottom: 2px; }
+    .stat-value { font-size: 1.5em; font-weight: bold; color: #002D62; font-family: 'Arial', sans-serif; }
+    /* ── Pull Quote ── */
+    .pull-quote { border-left: 5px solid #FFC425; padding: 14px 22px; margin: 32px 0; font-size: 1.12em; font-style: italic; color: #002D62; background: #fafafa; border-radius: 0 3px 3px 0; }
+    /* ── Player Spotlight Card ── */
+    .player-card { background: #fff; border: 1px solid #e8e8e8; border-top: 3px solid #FFC425; border-radius: 0 0 4px 4px; padding: 14px 18px; margin: 14px 0; }
+    .player-card .player-name { font-weight: bold; font-size: 1.04em; color: #002D62; }
+    .player-card .player-meta { font-family: 'Arial', sans-serif; font-size: 0.79em; color: #777; margin-top: 3px; margin-bottom: 8px; }
+    /* ── Section Kicker ── */
+    .section-kicker { font-family: 'Arial', sans-serif; font-size: 0.71em; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: #FFC425; display: block; margin-bottom: 2px; margin-top: 44px; }
+    /* ── Two-Column Stat Grid ── */
+    .stat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin: 20px 0; }
+    .stat-grid-item { background: #f9f9f9; padding: 12px 16px; border-radius: 4px; font-family: 'Arial', sans-serif; font-size: 0.88em; }
+    @media (max-width: 600px) { body { font-size: 15px; padding: 20px 16px 60px; } .article-header h1 { font-size: 1.7em; } h2 { font-size: 1.2em; } .quick-stats { gap: 12px; } .stat-grid { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+  <div class="article-header">
+    <h1>2026 TSDL Season Preview: San Diego Padres</h1>
+    <p class="byline">By Peter Gammons &mdash; 2026-03-12 &mdash; 12 min read</p>
+  </div>
+
+  <figure class="article-chart">
+    <img src="charts/season_history_sdp.png" alt="San Diego Padres — Season History" style="width:100%;max-width:720px;display:block;margin:0 auto;">
+    <figcaption>San Diego Padres — Season History</figcaption>
+  </figure>
+
+  <!-- Section 1: Introduction -->
+  <span class="section-kicker">The Big Picture</span>
+  <h2>Introduction</h2>
+
+  <p><strong>Brad Richardson</strong> has built one of the most consistently excellent franchises in the four-year history of the Sandlot Dynasty League. Forty-nine wins, a 65.3% all-time winning percentage, and four consecutive playoff appearances since the league's founding. On paper, the San Diego Padres look like a dynasty. The regular season record says dynasty. The postseason record tells a different story entirely.</p>
+
+  <div class="quick-stats">
+    <div class="stat-item"><span class="stat-label">2025 Record</span><span class="stat-value">13-6</span></div>
+    <div class="stat-item"><span class="stat-label">All-Time W%</span><span class="stat-value">65.3%</span></div>
+    <div class="stat-item"><span class="stat-label">2025 FPts</span><span class="stat-value">5,663.5</span></div>
+    <div class="stat-item"><span class="stat-label">Playoff Seed</span><span class="stat-value">#5</span></div>
+    <div class="stat-item"><span class="stat-label">2026 Auction Budget</span><span class="stat-value">−$20</span></div>
+  </div>
+
+  <p>Four straight playoff appearances. Four straight first-round exits. In 2022, the Padres stumbled out in the quarterfinals. In 2023, same story. The 2024 and 2025 campaigns came with bigger rosters, bigger expectations — and the same gut-punch result: out in the first round, watching someone else celebrate while Brad headed to the consolation bracket. Last year, it was the St. Louis Cardinals who delivered the verdict, a 714–517 divisional round demolition that was never really that close. St. Louis finished second in the entire league. Cold comfort.</p>
+
+  <p>The question for 2026 isn't whether Brad Richardson can field a competitive team. He absolutely can — he's done it four consecutive years. The question is whether he can finally solve the problems that keep knocking him out before the final bell. And this offseason has handed him a new puzzle to solve: at <strong>$280 in confirmed keeper commitments</strong> against a $260 auction cap, the Padres are entering spring $20 over budget. Somebody significant has to go before March 22. The only question is who — and whether the answer changes the team's playoff ceiling or just creates new questions.</p>
+
+  <hr>
+
+  <!-- Section 2: 2025 In-Season Moves -->
+  <span class="section-kicker">Offseason Recap</span>
+  <h2>2025 In-Season Moves</h2>
+
+  <p>Let's run the 2025 activity in chronological order, because the sequence matters.</p>
+
+  <p><strong>The MiLB Slow Draft</strong> was, frankly, the highlight of Brad's 2025 offseason — and it may prove to be the most consequential roster decision he's made in four years. Drafting from the #14 slot, Richardson added four new prospects while retaining six from the prior year's system. The new picks: <strong>JJ Wetherholt</strong> (Round 1), <strong>Jarlin Susana</strong> (Round 2), <strong>Cole Carrigg</strong> (Round 3), and <strong>Braxton Ashcraft</strong> (Round 4). The retained group — <strong>Walker Jenkins</strong>, <strong>Cole Young</strong>, <strong>Noble Meyer</strong>, <strong>Daniel Espino</strong>, <strong>Endy Rodriguez</strong>, and <strong>Tommy Troy</strong> — rounded out one of the deeper farm systems in the league entering last season.</p>
+
+  <p>The headliner is Wetherholt. Taking a consensus top-five prospect with the 14th overall selection is what happens when the market corrects. Whatever Richardson gave up in pick position, he got it back in talent. We'll revisit the system in detail below, but calling Wetherholt a franchise-altering acquisition would not be hyperbole.</p>
+
+  <p><strong>The FA Auction</strong> told a story of confident restraint. Richardson spent just $18 total — less than a dozen teams spent on a single player — acquiring <strong>Jake Cronenworth</strong> ($6), <strong>Jose Caballero</strong> ($8), <strong>Kyle Bradish</strong> ($3), and <strong>Thairo Estrada</strong> ($1). A team that spends $18 at auction either can't afford more or doesn't need more. In San Diego's case, it was the latter — the core was intact, the depth was serviceable, and throwing cash at overpriced free agents wasn't going to push them over the top. That philosophy is defensible. It also left them without insurance when the year went sideways in spots.</p>
+
+  <p><strong>In-season trades</strong> were a mixed bag. The trade with <strong>Milwaukee</strong> in May — sending <strong>Jeffrey Springs</strong> ($4, Year 2) for <strong>Mike Yastrzemski</strong> and <strong>Mitchell Parker</strong> — didn't bear significant fruit and amounts to roster churn. The August deal with <strong>Boston</strong> was more interesting on its face: SDP acquired <strong>Cedric Mullins</strong> ($27, Year 4) in exchange for <strong>Tommy Troy</strong> ($0, Year 1 MiLB). Trading a prospect for a rental-priced outfielder isn't automatically a mistake — Mullins put up 321 FPts over 133 games in 2025 — but Troy had real prospect appeal, and paying $27 for an outfielder who would need to be renewed at $32 was always a short runway play. Richardson cut Mullins this offseason rather than absorb that escalation. The trade produced some results but no lasting value.</p>
+
+  <p>The <strong>FAAB wire</strong> was more productive than the trades. <strong>Emilio Pagan</strong>, claimed for a dollar, delivered 384.5 FPts at 5.5 per game — one of the better waiver pickups in the league last year and now a confirmed keeper heading into 2026. <strong>Eric Lauer</strong>, also acquired for $1, posted 278.5 FPts at an excellent 9.9 FPts per start over 28 appearances. Both will be discussed extensively in the core review. In-season management grade: <span class="grade">B</span></p>
+
+  <hr>
+
+  <!-- Section 3: Season in Review -->
+  <span class="section-kicker">Season Analysis</span>
+  <h2>2025 Season in Review</h2>
+
+  <p>The 2025 Padres were a legitimately excellent regular season team buried inside a frustrating playoff outcome. They finished 13-6 — tied for the fourth-most wins in the league — and ranked fifth overall, scoring 5,663.5 fantasy points with a near-even 51.5% hitting, 48.5% pitching split. Their 3.9 FPts per game was right at league average, but their overall output was above it: SDP ranked above the league mean in total production while finishing fifth in the standings.</p>
+
+  <p>The weekly arc told a story of early fire and late fade. San Diego started 0-1, then rattled off seven straight wins to reach 7-1 and a peak power ranking of #3. From there, the cracks appeared. They went 6-5 over the final 11 regular season weeks, dropping three in a row from Weeks 9–10 and stumbling into the playoffs on a 1-3 run in the final four weeks. Their win over Philadelphia in Week 17 (272.5–164.5) kept them above water. A 135-point blowout loss to Arizona in Week 18 was a warning sign that went unheeded.</p>
+
+  <div class="stat-grid">
+    <div class="stat-grid-item"><strong>Best Week:</strong> Week 16 — 504.0 pts vs Houston Astros</div>
+    <div class="stat-grid-item"><strong>Toughest Rival:</strong> Arizona Diamondbacks — 0-6 all-time</div>
+    <div class="stat-grid-item"><strong>Biggest Win:</strong> +134.5 vs Boston Red Sox (Week 12)</div>
+    <div class="stat-grid-item"><strong>Closest Loss:</strong> −7.0 vs Toronto Blue Jays (Week 10)</div>
+  </div>
+
+  <p>The postseason was a disaster, full stop. Matched against the 4-seed Cardinals in the divisional round, San Diego scored 517 points — not a bad week by any measure — and still lost by 197. St. Louis posted 714 points that week, one of the highest single-week outputs in league history. You can't plan for that. What you can plan for is avoiding getting blown out at home in Round One for the second consecutive year. Two years in a row as the fifth seed, two years in a row bounced by a top-four team before the conference round. The pattern is real.</p>
+
+  <p>The Arizona blemish deserves its own sentence: <strong>0-6 all time against the Diamondbacks</strong>, with an average margin of −74 points. Arizona won the championship last season as an 8-seed. They are SDP's personal kryptonite and the league's current measuring stick.</p>
+
+  <p>The best in-season FAAB story of the year was <strong>Emilio Pagan</strong>, claimed off waivers for $1 on April 1 and retained on the 2026 roster. The veteran reliever posted 384.5 FPts over 70 games at 5.5 FPts per appearance — the kind of return that wins championships when it's filling out your bullpen at zero cost. The fact that Richardson kept him heading into 2026 (at $2 for Year 2) reflects exactly the right instinct. Season grade: <span class="grade">B</span></p>
+
+  <figure class="article-chart">
+    <img src="charts/hit_pitch_split_sdp.png" alt="2025 Hitting vs. Pitching Split — All Teams" style="width:100%;max-width:720px;display:block;margin:0 auto;">
+    <figcaption>2025 Hitting vs. Pitching Split — All Teams</figcaption>
+  </figure>
+
+  <!-- Section 4: Offseason Cuts -->
+  <span class="section-kicker">Roster Turnover</span>
+  <h2>Offseason Roster Cuts</h2>
+
+  <p>Seven players are gone from the 2025 roster. Some of these decisions were obvious. One is genuinely head-scratching.</p>
+
+  <p><strong>Cedric Mullins</strong> ($27, Year 4 → would cost $32): The August trade acquisition delivered 321 FPts over 133 games, but the math never penciled. Mullins at $32 in Year 5 is an aging outfielder on the wrong side of 30 chewing up a quarter of your roster budget. Richardson correctly identified the sunk-cost fallacy here and moved on.</p>
+
+  <p><strong>Paul Goldschmidt</strong> ($12, Year 1): Goldschmidt posted 317 FPts at 1B in 146 games — genuinely useful production — but at 32 years old with a $12 Year 1 price tag that would only climb, keeping him for 2026 at $13 made little sense given the position scarcity and the broader salary situation the Padres face.</p>
+
+  <p><strong>Logan O'Hoppe</strong> ($5, Year 3 → would cost $10): O'Hoppe produced 194.5 FPts in what appeared to be a limited role season. With <strong>Carson Kelly</strong> already locked in at catcher for $2, paying $10 for a backup catcher was unjustifiable. Clean cut.</p>
+
+  <p><strong>Michael Kopech</strong> ($1, Year 1): 38 FPts. The $1 was not worth it. Moving on.</p>
+
+  <p><strong>Cody Bradford</strong> ($2, Year 2): No 2025 FPts on record — Bradford clearly had a lost season. Releasing him at $2 saved a roster slot that's desperately needed given the upcoming salary decisions.</p>
+
+  <p><strong>Colin Rea</strong> ($2, Year 2 → would cost $5): Here's where it gets interesting. Rea posted 336.5 FPts over 28 starts at a remarkable 9.9 FPts per outing. That's meaningful pitching production at what would have been a $5 price tag — outstanding value by any measure. Releasing him alongside the next name on this list suggests Richardson was prioritizing roster flexibility over depth.</p>
+
+  <p><strong>Ronny Henriquez</strong> ($1, Year 1 → would cost $2): This is the cut that will haunt the 2026 projection. Henriquez produced 350 FPts over 69 games at 5.1 FPts per appearance. He would have cost exactly $2 to retain. That's elite reliever production at replacement-level cost, and Richardson let him walk. Henriquez is now available in the FA pool where he'll likely get bid up significantly by teams that weren't paying attention last season. The Padres will watch him from the other side of the auction table. This was a mistake.</p>
+
+  <blockquote class="pull-quote">Four straight playoff appearances. Four straight first-round exits. The San Diego Padres are the most beautifully frustrating franchise in the TSDL — consistently excellent, perpetually just short.</blockquote>
+
+  <figure class="article-chart">
+    <img src="charts/roster_salary_sdp.png" alt="San Diego Padres — 2026 Keeper Costs" style="width:100%;max-width:720px;display:block;margin:0 auto;">
+    <figcaption>San Diego Padres — 2026 Keeper Costs. Bars shaded cool-to-warm by contract year — Year 1 (slate blue) through Year 5 (deep crimson). The salary map reveals where Brad Richardson's commitments are concentrated: the top end is all Year 5 veterans, with cheap young depth filling out the middle.</figcaption>
+  </figure>
+
+  <!-- Section 5: The Core -->
+  <span class="section-kicker">Roster Review</span>
+  <h2>The Core — Returning Players</h2>
+
+  <p>Sixteen players carried over from 2025, totaling $280 in keeper salary — a figure that, as we've established, needs to come down before the auction. Let's walk through the roster from top to bottom and figure out what Brad Richardson actually has.</p>
+
+  <div class="player-card">
+    <div class="player-name">Jose Ramirez — 3B</div>
+    <div class="player-meta">3B eligible | 2026 Cost: $71 | Contract Year 5 | 2025: 604 FPts, 3.8/G, 158 GP</div>
+    <p>Ramirez finished seventh in TSDL-wide production last season with 604 FPts over a full 158 games — one of the most reliable contributors in the league. He hit 187 home runs' worth of fantasy value (as part of the team's hitting total), and his consistency week over week is what legitimate contenders are built around. At $71 in Year 5, he's already among the league's highest-paid players, and next year that salary climbs to $76. The contract is reaching the danger zone. The production still justifies it — barely — but the math gets harder every season. Ramirez is the keystone. For now.</p>
+  </div>
+
+  <div class="player-card">
+    <div class="player-name">Tarik Skubal — SP</div>
+    <div class="player-meta">SP eligible | 2026 Cost: $10 | Contract Year 4 | 2025: 603.5 FPts, 19.5/G, 31 GS</div>
+    <p>The best value on this roster. Skubal posted 603.5 FPts at 19.5 FPts per start — that's the eighth-ranked player in the entire TSDL last season, acquired and maintained for $10 in Year 4. His per-game production is extraordinary. When healthy and locked in, he's one of the two or three best starting pitchers in the league. At $10, he's an absolute steal. At $15 next year in Year 5, he'll still be a steal. Richardson should feel excellent about this contract for at least another two seasons.</p>
+  </div>
+
+  <div class="player-card">
+    <div class="player-name">Ronald Acuna Jr. — OF</div>
+    <div class="player-meta">OF eligible | 2026 Cost: $58 | Contract Year 5 | 2025: 331 FPts, 3.5/G, 95 GP</div>
+    <p>This is the most complicated name on the roster. Acuna produced 331 FPts — genuine top-tier output when active — but only played 95 games, leaving 67 games of potential production on the table. At $58 in Year 5 heading to $63 in Year 6, the calculus requires Acuna to be close to a full-season contributor. His upside when on the field remains among the highest in the league. His fragility is the asterisk that turns a cornerstone into a liability at this price point.</p>
+  </div>
+
+  <div class="player-card">
+    <div class="player-name">Brice Turang — 2B</div>
+    <div class="player-meta">2B eligible | 2026 Cost: $5 | Contract Year 3 | 2025: 465 FPts, 3.0/G, 156 GP</div>
+    <p>Turang quietly posted 465 FPts at second base in 156 games — fourth on the team in production — at the league's most underpriced Year 3 contract. At $5 for a 156-game contributor at 2B, he's one of the better bargains in the league. He's a reliable above-average second baseman at a price that gives Richardson flexibility elsewhere. Don't overlook him: he's the kind of player who wins close matchups week after week.</p>
+  </div>
+
+  <p><strong>Nathan Eovaldi</strong> ($11, Year 4) was spectacular in limited action: 415.5 FPts at 18.9 per start over 22 outings. His per-game numbers are Skubal-adjacent, and the concern is only that he's stayed at 22–25 starts per year in recent campaigns. If Eovaldi can get to 30 starts, he's the second ace on a legitimate two-headed rotation.</p>
+
+  <p><strong>Steven Kwan</strong> ($15, Year 5) is a 156-game workhorse at 436 FPts. He's a solid above-average OF contributor at $15 — more expensive than his FPts/$ ratio ($29/$ — the worst among the non-premium-salary keepers) would suggest is optimal, but his reliability and game count justify the price at this stage of the dynasty. He'll cost $20 in Year 6.</p>
+
+  <p><strong>TJ Friedl</strong> ($10, Year 4) delivered 414.5 FPts over 152 games — quietly one of the better OF value plays on the roster at 2.7/G. <strong>Jackson Holliday</strong> ($5, Year 3) was the third 2B eligible player at 360 FPts in 149 games; his positional flexibility and dynasty profile make him a long-term piece worth developing.</p>
+
+  <p><strong>Emilio Pagan</strong> ($2, Year 2) and <strong>Eric Lauer</strong> ($2, Year 2) are both exceptional value. Pagan's 384.5 FPts at 5.5/G is legitimate closer-level production at $2. Lauer's 278.5 FPts over 28 starts at 9.9/G is excellent depth-starter value. Combined, they represent $4 in salary for over 660 FPts of production. <strong>Logan Allen</strong> ($2, Year 2) at 254 FPts and 8.5/G rounds out a genuinely deep, cheap pitching floor. <strong>Carson Kelly</strong> ($2, Year 2) provides serviceable catching depth at 268 FPts.</p>
+
+  <p>Then there are the questions. <strong>Yordan Alvarez</strong> ($66, Year 5) produced just 127.5 FPts in 48 games. At $66 — the third-highest salary in the Padres' system — that's a profoundly unsustainable production-to-cost ratio. <strong>Bryce Miller</strong> ($10, Year 4) posted 122 FPts over only 18 starts. <strong>Kyle Bradish</strong> ($4, Year 2) managed 87.5 FPts across 6 appearances. The three of them combined for 337 FPts at a total cost of $80. That's the structural rot underneath what is otherwise an impressive keeper roster.</p>
+
+  <p>Total 2026 keeper salary before cuts: $280. Available auction budget: −$20. Something must change. The salary map above shows exactly where the weight is concentrated.</p>
+
+  <hr>
+
+  <!-- Section 6: Farm Report -->
+  <span class="section-kicker">The Minors</span>
+  <h2>Farm Report</h2>
+
+  <p>The San Diego Padres may have the best minor league system in the TSDL right now. Nine of ten MiLB slots are filled with a mix of genuine blue-chip prospects, productive borderline major leaguers, and raw development arms. It's deep, it's credible, and it genuinely changes the long-term outlook for this franchise.</p>
+
+  <p><strong>JJ Wetherholt</strong> (Age 23): The headliner. A consensus top-five prospect in all of fantasy baseball, Wetherholt was taken 14th overall in last spring's slow draft — meaning Richardson picked him up at significant draft value. He is, by every major scouting system, one of the best prospects in organized baseball, and the Padres own him at $0. This is the kind of asset that trades for established stars or simply graduates into a league-winning contributor. When Wetherholt reaches the majors, San Diego will have a Year 1 keeper at elite production cost. That's the dynasty dream.</p>
+
+  <p><strong>Walker Jenkins</strong> (Age 20): A consensus top-15 prospect retained from the prior year's system, Jenkins is the kind of bat-first outfielder that carries fantasy lineups once he arrives. Twenty years old with top-15 prospect standing across multiple major scouting outlets. He may be two or three years away from full-time production, but when he arrives, he arrives as a potential cornerstone.</p>
+
+  <p><strong>Jarlin Susana</strong> (Age 21): A new Round 2 addition, Susana ranks as a consensus top-75 arm and one of the more intriguing pitching prospects in the system. Hard-throwing 21-year-olds with top-75 prospect standing are exactly the kind of upside picks that pay off in dynasty leagues. There's development risk here, but the ceiling is real.</p>
+
+  <p><strong>Cole Carrigg</strong> (Age 23): An interesting split between two major ranking systems — placed outside the top 250 by one outlet but inside the top 120 by another — Carrigg is a contested prospect profile. The divergence means he's either a sleeper or overrated depending on who you ask. Richardson got him as a pre-existing hold, so there's no sunk cost beyond the roster slot. Mid-range developmental upside.</p>
+
+  <p><strong>Noble Meyer</strong> (Age 21): Rated as a consensus top-160 arm, Meyer is an arm worth watching at a relatively early age. Two ranking systems in general agreement here. Legitimate back-of-the-rotation ceiling with upside for more if the stuff develops.</p>
+
+  <p><strong>Daniel Espino</strong> (Age 25): A consensus top-235 prospect. At 25, Espino's window to contribute as a legitimate prospect is narrowing — this year or next likely determines whether he's a useful major league contributor or a long-term system hold whose time has passed.</p>
+
+  <p><strong>Cole Young</strong> (Age 22): No current consensus ranking but already showing real production with 124.5 FPts over 77 games in what appears to be MLB action. Young is a name to watch for a potential mid-season call-up or early-2026 promotion. At 22 with numbers on the board, he may be closer to contributing than his prospect ranking suggests.</p>
+
+  <p><strong>Braxton Ashcraft</strong> (Age 26): Added in Round 4 of the 2025 draft, Ashcraft posted 156.5 FPts over 26 games — indicating legitimate MLB-level production in a part-time role. At 26, he's not a long-term dynasty stash; he's a right-now contributor who could push for a roster spot this season. Richardson should be tracking him closely for the March 15 call-up deadline.</p>
+
+  <p><strong>Endy Rodriguez</strong> (Age 25): A pre-existing hold with minimal 2025 production (17 FPts/18 GP). At 25 without strong rankings, Rodriguez is a low-cost depth hold that may either break through in 2026 or get released to free up a slot for a more productive prospect.</p>
+
+  <p><strong>Potential 2026 Call-Up Timeline:</strong> Braxton Ashcraft is the best candidate for a pre-auction call-up (before March 15 lock). Cole Young could contribute early-season (April–May). Cole Carrigg and Endy Rodriguez are mid-season targets at best. Wetherholt, Jenkins, Meyer, Susana, and Espino are all long-term stashes — none of them should be expected to contribute in 2026.</p>
+
+  <p>Farm grade: <span class="grade">A−</span> — Two bona fide top-15 prospects, a consensus top-75 arm, and productive MLB depth pieces. The ceiling here is legitimately franchise-altering.</p>
+
+  <hr>
+
+  <!-- Section 7: Drop Watch -->
+  <span class="section-kicker">Bubble Watch</span>
+  <h2>Drop Watch</h2>
+
+  <p>The Padres have a very specific problem: they need to cut at least $21 in salary before March 22 to have any auction budget at all. Let's rank the most likely candidates.</p>
+
+  <div class="drop-item">
+    <p><strong>Yordan Alvarez — OF | $66 | Year 5</strong><br>
+    This is the most important roster decision Brad Richardson will make this offseason, and the answer should be obvious: Alvarez has to go. Forty-eight games played, 127.5 FPts, and a $66 salary that would jump to $71 next year in Year 6. There is no universe in which $66 of auction budget is worth less than what Alvarez provides from the active roster in his current state. Releasing Alvarez frees $66 and transforms SDP's auction budget from −$20 to a workable $46. He was the league's most expensive kept player producing replacement-level output. Yes, his upside when healthy is elite — that upside has been on a payment plan for two seasons now. Cut him, buy him back in the auction for $15–$20 if he shows up healthy, and free your balance sheet. Holding Alvarez heading into March 22 would be the most expensive mistake Richardson could make this offseason.</p>
+  </div>
+
+  <div class="drop-item">
+    <p><strong>Bryce Miller — SP | $10 | Year 4</strong><br>
+    Miller posted 122 FPts over just 18 starts in 2025. At 6.8 FPts per start, he's producing at replacement-level starting pitcher territory — and for a team that already has Skubal, Eovaldi, Lauer, and Allen in the rotation, Miller represents dead money at $10. The SP free agent pool this year is rich: multiple starters who produced 400+ FPts last season are available. Miller heading into Year 4 at $10 with this production history is not a pitcher you're paying for ceiling; you're paying for name recognition. Release him and spend that $10 on a free agent with actual recent production.</p>
+  </div>
+
+  <div class="drop-item">
+    <p><strong>Kyle Bradish — SP | $4 | Year 2</strong><br>
+    Bradish has the dynasty upside to warrant consideration — he ranked as an above-average starting pitcher by every internal metric before his 2025 injury. But he produced 87.5 FPts in just 6 starts last year. At $4 for Year 2, the cost is modest, but his uncertainty heading into 2026 makes him a speculative hold at best. Richardson can save the $4, free up the roster slot, and potentially grab Bradish back in the auction at $1–$3 if he shows he's healthy. This is a low-stakes cut that creates real flexibility.</p>
+  </div>
+
+  <blockquote class="pull-quote">$66 for 48 games of Yordan Alvarez isn't a keeper decision — it's a hostage situation. Cut him, buy him back at auction for a fraction of the price, and let someone else absorb the Year 5 contract risk.</blockquote>
+
+  <p>If Richardson cuts Alvarez and Miller (saving $76 total), the 2026 keeper salary drops to $204 and the auction budget opens up to $56 — enough to meaningfully pursue top free agents. Adding the Bradish cut brings it to $207 keeper salary and $53 budget. The combination of those three moves transforms the Padres' auction position from desperate to competitive.</p>
+
+  <hr>
+
+  <!-- Section 8: Auction Strategy -->
+  <span class="section-kicker">Auction Strategy</span>
+  <h2>Free Agent Auction Strategy</h2>
+
+  <p>The Padres' 2026 auction strategy begins with a simple premise: you cannot spend what you do not have. At −$20 heading in, Richardson must act before discussing acquisition strategy. Every calculation below assumes the minimum cut of Yordan Alvarez, which brings the budget to approximately $46. Additional cuts (Miller, Bradish) could push that to $56–$60.</p>
+
+  <p>In the context of the league, $46–$60 is below average but not negligible. The Los Angeles Dodgers ($233), Philadelphia Phillies ($199), and Toronto Blue Jays ($185) will dominate the premium end of the market. The Cardinals ($51), Nationals ($129), and Braves ($135) all have significant advantages over San Diego's position. The Padres are not a buyer who controls the auction — they are a team that needs to be strategic, identify specific targets, and avoid bidding wars they cannot win.</p>
+
+  <p>Here's where to look in the confirmed free agent pool, organized by position of need.</p>
+
+  <p><strong>First priority — Pitching reinforcement:</strong> With Skubal and Eovaldi leading the rotation, SDP needs a third starter who can give them quality starts in the second half of the season. <strong>Zack Wheeler</strong> (446.5 FPts, SP) is one of the better arms available and will command $30–$45 from teams with real budget. That's too rich for SDP. More realistic: <strong>Luis Castillo</strong> (422 FPts) or <strong>Kevin Gausman</strong> (451.5 FPts) in the $15–$25 range if other teams pass. At the cheap end, <strong>Brady Singer</strong> (373.5 FPts) and <strong>Jose Berrios</strong> (347 FPts, likely cut by Seattle) represent solid $5–$12 bids that could return immediate rotation value.</p>
+
+  <p><strong>Second priority — A hitting upgrade:</strong> The Padres are deep at 2B (Turang, Holliday) and OF (Kwan, Friedl, and a returning Acuna at whatever percentage he's healthy). The true gap is at first base and SS, where they have no confirmed keepers. <strong>Rafael Devers</strong> (522 FPts, 3B) is an attractive target but will draw $35–$50 bids from budget-rich teams. More realistic: <strong>Spencer Steer</strong> (354.5 FPts, 1B/2B/3B/SS) in the $10–$18 range — multi-positional value at a price SDP can actually afford. <strong>Christian Walker</strong> (371.5 FPts, 1B) in the $12–$20 range is another reasonable option.</p>
+
+  <p><strong>Shohei Ohtani</strong> (680.5 FPts, DH/SP) will likely go for $80–$120+ to a team with real budget. The Phillies, Jays, or Dodgers will win that bidding war. San Diego should note the name, appreciate the production, and redirect attention to value. <strong>Juan Soto</strong> (661.5 FPts, OF) presents a version of the same story — out of reach for a $46 budget team.</p>
+
+  <p><strong>Supplemental targets from the speculation pool:</strong> If <strong>Jose Berrios</strong> gets cut by Seattle (a real possibility given their budget crunch), he'd be a strong $8–$15 arm in a thin market. <strong>Trevor Story</strong>, also potentially cut by Seattle, is a $5–$10 gamble at SS with real 2025 production (465 FPts) for a team willing to absorb the injury risk. Worth a minimum bid if available.</p>
+
+  <p>The Padres should enter the auction with a clear spending target: acquire one quality starting pitcher and one everyday position player, spending $35–$45 total, and leave the rest for FAAB reserve. Overpaying for one player at the expense of the rest of the season's roster flexibility has hurt this team in past years. Budget discipline with a clear purpose is the 2026 mandate.</p>
+
+  <figure class="article-chart">
+    <img src="charts/auction_budget_sdp.png" alt="2026 FA Auction Budget — All Teams" style="width:100%;max-width:720px;display:block;margin:0 auto;">
+    <figcaption>2026 FA Auction Budget — All Teams</figcaption>
+  </figure>
+
+  <hr>
+
+  <!-- Section 9: MiLB Draft Outlook -->
+  <span class="section-kicker">Draft Outlook</span>
+  <h2>MiLB Draft Outlook</h2>
+
+  <p>The 2026 MiLB slow draft runs March 15–22, and San Diego enters from the #14 overall position with nine of ten minor league slots already filled. That means they have exactly one open slot and will need to release a current MiLB player to add anyone new.</p>
+
+  <p>The March 15 call-up deadline is the first order of business. <strong>Braxton Ashcraft</strong> is the obvious candidate for promotion — 156.5 FPts at age 26 suggests he's ready to contribute at the major league level, and a pre-auction call-up would free his MiLB slot for a draft pick. Similarly, <strong>Cole Young</strong> at 22 with 124.5 FPts on the board could be considered for early promotion if Richardson wants the roster production now rather than later.</p>
+
+  <p>If slots open up — either through call-ups or releases of Rodriguez or Espino — Richardson should be targeting pitching at the lower rounds. The Padres are loaded on the hitting prospect side (Wetherholt, Jenkins, Carrigg, Young) and relatively thin on impact arms beyond Susana and Meyer. A high-upside power arm in rounds three or four would diversify the system and hedge against the volatility inherent in pitching development.</p>
+
+  <p>Endy Rodriguez and Daniel Espino are the natural cut candidates if Richardson wants to create flexibility. Espino at 25 is running out of developmental runway; Rodriguez barely appeared in 2025. Either slot freed would give SDP a pick to use on a new prospect at #14, which in a deep draft class could yield genuine value.</p>
+
+  <p>The Padres don't need to win this draft. They already have arguably the two best prospects in the league. The goal here is system depth and pitching pipeline — not swinging for another consensus top-25 pick at slot 14. Steady hands, targeted acquisitions, and one clean roster decision.</p>
+
+  <hr>
+
+  <!-- Section 10: Season Prediction -->
+  <span class="section-kicker">The Prediction</span>
+  <h2>2026 Season Prediction</h2>
+
+  <div class="prediction-box">
+    <p><strong>Projected Record:</strong> 12–7 to 13–6</p>
+    <p><strong>Playoff Seed:</strong> #4 or #5</p>
+    <p><strong>Playoff Ceiling:</strong> Conference semifinal — if Skubal and Eovaldi both stay healthy and the auction adds real hitting depth</p>
+    <p><strong>Floor:</strong> First-round exit for the fifth consecutive year, if Acuna underperforms again and the auction yields nothing</p>
+    <p><strong>Bold Call:</strong> Brad Richardson cuts Alvarez and Ramirez — yes, both — pockets $137 in freed salary, enters the auction with $77 to spend, acquires Ohtani or Soto in a calculated blow-the-budget move, and rebuilds the roster around the farm system for the next three-year window. It's the right call. He probably won't make it. But it's the right call.</p>
+  </div>
+
+  <p>There's no denying what Brad Richardson has built in San Diego. Forty-nine wins. Four playoff appearances. One of the most talented minor league systems in the league, headlined by two of the best prospects in organized baseball. The roster has Tarik Skubal at $10, Brice Turang at $5, Logan Allen at $2 — extraordinary value contracts scattered throughout a well-constructed depth chart.</p>
+
+  <p>But the weight of the top end is becoming a problem. Jose Ramirez at $71 and Ronald Acuna Jr. at $58 are legitimate stars when healthy and productive. Together they consume nearly half the auction cap before a single free agent is signed. Toss in Steven Kwan at $15, Nathan Eovaldi at $11, and two players ($66 Alvarez, $10 Miller) who combined for 250 FPts last year on $76 in commitments, and you have a team that is dangerously overextended at the top while hoping the depth holds everything together.</p>
+
+  <p>The 2026 TSDL season begins with the same fundamental question it always does for the Padres: will this be the year they break through the playoff bracket? The answer depends almost entirely on decisions Richardson makes in the next ten days. Cut the right players. Spend the freed budget wisely. Get Acuna healthy. Trust Skubal and Eovaldi to anchor a rotation that can actually win in October rather than just the regular season.</p>
+
+  <p>Four years of making the playoffs. Zero series wins. The Padres are perpetually one good decision away from contending and one bad one away from the consolation bracket. In 2026, the decisions are right in front of them. The question is whether Brad Richardson has the stomach to make the uncomfortable moves that this roster genuinely requires — or whether he'll play it safe, stay the course, and find himself back in the consolation bracket come October.</p>
+
+  <p>The dynasty pieces are in place. The core is real. <strong>JJ Wetherholt</strong> and <strong>Walker Jenkins</strong> are coming. The clock is ticking — and for the first time in four seasons, the path forward is clearer than the path that got here.</p>
+
+  <div class="article-footer">
+    <p>The Sandlot Tribune — ESTN &bull; 2026 Season Preview Series &bull; San Diego Padres &bull; Peter Gammons</p>
+  </div>
+</body>
+</html>
