@@ -3121,6 +3121,8 @@ select.estn-admin-input:focus {
 /* ── Individual article nav items ── */
 .btc-nav-item {
   display: flex;
+  width: 100%;
+  box-sizing: border-box;
   gap: 10px;
   align-items: flex-start;
   padding: 10px 16px 10px 12px;
