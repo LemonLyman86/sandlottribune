@@ -570,7 +570,7 @@ function esc(s) { return String(s || '').replace(/&/g,'&amp;').replace(/</g,'&lt
 const BTC_TYPE_LABELS = {
   season_preview: 'Season Preview', power_rankings: 'Power Rankings',
   weekly_recap: 'Weekly Recap', matchup_preview: 'Matchup Preview',
-  trade_analysis: 'Trade Analysis',
+  trade_analysis: 'Trade Analysis', general_analysis: 'General Analysis', editorial: 'Editorial',
 };
 
 const FALLBACK_BTC_ARTICLES = [
