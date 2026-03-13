@@ -58,7 +58,7 @@
         <button class="btc-filter-btn" data-filter="season_preview">Previews</button>
         <button class="btc-filter-btn" data-filter="power_rankings">Rankings</button>
         <button class="btc-filter-btn" data-filter="weekly_recap">Recaps</button>
-        <button class="btc-filter-btn" data-filter="general_analysis">Analysis</button>
+        <button class="btc-filter-btn" data-filter="analysis">Analysis</button>
         <button class="btc-filter-btn" data-filter="editorial">Editorial</button>
       </div>
 
@@ -265,7 +265,10 @@
     function renderList(articles) {
       const filtered = activeFilter === 'all'
         ? articles
-        : articles.filter(a => a.type === activeFilter);
+        : articles.filter(a => {
+            if (activeFilter === 'analysis') return a.type === 'analysis' || a.type === 'general_analysis';
+            return a.type === activeFilter;
+          });
 
       listEl.innerHTML = '';
       if (!filtered.length) {
