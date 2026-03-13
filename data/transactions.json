@@ -1,7 +1,77 @@
 {
-  "updated": "2026-03-12T08:27:52",
+  "updated": "2026-03-13T10:58:39",
   "season": 2026,
   "transactions": [
+    {
+      "date": "2026-03-13",
+      "date_display": "Mar 13",
+      "type": "drop",
+      "type_label": "Released",
+      "team": "San Diego Padres",
+      "team_abbrev": "SDP",
+      "player": "Bryce Miller",
+      "details": "Period 1"
+    },
+    {
+      "date": "2026-03-13",
+      "date_display": "Mar 13",
+      "type": "drop",
+      "type_label": "Released",
+      "team": "New York Yankees",
+      "team_abbrev": "NYY",
+      "player": "Stephen Kolek",
+      "details": "Period 1"
+    },
+    {
+      "date": "2026-03-13",
+      "date_display": "Mar 13",
+      "type": "drop",
+      "type_label": "Released",
+      "team": "Milwaukee Brewers",
+      "team_abbrev": "MIL",
+      "player": "Austin Hays",
+      "details": "Period 1"
+    },
+    {
+      "date": "2026-03-13",
+      "date_display": "Mar 13",
+      "type": "drop",
+      "type_label": "Released",
+      "team": "Milwaukee Brewers",
+      "team_abbrev": "MIL",
+      "player": "Carlson Reed",
+      "details": "Period 1"
+    },
+    {
+      "date": "2026-03-12",
+      "date_display": "Mar 12",
+      "type": "drop",
+      "type_label": "Released",
+      "team": "Seattle Mariners",
+      "team_abbrev": "SEA",
+      "player": "Pete Fairbanks",
+      "details": "Period 1"
+    },
+    {
+      "date": "2026-03-12",
+      "date_display": "Mar 12",
+      "type": "drop",
+      "type_label": "Released",
+      "team": "Seattle Mariners",
+      "team_abbrev": "SEA",
+      "player": "Jeremy Pena",
+      "details": "Period 1"
+    },
+    {
+      "date": "2026-03-12",
+      "date_display": "Mar 12",
+      "type": "drop",
+      "type_label": "Released",
+      "team": "Seattle Mariners",
+      "team_abbrev": "SEA",
+      "player": "Jeremiah Jackson",
+      "details": "Period 1"
+    },
     {
       "date": "2026-03-11",
       "date_display": "Mar 11",
@@ -230,76 +300,6 @@
       "team": "Boston Red Sox",
       "team_abbrev": "BOS",
       "player": "Chase Dollander",
-      "details": "Period 1"
-    },
-    {
-      "date": "2026-02-28",
-      "date_display": "Feb 28",
-      "type": "drop",
-      "type_label": "Released",
-      "team": "Boston Red Sox",
-      "team_abbrev": "BOS",
-      "player": "Andres Gimenez",
-      "details": "Period 1"
-    },
-    {
-      "date": "2026-02-28",
-      "date_display": "Feb 28",
-      "type": "drop",
-      "type_label": "Released",
-      "team": "Boston Red Sox",
-      "team_abbrev": "BOS",
-      "player": "Colt Keith",
-      "details": "Period 1"
-    },
-    {
-      "date": "2026-02-28",
-      "date_display": "Feb 28",
-      "type": "drop",
-      "type_label": "Released",
-      "team": "St. Louis Cardinals",
-      "team_abbrev": "STL",
-      "player": "Orelvis Martinez",
-      "details": "Period 1"
-    },
-    {
-      "date": "2026-02-28",
-      "date_display": "Feb 28",
-      "type": "drop",
-      "type_label": "Released",
-      "team": "St. Louis Cardinals",
-      "team_abbrev": "STL",
-      "player": "Drew Thorpe",
-      "details": "Period 1"
-    },
-    {
-      "date": "2026-02-27",
-      "date_display": "Feb 27",
-      "type": "drop",
-      "type_label": "Released",
-      "team": "Houston Astros",
-      "team_abbrev": "HOU",
-      "player": "Willy Adames",
-      "details": "Period 1"
-    },
-    {
-      "date": "2026-02-27",
-      "date_display": "Feb 27",
-      "type": "drop",
-      "type_label": "Released",
-      "team": "New York Yankees",
-      "team_abbrev": "NYY",
-      "player": "Carlos Correa",
-      "details": "Period 1"
-    },
-    {
-      "date": "2026-02-27",
-      "date_display": "Feb 27",
-      "type": "drop",
-      "type_label": "Released",
-      "team": "Boston Red Sox",
-      "team_abbrev": "BOS",
-      "player": "Jonah Heim",
       "details": "Period 1"
     }
   ]
