@@ -71,6 +71,70 @@ function getAvatarUrl(year, abbrev) {
 // ══════════════════════════════════════════════════════════
 // Compose bar (on feed page and own profile page)
 // ══════════════════════════════════════════════════════════
+
+// ── Static OG page generator ─────────────────────────────────────────────────
+// Creates rumblr/p/{postId}.html in the GitHub repo with post-specific OG tags,
+// enabling Discord/social link previews. Requires Firestore doc config/github
+// = { pat: "<github-pat>", owner: "LemonLyman86", repo: "sandlottribune" }
+async function createOgPage(postId, postData) {
+  try {
+    const ghSnap = await getDoc(doc(firestore, 'config', 'github'));
+    if (!ghSnap.exists()) return;
+    const { pat, owner, repo } = ghSnap.data();
+    if (!pat || !owner || !repo) return;
+
+    const base     = `https://${owner}.github.io/${repo}`;
+    const ogImage  = postData.image_url || postData.author_image
+                  || `${base}/assets/images/rumblr-logo.png`;
+    const ogTitle  = `${postData.author_name} on Rumblr`;
+    const filePath = `rumblr/p/${postId}.html`;
+    const pageUrl  = `${base}/${filePath}`;
+    const esc = s => String(s || '')
+      .replace(/&/g, '&amp;').replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+
+    const html = [
+      '<!DOCTYPE html>',
+      '<html lang="en">',
+      '<head>',
+      '  <meta charset="UTF-8">',
+      '  <meta property="og:type"        content="article">',
+      '  <meta property="og:site_name"   content="Rumblr — TSDL">',
+      `  <meta property="og:title"       content="${esc(ogTitle)}">`,
+      `  <meta property="og:description" content="${esc(postData.content || '')}">`,
+      `  <meta property="og:image"       content="${esc(ogImage)}">`,
+      `  <meta property="og:url"         content="${esc(pageUrl)}">`,
+      '  <meta name="twitter:card"       content="summary_large_image">',
+      `  <title>${esc(ogTitle)}</title>`,
+      `  <meta http-equiv="refresh" content="0; url=../post.html?id=${postId}">`,
+      '</head>',
+      '<body>',
+      `  <script>window.location.replace('../post.html?id=${postId}');<\/script>`,
+      `  <p><a href="../post.html?id=${postId}">View this Ruml’ing →</a></p>`,
+      '</body>',
+      '</html>'
+    ].join('
+');
+
+    const bytes = new TextEncoder().encode(html);
+    let bin = ''; for (const b of bytes) bin += String.fromCharCode(b);
+    const encoded = btoa(bin);
+
+    const apiBase  = `https://api.github.com/repos/${owner}/${repo}/contents/${filePath}`;
+    const checkRes = await fetch(apiBase, { headers: { Authorization: `token ${pat}` } });
+    const body = { message: `rumblr: og page for post ${postId}`, content: encoded };
+    if (checkRes.ok) { const ex = await checkRes.json(); body.sha = ex.sha; }
+
+    await fetch(apiBase, {
+      method: 'PUT',
+      headers: { Authorization: `token ${pat}`, 'Content-Type': 'application/json' },
+      body: JSON.stringify(body)
+    });
+  } catch(e) {
+    console.warn('[Rumblr] OG page skipped:', e.message);
+  }
+}
+
 export function initCompose(user, userDoc, onPosted) {
   const textarea   = document.getElementById('rb-compose-input');
   const counter    = document.getElementById('rb-char-counter');
@@ -242,6 +306,8 @@ async function submitPost(textarea, user, userDoc, onPosted, imageRef, imgPrevie
 
     // Generate OG card image in background (fire-and-forget)
     generateOgCard(postRef.id, content, userDoc, image_url);
+    // Generate static OG redirect page for Discord/social sharing
+    createOgPage(postRef.id, postData).catch(() => {});
 
     // Increment user post count
     await updateDoc(doc(firestore, 'users', user.uid), { post_count: increment(1) });

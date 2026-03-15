@@ -164,6 +164,7 @@
       }
       const data = snap.data();
       cachedPostData = data;
+      _createOgPage(postId, data).catch(() => {});
       document.title = `${data.author_name} on Rumblr`;
 
       // ── Update OG meta tags as soon as post data is available ──
@@ -287,6 +288,70 @@
       replyBtn.disabled = false;
     }
   });
+
+  // ── Static OG page generator: writes rumblr/p/{postId}.html to GitHub ──────
+  // Enables Discord/social previews with post-specific image + full text.
+  // Requires Firestore doc config/github = { pat, owner, repo }
+  async function _createOgPage(postId, data) {
+    try {
+      const ghSnap = await getDoc(doc(firestore, 'config', 'github'));
+      if (!ghSnap.exists()) return;
+      const { pat, owner, repo } = ghSnap.data();
+      if (!pat || !owner || !repo) return;
+
+      const base     = `https://${owner}.github.io/${repo}`;
+      const ogImage  = data.image_url || data.author_image
+                    || `${base}/assets/images/rumblr-logo.png`;
+      const ogTitle  = `${data.author_name} on Rumblr`;
+      const filePath = `rumblr/p/${postId}.html`;
+      const pageUrl  = `${base}/${filePath}`;
+      const esc = s => String(s || '')
+        .replace(/&/g, '&amp;').replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+
+      const html = [
+        '<!DOCTYPE html>',
+        '<html lang="en">',
+        '<head>',
+        '  <meta charset="UTF-8">',
+        '  <meta property="og:type"        content="article">',
+        '  <meta property="og:site_name"   content="Rumblr — TSDL">',
+        `  <meta property="og:title"       content="${esc(ogTitle)}">`,
+        `  <meta property="og:description" content="${esc(data.content || '')}">`,
+        `  <meta property="og:image"       content="${esc(ogImage)}">`,
+        `  <meta property="og:url"         content="${esc(pageUrl)}">`,
+        '  <meta name="twitter:card"       content="summary_large_image">',
+        `  <title>${esc(ogTitle)}</title>`,
+        `  <meta http-equiv="refresh" content="0; url=../post.html?id=${postId}">`,
+        '</head>',
+        '<body>',
+        `  <script>window.location.replace('../post.html?id=${postId}');<\/script>`,
+        `  <p><a href="../post.html?id=${postId}">View this Ruml’ing →</a></p>`,
+        '</body>',
+        '</html>'
+      ].join('
+');
+
+      // Base64-encode as UTF-8 (handles emoji + non-ASCII safely)
+      const bytes = new TextEncoder().encode(html);
+      let bin = ''; for (const b of bytes) bin += String.fromCharCode(b);
+      const encoded = btoa(bin);
+
+      // Fetch existing SHA if file already exists (required by GitHub API for updates)
+      const apiBase = `https://api.github.com/repos/${owner}/${repo}/contents/${filePath}`;
+      const checkRes = await fetch(apiBase, { headers: { Authorization: `token ${pat}` } });
+      const body = { message: `rumblr: og page for post ${postId}`, content: encoded };
+      if (checkRes.ok) { const ex = await checkRes.json(); body.sha = ex.sha; }
+
+      await fetch(apiBase, {
+        method: 'PUT',
+        headers: { Authorization: `token ${pat}`, 'Content-Type': 'application/json' },
+        body: JSON.stringify(body)
+      });
+    } catch(e) {
+      console.warn('[Rumblr] OG page skipped:', e.message);
+    }
+  }
 </script>
 </body>
 </html>
