@@ -19,7 +19,7 @@ import {
 import {
   ref as storageRef, uploadBytes, getDownloadURL
 } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-storage.js';
-import { showToast, notifyFollowers, initMentionAutocomplete } from './rumblr-app.js';
+import { showToast, notifyFollowers, initMentionAutocomplete, setInitCompose } from './rumblr-app.js';
 
 // ── Team data (color_1 from team_season_branding) ─────────
 // image: path relative to /rumblr/ pages (GitHub Pages URL)
@@ -787,6 +787,9 @@ export function initLogin() {
     });
   }
 }
+
+// Register initCompose with rumblr-app (breaks the circular import cycle)
+setInitCompose(initCompose);
 
 // ══════════════════════════════════════════════════════════
 // Sign-out

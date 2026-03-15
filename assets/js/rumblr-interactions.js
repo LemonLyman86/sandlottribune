@@ -8,7 +8,7 @@ import {
   doc, setDoc, deleteDoc, getDoc,
   updateDoc, increment, serverTimestamp, addDoc, collection
 } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js';
-import { showToast, linkifyContent, escHtml } from './rumblr-app.js';
+import { showToast, linkifyContent, escHtml, setInitInteractions } from './rumblr-app.js';
 
 // ══════════════════════════════════════════════════════════
 // Wire up all engagement buttons on a post element
@@ -50,6 +50,9 @@ export function initInteractions(postEl, postId, postData, currentUser) {
   if (editBtn)   editBtn.addEventListener('click',   e => { e.stopPropagation(); handleEdit(postEl, postId, postData, moreMenu); });
   if (deleteBtn) deleteBtn.addEventListener('click', e => { e.stopPropagation(); handleDelete(postEl, postId, postData); });
 }
+
+// Register initInteractions with rumblr-app (breaks the circular import cycle)
+setInitInteractions(initInteractions);
 
 // ══════════════════════════════════════════════════════════
 // Likes

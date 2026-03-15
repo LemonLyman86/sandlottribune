@@ -11,8 +11,12 @@ import {
   setDoc, deleteDoc, getCountFromServer, addDoc, serverTimestamp
 } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js';
 import { onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js';
-import { initCompose }        from './rumblr-auth.js';
-import { initInteractions }   from './rumblr-interactions.js';
+
+// ── Registered callbacks (breaks circular deps with rumblr-auth / rumblr-interactions) ──
+let _initCompose      = null;
+let _initInteractions = null;
+export function setInitCompose(fn)      { _initCompose      = fn; }
+export function setInitInteractions(fn) { _initInteractions = fn; }
 
 // ── Constants ─────────────────────────────────────────────
 const PAGE_SIZE    = 20;
@@ -97,7 +101,7 @@ export function initFeed() {
       followedHandles = [];
     }
     renderAuthUI();
-    initCompose(currentUser, currentUserDoc, refreshFeed);
+    if (_initCompose) _initCompose(currentUser, currentUserDoc, refreshFeed);
   });
 
   // Tab listeners
@@ -467,7 +471,7 @@ export function renderPost(postId, data, isReply = false) {
   });
 
   // Wire up interactions after render
-  initInteractions(el, postId, data, currentUser);
+  if (_initInteractions) _initInteractions(el, postId, data, currentUser);
 
   return el;
 }
