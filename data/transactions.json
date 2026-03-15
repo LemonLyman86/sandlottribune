@@ -1,7 +1,157 @@
 {
-  "updated": "2026-03-14T01:00:05",
+  "updated": "2026-03-15T05:59:44",
   "season": 2026,
   "transactions": [
+    {
+      "date": "2026-03-14",
+      "date_display": "Mar 14",
+      "type": "drop",
+      "type_label": "Released",
+      "team": "New York Yankees",
+      "team_abbrev": "NYY",
+      "player": "Bryce Cunningham",
+      "details": "Period 1"
+    },
+    {
+      "date": "2026-03-14",
+      "date_display": "Mar 14",
+      "type": "drop",
+      "type_label": "Released",
+      "team": "New York Yankees",
+      "team_abbrev": "NYY",
+      "player": "Luke Weaver",
+      "details": "Period 1"
+    },
+    {
+      "date": "2026-03-14",
+      "date_display": "Mar 14",
+      "type": "drop",
+      "type_label": "Released",
+      "team": "New York Yankees",
+      "team_abbrev": "NYY",
+      "player": "Kodai Senga",
+      "details": "Period 1"
+    },
+    {
+      "date": "2026-03-14",
+      "date_display": "Mar 14",
+      "type": "drop",
+      "type_label": "Released",
+      "team": "Arizona Diamondbacks",
+      "team_abbrev": "ARI",
+      "player": "Salvador Perez",
+      "details": "Period 1"
+    },
+    {
+      "date": "2026-03-14",
+      "date_display": "Mar 14",
+      "type": "drop",
+      "type_label": "Released",
+      "team": "Arizona Diamondbacks",
+      "team_abbrev": "ARI",
+      "player": "George Springer",
+      "details": "Period 1"
+    },
+    {
+      "date": "2026-03-14",
+      "date_display": "Mar 14",
+      "type": "drop",
+      "type_label": "Released",
+      "team": "Arizona Diamondbacks",
+      "team_abbrev": "ARI",
+      "player": "Taj Bradley",
+      "details": "Period 1"
+    },
+    {
+      "date": "2026-03-14",
+      "date_display": "Mar 14",
+      "type": "drop",
+      "type_label": "Released",
+      "team": "Arizona Diamondbacks",
+      "team_abbrev": "ARI",
+      "player": "Jurickson Profar",
+      "details": "Period 1"
+    },
+    {
+      "date": "2026-03-14",
+      "date_display": "Mar 14",
+      "type": "drop",
+      "type_label": "Released",
+      "team": "Miami Marlins",
+      "team_abbrev": "MIA",
+      "player": "Spencer Arrighetti",
+      "details": "Period 1"
+    },
+    {
+      "date": "2026-03-14",
+      "date_display": "Mar 14",
+      "type": "drop",
+      "type_label": "Released",
+      "team": "Miami Marlins",
+      "team_abbrev": "MIA",
+      "player": "Luis Severino",
+      "details": "Period 1"
+    },
+    {
+      "date": "2026-03-14",
+      "date_display": "Mar 14",
+      "type": "drop",
+      "type_label": "Released",
+      "team": "Miami Marlins",
+      "team_abbrev": "MIA",
+      "player": "Sean Burke",
+      "details": "Period 1"
+    },
+    {
+      "date": "2026-03-14",
+      "date_display": "Mar 14",
+      "type": "drop",
+      "type_label": "Released",
+      "team": "San Diego Padres",
+      "team_abbrev": "SDP",
+      "player": "Endy Rodriguez",
+      "details": "Period 1"
+    },
+    {
+      "date": "2026-03-14",
+      "date_display": "Mar 14",
+      "type": "drop",
+      "type_label": "Released",
+      "team": "Washington Nationals",
+      "team_abbrev": "WSH",
+      "player": "Jake Burger",
+      "details": "Period 1"
+    },
+    {
+      "date": "2026-03-14",
+      "date_display": "Mar 14",
+      "type": "drop",
+      "type_label": "Released",
+      "team": "Boston Red Sox",
+      "team_abbrev": "BOS",
+      "player": "Hayden Wesneski",
+      "details": "Period 1"
+    },
+    {
+      "date": "2026-03-14",
+      "date_display": "Mar 14",
+      "type": "drop",
+      "type_label": "Released",
+      "team": "St. Louis Cardinals",
+      "team_abbrev": "STL",
+      "player": "Jose Caballero",
+      "details": "Period 1"
+    },
+    {
+      "date": "2026-03-14",
+      "date_display": "Mar 14",
+      "type": "drop",
+      "type_label": "Released",
+      "team": "Chicago Cubs",
+      "team_abbrev": "CHC",
+      "player": "Lenyn Sosa",
+      "details": "Period 1"
+    },
     {
       "date": "2026-03-13",
       "date_display": "Mar 13",
@@ -150,156 +300,6 @@
       "team": "Washington Nationals",
       "team_abbrev": "WSH",
       "player": "Ben Casparius",
-      "details": "Period 1"
-    },
-    {
-      "date": "2026-03-11",
-      "date_display": "Mar 11",
-      "type": "drop",
-      "type_label": "Released",
-      "team": "Washington Nationals",
-      "team_abbrev": "WSH",
-      "player": "Bailey Falter",
-      "details": "Period 1"
-    },
-    {
-      "date": "2026-03-11",
-      "date_display": "Mar 11",
-      "type": "drop",
-      "type_label": "Released",
-      "team": "Washington Nationals",
-      "team_abbrev": "WSH",
-      "player": "Mike Vasil",
-      "details": "Period 1"
-    },
-    {
-      "date": "2026-03-11",
-      "date_display": "Mar 11",
-      "type": "drop",
-      "type_label": "Released",
-      "team": "Washington Nationals",
-      "team_abbrev": "WSH",
-      "player": "Josh Smith",
-      "details": "Period 1"
-    },
-    {
-      "date": "2026-03-09",
-      "date_display": "Mar 9",
-      "type": "drop",
-      "type_label": "Released",
-      "team": "Seattle Mariners",
-      "team_abbrev": "SEA",
-      "player": "Andrew Kittredge",
-      "details": "Period 1"
-    },
-    {
-      "date": "2026-03-09",
-      "date_display": "Mar 9",
-      "type": "drop",
-      "type_label": "Released",
-      "team": "Seattle Mariners",
-      "team_abbrev": "SEA",
-      "player": "Trevor Story",
-      "details": "Period 1"
-    },
-    {
-      "date": "2026-03-09",
-      "date_display": "Mar 9",
-      "type": "drop",
-      "type_label": "Released",
-      "team": "Seattle Mariners",
-      "team_abbrev": "SEA",
-      "player": "Andrew Kittredge",
-      "details": "Period 1"
-    },
-    {
-      "date": "2026-03-04",
-      "date_display": "Mar 4",
-      "type": "drop",
-      "type_label": "Released",
-      "team": "St. Louis Cardinals",
-      "team_abbrev": "STL",
-      "player": "Lucas Giolito",
-      "details": "Period 1"
-    },
-    {
-      "date": "2026-03-01",
-      "date_display": "Mar 1",
-      "type": "drop",
-      "type_label": "Released",
-      "team": "Arizona Diamondbacks",
-      "team_abbrev": "ARI",
-      "player": "Ben Joyce",
-      "details": "Period 1"
-    },
-    {
-      "date": "2026-03-01",
-      "date_display": "Mar 1",
-      "type": "drop",
-      "type_label": "Released",
-      "team": "Arizona Diamondbacks",
-      "team_abbrev": "ARI",
-      "player": "Alex Freeland",
-      "details": "Period 1"
-    },
-    {
-      "date": "2026-03-01",
-      "date_display": "Mar 1",
-      "type": "drop",
-      "type_label": "Released",
-      "team": "Arizona Diamondbacks",
-      "team_abbrev": "ARI",
-      "player": "Colton Cowser",
-      "details": "Period 1"
-    },
-    {
-      "date": "2026-02-28",
-      "date_display": "Feb 28",
-      "type": "drop",
-      "type_label": "Released",
-      "team": "Chicago Cubs",
-      "team_abbrev": "CHC",
-      "player": "Jaden Hamm",
-      "details": "Period 1"
-    },
-    {
-      "date": "2026-02-28",
-      "date_display": "Feb 28",
-      "type": "drop",
-      "type_label": "Released",
-      "team": "Chicago Cubs",
-      "team_abbrev": "CHC",
-      "player": "Moises Chace",
-      "details": "Period 1"
-    },
-    {
-      "date": "2026-02-28",
-      "date_display": "Feb 28",
-      "type": "drop",
-      "type_label": "Released",
-      "team": "San Diego Padres",
-      "team_abbrev": "SDP",
-      "player": "Michael Kopech",
-      "details": "Period 1"
-    },
-    {
-      "date": "2026-02-28",
-      "date_display": "Feb 28",
-      "type": "drop",
-      "type_label": "Released",
-      "team": "San Diego Padres",
-      "team_abbrev": "SDP",
-      "player": "Colin Rea",
-      "details": "Period 1"
-    },
-    {
-      "date": "2026-02-28",
-      "date_display": "Feb 28",
-      "type": "drop",
-      "type_label": "Released",
-      "team": "San Diego Padres",
-      "team_abbrev": "SDP",
-      "player": "Ronny Henriquez",
       "details": "Period 1"
     }
   ]
