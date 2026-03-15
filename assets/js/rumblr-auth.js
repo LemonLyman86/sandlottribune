@@ -240,6 +240,9 @@ async function submitPost(textarea, user, userDoc, onPosted, imageRef, imgPrevie
 
     const postRef = await addDoc(collection(firestore, 'posts'), postData);
 
+    // Generate OG card image in background (fire-and-forget)
+    generateOgCard(postRef.id, content, userDoc, image_url);
+
     // Increment user post count
     await updateDoc(doc(firestore, 'users', user.uid), { post_count: increment(1) });
 
@@ -258,6 +261,147 @@ async function submitPost(textarea, user, userDoc, onPosted, imageRef, imgPrevie
     showToast('Could not post. Try again.');
     if (postBtn) postBtn.disabled = false;
   }
+}
+
+// ══════════════════════════════════════════════════════════
+// OG card image generator
+// Draws a 1200×630 post card, uploads to rumblr/og/{postId}.jpg,
+// then updates the post doc with og_image_url (fire-and-forget).
+// ══════════════════════════════════════════════════════════
+async function generateOgCard(postId, content, userDoc, attachedImageUrl) {
+  try {
+    if (document.fonts?.ready) await document.fonts.ready;
+
+    const W = 1200, H = 630;
+    const canvas = document.createElement('canvas');
+    canvas.width  = W;
+    canvas.height = H;
+    const ctx = canvas.getContext('2d');
+
+    // ── Background ────────────────────────────────────────
+    ctx.fillStyle = '#0D1117';
+    ctx.fillRect(0, 0, W, H);
+
+    // Subtle vignette gradient
+    const vg = ctx.createRadialGradient(W / 2, H / 2, 100, W / 2, H / 2, W * 0.8);
+    vg.addColorStop(0, 'rgba(22,27,34,0)');
+    vg.addColorStop(1, 'rgba(4,9,15,0.55)');
+    ctx.fillStyle = vg;
+    ctx.fillRect(0, 0, W, H);
+
+    // ── Red top bar ───────────────────────────────────────
+    ctx.fillStyle = '#C8102E';
+    ctx.fillRect(0, 0, W, 10);
+
+    // ── Rumblr brand top-right ────────────────────────────
+    ctx.fillStyle = '#C8102E';
+    ctx.font = 'bold 30px Oswald, sans-serif';
+    ctx.textAlign = 'right';
+    ctx.textBaseline = 'top';
+    ctx.fillText('Rumblr', W - 54, 34);
+
+    // ── Author avatar circle ──────────────────────────────
+    const ax = 78, ay = 128, ar = 44;
+    ctx.beginPath();
+    ctx.arc(ax, ay, ar, 0, Math.PI * 2);
+    ctx.fillStyle = userDoc?.team_color || '#555555';
+    ctx.fill();
+
+    ctx.fillStyle = '#ffffff';
+    ctx.font = 'bold 24px Oswald, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText((userDoc?.team_abbrev || '?').slice(0, 3), ax, ay);
+
+    // ── Author name + handle ──────────────────────────────
+    ctx.textAlign = 'left';
+    ctx.textBaseline = 'top';
+
+    ctx.fillStyle = '#ffffff';
+    ctx.font = 'bold 32px Oswald, sans-serif';
+    ctx.fillText(userDoc?.display_name || 'Author', 144, 94);
+
+    ctx.fillStyle = '#718096';
+    ctx.font = '24px Oswald, sans-serif';
+    ctx.fillText(userDoc?.handle || '', 144, 134);
+
+    // ── Post content (text-wrapped) ───────────────────────
+    ctx.fillStyle = '#E2E8F0';
+    ctx.font = '34px Marcellus, Georgia, serif';
+    ctx.textBaseline = 'top';
+
+    const contentMaxWidth = attachedImageUrl ? 580 : 1040;
+    const lines = wrapCanvasText(ctx, content, contentMaxWidth);
+    const MAX_LINES = 8;
+    lines.slice(0, MAX_LINES).forEach((line, i) => {
+      ctx.fillText(line, 78, 198 + i * 50);
+    });
+    if (lines.length > MAX_LINES) {
+      ctx.fillStyle = '#718096';
+      ctx.fillText('…', 78, 198 + MAX_LINES * 50);
+    }
+
+    // ── Attached image thumbnail (right side) ─────────────
+    if (attachedImageUrl) {
+      await new Promise(resolve => {
+        const img = new Image();
+        img.crossOrigin = 'anonymous';
+        img.onload = () => {
+          const tx = 640, ty = 86, tw = 506, th = 284;
+          ctx.save();
+          ctx.beginPath();
+          ctx.roundRect(tx, ty, tw, th, 12);
+          ctx.clip();
+          ctx.drawImage(img, tx, ty, tw, th);
+          ctx.restore();
+          resolve();
+        };
+        img.onerror = resolve; // skip if image fails to load
+        img.src = attachedImageUrl;
+      });
+    }
+
+    // ── Bottom bar ────────────────────────────────────────
+    ctx.fillStyle = '#161B22';
+    ctx.fillRect(0, H - 54, W, 54);
+    ctx.fillStyle = '#C8102E';
+    ctx.font = 'bold 22px Oswald, sans-serif';
+    ctx.textAlign = 'left';
+    ctx.textBaseline = 'middle';
+    ctx.fillText('Rumblr', 40, H - 27);
+    ctx.fillStyle = '#4A5568';
+    ctx.font = '20px Oswald, sans-serif';
+    ctx.fillText('· The Sandlot Dynasty League', 116, H - 27);
+
+    // ── Export + upload ───────────────────────────────────
+    const blob = await new Promise(resolve =>
+      canvas.toBlob(resolve, 'image/jpeg', 0.9)
+    );
+    const imgRef  = storageRef(storage, `rumblr/og/${postId}.jpg`);
+    const upload  = await uploadBytes(imgRef, blob, { contentType: 'image/jpeg' });
+    const ogUrl   = await getDownloadURL(upload.ref);
+
+    await updateDoc(doc(firestore, 'posts', postId), { og_image_url: ogUrl });
+  } catch (err) {
+    console.warn('OG card generation failed:', err);
+  }
+}
+
+function wrapCanvasText(ctx, text, maxWidth) {
+  const words = text.split(/\s+/);
+  const lines = [];
+  let line = '';
+  for (const word of words) {
+    const test = line ? `${line} ${word}` : word;
+    if (ctx.measureText(test).width > maxWidth && line) {
+      lines.push(line);
+      line = word;
+    } else {
+      line = test;
+    }
+  }
+  if (line) lines.push(line);
+  return lines;
 }
 
 // ══════════════════════════════════════════════════════════

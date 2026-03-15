@@ -93,7 +93,12 @@
   const postId    = new URLSearchParams(location.search).get('id');
   const openReply = new URLSearchParams(location.search).get('reply') === '1';
   let currentUser = null, currentUserDoc = null;
-  let postLoaded  = false;
+  let cachedPostData = null; // stored after first fetch so auth callback can re-render
+
+  // ── Load post IMMEDIATELY — no auth needed to read public posts.
+  // This ensures OG meta tags are set as quickly as possible for link
+  // preview crawlers (Discord, Slack) that execute JS but have a short timeout.
+  loadPost();
 
   onAuthStateChanged(auth, async user => {
     currentUser = user;
@@ -126,16 +131,22 @@
       if (replyInput) initMentionAutocomplete(replyInput);
 
       if (openReply) document.getElementById('rb-reply-input')?.focus();
+
+      // If the post was already rendered before auth resolved, re-render it
+      // so the edit/delete more-menu appears for the post owner.
+      if (cachedPostData && cachedPostData.author_uid === user.uid) {
+        const mainPost = document.getElementById('rb-main-post');
+        if (mainPost && mainPost.children.length) {
+          mainPost.innerHTML = '';
+          const postEl = renderPost(postId, cachedPostData);
+          postEl.style.cursor = 'default';
+          mainPost.appendChild(postEl);
+        }
+      }
     } else {
       setCurrentUser(null, null);
       document.getElementById('rb-reply-compose').style.display = 'none';
       document.getElementById('rb-reply-login-prompt').style.display = 'block';
-    }
-
-    // Load post once auth is known (so edit/delete buttons render correctly)
-    if (!postLoaded) {
-      postLoaded = true;
-      loadPost();
     }
   });
 
@@ -152,19 +163,24 @@
         return;
       }
       const data = snap.data();
+      cachedPostData = data;
       document.title = `${data.author_name} on Rumblr`;
 
-      // Update Open Graph meta tags for link previews
+      // ── Update OG meta tags as soon as post data is available ──
+      // og_image_url = pre-generated post card (set at creation time)
+      // image_url    = user-attached photo (set at creation time)
+      // fallback     = Rumblr logo
+      const fallbackImg = 'https://lemonlyman86.github.io/sandlottribune/assets/images/rumblr-logo.png';
+      const ogImage = data.og_image_url || data.image_url || fallbackImg;
       const setMeta = (prop, val) => {
         const el = document.querySelector(`meta[property="${prop}"]`);
         if (el && val) el.setAttribute('content', val);
       };
-      const fallbackImg = 'https://lemonlyman86.github.io/sandlottribune/assets/images/rumblr-logo.png';
       setMeta('og:title',       `${data.author_name} on Rumblr`);
       setMeta('og:description', (data.content || '').slice(0, 160));
-      setMeta('og:image',       data.image_url || fallbackImg);
+      setMeta('og:image',       ogImage);
       setMeta('og:url',         window.location.href);
-      if (!data.image_url) {
+      if (!data.og_image_url && !data.image_url) {
         const tc = document.querySelector('meta[name="twitter:card"]');
         if (tc) tc.setAttribute('content', 'summary');
       }
