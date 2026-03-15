@@ -51,6 +51,7 @@ let currentUser    = null;
 let currentUserDoc = null;
 let loadingMore    = false;
 let followedHandles = [];  // handles the current user follows
+let feedInitialized = false;
 
 // Called by post.html (and any page that doesn't run initFeed) to inject auth context
 // so that renderPost() can correctly show edit/delete menus on own posts.
@@ -77,6 +78,8 @@ let feedEl, filterBannerEl, loadMoreBtn, spinnerEl;
 // Initialise
 // ══════════════════════════════════════════════════════════
 export function initFeed() {
+  if (feedInitialized) return;
+  feedInitialized = true;
   feedEl          = document.getElementById('rb-feed');
   filterBannerEl  = document.getElementById('rb-filter-banner');
   loadMoreBtn     = document.getElementById('rb-load-more-btn');
@@ -1031,3 +1034,10 @@ window.__rumblrHashtag = tag => {
   document.querySelectorAll('.rb-tab').forEach(t => t.classList.remove('active'));
   setFilter({ type: 'hashtag', value: tag });
 };
+
+// Auto-init: if this module is loaded on the feed page and initFeed() was never
+// called (e.g. stale cached HTML still has the old DOMContentLoaded wrapper),
+// kick it off now. Modules are deferred so DOM is always ready at this point.
+if (document.getElementById('rb-feed') && !feedInitialized) {
+  initFeed();
+}
