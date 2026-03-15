@@ -102,6 +102,11 @@ service cloud.firestore {
       allow write: if isVerifiedAdmin();
     }
 
+    // GitHub PAT for OG page creation — admin-only, stored in config/github
+    match /config/{docId} {
+      allow read, write: if isVerifiedAdmin();
+    }
+
     // Admin collection: managed via Firebase Console only — no client access
     match /admin/{docId} {
       allow read, write: if false;
