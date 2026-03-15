@@ -19,7 +19,7 @@ import { getAuth }       from 'https://www.gstatic.com/firebasejs/10.12.0/fireba
 import { getStorage }    from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-storage.js';
 
 const firebaseConfig = {
-  apiKey:            "AIzaSyBrkg33ESUk0UsxEVAUg46Mh9Kzz2-9P54",
+  apiKey:            "AIzaSyDpPG4MfoP7YjUzU7N5vh6TPdv_I0S6pgI",
   authDomain:        "sandlottribune.firebaseapp.com",
   projectId:         "sandlottribune",
   storageBucket:     "sandlottribune.firebasestorage.app",
