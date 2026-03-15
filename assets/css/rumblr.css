@@ -1980,3 +1980,75 @@ input::placeholder, textarea::placeholder { color: var(--rb-subtle); }
   .rb-profile-avatar-lg { width: 60px; height: 60px; font-size: 0.78rem; }
   .rb-profile-avatar-wrap { width: 60px; height: 60px; }
 }
+
+/* ── Post image ──────────────────────────────────────────── */
+.rb-post-image-wrap {
+  margin: 8px 0 4px;
+  border-radius: 12px;
+  overflow: hidden;
+  border: 1px solid var(--rb-border);
+  max-width: 100%;
+  cursor: default;
+}
+.rb-post-image {
+  display: block;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  object-fit: cover;
+  background: #111;
+}
+
+/* ── Compose toolbar (📷 Photo button row) ───────────────── */
+.rb-compose-toolbar {
+  display: flex;
+  gap: 8px;
+  padding: 4px 0 2px;
+}
+.rb-compose-toolbar-btn {
+  background: none;
+  border: 1px solid var(--rb-border);
+  border-radius: 20px;
+  color: var(--rb-red);
+  font-family: 'Oswald', sans-serif;
+  font-size: 0.8rem;
+  padding: 4px 12px;
+  cursor: pointer;
+  transition: background 0.15s;
+  line-height: 1.4;
+}
+.rb-compose-toolbar-btn:hover { background: rgba(200, 16, 46, 0.08); }
+
+/* ── Compose image preview thumbnail ─────────────────────── */
+.rb-compose-img-preview {
+  position: relative;
+  display: inline-flex;
+  margin: 6px 0;
+  border-radius: 8px;
+  overflow: hidden;
+  border: 1px solid var(--rb-border);
+}
+.rb-compose-img-preview img {
+  max-width: 200px;
+  aspect-ratio: 16 / 9;
+  object-fit: cover;
+  display: block;
+}
+.rb-compose-img-remove {
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  background: rgba(0, 0, 0, 0.75);
+  border: none;
+  border-radius: 50%;
+  color: #fff;
+  width: 22px;
+  height: 22px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 0.72rem;
+  line-height: 1;
+  padding: 0;
+}
+.rb-compose-img-remove:hover { background: rgba(200, 16, 46, 0.85); }

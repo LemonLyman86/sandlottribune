@@ -3,7 +3,7 @@
  * Handles: sign-up, login, sign-out, post composer.
  */
 
-import { firestore, auth } from './firebase-config.js';
+import { firestore, auth, storage } from './firebase-config.js';
 import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
@@ -16,6 +16,9 @@ import {
   doc, setDoc, addDoc, collection,
   serverTimestamp, increment, updateDoc
 } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js';
+import {
+  ref as storageRef, uploadBytes, getDownloadURL
+} from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-storage.js';
 import { showToast, notifyFollowers, initMentionAutocomplete } from './rumblr-app.js';
 
 // ── Team data (color_1 from team_season_branding) ─────────
@@ -66,7 +69,7 @@ function getAvatarUrl(year, abbrev) {
 }
 
 // ══════════════════════════════════════════════════════════
-// Compose bar (on feed page)
+// Compose bar (on feed page and own profile page)
 // ══════════════════════════════════════════════════════════
 export function initCompose(user, userDoc, onPosted) {
   const textarea   = document.getElementById('rb-compose-input');
@@ -107,20 +110,87 @@ export function initCompose(user, userDoc, onPosted) {
     if (postBtn) postBtn.disabled = textarea.value.trim().length === 0 || remaining < 0;
   });
 
+  // ── Image attachment ─────────────────────────────────────
+  // imageRef is a shared object so submitPost() can read the blob
+  const imageRef = { blob: null };
+
+  const imgBtn     = document.getElementById('rb-compose-img-btn');
+  const imgInput   = document.getElementById('rb-img-input');
+  const imgPreview = document.getElementById('rb-compose-image-preview');
+  const imgThumb   = document.getElementById('rb-compose-img-thumb');
+  const imgRemove  = document.getElementById('rb-compose-img-remove');
+  const cropModal  = document.getElementById('rb-crop-modal');
+  const cropImgEl  = document.getElementById('rb-crop-image');
+  let   cropperInst = null;
+
+  // Open file picker
+  imgBtn?.addEventListener('click', () => imgInput?.click());
+
+  // File chosen → load into crop modal
+  imgInput?.addEventListener('change', () => {
+    const file = imgInput.files?.[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = e => {
+      if (!cropImgEl || !cropModal) return;
+      cropImgEl.src = e.target.result;
+      cropModal.classList.remove('hidden');
+      cropperInst?.destroy();
+      // Cropper is loaded as a global script (CDN) — window.Cropper
+      cropperInst = new window.Cropper(cropImgEl, {
+        aspectRatio: 16 / 9,
+        viewMode:    1,
+        autoCropArea: 1,
+      });
+    };
+    reader.readAsDataURL(file);
+    imgInput.value = ''; // allow re-selecting same file
+  });
+
+  // Cancel crop (both the ✕ and Cancel button)
+  ['rb-crop-cancel', 'rb-crop-cancel-btn'].forEach(id => {
+    document.getElementById(id)?.addEventListener('click', () => {
+      cropperInst?.destroy();
+      cropperInst = null;
+      if (cropModal) cropModal.classList.add('hidden');
+    });
+  });
+
+  // Confirm crop → generate JPEG blob → show thumbnail
+  document.getElementById('rb-crop-confirm')?.addEventListener('click', () => {
+    if (!cropperInst) return;
+    cropperInst.getCroppedCanvas({ width: 1200, height: 675 }).toBlob(blob => {
+      imageRef.blob = blob;
+      const objectUrl = URL.createObjectURL(blob);
+      if (imgThumb)   imgThumb.src = objectUrl;
+      if (imgPreview) imgPreview.style.display = 'flex';
+      cropperInst.destroy();
+      cropperInst = null;
+      if (cropModal) cropModal.classList.add('hidden');
+    }, 'image/jpeg', 0.85);
+  });
+
+  // Remove attached image
+  imgRemove?.addEventListener('click', () => {
+    imageRef.blob = null;
+    if (imgThumb)   imgThumb.src = '';
+    if (imgPreview) imgPreview.style.display = 'none';
+  });
+
   // Post submit
   if (postBtn) {
-    postBtn.addEventListener('click', () => submitPost(textarea, user, userDoc, onPosted));
+    postBtn.addEventListener('click', () => submitPost(textarea, user, userDoc, onPosted, imageRef, imgPreview, imgThumb));
   }
 
   // Enter + Ctrl/Cmd submit
   textarea.addEventListener('keydown', e => {
     if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
-      submitPost(textarea, user, userDoc, onPosted);
+      submitPost(textarea, user, userDoc, onPosted, imageRef, imgPreview, imgThumb);
     }
   });
 }
 
-async function submitPost(textarea, user, userDoc, onPosted) {
+async function submitPost(textarea, user, userDoc, onPosted, imageRef, imgPreview, imgThumb) {
   if (!user || !userDoc) return;
   const content = textarea.value.trim();
   if (!content || content.length > MAX_CHARS) return;
@@ -128,8 +198,25 @@ async function submitPost(textarea, user, userDoc, onPosted) {
   const hashtags = [...content.matchAll(/#(\w+)/g)].map(m => '#' + m[1]);
   const mentions = [...content.matchAll(/@(\w+)/g)].map(m => '@' + m[1]);
 
+  // Disable post button while submitting
+  const postBtn = document.getElementById('rb-compose-post-btn');
+  if (postBtn) postBtn.disabled = true;
+
   try {
-    const postRef = await addDoc(collection(firestore, 'posts'), {
+    // Upload image if one was attached
+    let image_url = null;
+    if (imageRef?.blob) {
+      const imgPath = `rumblr/posts/${user.uid}/${Date.now()}.jpg`;
+      const imgRef  = storageRef(storage, imgPath);
+      const snap    = await uploadBytes(imgRef, imageRef.blob, { contentType: 'image/jpeg' });
+      image_url     = await getDownloadURL(snap.ref);
+      // Clear pending image state
+      imageRef.blob = null;
+      if (imgPreview) imgPreview.style.display = 'none';
+      if (imgThumb)   imgThumb.src = '';
+    }
+
+    const postData = {
       content,
       author_type:         'user',
       author_name:         userDoc.display_name,
@@ -148,7 +235,10 @@ async function submitPost(textarea, user, userDoc, onPosted) {
       repost_count:        0,
       parent_post_id:      null,
       is_ai_generated:     false,
-    });
+      image_url,
+    };
+
+    const postRef = await addDoc(collection(firestore, 'posts'), postData);
 
     // Increment user post count
     await updateDoc(doc(firestore, 'users', user.uid), { post_count: increment(1) });
@@ -159,7 +249,6 @@ async function submitPost(textarea, user, userDoc, onPosted) {
     textarea.value = '';
     const counter = document.getElementById('rb-char-counter');
     if (counter) { counter.textContent = MAX_CHARS; counter.className = 'rb-char-counter'; }
-    const postBtn = document.getElementById('rb-compose-post-btn');
     if (postBtn) postBtn.disabled = true;
 
     showToast('Rumbl\'ing posted!');
@@ -167,6 +256,7 @@ async function submitPost(textarea, user, userDoc, onPosted) {
   } catch (err) {
     console.error('Post error:', err);
     showToast('Could not post. Try again.');
+    if (postBtn) postBtn.disabled = false;
   }
 }
 

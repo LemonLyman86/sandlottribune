@@ -7,6 +7,7 @@
   <meta name="description" content="Rumblr: TSDL's social media home. Follow the writers, track the buzz, post your takes.">
   <link rel="icon" href="../assets/images/rumblr-logo.png">
   <link rel="stylesheet" href="../assets/css/rumblr.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.2/cropper.min.css">
 </head>
 <body class="rumblr-page">
 
@@ -134,6 +135,13 @@
         <div class="rb-compose-body">
           <textarea id="rb-compose-input" class="rb-compose-input"
             placeholder="What's happening in the league?" rows="3" maxlength="300"></textarea>
+          <div id="rb-compose-image-preview" style="display:none;" class="rb-compose-img-preview">
+            <img id="rb-compose-img-thumb" src="" alt="Attached image">
+            <button id="rb-compose-img-remove" class="rb-compose-img-remove" title="Remove image">✕</button>
+          </div>
+          <div class="rb-compose-toolbar">
+            <button id="rb-compose-img-btn" class="rb-compose-toolbar-btn" title="Attach image">📷 Photo</button>
+          </div>
           <div class="rb-compose-footer">
             <span id="rb-char-counter" class="rb-char-counter">280</span>
             <button id="rb-compose-post-btn" class="rb-btn rb-btn-primary" disabled>Post</button>
@@ -141,6 +149,7 @@
         </div>
       </div>
     </div>
+    <input type="file" id="rb-img-input" accept="image/*" style="display:none;">
 
     <!-- Spinner -->
     <div id="rb-spinner" class="rb-spinner" style="display:none;"></div>
@@ -232,9 +241,28 @@
   </div>
 </div>
 
+<!-- Crop modal -->
+<div id="rb-crop-modal" class="rb-modal-overlay hidden">
+  <div class="rb-modal" style="max-width:600px;width:94%;">
+    <div class="rb-modal-header">
+      <span class="rb-modal-title">Crop Image</span>
+      <span class="rb-modal-close" id="rb-crop-cancel">✕</span>
+    </div>
+    <div style="width:100%;max-height:400px;overflow:hidden;background:#000;border-radius:4px;margin:12px 0;">
+      <img id="rb-crop-image" style="max-width:100%;display:block;" alt="Crop preview">
+    </div>
+    <p style="font-size:0.8rem;color:var(--rb-subtle);margin-bottom:12px;">Drag to reposition. All images use 16:9 format.</p>
+    <div style="display:flex;gap:10px;">
+      <button id="rb-crop-cancel-btn" class="rb-btn rb-btn-outline" style="flex:0 0 auto;">Cancel</button>
+      <button id="rb-crop-confirm" class="rb-btn rb-btn-primary" style="flex:1;justify-content:center;">Attach Image</button>
+    </div>
+  </div>
+</div>
+
 <!-- Toast container -->
 <div class="rb-toast-container"></div>
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.2/cropper.min.js"></script>
 <script type="module">
   import { initFeed, clearFilter, loadTrendingHashtags } from '../assets/js/rumblr-app.js';
   import { initSignOut } from '../assets/js/rumblr-auth.js';

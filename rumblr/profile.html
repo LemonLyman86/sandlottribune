@@ -8,6 +8,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=Marcellus&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="../assets/css/rumblr.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.2/cropper.min.css">
 </head>
 <body class="rumblr-page">
 
@@ -106,6 +107,29 @@
       <div class="rb-profile-tab" data-ptab="comments">Comments</div>
     </div>
 
+    <!-- Compose (shown only on own profile) -->
+    <div id="rb-compose-wrap" style="display:none;">
+      <div class="rb-compose">
+        <div id="rb-compose-avatar" class="rb-compose-avatar" style="background:#555">?</div>
+        <div class="rb-compose-body">
+          <textarea id="rb-compose-input" class="rb-compose-input"
+            placeholder="What's happening in the league?" rows="3" maxlength="300"></textarea>
+          <div id="rb-compose-image-preview" style="display:none;" class="rb-compose-img-preview">
+            <img id="rb-compose-img-thumb" src="" alt="Attached image">
+            <button id="rb-compose-img-remove" class="rb-compose-img-remove" title="Remove image">✕</button>
+          </div>
+          <div class="rb-compose-toolbar">
+            <button id="rb-compose-img-btn" class="rb-compose-toolbar-btn" title="Attach image">📷 Photo</button>
+          </div>
+          <div class="rb-compose-footer">
+            <span id="rb-char-counter" class="rb-char-counter">280</span>
+            <button id="rb-compose-post-btn" class="rb-btn rb-btn-primary" disabled>Post</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <input type="file" id="rb-img-input" accept="image/*" style="display:none;">
+
     <!-- Spinner -->
     <div id="rb-spinner" class="rb-spinner" style="display:none;"></div>
 
@@ -165,8 +189,27 @@
   </div>
 </div>
 
+<!-- Crop modal -->
+<div id="rb-crop-modal" class="rb-modal-overlay hidden">
+  <div class="rb-modal" style="max-width:600px;width:94%;">
+    <div class="rb-modal-header">
+      <span class="rb-modal-title">Crop Image</span>
+      <span class="rb-modal-close" id="rb-crop-cancel">✕</span>
+    </div>
+    <div style="width:100%;max-height:400px;overflow:hidden;background:#000;border-radius:4px;margin:12px 0;">
+      <img id="rb-crop-image" style="max-width:100%;display:block;" alt="Crop preview">
+    </div>
+    <p style="font-size:0.8rem;color:var(--rb-subtle);margin-bottom:12px;">Drag to reposition. All images use 16:9 format.</p>
+    <div style="display:flex;gap:10px;">
+      <button id="rb-crop-cancel-btn" class="rb-btn rb-btn-outline" style="flex:0 0 auto;">Cancel</button>
+      <button id="rb-crop-confirm" class="rb-btn rb-btn-primary" style="flex:1;justify-content:center;">Attach Image</button>
+    </div>
+  </div>
+</div>
+
 <div class="rb-toast-container"></div>
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.2/cropper.min.js"></script>
 <script type="module">
   import { firestore, auth } from '../assets/js/firebase-config.js';
   import {
@@ -179,6 +222,7 @@
     toggleFollow, isFollowing, loadFollows, loadProfileStats,
     updateFollowNotifPref, getFollowNotifPrefs
   } from '../assets/js/rumblr-app.js';
+  import { initCompose } from '../assets/js/rumblr-auth.js';
 
   const params       = new URLSearchParams(location.search);
   const uid          = params.get('uid');
@@ -188,6 +232,7 @@
   let profileHandle  = null;
   let activeTab      = 'posts';
   let allPosts       = [];   // cached fetch, filtered per tab
+  let composeInited  = false; // guard against double-init if auth fires multiple times
 
   // ── Sign out ────────────────────────────────────────────
   const signOutBtn = document.getElementById('rb-signout-btn');
@@ -238,12 +283,26 @@
     }
 
     // Show/hide Edit vs Follow buttons
-    const editBtn   = document.getElementById('rb-edit-profile-btn');
-    const followBtn = document.getElementById('rb-follow-btn');
+    const editBtn      = document.getElementById('rb-edit-profile-btn');
+    const followBtn    = document.getElementById('rb-follow-btn');
+    const composeWrap  = document.getElementById('rb-compose-wrap');
 
     if (uid && currentUserUid === uid) {
       if (editBtn)   editBtn.style.display   = 'inline-flex';
       if (followBtn) followBtn.style.display = 'none';
+      // Show compose box on own profile
+      if (composeWrap && !composeInited) {
+        composeWrap.style.display = 'block';
+        composeInited = true;
+        // Load the user doc so initCompose can set the avatar correctly
+        try {
+          const udSnap = await getDoc(doc(firestore, 'users', user.uid));
+          const ud = udSnap.exists() ? udSnap.data() : null;
+          initCompose(user, ud, () => loadPosts(uid, false));
+        } catch (_) {
+          initCompose(user, null, () => loadPosts(uid, false));
+        }
+      }
     } else if (currentUserUid && (uid || handleParam)) {
       if (editBtn)   editBtn.style.display   = 'none';
       if (followBtn) {

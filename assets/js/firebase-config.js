@@ -16,6 +16,7 @@ import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.0/fireba
 import { getDatabase }   from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js';
 import { getFirestore }  from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js';
 import { getAuth }       from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js';
+import { getStorage }    from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-storage.js';
 
 const firebaseConfig = {
   apiKey:            "AIzaSyDpPG4MfoP7YjUzU7N5vh6TPdv_I0S6pgI",
@@ -33,3 +34,4 @@ const app = initializeApp(firebaseConfig);
 export const db        = getDatabase(app);   // Realtime Database — article ratings/comments
 export const firestore = getFirestore(app);  // Firestore — Rumblr posts & user accounts
 export const auth      = getAuth(app);       // Auth — Rumblr user login
+export const storage   = getStorage(app);    // Storage — Rumblr post images

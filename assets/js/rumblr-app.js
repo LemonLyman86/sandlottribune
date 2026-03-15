@@ -382,6 +382,15 @@ export function renderPost(postId, data, isReply = false) {
        </a>`
     : '';
 
+  // Attached image (16:9, stored in Firebase Storage)
+  const imageHtml = data.image_url
+    ? `<div class="rb-post-image-wrap" onclick="event.stopPropagation()">
+         <img class="rb-post-image" src="${escHtml(data.image_url)}"
+              alt="Post image" loading="lazy"
+              onerror="this.parentElement.style.display='none';">
+       </div>`
+    : '';
+
   const isOwnPost = currentUser && data.author_uid && data.author_uid === currentUser.uid;
   const moreMenuHtml = isOwnPost
     ? `<div class="rb-post-more-wrap">
@@ -411,6 +420,7 @@ export function renderPost(postId, data, isReply = false) {
       </div>
       <div class="rb-post-content">${content}</div>
       ${articleLinkHtml}
+      ${imageHtml}
       <div class="rb-engagement">
         <button class="rb-engage-btn rb-reply-btn" title="Reply" onclick="event.stopPropagation()">
           <span class="rb-engage-icon">💬</span>

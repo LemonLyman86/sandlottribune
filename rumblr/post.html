@@ -6,6 +6,14 @@
   <title>Rumbl'ing — Rumblr</title>
   <link rel="icon" href="../assets/images/rumblr-logo.png">
   <link rel="stylesheet" href="../assets/css/rumblr.css">
+  <!-- Open Graph / link preview -->
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="Rumblr — TSDL">
+  <meta property="og:title" content="Rumbl'ing — Rumblr">
+  <meta property="og:description" content="The social hub of The Sandlot Dynasty League">
+  <meta property="og:image" content="https://lemonlyman86.github.io/sandlottribune/assets/images/rumblr-logo.png">
+  <meta property="og:url" content="">
+  <meta name="twitter:card" content="summary_large_image">
 </head>
 <body class="rumblr-page">
 
@@ -145,6 +153,21 @@
       }
       const data = snap.data();
       document.title = `${data.author_name} on Rumblr`;
+
+      // Update Open Graph meta tags for link previews
+      const setMeta = (prop, val) => {
+        const el = document.querySelector(`meta[property="${prop}"]`);
+        if (el && val) el.setAttribute('content', val);
+      };
+      const fallbackImg = 'https://lemonlyman86.github.io/sandlottribune/assets/images/rumblr-logo.png';
+      setMeta('og:title',       `${data.author_name} on Rumblr`);
+      setMeta('og:description', (data.content || '').slice(0, 160));
+      setMeta('og:image',       data.image_url || fallbackImg);
+      setMeta('og:url',         window.location.href);
+      if (!data.image_url) {
+        const tc = document.querySelector('meta[name="twitter:card"]');
+        if (tc) tc.setAttribute('content', 'summary');
+      }
 
       const postEl = renderPost(postId, data);
       postEl.style.cursor = 'default';
