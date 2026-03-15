@@ -1085,7 +1085,7 @@ onAuthStateChanged(auth, async user => {
   const dashEl = document.getElementById('estn-admin-dash');
 
   if (!user) {
-    window.location.href = '../rumblr/login.html?redirect=estn/admin.html';
+    window.location.href = '../rumblr/login.html?redirect=../estn/admin.html';
     return;
   }
   if (user.uid !== ADMIN_UID) {
