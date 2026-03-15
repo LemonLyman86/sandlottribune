@@ -234,7 +234,17 @@
     const shareBtn  = document.getElementById('btc-share-btn');
     const shareToast = document.getElementById('btc-share-toast');
 
+    function normalizeArticleUrl(url) {
+      if (!url) return url;
+      // Season previews with no path prefix — resolve to season-previews directory
+      if (!url.includes('/') && url.startsWith('season_preview_')) {
+        return `../season-previews/${url}`;
+      }
+      return url;
+    }
+
     function loadArticle(url, itemEl) {
+      url = normalizeArticleUrl(url);
       spinner.style.display = 'block';
       frame.src = url;
       document.querySelectorAll('.btc-nav-item').forEach(n => n.classList.remove('active'));
@@ -356,7 +366,7 @@
           a.url.split('/').pop() === decoded || a.url.includes(decoded)
         );
         if (match) {
-          initialUrl = match.url;
+          initialUrl = normalizeArticleUrl(match.url);
         } else if (decoded.includes('/')) {
           // Already a relative path (e.g. ../season-previews/foo.html)
           initialUrl = decoded;
