@@ -267,54 +267,52 @@
   import { initFeed, clearFilter, loadTrendingHashtags } from '../assets/js/rumblr-app.js';
   import { initSignOut } from '../assets/js/rumblr-auth.js';
 
-  document.addEventListener('DOMContentLoaded', () => {
-    initFeed();
-    initSignOut();
+  initFeed();
+  initSignOut();
 
-    // Show welcome banner after signup redirect
-    if (new URLSearchParams(location.search).get('welcome') === '1') {
-      document.getElementById('rb-welcome-banner').style.display = 'block';
-    }
+  // Show welcome banner after signup redirect
+  if (new URLSearchParams(location.search).get('welcome') === '1') {
+    document.getElementById('rb-welcome-banner').style.display = 'block';
+  }
 
-    // Clear filter global (used by filter banner ✕ button and hashtag clicks)
-    window.__rumblrClearFilter = clearFilter;
+  // Clear filter global (used by filter banner ✕ button and hashtag clicks)
+  window.__rumblrClearFilter = clearFilter;
 
-    // Load real-time trending hashtags
-    loadTrendingHashtags(document.getElementById('rb-trending-tags'));
+  // Load real-time trending hashtags
+  loadTrendingHashtags(document.getElementById('rb-trending-tags'));
 
-    // Collapsible toggle helper
-    function makeToggle(toggleId, contentId) {
-      const toggle  = document.getElementById(toggleId);
-      const content = document.getElementById(contentId);
-      if (!toggle || !content) return;
-      toggle.addEventListener('click', () => {
-        const isOpen = content.style.display !== 'none';
-        content.style.display = isOpen ? 'none' : 'block';
-        const chevron = toggle.querySelector('.rb-group-chevron');
-        if (chevron) chevron.textContent = isOpen ? '\u25B6' : '\u25BC';
-      });
-      toggle.addEventListener('keydown', e => { if (e.key === 'Enter') toggle.click(); });
-    }
+  // Collapsible toggle helper
+  function makeToggle(toggleId, contentId) {
+    const toggle  = document.getElementById(toggleId);
+    const content = document.getElementById(contentId);
+    if (!toggle || !content) return;
+    toggle.addEventListener('click', () => {
+      const isOpen = content.style.display !== 'none';
+      content.style.display = isOpen ? 'none' : 'block';
+      const chevron = toggle.querySelector('.rb-group-chevron');
+      if (chevron) chevron.textContent = isOpen ? '\u25B6' : '\u25BC';
+    });
+    toggle.addEventListener('keydown', e => { if (e.key === 'Enter') toggle.click(); });
+  }
 
-    // Writers toggle is wired by loadAuthorSidebar() in rumblr-app.js
-    // Wire the remaining collapsible sections here
-    makeToggle('rb-grumblrs-toggle',  'rb-owners-section');
-    makeToggle('rb-ownership-toggle', 'rb-ownership-section');
+  // Writers toggle is wired by loadAuthorSidebar() in rumblr-app.js
+  // Wire the remaining collapsible sections here
+  makeToggle('rb-grumblrs-toggle',  'rb-owners-section');
+  makeToggle('rb-ownership-toggle', 'rb-ownership-section');
 
-    // Hashtag search box
-    const hashSearch = document.getElementById('rb-hashtag-search');
-    if (hashSearch) {
-      hashSearch.addEventListener('keydown', e => {
-        if (e.key === 'Enter') {
-          const tag = hashSearch.value.trim().replace(/^#/, '');
-          if (tag) {
-            document.querySelectorAll('.rb-tab').forEach(t => t.classList.remove('active'));
-            window.__rumblrHashtag(tag);
-          }
+  // Hashtag search box
+  const hashSearch = document.getElementById('rb-hashtag-search');
+  if (hashSearch) {
+    hashSearch.addEventListener('keydown', e => {
+      if (e.key === 'Enter') {
+        const tag = hashSearch.value.trim().replace(/^#/, '');
+        if (tag) {
+          document.querySelectorAll('.rb-tab').forEach(t => t.classList.remove('active'));
+          window.__rumblrHashtag(tag);
         }
-      });
-    }
-  });
+      }
+    });
+  }
 </script>
 </body>
 </html>
