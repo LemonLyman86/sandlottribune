@@ -113,8 +113,7 @@ async function createOgPage(postId, postData) {
       `  <p><a href="../post.html?id=${postId}">View this Ruml’ing →</a></p>`,
       '</body>',
       '</html>'
-    ].join('
-');
+    ].join('\n');
 
     const bytes = new TextEncoder().encode(html);
     let bin = ''; for (const b of bytes) bin += String.fromCharCode(b);
