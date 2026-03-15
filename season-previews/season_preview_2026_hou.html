@@ -55,6 +55,11 @@
     .stat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin: 20px 0; }
     .stat-grid-item { background: #f9f9f9; padding: 12px 16px; border-radius: 4px; font-family: 'Arial', sans-serif; font-size: 0.88em; }
     @media (max-width: 600px) { body { font-size: 15px; padding: 20px 16px 60px; } .article-header h1 { font-size: 1.7em; } h2 { font-size: 1.2em; } .quick-stats { gap: 12px; } .stat-grid { grid-template-columns: 1fr; } }
+      .engagement-byline { display: flex; align-items: center; flex-wrap: wrap; gap: 12px; margin-top: 8px; }
+    #engagement-view-count { font-family: 'Arial', sans-serif; font-size: 0.78em; color: #999; }
+    #engagement-rating { display: flex; align-items: center; gap: 5px; font-family: 'Arial', sans-serif; font-size: 0.78em; color: #999; min-height: 1em; }
+    .article-engagement-section { border-top: 1px solid #eee; margin-top: 52px; padding-top: 36px; }
+    .article-engagement-section h3 { font-family: 'Georgia', serif; font-size: 1.05em; color: #1a1a1a; border-bottom: 2px solid #BA2B2B; padding-bottom: 5px; display: inline-block; margin-bottom: 20px; }
   </style>
 </head>
 <body>
@@ -319,5 +324,22 @@
     <p><strong>The Bottom Line:</strong> The Astros are what they are — a veteran-heavy, talent-rich machine that is simultaneously one of the best teams in TSDL and one bad month away from a financial crisis. They'll compete. They'll probably make the playoffs. And as long as Sebastian Walcott keeps developing in the minors, the long game is very much alive.</p>
   </div>
 
+  <!-- ── Rate This Article ── -->
+  <section class="article-engagement-section">
+    <h3>Rate This Article</h3>
+    <div id="rating-section"></div>
+  </section>
+
+  <!-- ── Comments ── -->
+  <section class="article-engagement-section">
+    <h3>Comments</h3>
+    <div id="comments-section"></div>
+  </section>
+
+  <script type="module">
+    import { initEngagement } from '../assets/js/article-engagement.js';
+    initEngagement('season_preview_2026_hou');
+  </script>
+  <script type="module" src="../assets/js/estn-auth.js"></script>
 </body>
 </html>

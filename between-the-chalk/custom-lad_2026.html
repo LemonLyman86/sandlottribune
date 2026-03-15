@@ -222,6 +222,11 @@
       h2 { font-size: 1.18em; }
       .quick-stats { gap: 12px; }
     }
+      .engagement-byline { display: flex; align-items: center; flex-wrap: wrap; gap: 12px; margin-top: 8px; }
+    #engagement-view-count { font-family: 'Arial', sans-serif; font-size: 0.78em; color: #999; }
+    #engagement-rating { display: flex; align-items: center; gap: 5px; font-family: 'Arial', sans-serif; font-size: 0.78em; color: #999; min-height: 1em; }
+    .article-engagement-section { border-top: 1px solid #eee; margin-top: 52px; padding-top: 36px; }
+    .article-engagement-section h3 { font-family: 'Georgia', serif; font-size: 1.05em; color: #1a1a1a; border-bottom: 2px solid #BA2B2B; padding-bottom: 5px; display: inline-block; margin-bottom: 20px; }
   </style>
 </head>
 <body>
@@ -824,5 +829,22 @@
   <script type="module" src="../assets/js/estn-auth.js"></script>
   <script type="module" src="../assets/js/estn-ticker.js"></script>
 
+    <!-- ── Rate This Article ── -->
+    <section class="article-engagement-section">
+      <h3>Rate This Article</h3>
+      <div id="rating-section"></div>
+    </section>
+
+    <!-- ── Comments ── -->
+    <section class="article-engagement-section">
+      <h3>Comments</h3>
+      <div id="comments-section"></div>
+    </section>
+
+    <script type="module">
+      import { initEngagement } from '../assets/js/article-engagement.js';
+      initEngagement('custom-lad_2026');
+    </script>
+  <script type="module" src="../assets/js/estn-auth.js"></script>
 </body>
 </html>
