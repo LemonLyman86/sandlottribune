@@ -329,8 +329,7 @@
         `  <p><a href="../post.html?id=${postId}">View this Ruml’ing →</a></p>`,
         '</body>',
         '</html>'
-      ].join('
-');
+      ].join('\n');
 
       // Base64-encode as UTF-8 (handles emoji + non-ASCII safely)
       const bytes = new TextEncoder().encode(html);
