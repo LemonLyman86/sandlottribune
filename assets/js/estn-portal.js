@@ -755,7 +755,7 @@ function draftCellHtml(team, round, picks, status) {
     const border = isLastPick ? '2px solid #FBBF24' : '1px solid #2D3748';
     const bg     = isLastPick ? 'rgba(251,191,36,0.06)' : '#1A2030';
     return `<div style="background:${bg};border:${border};border-radius:3px;padding:6px 7px;${isLastPick?'position:relative;':''}">
-      ${isLastPick ? '<div style="position:absolute;top:3px;right:4px;font-size:0.55rem;font-family:Oswald,sans-serif;color:#FBBF24;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;">Last Pick</div>' : ''}
+      ${isLastPick ? '<div style="position:absolute;bottom:3px;right:4px;font-size:0.55rem;font-family:Oswald,sans-serif;color:#FBBF24;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;">Last Pick</div>' : ''}
       <div style="font-family:'Oswald',sans-serif;font-size:0.8rem;font-weight:600;color:#E2E8F0;line-height:1.3;padding-right:${isLastPick?'36px':'0'};">${esc(pick.player)}</div>
       <div style="font-size:0.65rem;color:#718096;margin-top:2px;">${esc(pick.pos || '')}${pick.pos && pick.org ? ' &middot; ' : ''}${esc(pick.org || '')}</div>
     </div>`;
