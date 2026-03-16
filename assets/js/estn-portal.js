@@ -659,6 +659,273 @@ function applyFeaturedOverride(settings) {
   }
 }
 
+// ── MiLB Draft Board ───────────────────────────────────────────────────────────
+
+const DRAFT_CONFIG = {
+  rounds: 10,
+  total_picks: 83,
+  teams: [
+    { abbrev:'MIA', name:'Miami Marlins',          retained:5, color:'#00A3E0' },
+    { abbrev:'CHC', name:'Chicago Cubs',            retained:1, color:'#C8102E' },
+    { abbrev:'NYY', name:'New York Yankees',        retained:9, color:'#A0AEC0' },
+    { abbrev:'COL', name:'Colorado Rockies',        retained:6, color:'#7B2FBE' },
+    { abbrev:'CIN', name:'Cincinnati Reds',         retained:6, color:'#BA0C2F' },
+    { abbrev:'BOS', name:'Boston Red Sox',          retained:8, color:'#C8102E' },
+    { abbrev:'WSH', name:'Washington Nationals',    retained:7, color:'#BA0C2F' },
+    { abbrev:'PHI', name:'Philadelphia Phillies',   retained:8, color:'#E03040' },
+    { abbrev:'MIL', name:'Milwaukee Brewers',       retained:6, color:'#FFC72C' },
+    { abbrev:'LAD', name:'Los Angeles Dodgers',     retained:5, color:'#005A9E' },
+    { abbrev:'ATL', name:'Atlanta Braves',          retained:3, color:'#CE1141' },
+    { abbrev:'HOU', name:'Houston Astros',          retained:5, color:'#FF8200' },
+    { abbrev:'TOR', name:'Toronto Blue Jays',       retained:5, color:'#6CACE4' },
+    { abbrev:'SDP', name:'San Diego Padres',        retained:6, color:'#FFC72C' },
+    { abbrev:'SEA', name:'Seattle Mariners',        retained:4, color:'#00685E' },
+    { abbrev:'LVA', name:'Las Vegas Athletics',     retained:7, color:'#FFB81C' },
+    { abbrev:'STL', name:'St. Louis Cardinals',     retained:4, color:'#C41E3A' },
+    { abbrev:'ARI', name:'Arizona Diamondbacks',    retained:2, color:'#2CCCD3' },
+  ]
+};
+
+function draftIsRetained(team, round) {
+  // Retained players fill from Round 10 downward
+  return round > (DRAFT_CONFIG.rounds - team.retained);
+}
+
+// Returns { onClockTeam, onClockRound, lastPickTeam, lastPickRound, lastPickData }
+function getDraftStatus(picks) {
+  let onClockTeam = null, onClockRound = null;
+  let lastPickTeam = null, lastPickRound = null, lastPickData = null, lastTs = 0;
+
+  // Find last pick by timestamp (falls back to sequential order if no ts)
+  let lastFilledKey = null;
+  for (const [key, pick] of Object.entries(picks)) {
+    if (!pick || !pick.player) continue;
+    if (pick.ts && pick.ts > lastTs) {
+      lastTs = pick.ts;
+      lastFilledKey = key;
+    }
+  }
+  // If no timestamps, fall back to last filled pick in draft order
+  if (!lastFilledKey) {
+    for (let r = 1; r <= DRAFT_CONFIG.rounds; r++) {
+      for (const t of DRAFT_CONFIG.teams) {
+        if (draftIsRetained(t, r)) continue;
+        const k = `${t.abbrev}_${r}`;
+        if (picks[k] && picks[k].player) lastFilledKey = k;
+      }
+    }
+  }
+  if (lastFilledKey) {
+    const idx = lastFilledKey.lastIndexOf('_');
+    lastPickTeam  = lastFilledKey.slice(0, idx);
+    lastPickRound = parseInt(lastFilledKey.slice(idx + 1));
+    lastPickData  = picks[lastFilledKey];
+  }
+
+  // Find on-clock: first empty non-retained slot in sequential order
+  outer:
+  for (let r = 1; r <= DRAFT_CONFIG.rounds; r++) {
+    for (const t of DRAFT_CONFIG.teams) {
+      if (draftIsRetained(t, r)) continue;
+      if (!picks[`${t.abbrev}_${r}`] || !picks[`${t.abbrev}_${r}`].player) {
+        onClockTeam = t.abbrev; onClockRound = r; break outer;
+      }
+    }
+  }
+
+  return { onClockTeam, onClockRound, lastPickTeam, lastPickRound, lastPickData };
+}
+
+function draftCellHtml(team, round, picks, status) {
+  if (draftIsRetained(team, round)) {
+    return `<div title="Slot used by retained 2025 MiLB player" style="background:#0d0d12;color:#2D3748;font-size:0.67rem;font-style:italic;font-family:'Marcellus',serif;padding:7px 6px;border-radius:3px;text-align:center;border:1px solid #1A2030;">Retained</div>`;
+  }
+  const key  = `${team.abbrev}_${round}`;
+  const pick = picks[key];
+  const isOnClock  = status && status.onClockTeam === team.abbrev && status.onClockRound === round;
+  const isLastPick = status && status.lastPickTeam === team.abbrev && status.lastPickRound === round;
+
+  if (isOnClock) {
+    return `<div style="border:2px solid #34D399;border-radius:3px;padding:6px 7px;background:rgba(52,211,153,0.07);text-align:center;">
+      <div style="font-family:'Oswald',sans-serif;font-size:0.6rem;font-weight:700;color:#34D399;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:3px;">&#x25B6; On the Clock</div>
+      <div style="font-family:'Oswald',sans-serif;font-size:0.82rem;font-weight:700;color:#34D399;">${esc(team.abbrev)}</div>
+    </div>`;
+  }
+  if (pick && pick.player) {
+    const border = isLastPick ? '2px solid #FBBF24' : '1px solid #2D3748';
+    const bg     = isLastPick ? 'rgba(251,191,36,0.06)' : '#1A2030';
+    return `<div style="background:${bg};border:${border};border-radius:3px;padding:6px 7px;${isLastPick?'position:relative;':''}">
+      ${isLastPick ? '<div style="position:absolute;top:3px;right:4px;font-size:0.55rem;font-family:Oswald,sans-serif;color:#FBBF24;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;">Last Pick</div>' : ''}
+      <div style="font-family:'Oswald',sans-serif;font-size:0.8rem;font-weight:600;color:#E2E8F0;line-height:1.3;padding-right:${isLastPick?'36px':'0'};">${esc(pick.player)}</div>
+      <div style="font-size:0.65rem;color:#718096;margin-top:2px;">${esc(pick.pos || '')}${pick.pos && pick.org ? ' &middot; ' : ''}${esc(pick.org || '')}</div>
+    </div>`;
+  }
+  return `<div style="border:1px dashed #2D3748;border-radius:3px;padding:7px 6px;text-align:center;color:#4A5568;font-family:'Oswald',sans-serif;font-size:0.9rem;">—</div>`;
+}
+
+function draftStatusBarHtml(picks) {
+  const { onClockTeam, onClockRound, lastPickTeam, lastPickRound, lastPickData } = getDraftStatus(picks);
+  const parts = [];
+  if (lastPickTeam && lastPickData) {
+    const team = DRAFT_CONFIG.teams.find(t => t.abbrev === lastPickTeam);
+    parts.push(`<div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
+      <span style="font-family:'Oswald',sans-serif;font-size:0.65rem;font-weight:700;letter-spacing:0.1em;color:#FBBF24;text-transform:uppercase;">&#x2713; Last Pick</span>
+      <span style="font-family:'Oswald',sans-serif;font-size:0.78rem;color:#E2E8F0;font-weight:600;">${esc(lastPickData.player)}</span>
+      <span style="font-size:0.68rem;color:#718096;">${esc(lastPickData.pos||'')}${lastPickData.pos&&lastPickData.org?' · ':''}${esc(lastPickData.org||'')}</span>
+      <span style="font-family:'Oswald',sans-serif;font-size:0.68rem;color:#718096;">&mdash; <span style="color:${team?team.color:'#A0AEC0'};font-weight:600;">${esc(lastPickTeam)}</span> Rd ${lastPickRound}</span>
+    </div>`);
+  }
+  if (onClockTeam) {
+    const team = DRAFT_CONFIG.teams.find(t => t.abbrev === onClockTeam);
+    parts.push(`<div style="display:flex;align-items:center;gap:8px;">
+      <span style="font-family:'Oswald',sans-serif;font-size:0.65rem;font-weight:700;letter-spacing:0.1em;color:#34D399;text-transform:uppercase;">&#x25B6; On the Clock</span>
+      <span style="font-family:'Oswald',sans-serif;font-size:0.78rem;font-weight:700;color:${team?team.color:'#34D399'};">${esc(onClockTeam)}</span>
+      <span style="font-family:'Marcellus',serif;font-size:0.72rem;color:#A0AEC0;">${esc(team?team.name:'')}</span>
+      <span style="font-size:0.68rem;color:#718096;">&mdash; Round ${onClockRound}</span>
+    </div>`);
+  } else if (Object.keys(picks).length > 0) {
+    parts.push(`<div style="font-family:'Oswald',sans-serif;font-size:0.72rem;color:#34D399;font-weight:700;">&#x2713; Draft Complete!</div>`);
+  }
+  if (!parts.length) return '';
+  return `<div style="background:#161B22;border:1px solid #2D3748;border-bottom:none;border-radius:6px 6px 0 0;padding:8px 14px;display:flex;gap:20px;flex-wrap:wrap;align-items:center;">${parts.join('<div style="width:1px;background:#2D3748;align-self:stretch;"></div>')}</div>`;
+}
+
+function renderDraftByRound(picks) {
+  const teams = DRAFT_CONFIG.teams;
+  const rounds = DRAFT_CONFIG.rounds;
+  const pickCount = Object.keys(picks).length;
+  const status = getDraftStatus(picks);
+
+  const headerCells = teams.map(t => {
+    const avail = rounds - t.retained;
+    const isOnClock = status.onClockTeam === t.abbrev;
+    return `<th style="padding:8px 5px;text-align:center;border-top:3px solid ${t.color};border-bottom:1px solid #2D3748;border-right:1px solid #1A2030;min-width:112px;background:${isOnClock?'rgba(52,211,153,0.05)':'#161B22'};position:sticky;top:0;z-index:1;">
+      <div style="font-family:'Oswald',sans-serif;font-size:0.82rem;font-weight:700;color:${isOnClock?'#34D399':'#E2E8F0'};">${esc(t.abbrev)}</div>
+      <div style="font-size:0.6rem;color:#718096;margin-top:1px;">${avail} pick${avail!==1?'s':''}</div>
+    </th>`;
+  }).join('');
+
+  const rows = [];
+  for (let r = 1; r <= rounds; r++) {
+    const cells = teams.map(t => `<td style="padding:5px;border-right:1px solid #1A2030;border-bottom:1px solid #1A2030;vertical-align:top;">${draftCellHtml(t, r, picks, status)}</td>`).join('');
+    rows.push(`<tr>
+      <td style="position:sticky;left:0;background:#161B22;z-index:2;padding:6px 12px;border-right:2px solid #2D3748;border-bottom:1px solid #1A2030;font-family:'Oswald',sans-serif;font-size:0.75rem;font-weight:700;color:#718096;text-align:center;white-space:nowrap;">Rd ${r}</td>
+      ${cells}
+    </tr>`);
+  }
+
+  return `${draftStatusBarHtml(picks)}
+  <div style="background:#161B22;border:1px solid #2D3748;${Object.keys(picks).length?'border-top:none;':''}border-radius:${Object.keys(picks).length?'0 0':'6px 6px'} 6px 6px;overflow:hidden;">
+    <div style="overflow-x:auto;">
+      <table style="border-collapse:collapse;min-width:100%;">
+        <thead><tr>
+          <th style="position:sticky;left:0;z-index:3;background:#161B22;padding:8px 12px;border-right:2px solid #2D3748;border-bottom:1px solid #2D3748;font-family:'Oswald',sans-serif;font-size:0.7rem;color:#4A5568;text-transform:uppercase;letter-spacing:0.08em;">Round</th>
+          ${headerCells}
+        </tr></thead>
+        <tbody>${rows.join('')}</tbody>
+      </table>
+    </div>
+    <div style="padding:8px 14px;text-align:right;font-family:'Oswald',sans-serif;font-size:0.7rem;color:#718096;border-top:1px solid #1A2030;">
+      <span style="color:${pickCount===DRAFT_CONFIG.total_picks?'#34D399':'#A0AEC0'};font-weight:600;">${pickCount}</span> / ${DRAFT_CONFIG.total_picks} picks made
+    </div>
+  </div>`;
+}
+
+function renderDraftByTeam(picks) {
+  const rounds = DRAFT_CONFIG.rounds;
+  const pickCount = Object.keys(picks).length;
+  const status = getDraftStatus(picks);
+
+  const cards = DRAFT_CONFIG.teams.map(t => {
+    const avail = rounds - t.retained;
+    const isOnClock  = status.onClockTeam  === t.abbrev;
+    const isLastPick = status.lastPickTeam === t.abbrev;
+    const cardBorder = isOnClock ? '2px solid #34D399' : '1px solid #2D3748';
+    const cardBg     = isOnClock ? 'rgba(52,211,153,0.04)' : '#161B22';
+    const pickRows = [];
+    for (let r = 1; r <= avail; r++) {
+      const key  = `${t.abbrev}_${r}`;
+      const pick = picks[key];
+      const rowIsLast = isLastPick && status.lastPickRound === r;
+      pickRows.push(`<div style="display:flex;gap:8px;align-items:baseline;padding:5px 0;border-bottom:1px solid rgba(45,55,72,0.4);${rowIsLast?'background:rgba(251,191,36,0.04);':''}">
+        <span style="font-family:'Oswald',sans-serif;font-size:0.65rem;color:#4A5568;min-width:22px;flex-shrink:0;">Rd ${r}</span>
+        ${pick && pick.player
+          ? `<div style="min-width:0;flex:1;"><div style="font-family:'Oswald',sans-serif;font-size:0.78rem;color:#E2E8F0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${esc(pick.player)}</div><div style="font-size:0.62rem;color:#718096;">${esc(pick.pos||'')}${pick.pos&&pick.org?' · ':''}${esc(pick.org||'')}</div></div>${rowIsLast?'<span style="font-family:Oswald,sans-serif;font-size:0.55rem;color:#FBBF24;font-weight:700;text-transform:uppercase;flex-shrink:0;">Last</span>':''}`
+          : `<span style="font-family:'Oswald',sans-serif;font-size:0.78rem;color:#374151;">—</span>`
+        }
+      </div>`);
+    }
+    if (t.retained > 0) {
+      const retStart = avail + 1;
+      pickRows.push(`<div style="padding:5px 0;font-size:0.65rem;color:#2D3748;font-style:italic;font-family:'Marcellus',serif;">Rd ${retStart}–${rounds}: ${t.retained} retained keeper${t.retained!==1?'s':''}</div>`);
+    }
+    return `<div style="background:${cardBg};border:${cardBorder};border-top:3px solid ${isOnClock?'#34D399':t.color};border-radius:6px;overflow:hidden;">
+      <div style="padding:8px 12px;border-bottom:1px solid #2D3748;display:flex;align-items:center;gap:8px;">
+        <span style="font-family:'Oswald',sans-serif;font-size:0.88rem;font-weight:700;color:${isOnClock?'#34D399':'#E2E8F0'};">${esc(t.abbrev)}</span>
+        ${isOnClock ? '<span style="font-family:Oswald,sans-serif;font-size:0.6rem;font-weight:700;color:#34D399;letter-spacing:0.08em;text-transform:uppercase;background:rgba(52,211,153,0.1);padding:2px 7px;border-radius:10px;">On the Clock</span>' : ''}
+        <span style="font-family:'Marcellus',serif;font-size:0.68rem;color:#718096;flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${esc(t.name)}</span>
+        <span style="font-family:'Oswald',sans-serif;font-size:0.65rem;color:#4A5568;white-space:nowrap;">${avail} pick${avail!==1?'s':''}</span>
+      </div>
+      <div style="padding:6px 12px 8px;">${pickRows.join('')}</div>
+    </div>`;
+  }).join('');
+
+  return `${draftStatusBarHtml(picks)}
+  <div style="margin-top:${Object.keys(picks).length?'0':'8px'};">
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;${Object.keys(picks).length?'margin-top:0;':''}">
+      ${cards}
+    </div>
+    <div style="margin-top:10px;text-align:right;font-family:'Oswald',sans-serif;font-size:0.7rem;color:#718096;">
+      <span style="color:${pickCount===DRAFT_CONFIG.total_picks?'#34D399':'#A0AEC0'};font-weight:600;">${pickCount}</span> / ${DRAFT_CONFIG.total_picks} picks made
+    </div>
+  </div>`;
+}
+
+async function loadDraftBoard() {
+  const boardEl = document.getElementById('milb-draft-board');
+  const contentEl = document.getElementById('draft-board-content');
+  const countEl = document.getElementById('draft-pick-count');
+  if (!boardEl || !contentEl) return;
+
+  let picks = {};
+  try {
+    const snap = await getDoc(doc(firestore, 'settings', 'milb_draft_2026'));
+    if (!snap.exists() || snap.data().active !== true) return;
+    picks = snap.data().picks || {};
+  } catch { return; }
+
+  boardEl.style.display = 'block';
+  let currentView = 'round';
+
+  function renderView() {
+    contentEl.innerHTML = currentView === 'round'
+      ? renderDraftByRound(picks)
+      : renderDraftByTeam(picks);
+    const count = Object.keys(picks).length;
+    if (countEl) countEl.textContent = `(${count}/${DRAFT_CONFIG.total_picks} picks)`;
+  }
+
+  renderView();
+
+  const btnRound = document.getElementById('draft-btn-round');
+  const btnTeam  = document.getElementById('draft-btn-team');
+  const activeStyle   = 'background:#C8102E;color:#fff;';
+  const inactiveStyle = 'background:#161B22;color:#718096;';
+
+  if (btnRound) btnRound.addEventListener('click', () => {
+    currentView = 'round';
+    btnRound.style.cssText += activeStyle;
+    if (btnTeam) btnTeam.style.cssText += inactiveStyle;
+    renderView();
+  });
+  if (btnTeam) btnTeam.addEventListener('click', () => {
+    currentView = 'team';
+    btnTeam.style.cssText += activeStyle;
+    if (btnRound) btnRound.style.cssText += inactiveStyle;
+    renderView();
+  });
+}
+
 // ── Main init ──────────────────────────────────────────────────────────────────
 async function init() {
   // Load all data in parallel
@@ -685,7 +952,8 @@ async function init() {
   // Firebase-dependent sections
   await Promise.all([
     renderRumblrPreview(),
-    loadTicker()
+    loadTicker(),
+    loadDraftBoard()
   ]);
 }
 

@@ -184,6 +184,31 @@
     .estn-admin-field-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
     .estn-admin-add-form { border-top: 1px solid #2D3748; padding-top: 14px; margin-top: 16px; }
     select.estn-admin-input { appearance: auto; }
+
+    /* ── MiLB Draft board ── */
+    .estn-admin-tab[data-tab="milb-draft"].active { color: #34D399; border-bottom-color: #34D399; }
+    #draft-admin-board table { border-collapse: collapse; min-width: 100%; }
+    .draft-admin-cell {
+      padding: 5px; border-right: 1px solid #1A2030; border-bottom: 1px solid #1A2030;
+      vertical-align: top; cursor: pointer;
+    }
+    .draft-admin-cell:hover .draft-cell-inner:not(.draft-retained) { border-color: #4A5568 !important; background: #1E2840 !important; }
+    .draft-admin-cell.selected .draft-cell-inner { border-color: #C8102E !important; box-shadow: 0 0 0 1px #C8102E; }
+    .draft-admin-cell.on-clock .draft-cell-inner { border-color: #34D399 !important; }
+    .draft-cell-inner { border-radius: 3px; transition: border-color 0.1s, background 0.1s; }
+    .draft-retained { cursor: default !important; }
+    #draft-pick-panel-form { display: none; }
+    .draft-autocomplete {
+      display: none; position: absolute; top: 100%; left: 0; right: 0;
+      background: #161B22; border: 1px solid #4A5568; border-top: none;
+      border-radius: 0 0 4px 4px; z-index: 100; max-height: 220px; overflow-y: auto;
+    }
+    .draft-autocomplete-item {
+      padding: 8px 12px; cursor: pointer; border-bottom: 1px solid #1A2030;
+      font-family: 'Oswald', sans-serif; font-size: 0.8rem; color: #E2E8F0;
+    }
+    .draft-autocomplete-item:hover { background: #1E2840; }
+    .draft-autocomplete-item:last-child { border-bottom: none; }
   </style>
 </head>
 <body class="estn-admin-body">
@@ -229,6 +254,7 @@
         <button class="estn-admin-tab" data-tab="records">League Records</button>
         <button class="estn-admin-tab" data-tab="tribune">The Tribune</button>
         <button class="estn-admin-tab" data-tab="rumblr">Rumblr</button>
+        <button class="estn-admin-tab" data-tab="milb-draft" style="color:#34D399;border-bottom-color:transparent;">MiLB Draft</button>
       </div>
 
       <!-- ════════════════════════════════════════════════
@@ -747,6 +773,82 @@
         </div>
 
       </div><!-- /#tab-rumblr -->
+
+      <!-- ══ TAB: MILB DRAFT ══ -->
+      <div id="tab-milb-draft" class="estn-tab-panel">
+
+        <!-- §1 Status & Controls -->
+        <div class="estn-admin-section">
+          <div class="estn-admin-section-header">
+            <h2>2026 MiLB Slow Draft</h2>
+          </div>
+          <div class="estn-admin-section-body">
+            <div class="estn-admin-toggle-row" style="margin-bottom:16px;">
+              <label class="estn-admin-toggle">
+                <input type="checkbox" id="draft-active-toggle">
+                <span class="estn-admin-toggle-slider"></span>
+              </label>
+              <span class="estn-admin-toggle-label">Show draft board on ESTN main page</span>
+            </div>
+            <div style="display:flex;gap:8px;flex-wrap:wrap;">
+              <button class="estn-admin-btn" id="draft-csv-btn">&#x2193; Download CSV</button>
+              <button class="estn-admin-btn secondary" id="draft-print-btn">&#x2399; Print / Export View</button>
+            </div>
+            <p class="estn-admin-hint" style="margin-top:12px;margin-bottom:0;">10 rounds &middot; 18 teams &middot; 83 total picks &middot; Linear draft order</p>
+          </div>
+        </div>
+
+        <!-- §2 Pick Entry Panel -->
+        <div class="estn-admin-section">
+          <div class="estn-admin-section-header">
+            <h2 id="draft-panel-title">Pick Entry</h2>
+          </div>
+          <div class="estn-admin-section-body">
+            <p class="estn-admin-hint" id="draft-panel-hint">Click any available cell in the draft board below to enter or edit a pick.</p>
+            <div id="draft-pick-panel-form">
+              <div class="estn-admin-field-grid" style="max-width:580px;">
+                <div class="estn-admin-field" style="grid-column:span 2;position:relative;">
+                  <label class="estn-admin-label">Player Name</label>
+                  <input class="estn-admin-input" type="text" id="draft-pick-name" placeholder="Start typing to search MLB/MiLB players&hellip;" autocomplete="off">
+                  <div class="draft-autocomplete" id="draft-autocomplete"></div>
+                </div>
+                <div class="estn-admin-field">
+                  <label class="estn-admin-label">Position</label>
+                  <select class="estn-admin-input" id="draft-pick-pos">
+                    <option value="">— Select —</option>
+                    <option>C</option><option>1B</option><option>2B</option>
+                    <option>3B</option><option>SS</option><option>OF</option>
+                    <option>SP</option><option>RP</option><option>UT</option>
+                  </select>
+                </div>
+                <div class="estn-admin-field">
+                  <label class="estn-admin-label">MLB Org</label>
+                  <input class="estn-admin-input" type="text" id="draft-pick-org" placeholder="e.g. SFG, NYM, ATL">
+                </div>
+              </div>
+              <div style="display:flex;gap:8px;margin-top:12px;flex-wrap:wrap;">
+                <button class="estn-admin-btn" id="draft-save-pick-btn">Save Pick</button>
+                <button class="estn-admin-btn secondary" id="draft-clear-pick-btn">Clear Pick</button>
+                <button class="estn-admin-btn secondary" id="draft-cancel-btn">Cancel</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- §3 Draft Board -->
+        <div class="estn-admin-section">
+          <div class="estn-admin-section-header">
+            <h2>Draft Board
+              <span id="draft-admin-progress" style="font-size:0.68rem;color:#718096;font-weight:400;font-family:'Marcellus',serif;margin-left:8px;"></span>
+            </h2>
+          </div>
+          <div class="estn-admin-section-body" style="padding:0;">
+            <div id="draft-admin-status-bar"></div>
+            <div id="draft-admin-board" style="overflow-x:auto;"></div>
+          </div>
+        </div>
+
+      </div><!-- /#tab-milb-draft -->
 
     </div><!-- /estn-admin-wrap -->
   </div><!-- /estn-admin-dash -->

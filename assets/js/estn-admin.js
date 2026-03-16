@@ -10,7 +10,7 @@ import { firestore, auth } from './firebase-config.js';
 import {
   doc, getDoc, setDoc, updateDoc, serverTimestamp,
   collection, query, where, orderBy, limit,
-  getDocs, addDoc, deleteDoc, increment
+  getDocs, addDoc, deleteDoc, increment, deleteField
 } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js';
 import { onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js';
 import { AI_WRITERS } from './rumblr-app.js';
@@ -1113,6 +1113,7 @@ onAuthStateChanged(auth, async user => {
   initRecords();
   initTribune();
   initRumblrTab();
+  initDraftBoard();
 });
 
 // ══════════════════════════════════════════════════════════════════════════════
@@ -1765,4 +1766,395 @@ function initWriterPanelsRumblr() {
       }
     });
   }
+}
+
+// ══════════════════════════════════════════════════════════════════════════════
+// MiLB Draft Board Admin
+// ══════════════════════════════════════════════════════════════════════════════
+
+const DRAFT_ADMIN_CONFIG = {
+  rounds: 10,
+  total_picks: 83,
+  teams: [
+    { abbrev:'MIA', name:'Miami Marlins',          retained:5, color:'#00A3E0' },
+    { abbrev:'CHC', name:'Chicago Cubs',            retained:1, color:'#C8102E' },
+    { abbrev:'NYY', name:'New York Yankees',        retained:9, color:'#A0AEC0' },
+    { abbrev:'COL', name:'Colorado Rockies',        retained:6, color:'#7B2FBE' },
+    { abbrev:'CIN', name:'Cincinnati Reds',         retained:6, color:'#BA0C2F' },
+    { abbrev:'BOS', name:'Boston Red Sox',          retained:8, color:'#C8102E' },
+    { abbrev:'WSH', name:'Washington Nationals',    retained:7, color:'#BA0C2F' },
+    { abbrev:'PHI', name:'Philadelphia Phillies',   retained:8, color:'#E03040' },
+    { abbrev:'MIL', name:'Milwaukee Brewers',       retained:6, color:'#FFC72C' },
+    { abbrev:'LAD', name:'Los Angeles Dodgers',     retained:5, color:'#005A9E' },
+    { abbrev:'ATL', name:'Atlanta Braves',          retained:3, color:'#CE1141' },
+    { abbrev:'HOU', name:'Houston Astros',          retained:5, color:'#FF8200' },
+    { abbrev:'TOR', name:'Toronto Blue Jays',       retained:5, color:'#6CACE4' },
+    { abbrev:'SDP', name:'San Diego Padres',        retained:6, color:'#FFC72C' },
+    { abbrev:'SEA', name:'Seattle Mariners',        retained:4, color:'#00685E' },
+    { abbrev:'LVA', name:'Las Vegas Athletics',     retained:7, color:'#FFB81C' },
+    { abbrev:'STL', name:'St. Louis Cardinals',     retained:4, color:'#C41E3A' },
+    { abbrev:'ARI', name:'Arizona Diamondbacks',    retained:2, color:'#2CCCD3' },
+  ]
+};
+
+// ── Draft status helpers (mirrors portal logic) ─────────────────────────────
+function draftAdminIsRetained(team, round) {
+  return round > (DRAFT_ADMIN_CONFIG.rounds - team.retained);
+}
+
+function getDraftAdminStatus(picks) {
+  let onClockTeam = null, onClockRound = null;
+  let lastPickTeam = null, lastPickRound = null, lastPickData = null, lastTs = 0;
+  let lastFilledKey = null;
+
+  for (const [key, pick] of Object.entries(picks)) {
+    if (!pick || !pick.player) continue;
+    if (pick.ts && pick.ts > lastTs) { lastTs = pick.ts; lastFilledKey = key; }
+  }
+  if (!lastFilledKey) {
+    for (let r = 1; r <= DRAFT_ADMIN_CONFIG.rounds; r++) {
+      for (const t of DRAFT_ADMIN_CONFIG.teams) {
+        if (draftAdminIsRetained(t, r)) continue;
+        const k = `${t.abbrev}_${r}`;
+        if (picks[k] && picks[k].player) lastFilledKey = k;
+      }
+    }
+  }
+  if (lastFilledKey) {
+    const idx = lastFilledKey.lastIndexOf('_');
+    lastPickTeam  = lastFilledKey.slice(0, idx);
+    lastPickRound = parseInt(lastFilledKey.slice(idx + 1));
+    lastPickData  = picks[lastFilledKey];
+  }
+
+  outer:
+  for (let r = 1; r <= DRAFT_ADMIN_CONFIG.rounds; r++) {
+    for (const t of DRAFT_ADMIN_CONFIG.teams) {
+      if (draftAdminIsRetained(t, r)) continue;
+      if (!picks[`${t.abbrev}_${r}`] || !picks[`${t.abbrev}_${r}`].player) {
+        onClockTeam = t.abbrev; onClockRound = r; break outer;
+      }
+    }
+  }
+  return { onClockTeam, onClockRound, lastPickTeam, lastPickRound, lastPickData };
+}
+
+// ── Render admin draft board table ──────────────────────────────────────────
+function renderDraftAdminBoard(picks, selectedKey) {
+  const teams  = DRAFT_ADMIN_CONFIG.teams;
+  const rounds = DRAFT_ADMIN_CONFIG.rounds;
+  const status = getDraftAdminStatus(picks);
+
+  const headerCells = teams.map(t => {
+    const isOnClock = status.onClockTeam === t.abbrev;
+    return `<th style="padding:7px 5px;text-align:center;border-top:3px solid ${t.color};border-bottom:1px solid #2D3748;border-right:1px solid #1A2030;min-width:110px;background:${isOnClock?'rgba(52,211,153,0.06)':'#161B22'};position:sticky;top:0;z-index:1;">
+      <div style="font-family:'Oswald',sans-serif;font-size:0.8rem;font-weight:700;color:${isOnClock?'#34D399':'#E2E8F0'};">${esc(t.abbrev)}</div>
+      <div style="font-size:0.58rem;color:#4A5568;margin-top:1px;">${rounds - t.retained} picks</div>
+    </th>`;
+  }).join('');
+
+  const rows = [];
+  for (let r = 1; r <= rounds; r++) {
+    const cells = teams.map(t => {
+      if (draftAdminIsRetained(t, r)) {
+        return `<td class="draft-admin-cell" style="padding:5px;border-right:1px solid #1A2030;border-bottom:1px solid #1A2030;cursor:default;">
+          <div class="draft-cell-inner draft-retained" style="background:#0d0d12;color:#1E2530;font-size:0.65rem;font-style:italic;font-family:'Marcellus',serif;padding:7px 6px;border-radius:3px;text-align:center;border:1px solid #151820;">Retained</div>
+        </td>`;
+      }
+      const key  = `${t.abbrev}_${r}`;
+      const pick = picks[key];
+      const isSelected  = selectedKey === key;
+      const isOnClock   = status.onClockTeam  === t.abbrev && status.onClockRound  === r;
+      const isLastPick  = status.lastPickTeam === t.abbrev && status.lastPickRound === r;
+
+      let innerHtml, borderStyle;
+      if (isOnClock && !pick?.player) {
+        borderStyle = '2px solid #34D399';
+        innerHtml = `<div style="text-align:center;padding:6px 4px;">
+          <div style="font-family:'Oswald',sans-serif;font-size:0.58rem;font-weight:700;color:#34D399;letter-spacing:0.08em;text-transform:uppercase;">&#x25B6; Clock</div>
+          <div style="font-family:'Oswald',sans-serif;font-size:0.75rem;color:#34D399;font-weight:700;margin-top:1px;">${esc(t.abbrev)}</div>
+        </div>`;
+      } else if (pick && pick.player) {
+        borderStyle = isLastPick ? '2px solid #FBBF24' : '1px solid #2D3748';
+        innerHtml = `<div style="padding:5px 6px;${isLastPick?'position:relative;':''}">
+          ${isLastPick ? '<div style="position:absolute;top:2px;right:3px;font-size:0.5rem;font-family:Oswald,sans-serif;color:#FBBF24;font-weight:700;text-transform:uppercase;">Last</div>' : ''}
+          <div style="font-family:'Oswald',sans-serif;font-size:0.78rem;font-weight:600;color:#E2E8F0;line-height:1.2;padding-right:${isLastPick?'26px':'0'};">${esc(pick.player)}</div>
+          <div style="font-size:0.6rem;color:#718096;margin-top:1px;">${esc(pick.pos||'')}${pick.pos&&pick.org?' · ':''}${esc(pick.org||'')}</div>
+        </div>`;
+      } else {
+        borderStyle = '1px dashed #2D3748';
+        innerHtml = `<div style="text-align:center;padding:8px 4px;color:#374151;font-family:'Oswald',sans-serif;font-size:0.85rem;">—</div>`;
+      }
+
+      const selBorder = isSelected ? ';box-shadow:0 0 0 2px #C8102E;' : '';
+      return `<td class="draft-admin-cell${isSelected?' selected':''}" data-key="${key}" style="padding:5px;border-right:1px solid #1A2030;border-bottom:1px solid #1A2030;vertical-align:top;">
+        <div class="draft-cell-inner" style="border:${borderStyle};border-radius:3px;background:${pick?.player?'#1A2030':'transparent'};cursor:pointer;${selBorder}">${innerHtml}</div>
+      </td>`;
+    }).join('');
+    rows.push(`<tr>
+      <td style="position:sticky;left:0;background:#161B22;z-index:2;padding:5px 10px;border-right:2px solid #2D3748;border-bottom:1px solid #1A2030;font-family:'Oswald',sans-serif;font-size:0.72rem;font-weight:700;color:#718096;text-align:center;white-space:nowrap;">Rd ${r}</td>
+      ${cells}
+    </tr>`);
+  }
+
+  const pickCount = Object.keys(picks).filter(k => picks[k]?.player).length;
+  const progressEl = document.getElementById('draft-admin-progress');
+  if (progressEl) progressEl.textContent = `${pickCount} / ${DRAFT_ADMIN_CONFIG.total_picks} picks`;
+
+  // Status bar
+  const statusBarEl = document.getElementById('draft-admin-status-bar');
+  if (statusBarEl) {
+    const s = status;
+    let html = '';
+    if (s.lastPickData) {
+      const t = DRAFT_ADMIN_CONFIG.teams.find(t => t.abbrev === s.lastPickTeam);
+      html += `<div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;padding:8px 14px;border-bottom:1px solid #1A2030;">
+        <span style="font-family:'Oswald',sans-serif;font-size:0.62rem;font-weight:700;letter-spacing:0.1em;color:#FBBF24;text-transform:uppercase;">&#x2713; Last Pick</span>
+        <span style="font-family:'Oswald',sans-serif;font-size:0.78rem;color:#E2E8F0;font-weight:600;">${esc(s.lastPickData.player)}</span>
+        <span style="font-size:0.68rem;color:#718096;">${esc(s.lastPickData.pos||'')}${s.lastPickData.pos&&s.lastPickData.org?' · ':''}${esc(s.lastPickData.org||'')}</span>
+        <span style="font-family:'Oswald',sans-serif;font-size:0.68rem;color:#718096;">&mdash; <span style="color:${t?t.color:'#A0AEC0'};font-weight:600;">${esc(s.lastPickTeam)}</span> Rd ${s.lastPickRound}</span>
+      </div>`;
+    }
+    if (s.onClockTeam) {
+      const t = DRAFT_ADMIN_CONFIG.teams.find(t => t.abbrev === s.onClockTeam);
+      html += `<div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;padding:8px 14px;border-bottom:1px solid #1A2030;background:rgba(52,211,153,0.03);">
+        <span style="font-family:'Oswald',sans-serif;font-size:0.62rem;font-weight:700;letter-spacing:0.1em;color:#34D399;text-transform:uppercase;">&#x25B6; On the Clock</span>
+        <span style="font-family:'Oswald',sans-serif;font-size:0.78rem;font-weight:700;color:${t?t.color:'#34D399'};">${esc(s.onClockTeam)}</span>
+        <span style="font-size:0.72rem;color:#A0AEC0;">${esc(t?t.name:'')}</span>
+        <span style="font-size:0.68rem;color:#718096;">&mdash; Round ${s.onClockRound}</span>
+      </div>`;
+    } else if (pickCount > 0) {
+      html += `<div style="padding:8px 14px;font-family:'Oswald',sans-serif;font-size:0.72rem;color:#34D399;font-weight:700;border-bottom:1px solid #1A2030;">&#x2713; Draft Complete — all 83 picks made!</div>`;
+    }
+    statusBarEl.innerHTML = html;
+  }
+
+  const boardEl = document.getElementById('draft-admin-board');
+  if (boardEl) {
+    boardEl.innerHTML = `<table style="border-collapse:collapse;min-width:100%;">
+      <thead><tr>
+        <th style="position:sticky;left:0;z-index:3;background:#161B22;padding:7px 10px;border-right:2px solid #2D3748;border-bottom:1px solid #2D3748;font-family:'Oswald',sans-serif;font-size:0.65rem;color:#4A5568;text-transform:uppercase;letter-spacing:0.08em;">Round</th>
+        ${headerCells}
+      </tr></thead>
+      <tbody>${rows.join('')}</tbody>
+    </table>`;
+  }
+}
+
+// ── MLB Stats API player lookup ──────────────────────────────────────────────
+let _draftLookupTimer = null;
+
+function setupMLBLookup() {
+  const nameInput = document.getElementById('draft-pick-name');
+  const dropdown  = document.getElementById('draft-autocomplete');
+  if (!nameInput || !dropdown) return;
+
+  nameInput.addEventListener('input', () => {
+    clearTimeout(_draftLookupTimer);
+    const q = nameInput.value.trim();
+    if (q.length < 3) { dropdown.style.display = 'none'; return; }
+
+    _draftLookupTimer = setTimeout(async () => {
+      try {
+        const url = `https://statsapi.mlb.com/api/v1/people/search?names=${encodeURIComponent(q)}&sportIds=1,11,12,13,14,16`;
+        const res  = await fetch(url);
+        const data = await res.json();
+        const people = (data.people || []).slice(0, 6);
+        if (!people.length) { dropdown.style.display = 'none'; return; }
+
+        dropdown.innerHTML = people.map(p => {
+          const pos = p.primaryPosition?.abbreviation || '—';
+          const org = p.currentTeam?.abbreviation || p.currentTeam?.name || '—';
+          return `<div class="draft-autocomplete-item"
+            data-name="${esc(p.fullName)}"
+            data-pos="${esc(pos)}"
+            data-org="${esc(org)}">
+            ${esc(p.fullName)}
+            <span style="color:#718096;font-size:0.7rem;"> — ${esc(pos)} &middot; ${esc(org)}</span>
+          </div>`;
+        }).join('');
+        dropdown.style.display = 'block';
+
+        dropdown.querySelectorAll('.draft-autocomplete-item').forEach(item => {
+          item.addEventListener('mousedown', e => {
+            e.preventDefault(); // prevent blur before click
+            nameInput.value = item.dataset.name;
+            const posEl = document.getElementById('draft-pick-pos');
+            const orgEl = document.getElementById('draft-pick-org');
+            if (posEl) posEl.value = item.dataset.pos;
+            if (orgEl) orgEl.value = item.dataset.org;
+            dropdown.style.display = 'none';
+          });
+        });
+      } catch { dropdown.style.display = 'none'; }
+    }, 400);
+  });
+
+  nameInput.addEventListener('blur', () => {
+    setTimeout(() => { dropdown.style.display = 'none'; }, 150);
+  });
+}
+
+// ── Main draft admin init ────────────────────────────────────────────────────
+async function initDraftBoard() {
+  const draftRef = doc(firestore, 'settings', 'milb_draft_2026');
+
+  // Ensure doc exists
+  let snap = await getDoc(draftRef);
+  if (!snap.exists()) {
+    await setDoc(draftRef, { active: false, picks: {} });
+    snap = await getDoc(draftRef);
+  }
+
+  const docData   = snap.data();
+  let _picks      = docData.picks || {};
+  let _selectedKey = null;
+
+  // Active toggle
+  const activeToggle = document.getElementById('draft-active-toggle');
+  if (activeToggle) {
+    activeToggle.checked = docData.active === true;
+    activeToggle.addEventListener('change', async () => {
+      try {
+        await setDoc(draftRef, { active: activeToggle.checked }, { merge: true });
+        showToast(activeToggle.checked ? 'Draft board now visible on main page' : 'Draft board hidden from main page');
+      } catch { showToast('Save failed. Check console.', true); }
+    });
+  }
+
+  // Initial render
+  renderDraftAdminBoard(_picks, null);
+  setupMLBLookup();
+
+  // Cell click: populate pick entry form
+  document.getElementById('draft-admin-board')?.addEventListener('click', e => {
+    const cell = e.target.closest('[data-key]');
+    if (!cell) return;
+    const key = cell.dataset.key;
+    _selectedKey = key;
+
+    const idx   = key.lastIndexOf('_');
+    const abbrev = key.slice(0, idx);
+    const round  = key.slice(idx + 1);
+    const team   = DRAFT_ADMIN_CONFIG.teams.find(t => t.abbrev === abbrev);
+    const pick   = _picks[key] || {};
+
+    const titleEl = document.getElementById('draft-panel-title');
+    const hintEl  = document.getElementById('draft-panel-hint');
+    const formEl  = document.getElementById('draft-pick-panel-form');
+    if (titleEl) titleEl.textContent = `Pick Entry — ${abbrev} · Round ${round}${team ? ` (${team.name})` : ''}`;
+    if (hintEl)  hintEl.style.display = 'none';
+    if (formEl)  formEl.style.display = 'block';
+
+    const nameEl = document.getElementById('draft-pick-name');
+    const posEl  = document.getElementById('draft-pick-pos');
+    const orgEl  = document.getElementById('draft-pick-org');
+    if (nameEl) nameEl.value = pick.player || '';
+    if (posEl)  posEl.value  = pick.pos    || '';
+    if (orgEl)  orgEl.value  = pick.org    || '';
+    if (nameEl) nameEl.focus();
+
+    renderDraftAdminBoard(_picks, key);
+
+    // Scroll pick form into view
+    document.getElementById('draft-pick-panel-form')?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  });
+
+  // Save pick
+  document.getElementById('draft-save-pick-btn')?.addEventListener('click', async () => {
+    if (!_selectedKey) return;
+    const player = document.getElementById('draft-pick-name')?.value.trim();
+    if (!player) { showToast('Enter a player name.', true); return; }
+    const pos = document.getElementById('draft-pick-pos')?.value || '';
+    const org = document.getElementById('draft-pick-org')?.value.trim() || '';
+
+    try {
+      await updateDoc(draftRef, { [`picks.${_selectedKey}`]: { player, pos, org, ts: Date.now() } });
+      _picks[_selectedKey] = { player, pos, org, ts: Date.now() };
+      showToast(`Saved: ${player} to ${_selectedKey.replace('_', ' Rd ')}`);
+      renderDraftAdminBoard(_picks, null);
+      resetPickForm();
+    } catch (err) { showToast('Save failed: ' + (err.message || err), true); }
+  });
+
+  // Clear pick
+  document.getElementById('draft-clear-pick-btn')?.addEventListener('click', async () => {
+    if (!_selectedKey || !_picks[_selectedKey]?.player) { showToast('No pick to clear.', true); return; }
+    try {
+      await updateDoc(draftRef, { [`picks.${_selectedKey}`]: deleteField() });
+      delete _picks[_selectedKey];
+      showToast(`Cleared pick for ${_selectedKey.replace('_', ' Rd ')}`);
+      renderDraftAdminBoard(_picks, null);
+      resetPickForm();
+    } catch (err) { showToast('Clear failed: ' + (err.message || err), true); }
+  });
+
+  // Cancel
+  document.getElementById('draft-cancel-btn')?.addEventListener('click', () => {
+    renderDraftAdminBoard(_picks, null);
+    resetPickForm();
+  });
+
+  function resetPickForm() {
+    _selectedKey = null;
+    const titleEl = document.getElementById('draft-panel-title');
+    const hintEl  = document.getElementById('draft-panel-hint');
+    const formEl  = document.getElementById('draft-pick-panel-form');
+    if (titleEl) titleEl.textContent = 'Pick Entry';
+    if (hintEl)  hintEl.style.display = '';
+    if (formEl)  formEl.style.display = 'none';
+    ['draft-pick-name','draft-pick-org'].forEach(id => { const el = document.getElementById(id); if (el) el.value = ''; });
+    const posEl = document.getElementById('draft-pick-pos'); if (posEl) posEl.value = '';
+  }
+
+  // Download CSV
+  document.getElementById('draft-csv-btn')?.addEventListener('click', () => {
+    const rows = [['Round','Pick #','Team','Player','Position','MLB Org']];
+    let pickNum = 0;
+    for (let r = 1; r <= DRAFT_ADMIN_CONFIG.rounds; r++) {
+      for (const t of DRAFT_ADMIN_CONFIG.teams) {
+        if (draftAdminIsRetained(t, r)) continue;
+        pickNum++;
+        const pick = _picks[`${t.abbrev}_${r}`];
+        rows.push([r, pickNum, t.abbrev, pick?.player || '', pick?.pos || '', pick?.org || '']);
+      }
+    }
+    const csv = rows.map(r => r.map(v => `"${String(v).replace(/"/g,'""')}"`).join(',')).join('\n');
+    const blob = new Blob([csv], { type: 'text/csv' });
+    const url  = URL.createObjectURL(blob);
+    const a = Object.assign(document.createElement('a'), { href: url, download: 'milb_draft_2026.csv' });
+    a.click();
+    URL.revokeObjectURL(url);
+    showToast('CSV downloaded');
+  });
+
+  // Print / Export view
+  document.getElementById('draft-print-btn')?.addEventListener('click', () => {
+    const teams  = DRAFT_ADMIN_CONFIG.teams;
+    const rounds = DRAFT_ADMIN_CONFIG.rounds;
+    const pickCount = Object.keys(_picks).filter(k => _picks[k]?.player).length;
+
+    const headerRow = ['Round', ...teams.map(t => `${t.abbrev}<br><small>${rounds - t.retained}pk</small>`)].map(h => `<th style="padding:5px 4px;text-align:center;font-size:11px;border:1px solid #ccc;white-space:nowrap;">${h}</th>`).join('');
+    const bodyRows = [];
+    for (let r = 1; r <= rounds; r++) {
+      const cells = teams.map(t => {
+        if (draftAdminIsRetained(t, r)) return `<td style="padding:4px;border:1px solid #ccc;background:#f5f5f5;text-align:center;font-size:9px;color:#bbb;font-style:italic;">Retained</td>`;
+        const pick = _picks[`${t.abbrev}_${r}`];
+        if (pick?.player) return `<td style="padding:4px 5px;border:1px solid #ccc;font-size:10px;"><div style="font-weight:600;">${pick.player}</div><div style="color:#666;font-size:9px;">${pick.pos||''}${pick.pos&&pick.org?' · ':''}${pick.org||''}</div></td>`;
+        return `<td style="padding:4px;border:1px solid #ccc;text-align:center;color:#ccc;">—</td>`;
+      }).join('');
+      bodyRows.push(`<tr><td style="padding:4px 8px;border:1px solid #ccc;font-weight:700;font-size:11px;white-space:nowrap;background:#f9f9f9;">Rd ${r}</td>${cells}</tr>`);
+    }
+
+    const win = window.open('', '_blank');
+    win.document.write(`<!DOCTYPE html><html><head><title>2026 TSDL MiLB Draft Board</title>
+      <style>body{font-family:Arial,sans-serif;margin:16px;}h2{margin-bottom:4px;}p{color:#666;font-size:12px;margin:0 0 10px;}table{border-collapse:collapse;width:100%;}@media print{button{display:none;}}</style>
+    </head><body>
+      <h2>2026 TSDL MiLB Slow Draft Board</h2>
+      <p>${pickCount} / ${DRAFT_ADMIN_CONFIG.total_picks} picks made &mdash; Generated ${new Date().toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'})}</p>
+      <button onclick="window.print()" style="margin-bottom:10px;padding:6px 14px;background:#333;color:#fff;border:none;border-radius:4px;cursor:pointer;">Print</button>
+      <table><thead><tr>${headerRow}</tr></thead><tbody>${bodyRows.join('')}</tbody></table>
+    </body></html>`);
+    win.document.close();
+  });
 }
