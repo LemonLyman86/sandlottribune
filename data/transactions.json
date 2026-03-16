@@ -1,7 +1,87 @@
 {
-  "updated": "2026-03-15T05:59:44",
+  "updated": "2026-03-16T12:29:13",
   "season": 2026,
   "transactions": [
+    {
+      "date": "2026-03-16",
+      "date_display": "Mar 16",
+      "type": "drop",
+      "type_label": "Released",
+      "team": "Arizona Diamondbacks",
+      "team_abbrev": "ARI",
+      "player": "Spencer Torkelson",
+      "details": "Period 1"
+    },
+    {
+      "date": "2026-03-15",
+      "date_display": "Mar 15",
+      "type": "drop",
+      "type_label": "Released",
+      "team": "Washington Nationals",
+      "team_abbrev": "WSH",
+      "player": "Jesus Sanchez",
+      "details": "Period 1"
+    },
+    {
+      "date": "2026-03-15",
+      "date_display": "Mar 15",
+      "type": "drop",
+      "type_label": "Released",
+      "team": "Washington Nationals",
+      "team_abbrev": "WSH",
+      "player": "Janson Junk",
+      "details": "Period 1"
+    },
+    {
+      "date": "2026-03-15",
+      "date_display": "Mar 15",
+      "type": "drop",
+      "type_label": "Released",
+      "team": "Houston Astros",
+      "team_abbrev": "HOU",
+      "player": "Grayson Rodriguez",
+      "details": "Period 1"
+    },
+    {
+      "date": "2026-03-15",
+      "date_display": "Mar 15",
+      "type": "drop",
+      "type_label": "Released",
+      "team": "Colorado Rockies",
+      "team_abbrev": "COL",
+      "player": "Ricky Tiedemann",
+      "details": "Period 1"
+    },
+    {
+      "date": "2026-03-15",
+      "date_display": "Mar 15",
+      "type": "drop",
+      "type_label": "Released",
+      "team": "Houston Astros",
+      "team_abbrev": "HOU",
+      "player": "Caden Dana",
+      "details": "Period 1"
+    },
+    {
+      "date": "2026-03-15",
+      "date_display": "Mar 15",
+      "type": "drop",
+      "type_label": "Released",
+      "team": "Miami Marlins",
+      "team_abbrev": "MIA",
+      "player": "Vladimir Guerrero Jr.",
+      "details": "Period 1"
+    },
+    {
+      "date": "2026-03-15",
+      "date_display": "Mar 15",
+      "type": "drop",
+      "type_label": "Released",
+      "team": "Philadelphia Phillies",
+      "team_abbrev": "PHI",
+      "player": "Brooks Lee",
+      "details": "Period 1"
+    },
     {
       "date": "2026-03-14",
       "date_display": "Mar 14",
@@ -220,86 +300,6 @@
       "team": "Seattle Mariners",
       "team_abbrev": "SEA",
       "player": "Pete Fairbanks",
-      "details": "Period 1"
-    },
-    {
-      "date": "2026-03-12",
-      "date_display": "Mar 12",
-      "type": "drop",
-      "type_label": "Released",
-      "team": "Seattle Mariners",
-      "team_abbrev": "SEA",
-      "player": "Jeremy Pena",
-      "details": "Period 1"
-    },
-    {
-      "date": "2026-03-12",
-      "date_display": "Mar 12",
-      "type": "drop",
-      "type_label": "Released",
-      "team": "Seattle Mariners",
-      "team_abbrev": "SEA",
-      "player": "Jeremiah Jackson",
-      "details": "Period 1"
-    },
-    {
-      "date": "2026-03-11",
-      "date_display": "Mar 11",
-      "type": "drop",
-      "type_label": "Released",
-      "team": "Las Vegas Athletics",
-      "team_abbrev": "LVA",
-      "player": "Carlos Rodon",
-      "details": "Period 1"
-    },
-    {
-      "date": "2026-03-11",
-      "date_display": "Mar 11",
-      "type": "drop",
-      "type_label": "Released",
-      "team": "San Diego Padres",
-      "team_abbrev": "SDP",
-      "player": "Jake Cronenworth",
-      "details": "Period 1"
-    },
-    {
-      "date": "2026-03-11",
-      "date_display": "Mar 11",
-      "type": "drop",
-      "type_label": "Released",
-      "team": "San Diego Padres",
-      "team_abbrev": "SDP",
-      "player": "Yordan Alvarez",
-      "details": "Period 1"
-    },
-    {
-      "date": "2026-03-11",
-      "date_display": "Mar 11",
-      "type": "drop",
-      "type_label": "Released",
-      "team": "Washington Nationals",
-      "team_abbrev": "WSH",
-      "player": "Tyler Stephenson",
-      "details": "Period 1"
-    },
-    {
-      "date": "2026-03-11",
-      "date_display": "Mar 11",
-      "type": "drop",
-      "type_label": "Released",
-      "team": "Washington Nationals",
-      "team_abbrev": "WSH",
-      "player": "Anthony Volpe",
-      "details": "Period 1"
-    },
-    {
-      "date": "2026-03-11",
-      "date_display": "Mar 11",
-      "type": "drop",
-      "type_label": "Released",
-      "team": "Washington Nationals",
-      "team_abbrev": "WSH",
-      "player": "Ben Casparius",
       "details": "Period 1"
     }
   ]
