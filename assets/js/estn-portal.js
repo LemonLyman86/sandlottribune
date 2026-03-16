@@ -663,7 +663,7 @@ function applyFeaturedOverride(settings) {
 
 const DRAFT_CONFIG = {
   rounds: 10,
-  total_picks: 83,
+  total_picks: 84,
   teams: [
     { abbrev:'MIA', name:'Miami Marlins',          retained:5, color:'#00A3E0' },
     { abbrev:'CHC', name:'Chicago Cubs',            retained:1, color:'#C8102E' },
@@ -674,7 +674,7 @@ const DRAFT_CONFIG = {
     { abbrev:'WSH', name:'Washington Nationals',    retained:7, color:'#BA0C2F' },
     { abbrev:'PHI', name:'Philadelphia Phillies',   retained:8, color:'#E03040' },
     { abbrev:'MIL', name:'Milwaukee Brewers',       retained:6, color:'#FFC72C' },
-    { abbrev:'LAD', name:'Los Angeles Dodgers',     retained:5, color:'#005A9E' },
+    { abbrev:'LAD', name:'Los Angeles Dodgers',     retained:4, color:'#005A9E' },
     { abbrev:'ATL', name:'Atlanta Braves',          retained:3, color:'#CE1141' },
     { abbrev:'HOU', name:'Houston Astros',          retained:5, color:'#FF8200' },
     { abbrev:'TOR', name:'Toronto Blue Jays',       retained:5, color:'#6CACE4' },
