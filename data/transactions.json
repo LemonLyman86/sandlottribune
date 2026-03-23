@@ -1,7 +1,37 @@
 {
-  "updated": "2026-03-22T01:01:00",
+  "updated": "2026-03-23T07:07:07",
   "season": 2026,
   "transactions": [
+    {
+      "date": "2026-03-22",
+      "date_display": "Mar 22",
+      "type": "drop",
+      "type_label": "Released",
+      "team": "Colorado Rockies",
+      "team_abbrev": "COL",
+      "player": "Colt Keith",
+      "details": "Period 1"
+    },
+    {
+      "date": "2026-03-22",
+      "date_display": "Mar 22",
+      "type": "drop",
+      "type_label": "Released",
+      "team": "Houston Astros",
+      "team_abbrev": "HOU",
+      "player": "Taylor Rogers",
+      "details": "Period 1"
+    },
+    {
+      "date": "2026-03-22",
+      "date_display": "Mar 22",
+      "type": "drop",
+      "type_label": "Released",
+      "team": "Colorado Rockies",
+      "team_abbrev": "COL",
+      "player": "Dean Kremer",
+      "details": "Period 1"
+    },
     {
       "date": "2026-03-16",
       "date_display": "Mar 16",
@@ -270,36 +300,6 @@
       "team": "New York Yankees",
       "team_abbrev": "NYY",
       "player": "Stephen Kolek",
-      "details": "Period 1"
-    },
-    {
-      "date": "2026-03-13",
-      "date_display": "Mar 13",
-      "type": "drop",
-      "type_label": "Released",
-      "team": "Milwaukee Brewers",
-      "team_abbrev": "MIL",
-      "player": "Austin Hays",
-      "details": "Period 1"
-    },
-    {
-      "date": "2026-03-13",
-      "date_display": "Mar 13",
-      "type": "drop",
-      "type_label": "Released",
-      "team": "Milwaukee Brewers",
-      "team_abbrev": "MIL",
-      "player": "Carlson Reed",
-      "details": "Period 1"
-    },
-    {
-      "date": "2026-03-12",
-      "date_display": "Mar 12",
-      "type": "drop",
-      "type_label": "Released",
-      "team": "Seattle Mariners",
-      "team_abbrev": "SEA",
-      "player": "Pete Fairbanks",
       "details": "Period 1"
     }
   ]
