@@ -1,7 +1,27 @@
 {
-  "updated": "2026-03-23T07:07:07",
+  "updated": "2026-03-24T01:00:11",
   "season": 2026,
   "transactions": [
+    {
+      "date": "2026-03-23",
+      "date_display": "Mar 23",
+      "type": "drop",
+      "type_label": "Released",
+      "team": "Miami Marlins",
+      "team_abbrev": "MIA",
+      "player": "Jake Cronenworth",
+      "details": "Period 1"
+    },
+    {
+      "date": "2026-03-23",
+      "date_display": "Mar 23",
+      "type": "drop",
+      "type_label": "Released",
+      "team": "Miami Marlins",
+      "team_abbrev": "MIA",
+      "player": "J.P. Crawford",
+      "details": "Period 1"
+    },
     {
       "date": "2026-03-22",
       "date_display": "Mar 22",
@@ -280,26 +300,6 @@
       "team": "Chicago Cubs",
       "team_abbrev": "CHC",
       "player": "Lenyn Sosa",
-      "details": "Period 1"
-    },
-    {
-      "date": "2026-03-13",
-      "date_display": "Mar 13",
-      "type": "drop",
-      "type_label": "Released",
-      "team": "San Diego Padres",
-      "team_abbrev": "SDP",
-      "player": "Bryce Miller",
-      "details": "Period 1"
-    },
-    {
-      "date": "2026-03-13",
-      "date_display": "Mar 13",
-      "type": "drop",
-      "type_label": "Released",
-      "team": "New York Yankees",
-      "team_abbrev": "NYY",
-      "player": "Stephen Kolek",
       "details": "Period 1"
     }
   ]
