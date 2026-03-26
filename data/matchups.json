@@ -1,5 +1,5 @@
 {
-  "updated": "2026-03-25T01:00:12",
+  "updated": "2026-03-26T01:00:14",
   "season": 2026,
   "current_period": 1,
   "period_label": "Wk 1: Mar\u00a025 \u2013 Apr\u00a05",
@@ -11,12 +11,12 @@
     {
       "team1": "New York Yankees",
       "team1_abbrev": "NYY",
-      "team1_score": 0.0,
+      "team1_score": 6.0,
       "team2": "Las Vegas Athletics",
       "team2_abbrev": "LVA",
-      "team2_score": 0.0,
+      "team2_score": -2.0,
       "status": "in_progress",
-      "winner": null,
+      "winner": "team1",
       "is_playoff": false,
       "week_start": "2026-03-25",
       "week_end": "2026-04-05"
@@ -24,12 +24,12 @@
     {
       "team1": "San Diego Padres",
       "team1_abbrev": "SDP",
-      "team1_score": 0.0,
+      "team1_score": 3.5,
       "team2": "Los Angeles Dodgers",
       "team2_abbrev": "LAD",
-      "team2_score": 0.0,
+      "team2_score": 0.5,
       "status": "in_progress",
-      "winner": null,
+      "winner": "team1",
       "is_playoff": false,
       "week_start": "2026-03-25",
       "week_end": "2026-04-05"
@@ -63,12 +63,12 @@
     {
       "team1": "Boston Red Sox",
       "team1_abbrev": "BOS",
-      "team1_score": 0.0,
+      "team1_score": 2.0,
       "team2": "Seattle Mariners",
       "team2_abbrev": "SEA",
-      "team2_score": 0.0,
+      "team2_score": 4.0,
       "status": "in_progress",
-      "winner": null,
+      "winner": "team2",
       "is_playoff": false,
       "week_start": "2026-03-25",
       "week_end": "2026-04-05"
@@ -76,12 +76,12 @@
     {
       "team1": "Miami Marlins",
       "team1_abbrev": "MIA",
-      "team1_score": 0.0,
+      "team1_score": 4.0,
       "team2": "Chicago Cubs",
       "team2_abbrev": "CHC",
       "team2_score": 0.0,
       "status": "in_progress",
-      "winner": null,
+      "winner": "team1",
       "is_playoff": false,
       "week_start": "2026-03-25",
       "week_end": "2026-04-05"
@@ -89,12 +89,12 @@
     {
       "team1": "Washington Nationals",
       "team1_abbrev": "WSH",
-      "team1_score": 0.0,
+      "team1_score": 3.0,
       "team2": "Atlanta Braves",
       "team2_abbrev": "ATL",
       "team2_score": 0.0,
       "status": "in_progress",
-      "winner": null,
+      "winner": "team1",
       "is_playoff": false,
       "week_start": "2026-03-25",
       "week_end": "2026-04-05"
@@ -102,12 +102,12 @@
     {
       "team1": "St. Louis Cardinals",
       "team1_abbrev": "STL",
-      "team1_score": 0.0,
+      "team1_score": 28.0,
       "team2": "Philadelphia Phillies",
       "team2_abbrev": "PHI",
       "team2_score": 0.0,
       "status": "in_progress",
-      "winner": null,
+      "winner": "team1",
       "is_playoff": false,
       "week_start": "2026-03-25",
       "week_end": "2026-04-05"
@@ -118,9 +118,9 @@
       "team1_score": 0.0,
       "team2": "Cincinnati Reds",
       "team2_abbrev": "CIN",
-      "team2_score": 0.0,
+      "team2_score": 2.0,
       "status": "in_progress",
-      "winner": null,
+      "winner": "team2",
       "is_playoff": false,
       "week_start": "2026-03-25",
       "week_end": "2026-04-05"
