@@ -1,7 +1,137 @@
 {
-  "updated": "2026-03-26T01:00:14",
+  "updated": "2026-03-27T08:23:56",
   "season": 2026,
   "transactions": [
+    {
+      "date": "2026-03-26",
+      "date_display": "Mar 26",
+      "type": "drop",
+      "type_label": "Released",
+      "team": "Chicago Cubs",
+      "team_abbrev": "CHC",
+      "player": "Sean Burke",
+      "details": "Period 3"
+    },
+    {
+      "date": "2026-03-26",
+      "date_display": "Mar 26",
+      "type": "drop",
+      "type_label": "Released",
+      "team": "St. Louis Cardinals",
+      "team_abbrev": "STL",
+      "player": "Lars Nootbaar",
+      "details": "Period 2"
+    },
+    {
+      "date": "2026-03-26",
+      "date_display": "Mar 26",
+      "type": "faab_pickup",
+      "type_label": "Claimed",
+      "team": "Arizona Diamondbacks",
+      "team_abbrev": "ARI",
+      "player": "Hogan Harris",
+      "details": "Period 2"
+    },
+    {
+      "date": "2026-03-26",
+      "date_display": "Mar 26",
+      "type": "faab_pickup",
+      "type_label": "Claimed",
+      "team": "Las Vegas Athletics",
+      "team_abbrev": "LVA",
+      "player": "Edgar Quero",
+      "details": "Period 2"
+    },
+    {
+      "date": "2026-03-26",
+      "date_display": "Mar 26",
+      "type": "faab_pickup",
+      "type_label": "Claimed",
+      "team": "Arizona Diamondbacks",
+      "team_abbrev": "ARI",
+      "player": "Michael Lorenzen",
+      "details": "Period 2"
+    },
+    {
+      "date": "2026-03-26",
+      "date_display": "Mar 26",
+      "type": "faab_pickup",
+      "type_label": "Claimed",
+      "team": "Milwaukee Brewers",
+      "team_abbrev": "MIL",
+      "player": "Paul Sewald",
+      "details": "Period 2"
+    },
+    {
+      "date": "2026-03-26",
+      "date_display": "Mar 26",
+      "type": "faab_pickup",
+      "type_label": "Claimed",
+      "team": "Chicago Cubs",
+      "team_abbrev": "CHC",
+      "player": "Sean Burke",
+      "details": "Period 2"
+    },
+    {
+      "date": "2026-03-26",
+      "date_display": "Mar 26",
+      "type": "faab_pickup",
+      "type_label": "Claimed",
+      "team": "Arizona Diamondbacks",
+      "team_abbrev": "ARI",
+      "player": "Andrew Benintendi",
+      "details": "Period 2"
+    },
+    {
+      "date": "2026-03-26",
+      "date_display": "Mar 26",
+      "type": "faab_pickup",
+      "type_label": "Claimed",
+      "team": "Philadelphia Phillies",
+      "team_abbrev": "PHI",
+      "player": "AJ Smith-Shawver",
+      "details": "Period 2"
+    },
+    {
+      "date": "2026-03-26",
+      "date_display": "Mar 26",
+      "type": "faab_pickup",
+      "type_label": "Claimed",
+      "team": "Philadelphia Phillies",
+      "team_abbrev": "PHI",
+      "player": "Ben Joyce",
+      "details": "Period 2"
+    },
+    {
+      "date": "2026-03-26",
+      "date_display": "Mar 26",
+      "type": "faab_pickup",
+      "type_label": "Claimed",
+      "team": "Philadelphia Phillies",
+      "team_abbrev": "PHI",
+      "player": "Anthony Volpe",
+      "details": "Period 2"
+    },
+    {
+      "date": "2026-03-26",
+      "date_display": "Mar 26",
+      "type": "faab_pickup",
+      "type_label": "Claimed",
+      "team": "St. Louis Cardinals",
+      "team_abbrev": "STL",
+      "player": "Hunter Dobbins",
+      "details": "Period 2"
+    },
+    {
+      "date": "2026-03-26",
+      "date_display": "Mar 26",
+      "type": "faab_pickup",
+      "type_label": "Claimed",
+      "team": "New York Yankees",
+      "team_abbrev": "NYY",
+      "player": "Eduardo Rodriguez",
+      "details": "Period 2"
+    },
     {
       "date": "2026-03-25",
       "date_display": "Mar 25",
@@ -170,136 +300,6 @@
       "team": "Colorado Rockies",
       "team_abbrev": "COL",
       "player": "Emerson Hancock",
-      "details": "Period 1"
-    },
-    {
-      "date": "2026-03-25",
-      "date_display": "Mar 25",
-      "type": "faab_pickup",
-      "type_label": "Claimed",
-      "team": "Seattle Mariners",
-      "team_abbrev": "SEA",
-      "player": "Victor Vodnik",
-      "details": "Period 1"
-    },
-    {
-      "date": "2026-03-25",
-      "date_display": "Mar 25",
-      "type": "faab_pickup",
-      "type_label": "Claimed",
-      "team": "Miami Marlins",
-      "team_abbrev": "MIA",
-      "player": "Didier Fuentes",
-      "details": "Period 1"
-    },
-    {
-      "date": "2026-03-25",
-      "date_display": "Mar 25",
-      "type": "faab_pickup",
-      "type_label": "Claimed",
-      "team": "Chicago Cubs",
-      "team_abbrev": "CHC",
-      "player": "Michael McGreevy",
-      "details": "Period 1"
-    },
-    {
-      "date": "2026-03-25",
-      "date_display": "Mar 25",
-      "type": "faab_pickup",
-      "type_label": "Claimed",
-      "team": "Las Vegas Athletics",
-      "team_abbrev": "LVA",
-      "player": "Pablo Lopez",
-      "details": "Period 1"
-    },
-    {
-      "date": "2026-03-25",
-      "date_display": "Mar 25",
-      "type": "faab_pickup",
-      "type_label": "Claimed",
-      "team": "Milwaukee Brewers",
-      "team_abbrev": "MIL",
-      "player": "Joe Boyle",
-      "details": "Period 1"
-    },
-    {
-      "date": "2026-03-25",
-      "date_display": "Mar 25",
-      "type": "faab_pickup",
-      "type_label": "Claimed",
-      "team": "Toronto Blue Jays",
-      "team_abbrev": "TOR",
-      "player": "Colt Keith",
-      "details": "Period 1"
-    },
-    {
-      "date": "2026-03-25",
-      "date_display": "Mar 25",
-      "type": "faab_pickup",
-      "type_label": "Claimed",
-      "team": "Houston Astros",
-      "team_abbrev": "HOU",
-      "player": "Bryce Elder",
-      "details": "Period 1"
-    },
-    {
-      "date": "2026-03-25",
-      "date_display": "Mar 25",
-      "type": "faab_pickup",
-      "type_label": "Claimed",
-      "team": "San Diego Padres",
-      "team_abbrev": "SDP",
-      "player": "Matt Wallner",
-      "details": "Period 1"
-    },
-    {
-      "date": "2026-03-25",
-      "date_display": "Mar 25",
-      "type": "faab_pickup",
-      "type_label": "Claimed",
-      "team": "Atlanta Braves",
-      "team_abbrev": "ATL",
-      "player": "Jordan Romano",
-      "details": "Period 1"
-    },
-    {
-      "date": "2026-03-25",
-      "date_display": "Mar 25",
-      "type": "faab_pickup",
-      "type_label": "Claimed",
-      "team": "Milwaukee Brewers",
-      "team_abbrev": "MIL",
-      "player": "Jake Cronenworth",
-      "details": "Period 1"
-    },
-    {
-      "date": "2026-03-23",
-      "date_display": "Mar 23",
-      "type": "drop",
-      "type_label": "Released",
-      "team": "Miami Marlins",
-      "team_abbrev": "MIA",
-      "player": "Jake Cronenworth",
-      "details": "Period 1"
-    },
-    {
-      "date": "2026-03-23",
-      "date_display": "Mar 23",
-      "type": "drop",
-      "type_label": "Released",
-      "team": "Miami Marlins",
-      "team_abbrev": "MIA",
-      "player": "J.P. Crawford",
-      "details": "Period 1"
-    },
-    {
-      "date": "2026-03-22",
-      "date_display": "Mar 22",
-      "type": "drop",
-      "type_label": "Released",
-      "team": "Colorado Rockies",
-      "team_abbrev": "COL",
-      "player": "Colt Keith",
       "details": "Period 1"
     }
   ]
