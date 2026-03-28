@@ -1,7 +1,67 @@
 {
-  "updated": "2026-03-27T08:23:56",
+  "updated": "2026-03-28T01:00:09",
   "season": 2026,
   "transactions": [
+    {
+      "date": "2026-03-27",
+      "date_display": "Mar 27",
+      "type": "faab_pickup",
+      "type_label": "Claimed",
+      "team": "Las Vegas Athletics",
+      "team_abbrev": "LVA",
+      "player": "Jordan Walker",
+      "details": "Period 3"
+    },
+    {
+      "date": "2026-03-27",
+      "date_display": "Mar 27",
+      "type": "faab_pickup",
+      "type_label": "Claimed",
+      "team": "Toronto Blue Jays",
+      "team_abbrev": "TOR",
+      "player": "Davis Martin",
+      "details": "Period 3"
+    },
+    {
+      "date": "2026-03-27",
+      "date_display": "Mar 27",
+      "type": "faab_pickup",
+      "type_label": "Claimed",
+      "team": "Atlanta Braves",
+      "team_abbrev": "ATL",
+      "player": "Jared Triolo",
+      "details": "Period 3"
+    },
+    {
+      "date": "2026-03-27",
+      "date_display": "Mar 27",
+      "type": "faab_pickup",
+      "type_label": "Claimed",
+      "team": "Cincinnati Reds",
+      "team_abbrev": "CIN",
+      "player": "Michael Soroka",
+      "details": "Period 3"
+    },
+    {
+      "date": "2026-03-27",
+      "date_display": "Mar 27",
+      "type": "faab_pickup",
+      "type_label": "Claimed",
+      "team": "Cincinnati Reds",
+      "team_abbrev": "CIN",
+      "player": "Davis Schneider",
+      "details": "Period 3"
+    },
+    {
+      "date": "2026-03-27",
+      "date_display": "Mar 27",
+      "type": "faab_pickup",
+      "type_label": "Claimed",
+      "team": "San Diego Padres",
+      "team_abbrev": "SDP",
+      "player": "Jake Bauers",
+      "details": "Period 3"
+    },
     {
       "date": "2026-03-26",
       "date_display": "Mar 26",
@@ -240,66 +300,6 @@
       "team": "St. Louis Cardinals",
       "team_abbrev": "STL",
       "player": "Ben Williamson",
-      "details": "Period 1"
-    },
-    {
-      "date": "2026-03-25",
-      "date_display": "Mar 25",
-      "type": "faab_pickup",
-      "type_label": "Claimed",
-      "team": "Las Vegas Athletics",
-      "team_abbrev": "LVA",
-      "player": "Aaron Civale",
-      "details": "Period 1"
-    },
-    {
-      "date": "2026-03-25",
-      "date_display": "Mar 25",
-      "type": "faab_pickup",
-      "type_label": "Claimed",
-      "team": "San Diego Padres",
-      "team_abbrev": "SDP",
-      "player": "Kirby Yates",
-      "details": "Period 1"
-    },
-    {
-      "date": "2026-03-25",
-      "date_display": "Mar 25",
-      "type": "faab_pickup",
-      "type_label": "Claimed",
-      "team": "New York Yankees",
-      "team_abbrev": "NYY",
-      "player": "Felix Bautista",
-      "details": "Period 1"
-    },
-    {
-      "date": "2026-03-25",
-      "date_display": "Mar 25",
-      "type": "faab_pickup",
-      "type_label": "Claimed",
-      "team": "Houston Astros",
-      "team_abbrev": "HOU",
-      "player": "Andre Pallante",
-      "details": "Period 1"
-    },
-    {
-      "date": "2026-03-25",
-      "date_display": "Mar 25",
-      "type": "faab_pickup",
-      "type_label": "Claimed",
-      "team": "Milwaukee Brewers",
-      "team_abbrev": "MIL",
-      "player": "Ha-seong Kim",
-      "details": "Period 1"
-    },
-    {
-      "date": "2026-03-25",
-      "date_display": "Mar 25",
-      "type": "faab_pickup",
-      "type_label": "Claimed",
-      "team": "Colorado Rockies",
-      "team_abbrev": "COL",
-      "player": "Emerson Hancock",
       "details": "Period 1"
     }
   ]
