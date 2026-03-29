@@ -1,7 +1,57 @@
 {
-  "updated": "2026-03-28T01:00:09",
+  "updated": "2026-03-29T01:00:09",
   "season": 2026,
   "transactions": [
+    {
+      "date": "2026-03-28",
+      "date_display": "Mar 28",
+      "type": "drop",
+      "type_label": "Released",
+      "team": "Las Vegas Athletics",
+      "team_abbrev": "LVA",
+      "player": "Sean Burke",
+      "details": "Period 5"
+    },
+    {
+      "date": "2026-03-28",
+      "date_display": "Mar 28",
+      "type": "drop",
+      "type_label": "Released",
+      "team": "Las Vegas Athletics",
+      "team_abbrev": "LVA",
+      "player": "Edgar Quero",
+      "details": "Period 5"
+    },
+    {
+      "date": "2026-03-28",
+      "date_display": "Mar 28",
+      "type": "faab_pickup",
+      "type_label": "Claimed",
+      "team": "Houston Astros",
+      "team_abbrev": "HOU",
+      "player": "Cole Sands",
+      "details": "Period 4"
+    },
+    {
+      "date": "2026-03-28",
+      "date_display": "Mar 28",
+      "type": "faab_pickup",
+      "type_label": "Claimed",
+      "team": "Boston Red Sox",
+      "team_abbrev": "BOS",
+      "player": "Henry Davis",
+      "details": "Period 4"
+    },
+    {
+      "date": "2026-03-28",
+      "date_display": "Mar 28",
+      "type": "faab_pickup",
+      "type_label": "Claimed",
+      "team": "Las Vegas Athletics",
+      "team_abbrev": "LVA",
+      "player": "Sean Burke",
+      "details": "Period 4"
+    },
     {
       "date": "2026-03-27",
       "date_display": "Mar 27",
@@ -250,56 +300,6 @@
       "team": "Seattle Mariners",
       "team_abbrev": "SEA",
       "player": "Logan Evans",
-      "details": "Period 1"
-    },
-    {
-      "date": "2026-03-25",
-      "date_display": "Mar 25",
-      "type": "faab_pickup",
-      "type_label": "Claimed",
-      "team": "Miami Marlins",
-      "team_abbrev": "MIA",
-      "player": "Brandon Williamson",
-      "details": "Period 1"
-    },
-    {
-      "date": "2026-03-25",
-      "date_display": "Mar 25",
-      "type": "faab_pickup",
-      "type_label": "Claimed",
-      "team": "Houston Astros",
-      "team_abbrev": "HOU",
-      "player": "Randy Rodriguez",
-      "details": "Period 1"
-    },
-    {
-      "date": "2026-03-25",
-      "date_display": "Mar 25",
-      "type": "faab_pickup",
-      "type_label": "Claimed",
-      "team": "Colorado Rockies",
-      "team_abbrev": "COL",
-      "player": "Carmen Mlodzinski",
-      "details": "Period 1"
-    },
-    {
-      "date": "2026-03-25",
-      "date_display": "Mar 25",
-      "type": "faab_pickup",
-      "type_label": "Claimed",
-      "team": "Seattle Mariners",
-      "team_abbrev": "SEA",
-      "player": "Clarke Schmidt",
-      "details": "Period 1"
-    },
-    {
-      "date": "2026-03-25",
-      "date_display": "Mar 25",
-      "type": "faab_pickup",
-      "type_label": "Claimed",
-      "team": "St. Louis Cardinals",
-      "team_abbrev": "STL",
-      "player": "Ben Williamson",
       "details": "Period 1"
     }
   ]
