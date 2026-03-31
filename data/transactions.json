@@ -1,7 +1,47 @@
 {
-  "updated": "2026-03-30T01:00:10",
+  "updated": "2026-03-31T01:00:57",
   "season": 2026,
   "transactions": [
+    {
+      "date": "2026-03-30",
+      "date_display": "Mar 30",
+      "type": "faab_pickup",
+      "type_label": "Claimed",
+      "team": "Los Angeles Dodgers",
+      "team_abbrev": "LAD",
+      "player": "Walker Buehler",
+      "details": "Period 6"
+    },
+    {
+      "date": "2026-03-30",
+      "date_display": "Mar 30",
+      "type": "faab_pickup",
+      "type_label": "Claimed",
+      "team": "Chicago Cubs",
+      "team_abbrev": "CHC",
+      "player": "Ryne Stanek",
+      "details": "Period 6"
+    },
+    {
+      "date": "2026-03-30",
+      "date_display": "Mar 30",
+      "type": "faab_pickup",
+      "type_label": "Claimed",
+      "team": "Philadelphia Phillies",
+      "team_abbrev": "PHI",
+      "player": "Aaron Ashby",
+      "details": "Period 6"
+    },
+    {
+      "date": "2026-03-30",
+      "date_display": "Mar 30",
+      "type": "faab_pickup",
+      "type_label": "Claimed",
+      "team": "Miami Marlins",
+      "team_abbrev": "MIA",
+      "player": "Dylan Crews",
+      "details": "Period 6"
+    },
     {
       "date": "2026-03-29",
       "date_display": "Mar 29",
@@ -260,46 +300,6 @@
       "team": "Las Vegas Athletics",
       "team_abbrev": "LVA",
       "player": "Edgar Quero",
-      "details": "Period 2"
-    },
-    {
-      "date": "2026-03-26",
-      "date_display": "Mar 26",
-      "type": "faab_pickup",
-      "type_label": "Claimed",
-      "team": "Arizona Diamondbacks",
-      "team_abbrev": "ARI",
-      "player": "Michael Lorenzen",
-      "details": "Period 2"
-    },
-    {
-      "date": "2026-03-26",
-      "date_display": "Mar 26",
-      "type": "faab_pickup",
-      "type_label": "Claimed",
-      "team": "Milwaukee Brewers",
-      "team_abbrev": "MIL",
-      "player": "Paul Sewald",
-      "details": "Period 2"
-    },
-    {
-      "date": "2026-03-26",
-      "date_display": "Mar 26",
-      "type": "faab_pickup",
-      "type_label": "Claimed",
-      "team": "Chicago Cubs",
-      "team_abbrev": "CHC",
-      "player": "Sean Burke",
-      "details": "Period 2"
-    },
-    {
-      "date": "2026-03-26",
-      "date_display": "Mar 26",
-      "type": "faab_pickup",
-      "type_label": "Claimed",
-      "team": "Arizona Diamondbacks",
-      "team_abbrev": "ARI",
-      "player": "Andrew Benintendi",
       "details": "Period 2"
     }
   ]
