@@ -1,7 +1,27 @@
 {
-  "updated": "2026-03-31T01:00:57",
+  "updated": "2026-04-01T06:53:16",
   "season": 2026,
   "transactions": [
+    {
+      "date": "2026-03-31",
+      "date_display": "Mar 31",
+      "type": "faab_pickup",
+      "type_label": "Claimed",
+      "team": "Washington Nationals",
+      "team_abbrev": "WSH",
+      "player": "Janson Junk",
+      "details": "Period 7"
+    },
+    {
+      "date": "2026-03-31",
+      "date_display": "Mar 31",
+      "type": "faab_pickup",
+      "type_label": "Claimed",
+      "team": "Washington Nationals",
+      "team_abbrev": "WSH",
+      "player": "Joey Wiemer",
+      "details": "Period 7"
+    },
     {
       "date": "2026-03-30",
       "date_display": "Mar 30",
@@ -280,26 +300,6 @@
       "team": "St. Louis Cardinals",
       "team_abbrev": "STL",
       "player": "Lars Nootbaar",
-      "details": "Period 2"
-    },
-    {
-      "date": "2026-03-26",
-      "date_display": "Mar 26",
-      "type": "faab_pickup",
-      "type_label": "Claimed",
-      "team": "Arizona Diamondbacks",
-      "team_abbrev": "ARI",
-      "player": "Hogan Harris",
-      "details": "Period 2"
-    },
-    {
-      "date": "2026-03-26",
-      "date_display": "Mar 26",
-      "type": "faab_pickup",
-      "type_label": "Claimed",
-      "team": "Las Vegas Athletics",
-      "team_abbrev": "LVA",
-      "player": "Edgar Quero",
       "details": "Period 2"
     }
   ]
